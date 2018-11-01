@@ -75,7 +75,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 var y = _.Y + yBase;
                 var t = Owner.Map[x, y];
 
-                return !(x < 0 || x >= Owner.Map.Width || y < 0 || y >= Owner.Map.Height || t.ObjId == 0 || t.ObjType == 0 || !clientStatic.Add(new IntPoint(x, y)));
+                return !(x < 0 || x >= Owner.Map.Width || y < 0 || y >= Owner.Map.Height || t.ObjId == 0 || t.ObjType == 0 || !clientStatic.Add(new IntPoint(x, y)) || t.ObjDesc == null);
             }).Select(_ =>
             {
                 var x = _.X + xBase;

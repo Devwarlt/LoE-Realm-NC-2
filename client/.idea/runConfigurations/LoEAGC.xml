@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="LoEAGC" type="FlashRunConfigurationType" factoryName="Flash App" activateToolWindowBeforeRun="false" singleton="true">
-    <option name="BCName" value="WebMain" />
+    <option name="BCName" value="LoE Realm NC" />
     <option name="IOSSimulatorSdkPath" value="" />
     <option name="adlOptions" value="" />
     <option name="airProgramParameters" value="" />
