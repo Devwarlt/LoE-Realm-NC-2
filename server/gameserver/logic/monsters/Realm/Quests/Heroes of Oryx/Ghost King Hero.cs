@@ -134,7 +134,7 @@ namespace LoESoft.GameServer.logic
                         new State("Quiet",
                             new TimedTransition(22000, "Speak")
                             ),
-                        new TimedTransition(140000, "Overly_long_combat")
+                        new TimedTransition(40000, "Overly_long_combat")
                         ),
                     new State("Overly_long_combat",
                         new Taunt("You have sapped my energy. A curse on you!"),

@@ -136,7 +136,7 @@ namespace LoESoft.GameServer.realm.commands
     internal class Summon : Command
     {
         public Summon()
-            : base("summon", 1)
+            : base("summon", (int) AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -356,7 +356,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class GiveCommand : Command
     {
-        public GiveCommand() : base("give")
+        public GiveCommand() : base("give", (int) AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -527,7 +527,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class Max : Command
     {
-        public Max() : base("max")
+        public Max() : base("max", (int) AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -925,7 +925,7 @@ namespace LoESoft.GameServer.realm.commands
             try
             {
                 MapSetPiece piece = (MapSetPiece) Activator.CreateInstance(System.Type.GetType(
-                    "LoESoft.GameServer.realm.mapsetpieces." + args[0], true, true));
+                    "LoESoft.GameServer.realm.mapsetpiece." + args[0], true, true));
                 piece.RenderSetPiece(player.Owner, new IntPoint((int) player.X + 1, (int) player.Y + 1));
                 return true;
             }

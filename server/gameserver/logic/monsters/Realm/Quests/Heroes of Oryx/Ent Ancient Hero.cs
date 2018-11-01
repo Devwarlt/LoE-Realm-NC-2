@@ -102,7 +102,7 @@ namespace LoESoft.GameServer.logic
                         new HpLessTransition(0.9, "Growing1")
                         ),
                     new State("Growing1",
-                        new RemCond(ConditionEffectIndex.Invulnerable), // ok
+                        new AddCond(ConditionEffectIndex.Invulnerable), // ok
                         new ChangeSize(11, 180),
                         new Shoot(10, index: 1, shoots: 3, shootAngle: 120),
                         new TimedTransition(1600, "Growing2"),
@@ -117,7 +117,7 @@ namespace LoESoft.GameServer.logic
                         new HpLessTransition(0.7, "Growing3")
                         ),
                     new State("Growing3",
-                        new RemCond(ConditionEffectIndex.Invulnerable), // ok
+                        new AddCond(ConditionEffectIndex.Invulnerable), // ok
                         new ChangeSize(11, 220),
                         new Shoot(10, index: 3, shoots: 1),
                         new TimedTransition(1600, "Growing4"),
@@ -132,7 +132,7 @@ namespace LoESoft.GameServer.logic
                         new HpLessTransition(0.5, "Growing5")
                         ),
                     new State("Growing5",
-                        new RemCond(ConditionEffectIndex.Invulnerable), // ok
+                        new AddCond(ConditionEffectIndex.Invulnerable), // ok
                         new ChangeSize(11, 260),
                         new Shoot(10, index: 5, shoots: 1),
                         new TimedTransition(1600, "Growing6"),
@@ -147,7 +147,7 @@ namespace LoESoft.GameServer.logic
                         new HpLessTransition(0.4, "Growing7")
                         ),
                     new State("Growing7",
-                        new RemCond(ConditionEffectIndex.Invulnerable), // ok
+                        new AddCond(ConditionEffectIndex.Invulnerable), // ok
                         new ChangeSize(11, 300),
                         new Shoot(10, index: 7, shoots: 3, shootAngle: 120),
                         new TimedTransition(1600, "Growing8"),
@@ -162,6 +162,7 @@ namespace LoESoft.GameServer.logic
                         new HpLessTransition(0.32, "Growing9")
                         ),
                     new State("Growing9",
+                        new RemCond(ConditionEffectIndex.Invulnerable), // ok
                         new ChangeSize(11, 340),
                         new Taunt(1.0, "YOU WILL DIE!!!"),
                         new Shoot(10, index: 9, shoots: 1),
@@ -170,7 +171,6 @@ namespace LoESoft.GameServer.logic
                             new TimedTransition(2000, "shielded")
                             ),
                         new State("received_armor",
-                            new RemCond(ConditionEffectIndex.Invulnerable), // ok
                             new AddCond(ConditionEffectIndex.Armored),
                             new TimedTransition(1000, "shielded")
                             ),

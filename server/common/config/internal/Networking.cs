@@ -23,7 +23,7 @@ namespace LoESoft.Core.config
             public static class INTERNAL
             {
                 public static readonly List<string> PRODUCTION_DDNS = new List<string>{
-                    "testing.loesoftgames.ignorelist.com", "localhost"
+                    "loe-nc.servegame.com", "localhost"
                 };
 
                 public static readonly string CROSS_DOMAIN_POLICY =
@@ -33,9 +33,9 @@ namespace LoESoft.Core.config
                         <allow-access-from domain=""loesoft-games.github.io"" secure=""true""/>
                         <allow-access-from domain=""loesoft-games.github.io"" to-ports=""*""/>
                         <allow-http-request-headers-from domain=""loesoft-games.github.io"" headers=""*"" secure=""true""/>
-                        <allow-access-from domain=""testing.loesoftgames.ignorelist.com"" secure=""false""/>
-                        <allow-access-from domain=""testing.loesoftgames.ignorelist.com"" to-ports=""*""/>
-                        <allow-http-request-headers-from domain=""testing.loesoftgames.ignorelist.com"" headers=""*"" secure=""true""/>
+                        <allow-access-from domain=""loe-nc.servegame.com"" secure=""false""/>
+                        <allow-access-from domain=""loe-nc.servegame.com"" to-ports=""*""/>
+                        <allow-http-request-headers-from domain=""loe-nc.servegame.com"" headers=""*"" secure=""true""/>
                     </cross-domain-policy>";
             }
         }

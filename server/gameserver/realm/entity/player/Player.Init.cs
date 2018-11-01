@@ -430,6 +430,9 @@ namespace LoESoft.GameServer.realm.entity.player
             if (enemy.Quest)
                 score += 250;
 
+            if (enemy.ObjectId == "Eyeguard of Surrender")
+                score += 10000;
+
             score += enemy.MaxHitPoints;
             score += enemy.Defense * enemy.Level;
 

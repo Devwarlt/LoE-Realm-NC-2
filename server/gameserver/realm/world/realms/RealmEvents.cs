@@ -11,11 +11,11 @@ namespace LoESoft.GameServer.realm
 
         public readonly List<RealmEvent> RealmEventCache = new List<RealmEvent>
         {
-            new RealmEvent("Skull Shrine",  new SkullShrine()),
-            new RealmEvent("Pentaract",  new Pentaract()),
-            new RealmEvent("Grand Sphinx",  new Sphinx()),
-            new RealmEvent("Cube God",  new CubeGod()),
-            new RealmEvent("Frog King",  new FrogKing())
+            new RealmEvent("Skull Shrine",  new SkullShrine(), "Your futile efforts are no match for a Skull Shrine!"),
+            new RealmEvent("Pentaract",  new Pentaract(), "Behold my Pentaract, and despair!"),
+            new RealmEvent("Grand Sphinx",  new Sphinx(), "At last, a Grand Sphinx will teach you to respect!"),
+            new RealmEvent("Cube God",  new CubeGod(), "Your meager abillities cannot possibly challenge a Cube God!"),
+            new RealmEvent("Dream Island Horde",  new DreamIsle(), "Fools! your futile efforts are no match for a Dream Island Horde!")
         };
 
         public void HandleRealmEvent(Enemy enemy, Player killer)
@@ -56,6 +56,8 @@ namespace LoESoft.GameServer.realm
 
                     SpawnEvent(evt.Name, evt.MapSetPiece);
 
+                    BroadcastMsg(evt.Message);
+
                     dat = null;
 
                     foreach (var i in criticalEnemies)
@@ -83,14 +85,17 @@ namespace LoESoft.GameServer.realm
         {
             public string Name { get; set; }
             public MapSetPiece MapSetPiece { get; set; }
+            public string Message { get; set; }
 
             public RealmEvent(
                 string Name,
-                MapSetPiece MapSetPiece
+                MapSetPiece MapSetPiece,
+                string Message
                 )
             {
                 this.Name = Name;
                 this.MapSetPiece = MapSetPiece;
+                this.Message = Message;
             }
         }
     }

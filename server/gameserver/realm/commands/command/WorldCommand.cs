@@ -4,7 +4,6 @@ using LoESoft.Core.config;
 using LoESoft.GameServer.logic;
 using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.networking.outgoing;
-using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.npc;
 using LoESoft.GameServer.realm.entity.player;
 using System.Collections.Generic;
@@ -17,7 +16,7 @@ namespace LoESoft.GameServer.realm.commands
 {
     internal class GuildCommand : Command
     {
-        public GuildCommand() : base("g")
+        public GuildCommand() : base("g", (int) AccountType.FREE_ACCOUNT)
         {
         }
 
@@ -48,7 +47,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class TutorialCommand : Command
     {
-        public TutorialCommand() : base("tutorial")
+        public TutorialCommand() : base("tutorial", (int) AccountType.FREE_ACCOUNT)
         {
         }
 
@@ -68,7 +67,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class TradeCommand : Command
     {
-        public TradeCommand() : base("trade")
+        public TradeCommand() : base("trade", (int) AccountType.FREE_ACCOUNT)
         {
         }
 
@@ -111,7 +110,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class ServerCommand : Command
     {
-        public ServerCommand() : base("server")
+        public ServerCommand() : base("server", (int) AccountType.FREE_ACCOUNT)
         {
         }
 
@@ -124,7 +123,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class PauseCommand : Command
     {
-        public PauseCommand() : base("pause")
+        public PauseCommand() : base("pause", (int) AccountType.FREE_ACCOUNT)
         {
         }
 
@@ -141,14 +140,18 @@ namespace LoESoft.GameServer.realm.commands
             }
             else
             {
-                foreach (Enemy i in player.Owner.EnemiesCollision.HitTest(player.X, player.Y, 8).OfType<Enemy>())
+                var allowedPlaces = new List<int>()
                 {
-                    if (i.ObjectDesc.Enemy)
-                    {
-                        player.SendInfo("Not safe to pause.");
-                        return false;
-                    }
+                    (int)WorldID.NEXUS_ID,
+                    (int)WorldID.VAULT_ID
+                };
+
+                if (!allowedPlaces.Contains(player.Owner.Id))
+                {
+                    player.SendInfo("You cannot pause here!");
+                    return false;
                 }
+
                 player.ApplyConditionEffect(new ConditionEffect
                 {
                     Effect = ConditionEffectIndex.Paused,
@@ -162,7 +165,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class TeleportCommand : Command
     {
-        public TeleportCommand() : base("teleport")
+        public TeleportCommand() : base("teleport", (int) AccountType.FREE_ACCOUNT)
         {
         }
 
@@ -199,7 +202,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class TellCommand : Command
     {
-        public TellCommand() : base("tell")
+        public TellCommand() : base("tell", (int) AccountType.FREE_ACCOUNT)
         {
         }
 

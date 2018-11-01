@@ -1,0 +1,75 @@
+{
+  "width": 30,
+  "dict": [
+    {},
+    { "ground": "Blood Water" },
+    { "ground": "Bloody Ground" },
+    { "objs": [ { "id": "Jungle Plant" } ] },
+    { "objs": [ { "id": "Bloody Rose" } ] },
+    { "objs": [ { "id": "Human Skull" } ] },
+    {
+      "objs": [ { "id": "Muzzlereaper" } ],
+      "ground": "Bloody Ground"
+    },
+    {
+      "objs": [ { "id": "Jungle Grass" } ],
+      "ground": "Bloody Ground"
+    },
+    {
+      "objs": [ { "id": "Pool of Blood" } ],
+      "ground": "Bloody Ground"
+    },
+    {
+      "objs": [ { "id": "Bloody Tree" } ],
+      "ground": "Bloody Ground"
+    },
+    { "objs": [ { "id": "Jungle Grass" } ] },
+    {
+      "objs": [ { "id": "Guzzlereaper" } ],
+      "ground": "Bloody Ground"
+    },
+    {
+      "objs": [ { "id": "Jungle Spear" } ],
+      "ground": "Bloody Ground"
+    },
+    {
+      "objs": [ { "id": "Bloody Rose" } ],
+      "ground": "Bloody Ground"
+    },
+    {
+      "objs": [ { "id": "Jungle Plant" } ],
+      "ground": "Bloody Ground"
+    },
+    {
+      "objs": [ { "id": "Human Skeleton" } ],
+      "ground": "Bloody Ground"
+    },
+    {
+      "objs": [ { "id": "Silencer" } ],
+      "ground": "Bloody Ground"
+    },
+    {
+      "objs": [ { "id": "Nightmare" } ],
+      "ground": "Bloody Ground"
+    },
+    { "objs": [ { "id": "Human Skeleton" } ] },
+    {
+      "objs": [ { "id": "Lost Prisoner Soul" } ],
+      "ground": "Bloody Ground"
+    },
+    {
+      "objs": [ { "id": "Human Skull" } ],
+      "ground": "Bloody Ground"
+    },
+    {
+      "objs": [ { "id": "Jungle Brazier" } ],
+      "ground": "Bloody Ground"
+    },
+    {
+      "objs": [ { "id": "Eyeguard of Surrender" } ],
+      "ground": "Bloody Ground"
+    }
+  ],
+  "data": "eNqNVImSgjAMTQMKKAiou///qSJNcxGQdDoNpS/HS1oAJWkZWXCZFek1nJO0ojIaV/3C/5D3rCD7FezVnM5aOvCa1HncjHSYQ/GMITJjKxWpjxuhodMtIb56p5gUuSkuJOpumXfaQ+h/ZAvEzgAPGF2sE2seX5s6TC4C0WXPV6n8aRUGYTaoq8I9Te2L1T7kuQlrLAzLGOFF2Q8uFo9Fxt6dDYQ3867ZqoPq5PVvmf/rmncfZLWc8kwJP+KnMd8REpzXmXMWa6PLtDLIjs69Va4vk00k37o1lJVUOJk6Z6854qfjeVtFi8WQJVQrUp3E68wWp/Amlf7Y3tze3YnbDlJWVHei3e0n2InB91Xajbd2euGm4R4R9mKp3HtZ2Bro7qUfb53us2Syx7Af49jtWw2HuK1f4A5CruAev3jwfdbnGburfACefAYD",
+  "height": 30
+}

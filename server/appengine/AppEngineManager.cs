@@ -20,7 +20,7 @@ namespace LoESoft.AppEngine
     public class AppEngineManager
     {
         public int PORT
-        { get { return Settings.SERVER_MODE != Settings.ServerMode.Local ? Settings.APPENGINE.PRODUCTION_PORT : Settings.APPENGINE.TESTING_PORT; } }
+        { get { return Settings.APPENGINE.PRODUCTION_PORT; } }
 
         public HttpListener _websocket
         { get; private set; }

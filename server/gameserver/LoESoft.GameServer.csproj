@@ -422,6 +422,7 @@
     <Compile Include="GameServer.cs" />
     <Compile Include="realm\ChatColor.cs" />
     <Compile Include="realm\ChatManager.cs" />
+    <Compile Include="realm\mapsetpiece\setpieces\DreamIsle.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\Frog.cs" />
     <Compile Include="realm\commands\command\TestingCommands.cs" />
     <Compile Include="realm\entity\npc\NPC.Dictionary.cs" />
@@ -736,6 +737,9 @@
     <EmbeddedResource Include="realm\world\maps\json\dungeons\sprite world\Sprite_World_1.json" />
     <EmbeddedResource Include="realm\mapsetpiece\maps\succubus.jm" />
     <EmbeddedResource Include="realm\world\maps\json\Beach.jm" />
+    <EmbeddedResource Include="realm\mapsetpiece\maps\dreamisle.jm" />
+    <EmbeddedResource Include="realm\world\maps\json\loe_chicago_2.1.json" />
+    <None Include="realm\world\maps\json\classic.jm" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="realm\world\maps\json\dungeons\spider den\" />

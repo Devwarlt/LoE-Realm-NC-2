@@ -60,17 +60,18 @@ namespace LoESoft.GameServer.realm.mapsetpiece
     {
         public static readonly List<SetPiece> SetPieceCache = new List<SetPiece>
         {
-            new SetPiece("Building", new Building(), 80, 100, new WmapTerrain[3] { WmapTerrain.LowForest, WmapTerrain.LowPlains, WmapTerrain.MidForest }),
-            new SetPiece("Graveyard", new Graveyard(), 5, 10, new WmapTerrain[2] {WmapTerrain.LowSand, WmapTerrain.LowPlains }),
-            new SetPiece("Grove", new Grove(), 17, 25, new WmapTerrain[2] { WmapTerrain.MidForest, WmapTerrain.MidPlains }),
-            new SetPiece("Lich Temple", new LichyTemple(), 4, 7, new WmapTerrain[2] { WmapTerrain.MidForest, WmapTerrain.MidPlains }),
-            new SetPiece("Ghost King Castle", new Castle(), 4, 7, new WmapTerrain[2] { WmapTerrain.HighForest, WmapTerrain.HighPlains }),
-            new SetPiece("Tower", new Tower(), 8, 15, new WmapTerrain[2] { WmapTerrain.HighForest, WmapTerrain.HighPlains }),
-            new SetPiece("Temple Type A", new TempleA(), 10, 20, new WmapTerrain[2] { WmapTerrain.MidForest, WmapTerrain.MidPlains }),
-            new SetPiece("Temple Type B", new TempleB(), 10, 20, new WmapTerrain[2] { WmapTerrain.MidForest, WmapTerrain.MidPlains }),
-            new SetPiece("Oasis", new Oasis(), 0, 5, new WmapTerrain[2] { WmapTerrain.LowSand, WmapTerrain.MidSand }),
-            new SetPiece("Pyre", new Pyre(), 0, 5, new WmapTerrain[2] { WmapTerrain.MidSand, WmapTerrain.HighSand }),
-            new SetPiece("Lava Fissure", new LavaFissure(), 3, 5, new WmapTerrain[1] { WmapTerrain.Mountains })
+            new SetPiece("Building", new Building(), 10, 50, new WmapTerrain[3] { WmapTerrain.LowForest, WmapTerrain.LowPlains, WmapTerrain.MidForest }),
+            new SetPiece("Graveyard", new Graveyard(), 10, 25, new WmapTerrain[2] {WmapTerrain.LowSand, WmapTerrain.LowPlains }),
+            new SetPiece("Grove", new Grove(), 5, 10, new WmapTerrain[2] { WmapTerrain.MidForest, WmapTerrain.MidPlains }),
+            new SetPiece("Lich Temple", new LichyTemple(), 2, 5, new WmapTerrain[2] { WmapTerrain.MidForest, WmapTerrain.MidPlains }),
+            new SetPiece("Ghost King Castle", new Castle(), 1, 3, new WmapTerrain[2] { WmapTerrain.HighForest, WmapTerrain.HighPlains }),
+            new SetPiece("Tower", new Tower(), 5, 10, new WmapTerrain[2] { WmapTerrain.HighForest, WmapTerrain.HighPlains }),
+            new SetPiece("Temple Type A", new TempleA(), 5, 15, new WmapTerrain[2] { WmapTerrain.MidForest, WmapTerrain.MidPlains }),
+            new SetPiece("Temple Type B", new TempleB(), 5, 15, new WmapTerrain[2] { WmapTerrain.MidForest, WmapTerrain.MidPlains }),
+            new SetPiece("Oasis", new Oasis(), 0, 3, new WmapTerrain[2] { WmapTerrain.LowSand, WmapTerrain.MidSand }),
+            new SetPiece("Pyre", new Pyre(), 0, 3, new WmapTerrain[2] { WmapTerrain.MidSand, WmapTerrain.HighSand }),
+            new SetPiece("Lava Fissure", new LavaFissure(), 2, 6, new WmapTerrain[1] { WmapTerrain.Mountains }),
+            new SetPiece("Dream Island Horde", new DreamIsle(), 3, 7, new WmapTerrain[1] { WmapTerrain.HighPlains })
         };
 
         public static void ApplySetPieces(World world)

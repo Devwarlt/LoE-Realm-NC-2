@@ -1,0 +1,178 @@
+{
+  "width": 128,
+  "data": "eNrtm9lOwzAQRSddEghLy1pKKVD2Hf7/6wixnTgRUCHx5HvO1VSt305nbAlSmwEAAAAAAAAAAAAAAAAAAMAfydYmdf9BlWH9+l0U/EfedRy9H/r3Gv0fyPY/t+LX5Mn3fyPKZp14Jf35L22rqtL7b3v/0q8r+JeR/2bkX4r4b/3gr9F/9f3P+ae+/0vbEfdX7j/nH/7446/qv2sTm1aZVO+cf7yi4L/n0/q3K/jjn77/fpWuf1hR8G8T/Nuk798m9/651POPjU4Oep8V/A/tyJfzP7aZLw3/oybOf9ZExT9MQPAPE0D/2f9pk685/xWe/53Y3JfzP7WFL435nzdx/osmKv5hAoJ/mAD6n7H/Of8T7/+ZLX05/3O78KUx/8smzv+iiYp/mIDgHyaA/mfsf87/xPt/aStfzv/Krn1pzP+qifO/bqLiHyYg+IcJoP8Z+z95f+3//8fPf5x/Lnf/pbAbu7U7739vD/ZYrencfynqWX+qf/Xx9fr1qRC6/+L8p/ZcJ/gP5P3HQv4vlfdr7f9kb1L9HzP/9TcQn3+FjH98ArxX9dHpfur+3QkIUel+OwGj3r3HkUj34z0w7N181bCPv4H27rOSff/voEzOHgAAAAAAAAAAAAAAAAAAAP6VT9b3Mfg=",
+  "dict": [
+    { "objs": [ { "id": "Big Trees" } ] },
+    { "objs": [ { "id": "White Wall" } ] },
+    { "ground": "Deep Pool" },
+    {
+      "ground": "Deep Pool",
+      "objs": [ { "id": "Small Lilypads" } ]
+    },
+    {
+      "ground": "Deep Pool",
+      "objs": [ { "id": "White Fountain" } ]
+    },
+    {
+      "ground": "Deep Pool",
+      "objs": [ { "id": "Large Lilypads" } ]
+    },
+    { "objs": [ { "id": "White Torch Wall" } ] },
+    {
+      "ground": "Deep Pool",
+      "objs": [ { "id": "White Bench" } ]
+    },
+    { "ground": "Grey Pathway" },
+    { "ground": "Oryx Castle Rug" },
+    { "ground": "Bridge" },
+    {
+      "ground": "Bridge",
+      "objs": [ { "id": "Arena Spell Table" } ]
+    },
+    {
+      "ground": "Oryx Castle Rug",
+      "regions": [ { "id": "Realm Portals" } ]
+    },
+    {
+      "ground": "Bridge",
+      "objs": [ { "id": "NPC Gazer" } ]
+    },
+    {
+      "ground": "Grey Pathway",
+      "objs": [ { "id": "White Bench" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "objs": [ { "id": "Landscaped Tree" } ]
+    },
+    { "ground": "White Floor 1" },
+    { "ground": "Guild Rug Green" },
+    {
+      "ground": "Guild Rug Green",
+      "objs": [ { "id": "Guild Register" } ]
+    },
+    { "ground": "White Floor 1 Fast Walk" },
+    {
+      "ground": "White Floor 1",
+      "objs": [ { "id": "Merchant" } ],
+      "regions": [ { "id": "Store 7" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "regions": [ { "id": "Store 7" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "objs": [ { "id": "Merchant" } ],
+      "regions": [ { "id": "Store 8" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "regions": [ { "id": "Store 8" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "objs": [ { "id": "Merchant" } ],
+      "regions": [ { "id": "Store 6" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "regions": [ { "id": "Store 6" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "objs": [ { "id": "Merchant" } ],
+      "regions": [ { "id": "Store 5" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "regions": [ { "id": "Store 5" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "objs": [ { "id": "Merchant" } ],
+      "regions": [ { "id": "Store 4" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "regions": [ { "id": "Store 4" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "objs": [ { "id": "Merchant" } ],
+      "regions": [ { "id": "Store 3" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "regions": [ { "id": "Store 3" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "objs": [ { "id": "Merchant" } ],
+      "regions": [ { "id": "Store 1" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "regions": [ { "id": "Store 1" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "objs": [ { "id": "Merchant" } ],
+      "regions": [ { "id": "Store 2" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "regions": [ { "id": "Store 2" } ]
+    },
+    {
+      "ground": "Grey Pathway",
+      "objs": [ { "id": "mb shopkeep1" } ]
+    },
+    {
+      "ground": "Grey Pathway",
+      "objs": [ { "id": "Mystery Box" } ]
+    },
+    {
+      "ground": "Grey Pathway",
+      "objs": [ { "id": "mb shopkeep2" } ]
+    },
+    {
+      "ground": "Grey Pathway",
+      "objs": [ { "id": "ft shopkeep" } ]
+    },
+    {
+      "ground": "Grey Pathway",
+      "objs": [ { "id": "Fortune Ground Object" } ]
+    },
+    {
+      "ground": "Grey Pathway",
+      "objs": [ { "id": "ft big orb" } ]
+    },
+    { "ground": "White Floor 5" },
+    {
+      "ground": "White Floor 1",
+      "regions": [ { "id": "Spawn" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "objs": [ { "id": "Name Changer" } ]
+    },
+    {
+      "ground": "White Floor 5",
+      "regions": [ { "id": "Spawn" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "objs": [ { "id": "Character Changer" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "objs": [ { "id": "Guild Hall Portal" } ]
+    },
+    {
+      "ground": "White Floor 1",
+      "objs": [ { "id": "Vault Portal" } ]
+    }
+  ],
+  "height": 128
+}

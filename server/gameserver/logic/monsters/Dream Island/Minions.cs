@@ -1,4 +1,5 @@
 ﻿using LoESoft.GameServer.logic.behaviors;
+using LoESoft.GameServer.logic.loot;
 using LoESoft.GameServer.logic.transitions;
 
 namespace LoESoft.GameServer.logic
@@ -107,7 +108,27 @@ namespace LoESoft.GameServer.logic
                         new Shoot(range: 6, shoots: 8, shootAngle: 360 / 8, index: Muzzlereaper.nightmare_blasterball, coolDown: 4750),
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
                     )
-                )
+                ),
+                new Drops(
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 8),
+                        new PurpleBag(ItemType.Weapon, 9),
+                        new PurpleBag(ItemType.Ability, 4),
+                        new PurpleBag(ItemType.Armor, 8),
+                        new PurpleBag(ItemType.Armor, 9),
+                        new PurpleBag(ItemType.Ring, 3),
+                        new PurpleBag(ItemType.Ring, 4)
+                        ),
+                    new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4, EggType.TIER_5 }),
+                    new OnlyOne(
+                        new BlueBag(Potions.POTION_OF_ATTACK),
+                        new BlueBag(Potions.POTION_OF_DEFENSE),
+                        new BlueBag(Potions.POTION_OF_SPEED),
+                        new BlueBag(Potions.POTION_OF_DEXTERITY),
+                        new BlueBag(Potions.POTION_OF_VITALITY),
+                        new BlueBag(Potions.POTION_OF_WISDOM)
+                        )
+                    )
             )
 
             .Init("Guzzlereaper",
@@ -132,7 +153,37 @@ namespace LoESoft.GameServer.logic
                         new Shoot(range: 8, shoots: 8, shootAngle: 360 / 8, index: Guzzlereaper.heavy_nightmare_blasterball, coolDown: 4750, coolDownOffset: 200),
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
                     )
-                )
+                ),
+                new Drops(
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 8),
+                        new PurpleBag(ItemType.Weapon, 9),
+                        new PurpleBag(ItemType.Ability, 4),
+                        new PurpleBag(ItemType.Armor, 8),
+                        new PurpleBag(ItemType.Armor, 9),
+                        new PurpleBag(ItemType.Ring, 3),
+                        new PurpleBag(ItemType.Ring, 4)
+                        ),
+                    new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4, EggType.TIER_5 }),
+                    new OnlyOne(
+                        new CyanBag(ItemType.Weapon, 10),
+                        new CyanBag(ItemType.Weapon, 11),
+                        new CyanBag(ItemType.Armor, 10),
+                        new CyanBag(ItemType.Armor, 11),
+                        new CyanBag(ItemType.Armor, 12),
+                        new CyanBag(ItemType.Ability, 5),
+                        new CyanBag(ItemType.Ring, 5)
+                        ),
+                    new OnlyOne(
+                        new BlueBag(Potions.POTION_OF_ATTACK),
+                        new BlueBag(Potions.POTION_OF_DEFENSE),
+                        new BlueBag(Potions.POTION_OF_SPEED),
+                        new BlueBag(Potions.POTION_OF_DEXTERITY),
+                        new BlueBag(Potions.POTION_OF_VITALITY),
+                        new BlueBag(Potions.POTION_OF_WISDOM)
+                        ),
+                    new WhiteBag(new[] { "Umbral Staff", "Umbral Wand", "Umbral Sword", "Umbral Bow", "Umbral Dagger", "Umbral Katana" })
+                    )
             )
 
             .Init("Silencer",
@@ -162,7 +213,37 @@ namespace LoESoft.GameServer.logic
                         new Shoot(range: 8, shoots: 8, shootAngle: 360 / 8, index: Silencer.heavy_nightmare_blasterball, coolDown: 4750, coolDownOffset: 200),
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
                     )
-                )
+                ),
+                new Drops(
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 8),
+                        new PurpleBag(ItemType.Weapon, 9),
+                        new PurpleBag(ItemType.Ability, 4),
+                        new PurpleBag(ItemType.Armor, 8),
+                        new PurpleBag(ItemType.Armor, 9),
+                        new PurpleBag(ItemType.Ring, 3),
+                        new PurpleBag(ItemType.Ring, 4)
+                        ),
+                    new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4, EggType.TIER_5 }),
+                    new OnlyOne(
+                        new CyanBag(ItemType.Weapon, 10),
+                        new CyanBag(ItemType.Weapon, 11),
+                        new CyanBag(ItemType.Armor, 10),
+                        new CyanBag(ItemType.Armor, 11),
+                        new CyanBag(ItemType.Armor, 12),
+                        new CyanBag(ItemType.Ability, 5),
+                        new CyanBag(ItemType.Ring, 5)
+                        ),
+                    new OnlyOne(
+                        new BlueBag(Potions.POTION_OF_ATTACK),
+                        new BlueBag(Potions.POTION_OF_DEFENSE),
+                        new BlueBag(Potions.POTION_OF_SPEED),
+                        new BlueBag(Potions.POTION_OF_DEXTERITY),
+                        new BlueBag(Potions.POTION_OF_VITALITY),
+                        new BlueBag(Potions.POTION_OF_WISDOM)
+                        ),
+                    new WhiteBag(new[] { "Umbral Staff", "Umbral Wand", "Umbral Sword", "Umbral Bow", "Umbral Dagger", "Umbral Katana" })
+                    )
             )
 
             .Init("Eyeguard of Surrender",
@@ -193,7 +274,41 @@ namespace LoESoft.GameServer.logic
                         new Shoot(index: Eyeguard_of_Surrender.enchanted_spear_of_the_wrath, coolDown: 10000),
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
                     )
-                )
+                ),
+                new Drops(
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 8),
+                        new PurpleBag(ItemType.Weapon, 9),
+                        new PurpleBag(ItemType.Ability, 4),
+                        new PurpleBag(ItemType.Armor, 8),
+                        new PurpleBag(ItemType.Armor, 9),
+                        new PurpleBag(ItemType.Ring, 3),
+                        new PurpleBag(ItemType.Ring, 4)
+                        ),
+                    new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4, EggType.TIER_5 }),
+                    new OnlyOne(
+                        new CyanBag(ItemType.Weapon, 10),
+                        new CyanBag(ItemType.Weapon, 11),
+                        new CyanBag(ItemType.Weapon, 12),
+                        new CyanBag(ItemType.Weapon, 13),
+                        new CyanBag(ItemType.Armor, 10),
+                        new CyanBag(ItemType.Armor, 11),
+                        new CyanBag(ItemType.Armor, 12),
+                        new CyanBag(ItemType.Armor, 13),
+                        new CyanBag(ItemType.Armor, 14),
+                        new CyanBag(ItemType.Ability, 5),
+                        new CyanBag(ItemType.Ring, 5)
+                        ),
+                    new OnlyOne(
+                        new BlueBag(Potions.POTION_OF_ATTACK),
+                        new BlueBag(Potions.POTION_OF_DEFENSE),
+                        new BlueBag(Potions.POTION_OF_SPEED),
+                        new BlueBag(Potions.POTION_OF_DEXTERITY),
+                        new BlueBag(Potions.POTION_OF_VITALITY),
+                        new BlueBag(Potions.POTION_OF_WISDOM)
+                        ),
+                    new WhiteBag(new[] { "Umbral Staff", "Umbral Wand", "Umbral Sword", "Umbral Bow", "Umbral Dagger", "Umbral Katana", "The Succubus Bloodstone" })
+                    )
             )
 
             .Init("Lost Prisoner Soul",
@@ -222,7 +337,39 @@ namespace LoESoft.GameServer.logic
                         new Shoot(index: Lost_Prisoner_Soul.heavy_rock, coolDown: 7500),
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
                     )
-                )
+                ),
+                new Drops(
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 8),
+                        new PurpleBag(ItemType.Weapon, 9),
+                        new PurpleBag(ItemType.Ability, 4),
+                        new PurpleBag(ItemType.Armor, 8),
+                        new PurpleBag(ItemType.Armor, 9),
+                        new PurpleBag(ItemType.Ring, 3),
+                        new PurpleBag(ItemType.Ring, 4)
+                        ),
+                    new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4, EggType.TIER_5 }),
+                    new OnlyOne(
+                        new CyanBag(ItemType.Weapon, 10),
+                        new CyanBag(ItemType.Weapon, 11),
+                        new CyanBag(ItemType.Weapon, 12),
+                        new CyanBag(ItemType.Armor, 10),
+                        new CyanBag(ItemType.Armor, 11),
+                        new CyanBag(ItemType.Armor, 12),
+                        new CyanBag(ItemType.Armor, 13),
+                        new CyanBag(ItemType.Ability, 5),
+                        new CyanBag(ItemType.Ring, 5)
+                        ),
+                    new OnlyOne(
+                        new BlueBag(Potions.POTION_OF_ATTACK),
+                        new BlueBag(Potions.POTION_OF_DEFENSE),
+                        new BlueBag(Potions.POTION_OF_SPEED),
+                        new BlueBag(Potions.POTION_OF_DEXTERITY),
+                        new BlueBag(Potions.POTION_OF_VITALITY),
+                        new BlueBag(Potions.POTION_OF_WISDOM)
+                        ),
+                    new WhiteBag(new[] { "Umbral Staff", "Umbral Wand", "Umbral Sword", "Umbral Bow", "Umbral Dagger", "Umbral Katana" })
+                    )
             )
 
             .Init("Nightmare",
@@ -251,7 +398,37 @@ namespace LoESoft.GameServer.logic
                         new Shoot(range: 8, shoots: 8, shootAngle: 360 / 8, index: Nightmare.heavy_nightmare_blasterball, coolDown: 4750, coolDownOffset: 200),
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
                     )
-                )
+                ),
+                new Drops(
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 8),
+                        new PurpleBag(ItemType.Weapon, 9),
+                        new PurpleBag(ItemType.Ability, 4),
+                        new PurpleBag(ItemType.Armor, 8),
+                        new PurpleBag(ItemType.Armor, 9),
+                        new PurpleBag(ItemType.Ring, 3),
+                        new PurpleBag(ItemType.Ring, 4)
+                        ),
+                    new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4, EggType.TIER_5 }),
+                    new OnlyOne(
+                        new CyanBag(ItemType.Weapon, 10),
+                        new CyanBag(ItemType.Weapon, 11),
+                        new CyanBag(ItemType.Armor, 10),
+                        new CyanBag(ItemType.Armor, 11),
+                        new CyanBag(ItemType.Armor, 12),
+                        new CyanBag(ItemType.Ability, 5),
+                        new CyanBag(ItemType.Ring, 5)
+                        ),
+                    new OnlyOne(
+                        new BlueBag(Potions.POTION_OF_ATTACK),
+                        new BlueBag(Potions.POTION_OF_DEFENSE),
+                        new BlueBag(Potions.POTION_OF_SPEED),
+                        new BlueBag(Potions.POTION_OF_DEXTERITY),
+                        new BlueBag(Potions.POTION_OF_VITALITY),
+                        new BlueBag(Potions.POTION_OF_WISDOM)
+                        ),
+                    new WhiteBag(new[] { "Umbral Staff", "Umbral Wand", "Umbral Sword", "Umbral Bow", "Umbral Dagger", "Umbral Katana" })
+                    )
             )
         ;
     }

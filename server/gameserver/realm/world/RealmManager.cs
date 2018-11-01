@@ -85,6 +85,8 @@ namespace LoESoft.GameServer.realm
 
             Behaviors = new BehaviorDb(this);
 
+            QuestPortraits.Add("Eyeguard of Surrender", 20);
+
             Player.HandleQuests(GameData);
 
             Merchant.HandleMerchant(GameData);
