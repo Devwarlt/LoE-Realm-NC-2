@@ -10,6 +10,9 @@ namespace LoESoft.Core.config
             Production
         }
 
+        public static readonly double EXP_RATE = 2;
+        public static readonly double LOOT_RATE = 2;
+
         public static readonly ServerMode SERVER_MODE = ServerMode.Production;
         public static readonly bool ENABLE_RESTART_SYSTEM = SERVER_MODE == ServerMode.Production;
         public static readonly int RESTART_APPENGINE_DELAY_MINUTES = 4 * 60;

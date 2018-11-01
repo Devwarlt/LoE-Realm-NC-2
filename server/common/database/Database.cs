@@ -29,7 +29,7 @@ namespace LoESoft.Core
                   syncTimeout: Settings.REDIS_DATABASE.SYNC_TIMEOUT
                   )
         {
-            SetKeepAlive(Settings.RESTART_DELAY_MINUTES * 60);
+            SetKeepAlive(Settings.RESTART_DELAY_MINUTES * 60 * 2);
             Open().Wait();
         }
 
