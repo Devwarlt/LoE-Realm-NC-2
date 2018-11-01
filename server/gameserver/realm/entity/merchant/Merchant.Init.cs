@@ -1,6 +1,7 @@
 #region
 
 using LoESoft.Core;
+using LoESoft.Core.config;
 using LoESoft.Core.models;
 using LoESoft.GameServer.realm.terrain;
 using System;
@@ -153,13 +154,13 @@ namespace LoESoft.GameServer.realm.entity.merchant
 
                 var s = Random.Next(0, 100);
 
-                if (s < 2)
+                if (s < 2 * Settings.WOTMG_RATE)
                     Discount = 50;
-                else if (s < 5)
+                else if (s < 5 * Settings.WOTMG_RATE)
                     Discount = 25;
-                else if (s < 10)
+                else if (s < 10 * Settings.WOTMG_RATE)
                     Discount = 15;
-                else if (s < 15)
+                else if (s < 15 * Settings.WOTMG_RATE)
                     Discount = 10;
                 else
                     Discount = 0;
@@ -364,7 +365,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 if (item.Value.SlotType == 10 && item.Value.ObjectId.Contains("(SB)") && item.Value.ObjectId.Contains("Skin") && item.Value.Class == "Equipment" && item.Value.Soulbound && item.Value.Consumable)
                 {
                     region3list.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(1000, CurrencyType.Gold));
+                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(1000, CurrencyType.Fame));
                 }
 
             // region 4
@@ -377,7 +378,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 if (item.Value.SlotType == 26 && item.Value.ObjectId.Contains("Egg") && item.Value.Consumable && item.Value.Soulbound && item.Value.FeedPower >= 300 && (item.Value.Tier < 3 || item.Value.ObjectId.Contains("Mystery")))
                 {
                     region5list.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(Egg(item.Value.FeedPower, item.Value.ObjectId), CurrencyType.Gold));
+                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(Egg(item.Value.FeedPower, item.Value.ObjectId), CurrencyType.Fame));
                 }
 
             // region 6
@@ -385,7 +386,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 if (abilitySlotType.Contains(item.Value.SlotType) && !item.Value.Soulbound && item.Value.Tier >= 5 && item.Value.Tier <= 6)
                 {
                     region6list.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(Ability(item.Value.Tier), CurrencyType.Gold));
+                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(Ability(item.Value.Tier), CurrencyType.Fame));
                 }
 
             // region 7
@@ -393,7 +394,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 if (!item.Value.ObjectId.Contains("Infected") && weaponSlotType.Contains(item.Value.SlotType) && !item.Value.Soulbound && item.Value.Tier >= 8 && item.Value.Tier <= 12)
                 {
                     region7list.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(Weapon(item.Value.Tier, item.Value.SlotType), CurrencyType.Gold));
+                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(Weapon(item.Value.Tier, item.Value.SlotType), CurrencyType.Fame));
                 }
 
             // region 8
@@ -401,7 +402,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 if ((armorSlotType.Contains(item.Value.SlotType) && item.Value.Tier >= 9 && item.Value.Tier <= 13) || (ringSlotType.Contains(item.Value.SlotType) && item.Value.Tier >= 4 && item.Value.Tier <= 5) && !item.Value.Soulbound)
                 {
                     region8list.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(item.Value.ObjectId.Contains("Ring") ? Ring(item.Value.Tier, item.Value.ObjectId) : Armor(item.Value.Tier, item.Value.SlotType), CurrencyType.Gold));
+                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(item.Value.ObjectId.Contains("Ring") ? Ring(item.Value.Tier, item.Value.ObjectId) : Armor(item.Value.Tier, item.Value.SlotType), CurrencyType.Fame));
                 }
 
             // restricted clothes (small)
@@ -409,7 +410,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 if (item.Value.Texture2 != 0 && item.Value.ObjectId.Contains("Cloth") && item.Value.ObjectId.Contains("Small"))
                 {
                     smallclothlist.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(100, CurrencyType.Gold));
+                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(100, CurrencyType.Fame));
                 }
 
             // restricted clothes (large)
@@ -417,7 +418,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 if (item.Value.Texture1 != 0 && item.Value.ObjectId.Contains("Cloth") && item.Value.ObjectId.Contains("Large"))
                 {
                     largeclothlist.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(100, CurrencyType.Gold));
+                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(100, CurrencyType.Fame));
                 }
 
             // accessory dye
@@ -425,7 +426,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 if (item.Value.Texture2 != 0 && item.Value.ObjectId.Contains("Accessory") && item.Value.Class == "Dye")
                 {
                     accessorylist.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(50, CurrencyType.Gold));
+                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(50, CurrencyType.Fame));
                 }
 
             // clothing dye
@@ -433,7 +434,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 if (item.Value.Texture1 != 0 && item.Value.ObjectId.Contains("Clothing") && item.Value.Class == "Dye")
                 {
                     clothinglist.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(50, CurrencyType.Gold));
+                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(50, CurrencyType.Fame));
                 }
 
             // Regions

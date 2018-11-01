@@ -105,7 +105,7 @@ namespace LoESoft.GameServer.logic.loot
                 return;
 
             double rng = rnd.NextDouble();
-            double probability = .15 * Settings.LOOT_RATE; // 15%
+            double probability = .15 * Settings.WOTMG_RATE; // 15%
 
             ILootDef[] pinkbag = new ILootDef[] { new Drops(new TierLoot(tier, itemType, probability)) };
 
@@ -141,11 +141,11 @@ namespace LoESoft.GameServer.logic.loot
                 return;
 
             double rng = rnd.NextDouble();
-            double probability = .15 * Settings.LOOT_RATE; // 15%
+            double probability = .15 * Settings.WOTMG_RATE; // 15%
 
             ILootDef[] pinkbag = new ILootDef[] { new Drops(new TierLoot(tier, itemType, probability)) };
 
-            if (rng <= probability * Settings.LOOT_RATE)
+            if (rng <= probability * Settings.WOTMG_RATE)
                 pinkbag[0].Populate(enemy, playerData, rnd, Lootstate, lootDefs);
         }
     }
@@ -211,11 +211,11 @@ namespace LoESoft.GameServer.logic.loot
             else
                 probability = .0025; // 0.25%
 
-            probability *= Settings.LOOT_RATE;
+            probability *= Settings.WOTMG_RATE;
 
             ILootDef[] eggbasket = new ILootDef[] { new Drops(new ItemLoot(onlyOne.DisplayId, probability)) };
 
-            if (rng <= probability * Settings.LOOT_RATE)
+            if (rng <= probability * Settings.WOTMG_RATE)
                 eggbasket[0].Populate(enemy, playerData, rnd, Lootstate, lootDefs);
         }
     }
@@ -262,12 +262,12 @@ namespace LoESoft.GameServer.logic.loot
                 return;
 
             double rng = rnd.NextDouble();
-            double probability = .01 * Settings.LOOT_RATE; // 1%
+            double probability = .01 * Settings.WOTMG_RATE; // 1%
 
             ILootDef[] cyanbag = !setByTier ? new ILootDef[] { new Drops(new ItemLoot(itemName, probability)) } :
                 new ILootDef[] { new Drops(new TierLoot(tier, itemType, probability)) };
 
-            if (rng <= probability * Settings.LOOT_RATE)
+            if (rng <= probability * Settings.WOTMG_RATE)
                 cyanbag[0].Populate(enemy, playerData, rnd, Lootstate, lootDefs);
         }
     }
@@ -334,7 +334,7 @@ namespace LoESoft.GameServer.logic.loot
                 return;
 
             double rng = rnd.NextDouble();
-            double probability = !alwaysDrop ? .25 * Settings.LOOT_RATE : 1; // 25% (always drop: 100%)
+            double probability = !alwaysDrop ? .25 * Settings.WOTMG_RATE : 1; // 25% (always drop: 100%)
 
             if (!single)
             {
@@ -353,7 +353,7 @@ namespace LoESoft.GameServer.logic.loot
 
                 ILootDef[] bluebags = validateItems.ToArray();
 
-                if (rng <= probability * Settings.LOOT_RATE)
+                if (rng <= probability * Settings.WOTMG_RATE)
                     foreach (var i in bluebags)
                         i.Populate(enemy, playerData, rnd, Lootstate, lootDefs);
 
@@ -362,7 +362,7 @@ namespace LoESoft.GameServer.logic.loot
 
             ILootDef[] bluebag = new ILootDef[] { new MostDamagers(3, new ItemLoot(itemName, probability)) };
 
-            if (rng <= probability * Settings.LOOT_RATE)
+            if (rng <= probability * Settings.WOTMG_RATE)
                 bluebag[0].Populate(enemy, playerData, rnd, Lootstate, lootDefs);
         }
     }
@@ -419,13 +419,13 @@ namespace LoESoft.GameServer.logic.loot
                     mostDamagers = playersCount / 10;
             }
 
-            probability *= Settings.LOOT_RATE;
+            probability *= Settings.WOTMG_RATE;
 
             ILootDef[] whitebag = mostDamagers >= 3 ?
                 new ILootDef[] { new MostDamagers(mostDamagers, new ItemLoot(itemName, probability * (eventChest ? .8 : 1))) } :
                 new ILootDef[] { new Drops(new ItemLoot(itemName, probability * (eventChest ? .8 : 1))) };
 
-            if (rng <= probability * Settings.LOOT_RATE)
+            if (rng <= probability * Settings.WOTMG_RATE)
                 whitebag[0].Populate(enemy, playerData, rnd, Lootstate, lootDefs);
         }
     }

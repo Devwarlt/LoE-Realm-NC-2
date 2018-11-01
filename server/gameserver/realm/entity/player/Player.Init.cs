@@ -572,15 +572,15 @@ namespace LoESoft.GameServer.realm.entity.player
             if (exp > 0)
             {
                 if (XpBoosted)
-                    Experience += (int) (exp * 2 * Settings.LOOT_RATE);
+                    Experience += (int) (exp * 2 * Settings.WOTMG_RATE);
                 else
-                    Experience += (int) (exp * Settings.LOOT_RATE);
+                    Experience += (int) (exp * Settings.WOTMG_RATE);
                 UpdateCount++;
                 foreach (var i in Owner.PlayersCollision.HitTest(X, Y, 16).Where(i => i != this).OfType<Player>())
                 {
                     try
                     {
-                        i.Experience += (int) ((i.XpBoosted ? exp * 2 : exp) * Settings.LOOT_RATE);
+                        i.Experience += (int) ((i.XpBoosted ? exp * 2 : exp) * Settings.WOTMG_RATE);
                         i.UpdateCount++;
                         i.CheckLevelUp();
                     }

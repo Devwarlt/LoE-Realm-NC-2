@@ -63,53 +63,53 @@ namespace LoESoft.GameServer.realm.entity.merchant
         {
             #region "Region 1 & 2"
 
-            { 1793, new Tuple<int, CurrencyType>(100, CurrencyType.Gold) }, // Undead Lair Key
-            { 308, new Tuple<int, CurrencyType>(250, CurrencyType.Gold) }, // Halloween Cemetery Key
-            { 1797, new Tuple<int, CurrencyType>(50, CurrencyType.Gold) }, // Pirate Cave Key
-            { 1798, new Tuple<int, CurrencyType>(50, CurrencyType.Gold) }, // Spider Den Key
-            { 1802, new Tuple<int, CurrencyType>(50, CurrencyType.Gold) }, // Abyss of Demons Key
-            { 1803, new Tuple<int, CurrencyType>(100, CurrencyType.Gold) }, // Snake Pit Key
-            { 1808, new Tuple<int, CurrencyType>(200, CurrencyType.Gold) }, // Tomb of the Ancients Key
-            { 1823, new Tuple<int, CurrencyType>(50, CurrencyType.Gold) }, // Sprite World Key
-            { 3089, new Tuple<int, CurrencyType>(200, CurrencyType.Gold) }, // Ocean Trench Key
-            { 3097, new Tuple<int, CurrencyType>(50, CurrencyType.Gold) }, // Totem Key
-            { 29836, new Tuple<int, CurrencyType>(100, CurrencyType.Gold) }, // Ice Cave Key
-            { 3107, new Tuple<int, CurrencyType>(50, CurrencyType.Gold) }, // Manor Key
-            { 3118, new Tuple<int, CurrencyType>(100, CurrencyType.Gold) }, // Davy's Key
-            { 3119, new Tuple<int, CurrencyType>(50, CurrencyType.Gold) }, // Lab Key
-            { 3170, new Tuple<int, CurrencyType>(200, CurrencyType.Gold) }, // Candy Key
-            { 3183, new Tuple<int, CurrencyType>(50, CurrencyType.Gold) }, // Cemetery Key
-            { 3284, new Tuple<int, CurrencyType>(100, CurrencyType.Gold) }, // Draconis Key
-            { 3277, new Tuple<int, CurrencyType>(50, CurrencyType.Gold) }, // Forest Maze Key
-            { 3279, new Tuple<int, CurrencyType>(50, CurrencyType.Gold) }, // Woodland Labyrinth Key
-            { 3278, new Tuple<int, CurrencyType>(50, CurrencyType.Gold) }, // Deadwater Docks Key
-            { 3290, new Tuple<int, CurrencyType>(50, CurrencyType.Gold) }, // The Crawling Depths Key
-            { 3293, new Tuple<int, CurrencyType>(200, CurrencyType.Gold) }, // Shatters Key
-            { 8852, new Tuple<int, CurrencyType>(50, CurrencyType.Gold) }, // Shaitan's Key
-            { 9042, new Tuple<int, CurrencyType>(100, CurrencyType.Gold) }, // Theatre Key
-            { 29804, new Tuple<int, CurrencyType>(200, CurrencyType.Gold) }, // Puppet Master's Encore Key
-            { 573, new Tuple<int, CurrencyType>(50, CurrencyType.Gold) }, // Toxic Sewers Key
-            { 283, new Tuple<int, CurrencyType>(100, CurrencyType.Gold) }, // The Hive Key
-            { 32695, new Tuple<int, CurrencyType>(250, CurrencyType.Gold) }, // Ice Tomb Key
-            { 303, new Tuple<int, CurrencyType>(100, CurrencyType.Gold) }, // Mountain Temple Key
+            { 1793, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, // Undead Lair Key
+            { 308, new Tuple<int, CurrencyType>(250, CurrencyType.Fame) }, // Halloween Cemetery Key
+            { 1797, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Pirate Cave Key
+            { 1798, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Spider Den Key
+            { 1802, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Abyss of Demons Key
+            { 1803, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, // Snake Pit Key
+            { 1808, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // Tomb of the Ancients Key
+            { 1823, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Sprite World Key
+            { 3089, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // Ocean Trench Key
+            { 3097, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Totem Key
+            { 29836, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, // Ice Cave Key
+            { 3107, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Manor Key
+            { 3118, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, // Davy's Key
+            { 3119, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Lab Key
+            { 3170, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // Candy Key
+            { 3183, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Cemetery Key
+            { 3284, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, // Draconis Key
+            { 3277, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Forest Maze Key
+            { 3279, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Woodland Labyrinth Key
+            { 3278, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Deadwater Docks Key
+            { 3290, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // The Crawling Depths Key
+            { 3293, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // Shatters Key
+            { 8852, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Shaitan's Key
+            { 9042, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, // Theatre Key
+            { 29804, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // Puppet Master's Encore Key
+            { 573, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Toxic Sewers Key
+            { 283, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, // The Hive Key
+            { 32695, new Tuple<int, CurrencyType>(250, CurrencyType.Fame) }, // Ice Tomb Key
+            { 303, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, // Mountain Temple Key
             #endregion "Region 1 & 2"
 
             #region "Region 4"
 
-            { 3273, new Tuple<int, CurrencyType>(20, CurrencyType.Gold) }, // Soft Drink
-            { 3275, new Tuple<int, CurrencyType>(50, CurrencyType.Gold) }, // Fries
-            { 3270, new Tuple<int, CurrencyType>(100, CurrencyType.Gold) }, // Great Taco
-            { 3269, new Tuple<int, CurrencyType>(150, CurrencyType.Gold) }, // Power Pizza
-            { 3268, new Tuple<int, CurrencyType>(240, CurrencyType.Gold) }, // Chocolate Cream Sandwich Cookie
-            { 3274, new Tuple<int, CurrencyType>(330, CurrencyType.Gold) }, // Grapes of Wrath
-            { 3272, new Tuple<int, CurrencyType>(450, CurrencyType.Gold) }, // Superburger
-            { 3271, new Tuple<int, CurrencyType>(700, CurrencyType.Gold) }, // Double Cheeseburger Deluxe
-            { 3276, new Tuple<int, CurrencyType>(1000, CurrencyType.Gold) }, // Ambrosia
-            { 3280, new Tuple<int, CurrencyType>(40, CurrencyType.Gold) }, // Cranberries
-            { 3281, new Tuple<int, CurrencyType>(60, CurrencyType.Gold) }, // Ear of Corn
-            { 3282, new Tuple<int, CurrencyType>(90, CurrencyType.Gold) }, // Sliced Yam
-            { 3283, new Tuple<int, CurrencyType>(120, CurrencyType.Gold) }, // Pumpkin Pie
-            { 3286, new Tuple<int, CurrencyType>(300, CurrencyType.Gold) } // Thanksgiving Turkey
+            { 3273, new Tuple<int, CurrencyType>(20, CurrencyType.Fame) }, // Soft Drink
+            { 3275, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Fries
+            { 3270, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, // Great Taco
+            { 3269, new Tuple<int, CurrencyType>(150, CurrencyType.Fame) }, // Power Pizza
+            { 3268, new Tuple<int, CurrencyType>(240, CurrencyType.Fame) }, // Chocolate Cream Sandwich Cookie
+            { 3274, new Tuple<int, CurrencyType>(330, CurrencyType.Fame) }, // Grapes of Wrath
+            { 3272, new Tuple<int, CurrencyType>(450, CurrencyType.Fame) }, // Superburger
+            { 3271, new Tuple<int, CurrencyType>(700, CurrencyType.Fame) }, // Double Cheeseburger Deluxe
+            { 3276, new Tuple<int, CurrencyType>(1000, CurrencyType.Fame) }, // Ambrosia
+            { 3280, new Tuple<int, CurrencyType>(40, CurrencyType.Fame) }, // Cranberries
+            { 3281, new Tuple<int, CurrencyType>(60, CurrencyType.Fame) }, // Ear of Corn
+            { 3282, new Tuple<int, CurrencyType>(90, CurrencyType.Fame) }, // Sliced Yam
+            { 3283, new Tuple<int, CurrencyType>(120, CurrencyType.Fame) }, // Pumpkin Pie
+            { 3286, new Tuple<int, CurrencyType>(300, CurrencyType.Fame) } // Thanksgiving Turkey
             #endregion "Region 4"
         };
     }
