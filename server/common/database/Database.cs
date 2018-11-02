@@ -544,7 +544,7 @@ namespace LoESoft.Core
         {
             character.Dead = true;
             SaveCharacter(acc, character, acc.LockToken != null);
-            var finalFame = stats.CalculateTotal(dat, character, new DbClassStats(acc), out bool firstBorn);
+            var finalFame = stats.CalculateTotalFame(dat, new DbClassStats(acc), character, character.Fame, out bool firstBorn);
             var death = new DbDeath(acc, character.CharId)
             {
                 ObjectType = character.ObjectType,
