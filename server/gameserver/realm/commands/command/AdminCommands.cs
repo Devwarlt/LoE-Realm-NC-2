@@ -552,14 +552,14 @@ namespace LoESoft.GameServer.realm.commands
                         player.SendInfo("Player not found.");
                     else
                     {
-                        otherPlayer.Stats[0] = player.ObjectDesc.MaxHitPoints;
-                        otherPlayer.Stats[1] = player.ObjectDesc.MaxMagicPoints;
-                        otherPlayer.Stats[2] = player.ObjectDesc.MaxAttack;
-                        otherPlayer.Stats[3] = player.ObjectDesc.MaxDefense;
-                        otherPlayer.Stats[4] = player.ObjectDesc.MaxSpeed;
-                        otherPlayer.Stats[5] = player.ObjectDesc.MaxHpRegen;
-                        otherPlayer.Stats[6] = player.ObjectDesc.MaxMpRegen;
-                        otherPlayer.Stats[7] = player.ObjectDesc.MaxDexterity;
+                        otherPlayer.Stats[0] = otherPlayer.ObjectDesc.MaxHitPoints;
+                        otherPlayer.Stats[1] = otherPlayer.ObjectDesc.MaxMagicPoints;
+                        otherPlayer.Stats[2] = otherPlayer.ObjectDesc.MaxAttack;
+                        otherPlayer.Stats[3] = otherPlayer.ObjectDesc.MaxDefense;
+                        otherPlayer.Stats[4] = otherPlayer.ObjectDesc.MaxSpeed;
+                        otherPlayer.Stats[5] = otherPlayer.ObjectDesc.MaxHpRegen;
+                        otherPlayer.Stats[6] = otherPlayer.ObjectDesc.MaxMpRegen;
+                        otherPlayer.Stats[7] = otherPlayer.ObjectDesc.MaxDexterity;
                         otherPlayer.SaveToCharacter();
                         otherPlayer.UpdateCount++;
 
