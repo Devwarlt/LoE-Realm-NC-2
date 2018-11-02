@@ -53,7 +53,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class VisitCommand : Command
     {
-        public VisitCommand() : base("visit", (int) AccountType.LOESOFT_ACCOUNT)
+        public VisitCommand() : base("visit", (int) AccountType.TUTOR_ACCOUNT)
         {
         }
 
@@ -136,7 +136,7 @@ namespace LoESoft.GameServer.realm.commands
     internal class Summon : Command
     {
         public Summon()
-            : base("summon", (int) AccountType.LOESOFT_ACCOUNT)
+            : base("summon", (int) AccountType.TUTOR_ACCOUNT)
         {
         }
 
@@ -494,7 +494,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class Kick : Command
     {
-        public Kick() : base("kick", (int) AccountType.LOESOFT_ACCOUNT)
+        public Kick() : base("kick", (int) AccountType.TUTOR_ACCOUNT)
         {
         }
 
@@ -509,10 +509,17 @@ namespace LoESoft.GameServer.realm.commands
             {
                 foreach (KeyValuePair<int, Player> i in player.Owner.Players)
                 {
+                    if (i.Value.AccountType >= player.AccountType)
+                    {
+                        player.SendInfo("You cannot kick someone with same account type or greater than yours!");
+                        break;
+                    }
+
                     if (i.Value.Name.ToLower() == args[0].ToLower().Trim())
                     {
                         player.SendInfo($"Player {i.Value.Name} has been disconnected!");
                         GameServer.Manager.TryDisconnect(i.Value.Client, DisconnectReason.PLAYER_KICK);
+                        break;
                     }
                 }
             }
@@ -527,7 +534,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class Max : Command
     {
-        public Max() : base("max", (int) AccountType.LOESOFT_ACCOUNT)
+        public Max() : base("max", (int) AccountType.TUTOR_ACCOUNT)
         {
         }
 
@@ -535,6 +542,33 @@ namespace LoESoft.GameServer.realm.commands
         {
             try
             {
+                var target = args[0];
+
+                if (!string.IsNullOrEmpty(target))
+                {
+                    var otherPlayer = player.Owner.Players.Values.FirstOrDefault(tplayer => tplayer.Name.ToLower() == target.ToLower());
+
+                    if (otherPlayer == null)
+                        player.SendInfo("Player not found.");
+                    else
+                    {
+                        otherPlayer.Stats[0] = player.ObjectDesc.MaxHitPoints;
+                        otherPlayer.Stats[1] = player.ObjectDesc.MaxMagicPoints;
+                        otherPlayer.Stats[2] = player.ObjectDesc.MaxAttack;
+                        otherPlayer.Stats[3] = player.ObjectDesc.MaxDefense;
+                        otherPlayer.Stats[4] = player.ObjectDesc.MaxSpeed;
+                        otherPlayer.Stats[5] = player.ObjectDesc.MaxHpRegen;
+                        otherPlayer.Stats[6] = player.ObjectDesc.MaxMpRegen;
+                        otherPlayer.Stats[7] = player.ObjectDesc.MaxDexterity;
+                        otherPlayer.SaveToCharacter();
+                        otherPlayer.UpdateCount++;
+
+                        player.SendInfo($"You maxed the player {otherPlayer.Name}!");
+                    }
+
+                    return true;
+                }
+
                 player.Stats[0] = player.ObjectDesc.MaxHitPoints;
                 player.Stats[1] = player.ObjectDesc.MaxMagicPoints;
                 player.Stats[2] = player.ObjectDesc.MaxAttack;
@@ -545,13 +579,10 @@ namespace LoESoft.GameServer.realm.commands
                 player.Stats[7] = player.ObjectDesc.MaxDexterity;
                 player.SaveToCharacter();
                 player.UpdateCount++;
-                player.SendInfo("Success");
+                player.SendInfo("You maxed yourself!");
             }
-            catch
-            {
-                player.SendError("Error while maxing stats");
-                return false;
-            }
+            catch { player.SendError("An error occurred while maxing stats..."); }
+
             return true;
         }
     }
@@ -610,7 +641,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class Announcement : Command
     {
-        public Announcement() : base("announce", (int) AccountType.LOESOFT_ACCOUNT)
+        public Announcement() : base("announce", (int) AccountType.TUTOR_ACCOUNT)
         {
         }
 
@@ -734,16 +765,17 @@ namespace LoESoft.GameServer.realm.commands
             {
                 if (args.Length == 0)
                 {
-                    player.SendHelp("Use /level <ammount>");
+                    player.SendHelp("Usage: /level <ammount>");
                     return false;
                 }
+
                 if (args.Length == 1)
                 {
                     player.Client.Character.Level = (int.Parse(args[0]) >= 1 && int.Parse(args[0]) <= 20) ? int.Parse(args[0]) : player.Client.Character.Level;
                     player.Client.Player.Level = (int.Parse(args[0]) >= 1 && int.Parse(args[0]) <= 20) ? int.Parse(args[0]) : player.Client.Player.Level;
-                    player.UpdateCount++;
-                    player.SendInfo(string.Format("Success! Level changed from level {0} to level {1}.",
+                    player.SendInfo(string.Format("Success! Level changed from level {0} to level {1}!",
                         player.Client.Player.Level, (int.Parse(args[0]) >= 1 && int.Parse(args[0]) <= 20) ? int.Parse(args[0]) : player.Client.Player.Level));
+                    player.UpdateCount++;
                 }
             }
             catch
