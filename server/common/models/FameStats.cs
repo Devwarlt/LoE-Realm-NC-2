@@ -324,47 +324,6 @@ namespace LoESoft.Core
             ),
         };
 
-        public int CalculateTotal(EmbeddedData data, DbChar character, DbClassStats stats, out bool firstBorn)
-        {
-            double f = 0;
-            foreach (var i in bonusDat)
-                if (i.Item3(this, character, character.Fame))
-                    f += i.Item4(character.Fame);
-
-            //Well Equiped
-            var bonus = character.Items.Take(4).Where(x => x != -1).Sum(x => data.Items[(ushort) x].FameBonus) / 100.0;
-            f += character.Fame * bonus;
-
-            //First born
-            if (character.Fame + bonus > stats.AllKeys.Select(x => stats[ushort.Parse(x)].BestFame).Max())
-            {
-                bonus += (int) (character.Fame * 0.1);
-                firstBorn = true;
-            }
-            else
-                firstBorn = false;
-
-            return character.Fame + (int) bonus;
-        }
-
-        public int CalculateTotal(EmbeddedData data, DbChar character, bool firstBorn)
-        {
-            double f = 0;
-            foreach (var i in bonusDat)
-                if (i.Item3(this, character, character.Fame))
-                    f += i.Item4(character.Fame);
-
-            //Well Equiped
-            var bonus = character.Items.Take(4).Where(x => x != -1).Sum(x => data.Items[(ushort) x].FameBonus) / 100.0;
-            f += character.Fame * bonus;
-
-            //First born
-            if (firstBorn)
-                bonus += (int) (character.Fame * 0.1);
-
-            return character.Fame + (int) bonus;
-        }
-
         public IEnumerable<Tuple<string, string, double>> GetBonuses(EmbeddedData data, DbChar character, bool firstBorn)
         {
             foreach (var i in bonusDat)
@@ -379,6 +338,110 @@ namespace LoESoft.Core
             //First born
             if (firstBorn)
                 yield return Tuple.Create("First Born", "Best fame of any of your previous incarnations", character.Fame * 0.1);
+        }
+
+        public int CalculateTotalFame(EmbeddedData data, DbClassStats stats, DbChar chr, int baseFame, out bool firstBorn)
+        {
+            double bonus = 0;
+
+            //Ancestor
+            if (chr.CharId < 2)
+                bonus = Math.Floor(bonus) + ((baseFame + Math.Floor(bonus)) * 0.1) + 20;
+
+            //Pacifist
+            if (ShotsThatDamage == 0)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.25;
+
+            //Thirsty
+            if (PotionsDrunk == 0)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.25;
+
+            //Mundane
+            if (SpecialAbilityUses == 0)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.25;
+
+            //Boots on the Ground
+            if (Teleports == 0)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.25;
+
+            //Tunnel Rat
+            if (PirateCavesCompleted > 0 && UndeadLairsCompleted > 0 && AbyssOfDemonsCompleted > 0 && SnakePitsCompleted > 0 && SpiderDensCompleted > 0
+                && SpriteWorldsCompleted > 0 && TombsCompleted > 0 && TrenchesCompleted > 0 && JunglesCompleted > 0 && ManorsCompleted > 0)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
+
+            //Enemy of the Gods
+            if ((double) GodKills / (GodKills + MonsterKills) > 0.1)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
+
+            //Slayer of the Gods
+            if ((double) GodKills / (GodKills + MonsterKills) > 0.5)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
+
+            //Oryx Slayer
+            if (OryxKills > 0)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
+
+            //Accurate
+            if ((double) ShotsThatDamage / Shots > 0.25)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
+
+            //Sharpshooter
+            if ((double) ShotsThatDamage / Shots > 0.5)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
+
+            //Sniper
+            if ((double) ShotsThatDamage / Shots > 0.75)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
+
+            //Explorer
+            if (TilesUncovered > 1000000)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.05;
+
+            //Cartographer
+            if (TilesUncovered > 4000000)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.05;
+
+            //Team Player
+            if (LevelUpAssists > 100)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
+
+            //Leader of Men
+            if (LevelUpAssists > 1000)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
+
+            //Doer of Deeds
+            if (QuestsCompleted > 1000)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
+
+            //Friend of the Cubes
+            if (CubeKills == 0)
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
+
+            double eq = 0;
+
+            //Well Equipped
+            for (int i = 0; i < 4; i++)
+            {
+                if (chr.Items[i] == -1)
+                    continue;
+
+                var b = data.Items[(ushort) chr.Items[i]].FameBonus;
+
+                if (b > 0)
+                    eq += (baseFame + Math.Floor(bonus)) * b / 100;
+            }
+
+            bonus = Math.Floor(bonus) + Math.Floor(eq);
+
+            if (baseFame + Math.Floor(bonus) > stats.AllKeys.Select(x => stats[ushort.Parse(x)].BestFame).Max())
+            {
+                bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
+                firstBorn = true;
+            }
+            else
+                firstBorn = false;
+
+            return (int) (baseFame + Math.Floor(bonus));
         }
     }
 }

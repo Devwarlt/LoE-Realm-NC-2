@@ -8,6 +8,7 @@ namespace LoESoft.GameServer.realm.world
 {
     public class Nexus : World, IDungeon
     {
+        public const string LOE_CHICAGO_21 = "loe_chicago_2.1";
         public const string WINTER_RESOURCE = "nexus_winter";
         public const string SUMMER_RESOURCE = "nexus_summer";
 
@@ -22,7 +23,7 @@ namespace LoESoft.GameServer.realm.world
             SafePlace = true;
         }
 
-        protected override void Init() => LoadMap(SUMMER_RESOURCE, MapType.Json);
+        protected override void Init() => LoadMap(LOE_CHICAGO_21, MapType.Json);
 
         public override void Tick(RealmTime time)
         {
@@ -40,7 +41,7 @@ namespace LoESoft.GameServer.realm.world
                     {
                         if (i.Value.Name == j)
                             (i.Value as Portal).PortalName = i.Value.Name;
-                        i.Value.Name = j + " (" + i.Key.Players.Count + "/" + RealmManager.MAX_REALM_PLAYERS + ")";
+                        i.Value.Name = j + " (" + i.Key.Players.Count + ")";
                         i.Value.UpdateCount++;
                         break;
                     }

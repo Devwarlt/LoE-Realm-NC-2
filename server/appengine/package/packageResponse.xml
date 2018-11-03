@@ -5,7 +5,7 @@
       <Name>Chicago Pack</Name>
       <Price>0</Price>
       <Quantity>1</Quantity>
-      <MaxPurchase>-1</MaxPurchase>
+      <MaxPurchase>1</MaxPurchase>
       <Weight>2</Weight>
       <BgURL>https://raw.githubusercontent.com/FinnishFX/finnishfx.github.io/master/tfr/1.2/UpdateNews.png</BgURL>
       <EndDate>4090521600</EndDate>

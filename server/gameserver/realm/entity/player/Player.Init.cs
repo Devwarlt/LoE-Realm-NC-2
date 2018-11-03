@@ -38,6 +38,7 @@ namespace LoESoft.GameServer.realm.entity.player
             {
                 if (client.Account.Admin == true)
                     Admin = 1;
+                LootCaches = new List<LootCache>(); // (client.Character.LootCaches ?? new LootCache[] { }).ToList();
                 AccountType = client.Account.AccountType;
                 AccountPerks = new AccountTypePerks(AccountType);
                 AccountLifetime = client.Account.AccountLifetime;
@@ -430,6 +431,9 @@ namespace LoESoft.GameServer.realm.entity.player
             if (enemy.Quest)
                 score += 250;
 
+            if (enemy.ObjectId == "Eyeguard of Surrender")
+                score += 10000;
+
             score += enemy.MaxHitPoints;
             score += enemy.Defense * enemy.Level;
 
@@ -569,15 +573,15 @@ namespace LoESoft.GameServer.realm.entity.player
             if (exp > 0)
             {
                 if (XpBoosted)
-                    Experience += exp * 2;
+                    Experience += (int) (exp * 2 * Settings.WOTMG_RATE);
                 else
-                    Experience += exp;
+                    Experience += (int) (exp * Settings.WOTMG_RATE);
                 UpdateCount++;
                 foreach (var i in Owner.PlayersCollision.HitTest(X, Y, 16).Where(i => i != this).OfType<Player>())
                 {
                     try
                     {
-                        i.Experience += i.XpBoosted ? exp * 2 : exp;
+                        i.Experience += (int) ((i.XpBoosted ? exp * 2 : exp) * Settings.WOTMG_RATE);
                         i.UpdateCount++;
                         i.CheckLevelUp();
                     }

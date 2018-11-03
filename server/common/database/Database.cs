@@ -29,7 +29,7 @@ namespace LoESoft.Core
                   syncTimeout: Settings.REDIS_DATABASE.SYNC_TIMEOUT
                   )
         {
-            SetKeepAlive(Settings.RESTART_DELAY_MINUTES * 60);
+            SetKeepAlive(Settings.RESTART_DELAY_MINUTES * 60 * 2);
             Open().Wait();
         }
 
@@ -350,30 +350,10 @@ namespace LoESoft.Core
         }
 
         public bool CheckMysteryBox(DbAccount acc, int box, int total)
-        {
-            List<int> boxList = acc.PurchasedBoxes.ToList();
-            int purchases = 0;
-            foreach (IGrouping<int, int> i in boxList.GroupBy(j => j))
-                if (i.Key == box)
-                    purchases = i.Count();
-            if (purchases < total)
-                return true;
-            else
-                return false;
-        }
+            => acc.PurchasedBoxes.Where(mbox => mbox == box).ToList().Count >= total;
 
-        public bool CheckPackage(DbAccount acc, int package, int maxpurchases)
-        {
-            List<int> packageList = acc.PurchasedPackages.ToList();
-            int purchases = 0;
-            foreach (IGrouping<int, int> i in packageList.GroupBy(j => j))
-                if (i.Key == package)
-                    purchases = i.Count();
-            if (purchases < maxpurchases)
-                return true;
-            else
-                return false;
-        }
+        public bool CheckPackage(DbAccount acc, int package, int total)
+            => acc.PurchasedPackages.Where(pack => pack == package).ToList().Count >= total;
 
         public void AddMysteryBox(DbAccount acc, int box)
         {
@@ -381,6 +361,7 @@ namespace LoESoft.Core
             boxList.Add(box);
             int[] result = boxList.ToArray();
             acc.PurchasedBoxes = result;
+            Hashes.Set(0, acc.Key, "PurchasedBoxes", Utils.GetCommaSepString(acc.PurchasedBoxes));
             Update(acc);
         }
 
@@ -390,6 +371,7 @@ namespace LoESoft.Core
             packageList.Add(package);
             int[] result = packageList.ToArray();
             acc.PurchasedPackages = result;
+            Hashes.Set(0, acc.Key, "purchasedPackages", Utils.GetCommaSepString(acc.PurchasedPackages));
             Update(acc);
         }
 
@@ -484,6 +466,7 @@ namespace LoESoft.Core
             int newId = (int) Hashes.Increment(0, acc.Key, "nextCharId").Exec();
             character = new DbChar(acc, newId)
             {
+                //LootCaches = new LootCache[] { },
                 ObjectType = type,
                 Level = 1,
                 Experience = 0,
@@ -519,8 +502,10 @@ namespace LoESoft.Core
         public DbChar LoadCharacter(DbAccount acc, int charId)
         {
             var ret = new DbChar(acc, charId);
+
             if (ret.IsNull)
                 return null;
+
             return ret;
         }
 
@@ -562,7 +547,7 @@ namespace LoESoft.Core
         {
             character.Dead = true;
             SaveCharacter(acc, character, acc.LockToken != null);
-            var finalFame = stats.CalculateTotal(dat, character, new DbClassStats(acc), out bool firstBorn);
+            var finalFame = stats.CalculateTotalFame(dat, new DbClassStats(acc), character, character.Fame, out bool firstBorn);
             var death = new DbDeath(acc, character.CharId)
             {
                 ObjectType = character.ObjectType,

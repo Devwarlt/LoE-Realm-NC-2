@@ -22,7 +22,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin-server\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -83,6 +83,7 @@
     <Compile Include="config\internal\Database.cs" />
     <Compile Include="config\internal\GameServer.cs" />
     <Compile Include="config\Utils.cs" />
+    <Compile Include="database\LootCache.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="models\AccountType.cs" />
     <Compile Include="config\Settings.cs" />

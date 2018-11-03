@@ -18,10 +18,10 @@ public class Parameters {
     public static const CLIENT_NAME:String = "(New Chicago) LoE Realm";
     public static const ENABLE_CROSSDOMAIN:Boolean = true;
     public static const ENVIRONMENT_VARIABLE:String = IS_DEVELOPER_MODE ? BuildEnvironments.LOESOFTTESTING : BuildEnvironments.LOESOFTPRODUCTION;
-    public static const ENVIRONMENT_DNS:String = !IS_DEVELOPER_MODE ? "testing.loesoftgames.ignorelist.com" : "localhost";
-    public static const ENVIRONMENT_PORT:String = !IS_DEVELOPER_MODE ? "5555" : "3000";
+    public static const ENVIRONMENT_DNS:String = !IS_DEVELOPER_MODE ? "loe-nc.servegame.com" : "localhost";
+    public static const ENVIRONMENT_PORT:String = "5555";
     public static const BUILD_VERSION:String = "2";
-    public static const MINOR_VERSION:String = "0";
+    public static const MINOR_VERSION:String = "2";
     public static const FULL_BUILD:String = "v" + BUILD_VERSION + "." + MINOR_VERSION;
     public static const ENABLE_ENCRYPTION:Boolean = true;
     public static const PORT:int = 2050;

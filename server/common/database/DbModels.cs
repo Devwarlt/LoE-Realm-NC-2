@@ -352,14 +352,14 @@ namespace LoESoft.Core
 
         public int[] PurchasedPackages
         {
-            get { return GetValue<int[]>("purchasedPackages"); }
-            set { SetValue("purchasedPackages", value); }
+            get { return Utils.FromCommaSepString32(GetValue<string>("purchasedPackages")); }
+            set { SetValue("purchasedPackages", value.ToCommaSepString()); }
         }
 
         public int[] PurchasedBoxes
         {
-            get { return GetValue<int[]>("PurchasedBoxes"); }
-            set { SetValue("PurchasedBoxes", value); }
+            get { return Utils.FromCommaSepString32(GetValue<string>("PurchasedBoxes")); }
+            set { SetValue("PurchasedBoxes", value.ToCommaSepString()); }
         }
 
         public string[] Friends
@@ -517,6 +517,12 @@ namespace LoESoft.Core
             CharId = charId;
             Init(acc.Database, "char." + acc.AccountId + "." + charId);
         }
+
+        //public LootCache[] LootCaches
+        //{
+        //    get { return JsonConvert.DeserializeObject<LootCache[]>(GetValue<string>("lootCache")); }
+        //    set { SetValue("lootCache", JsonConvert.SerializeObject(value)); }
+        //}
 
         public ushort ObjectType
         {

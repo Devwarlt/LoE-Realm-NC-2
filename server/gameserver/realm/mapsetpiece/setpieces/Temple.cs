@@ -20,17 +20,17 @@ namespace LoESoft.GameServer.realm.mapsetpiece
         protected static readonly string Tree = "Jungle Tree Big";
 
         protected static readonly Loot chest = new Loot(
-            new TierLoot(4, ItemType.Weapon, 0.3),
-            new TierLoot(5, ItemType.Weapon, 0.2),
-            new TierLoot(4, ItemType.Armor, 0.3),
-            new TierLoot(5, ItemType.Armor, 0.2),
-            new TierLoot(1, ItemType.Ability, 0.25),
-            new TierLoot(2, ItemType.Ability, 0.15),
-            new TierLoot(2, ItemType.Ring, 0.3),
-            new TierLoot(3, ItemType.Ring, 0.2),
-            new TierLoot(1, ItemType.Potion, 0.5),
-            new TierLoot(1, ItemType.Potion, 0.5),
-            new TierLoot(1, ItemType.Potion, 0.5)
+            new TierLoot(4, ItemType.Weapon, BagType.None),
+            new TierLoot(5, ItemType.Weapon, BagType.None),
+            new TierLoot(4, ItemType.Armor, BagType.None),
+            new TierLoot(5, ItemType.Armor, BagType.None),
+            new TierLoot(1, ItemType.Ability, BagType.None),
+            new TierLoot(2, ItemType.Ability, BagType.None),
+            new TierLoot(2, ItemType.Ring, BagType.None),
+            new TierLoot(3, ItemType.Ring, BagType.None),
+            new TierLoot(1, ItemType.Potion, BagType.None),
+            new TierLoot(1, ItemType.Potion, BagType.None),
+            new TierLoot(1, ItemType.Potion, BagType.None)
             );
 
         protected static void Render(Temple temple, World world, IntPoint pos, int[,] ground, int[,] objs)
