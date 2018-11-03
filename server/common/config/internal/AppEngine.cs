@@ -60,17 +60,16 @@ namespace LoESoft.Core.config
 
             public static List<ServerItem> GetServerItem()
             {
-                var filteredServer = SERVER_MODE == ServerMode.Local ? SERVERS : SERVERS.Where(server => server.Item2 != "127.0.0.1").ToList();
                 var gameserver = new List<ServerItem>();
 
                 for (int i = 0; i < AMOUNT; i++)
                     gameserver.Add(new ServerItem()
                     {
-                        Name = filteredServer[i].Item1,
-                        DNS = CheckDDNS(filteredServer[i].Item2, i),
+                        Name = SERVERS[i].Item1,
+                        DNS = CheckDDNS(SERVERS[i].Item2, i),
                         Lat = 0,
                         Long = 0,
-                        Usage = SERVER_MODE != ServerMode.Local ? GetUsage(CheckDDNS(filteredServer[i].Item2, i), GAMESERVER.PORT) : filteredServer[i].Item3,
+                        Usage = SERVER_MODE != ServerMode.Local ? GetUsage(CheckDDNS(SERVERS[i].Item2, i), GAMESERVER.PORT) : SERVERS[i].Item3,
                         AdminOnly = false
                     });
 
