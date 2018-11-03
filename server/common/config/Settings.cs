@@ -28,7 +28,7 @@ namespace LoESoft.Core.config
             public static readonly int FAME = 0;
             public static readonly int TOTAL_FAME = 0;
             public static readonly int TOKENS = 0;
-            public static readonly int EMPIRES_COIN = 149;
+            public static readonly int EMPIRES_COIN = 0;
             public static readonly int MAX_CHAR_SLOTS = 2;
             public static readonly int IS_AGE_VERIFIED = 1;
             public static readonly bool VERIFIED = true;
@@ -37,7 +37,8 @@ namespace LoESoft.Core.config
         public static readonly List<GameVersion> GAME_VERSIONS = new List<GameVersion>
         {
             new GameVersion(Version: "2.0", Allowed: false),
-            new GameVersion(Version: "2.1", Allowed: true)
+            new GameVersion(Version: "2.1", Allowed: true),
+            new GameVersion(Version: "2.2", Allowed: true)
         };
     }
 }

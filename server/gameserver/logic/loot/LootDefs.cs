@@ -3,6 +3,7 @@
 using LoESoft.Core;
 using LoESoft.Core.config;
 using LoESoft.Core.models;
+using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
 using System;
@@ -16,14 +17,224 @@ namespace LoESoft.GameServer.logic.loot
     public interface ILootDef
     {
         string Lootstate { get; set; }
+        BagType BagType { get; set; }
 
-        void Populate(
-            Enemy enemy,
-            Tuple<Player, int> playerData,
-            Random rnd,
-            string lootState,
-            IList<LootDef> lootDefs
-            );
+        void Populate(Enemy enemy, Tuple<Player, int> playerData, Random rnd, string lootState, IList<LootDef> lootDefs);
+    }
+
+    public class LootBagRate
+    {
+        public const double PINK_BAG = 0.15;        // 15%
+        public const double PURPLE_BAG = 0.1;       // 10%
+        public const double CYAN_BAG = 0.05;        // 5%
+        public const double WHITE_BAG = 0.01;       // 1%
+    }
+
+    public class LootEggRate
+    {
+        public const double TIER_0 = 1 / 10;        // 10%
+        public const double TIER_1 = TIER_0 / 2;    // 5%
+        public const double TIER_2 = TIER_1 / 2;    // 2.5%
+        public const double TIER_3 = TIER_2 / 2;    // 1.25%
+        public const double TIER_4 = TIER_3 / 2;    // 0.625%
+        public const double TIER_5 = TIER_4 / 2;    // 0.3125%
+        public const double TIER_6 = TIER_5 / 2;    // 0.15625%
+        public const double TIER_7 = TIER_6 / 2;    // 0.078125%
+    }
+
+    public enum BagType
+    {
+        Pink,
+        Purple,
+        Cyan,
+        Blue,
+        White,
+        None
+    }
+
+    public enum EggType : int
+    {
+        TIER_0 = 0,
+        TIER_1 = 4,
+        TIER_2 = 8,
+        TIER_3 = 12,
+        TIER_4 = 16,
+        TIER_5 = 20,
+        TIER_6 = 24,
+        TIER_7 = 28
+    }
+
+    public sealed class Potions
+    {
+        public readonly static string POTION_OF_LIFE = "Potion of Life";
+        public readonly static string POTION_OF_MANA = "Potion of Mana";
+        public readonly static string POTION_OF_ATTACK = "Potion of Attack";
+        public readonly static string POTION_OF_DEFENSE = "Potion of Defense";
+        public readonly static string POTION_OF_SPEED = "Potion of Speed";
+        public readonly static string POTION_OF_DEXTERITY = "Potion of Dexterity";
+        public readonly static string POTION_OF_VITALITY = "Potion of Vitality";
+        public readonly static string POTION_OF_WISDOM = "Potion of Wisdom";
+    }
+
+    public sealed class GreaterPotions
+    {
+        public readonly static string GREATER_POTION_OF_LIFE = "Greater Potion of Life";
+        public readonly static string GREATER_POTION_OF_MANA = "Greater Potion of Mana";
+        public readonly static string GREATER_POTION_OF_ATTACK = "Greater Potion of Attack";
+        public readonly static string GREATER_POTION_OF_DEFENSE = "Greater Potion of Defense";
+        public readonly static string GREATER_POTION_OF_SPEED = "Greater Potion of Speed";
+        public readonly static string GREATER_POTION_OF_DEXTERITY = "Greater Potion of Dexterity";
+        public readonly static string GREATER_POTION_OF_VITALITY = "Greater Potion of Vitality";
+        public readonly static string GREATER_POTION_OF_WISDOM = "Greater Potion of Wisdom";
+    }
+
+    public class LootBoosters
+    {
+        private Enemy _enemy { get; set; }
+        private Tuple<Player, int> _playerData { get; set; }
+        private Random _rnd { get; set; }
+        private string _lootState { get; set; }
+        private IList<LootDef> _lootDefs { get; set; }
+
+        private List<Player> PlayersData { get; set; }
+        private double Chance { get; set; }
+        private int EnemyHP { get; set; }
+        private int Players { get; set; }
+        private int PlayersBelowLvl20 { get; set; }
+        private int PlayersMaxed { get; set; }
+
+        public LootBoosters(double chance, Enemy enemy, Tuple<Player, int> playerData, Random rnd, string lootState, IList<LootDef> lootDefs)
+        {
+            _enemy = enemy;
+            _playerData = playerData;
+            _rnd = rnd;
+            _lootState = lootState;
+            _lootDefs = lootDefs;
+
+            var players = enemy.DamageCounter.GetPlayerData().ToList();
+
+            PlayersData = players.Where(player => player.Item1 != null).Select(player => player.Item1).ToList();
+            Chance = chance;
+            EnemyHP = enemy.HP;
+            Players = players.Count;
+            PlayersBelowLvl20 = players.Where(playerCache => playerCache.Item1.Level < 20).Count();
+            PlayersMaxed = players.Where(playerCache =>
+                playerCache.Item1.Stats[0] == playerCache.Item1.ObjectDesc.MaxHitPoints &&
+                playerCache.Item1.Stats[1] == playerCache.Item1.ObjectDesc.MaxMagicPoints &&
+                playerCache.Item1.Stats[2] == playerCache.Item1.ObjectDesc.MaxAttack &&
+                playerCache.Item1.Stats[3] == playerCache.Item1.ObjectDesc.MaxDefense &&
+                playerCache.Item1.Stats[4] == playerCache.Item1.ObjectDesc.MaxSpeed &&
+                playerCache.Item1.Stats[5] == playerCache.Item1.ObjectDesc.MaxHpRegen &&
+                playerCache.Item1.Stats[6] == playerCache.Item1.ObjectDesc.MaxMpRegen &&
+                playerCache.Item1.Stats[7] == playerCache.Item1.ObjectDesc.MaxDexterity).Count();
+        }
+
+        private double GetEnemyHPBoost
+            => Math.Log10(EnemyHP);
+
+        private double GetPlayersBoost
+            => 1 / (Players * 5);
+
+        private double GetPlayersBelowLvl20Boost
+            => 0.01 / PlayersBelowLvl20;
+
+        private double GetPlayersMaxedBoost
+            => 0.02 / PlayersMaxed;
+
+        private double GetTotalChance
+            => Chance + GetEnemyHPBoost * GetPlayersBoost + GetPlayersBelowLvl20Boost + GetPlayersMaxedBoost;
+
+        public void UpdateLootCache(string objectId, ILootDef[] loot)
+            => PlayersData.Select(player =>
+            {
+                var rng = new Random().NextDouble(0, 100);
+                var chance = GetTotalChance;
+                var success = rng <= chance;
+
+                if (LootCache.Utils.ContainsIn(player.LootCaches, objectId))
+                {
+                    var lootCache = player.LootCaches.Where(item => item.ObjectId == objectId).FirstOrDefault();
+
+                    if (lootCache.Attempts + 1 >= lootCache.MaxAttempts || success)
+                    {
+                        loot[0].Populate(_enemy, _playerData, _rnd, _lootState, _lootDefs);
+
+                        var msg = $"{player.Name} dropped a white bag item '{objectId}' (on {lootCache.Attempts} of {lootCache.MaxAttempts} attempt{(lootCache.MaxAttempts > 1 ? "s" : "")})!";
+
+                        Log.Info(msg);
+
+                        PlayersData.Where(target => target != null).Select(target =>
+                        {
+                            target.Client.SendMessage(new TEXT()
+                            {
+                                ObjectId = -1,
+                                BubbleTime = 10,
+                                Stars = 70,
+                                Name = "NPC Gazer",
+                                Admin = 0,
+                                Recipient = target.Name,
+                                Text = msg.ToSafeText(),
+                                CleanText = "",
+                                NameColor = 0x123456
+                            });
+
+                            return target;
+                        }).ToList();
+
+                        LootCache.Utils.UpdateTotal(player.LootCaches, objectId);
+                    }
+                    else
+                    {
+                        Log.Info($"{player.Name} failed to obtain a white bag item '{objectId} (on {lootCache.Attempts} of {lootCache.MaxAttempts} attempt{(lootCache.MaxAttempts > 1 ? "s" : "")})!");
+
+                        LootCache.Utils.UpdateAttempts(player.LootCaches, objectId);
+                        LootCache.Utils.UpdateMaxAttempts(player.LootCaches, objectId, (int) (100 / chance));
+                    }
+                }
+                else
+                {
+                    if (success)
+                    {
+                        loot[0].Populate(_enemy, _playerData, _rnd, _lootState, _lootDefs);
+
+                        var msg = $"{player.Name} dropped a white bag item '{objectId}' (on 1st attempt)!";
+
+                        Log.Info(msg);
+
+                        PlayersData.Where(target => target != null).Select(target =>
+                        {
+                            target.Client.SendMessage(new TEXT()
+                            {
+                                ObjectId = -1,
+                                BubbleTime = 10,
+                                Stars = 70,
+                                Name = "NPC Gazer",
+                                Admin = 0,
+                                Recipient = target.Name,
+                                Text = msg.ToSafeText(),
+                                CleanText = "",
+                                NameColor = 0x123456
+                            });
+
+                            return target;
+                        }).ToList();
+                    }
+                    else
+                    {
+                        Log.Info($"{player.Name} failed to obtain a white bag item '{objectId} (on 1st attempt)!");
+
+                        player.LootCaches.Add(new LootCache()
+                        {
+                            ObjectId = objectId,
+                            Attempts = 1,
+                            MaxAttempts = (int) (100 / chance),
+                            AttemptsBase = (int) (100 / chance)
+                        });
+                    }
+                }
+
+                return player;
+            }).ToList();
     }
 
     public class ProcessWhiteBag : ILootDef
@@ -32,6 +243,7 @@ namespace LoESoft.GameServer.logic.loot
         private readonly ILootDef[] loot;
 
         public string Lootstate { get; set; }
+        public BagType BagType { get; set; }
 
         public ProcessWhiteBag(bool eventChest = false, params ILootDef[] loot)
         {
@@ -78,95 +290,12 @@ namespace LoESoft.GameServer.logic.loot
         }
     }
 
-    public class PinkBag : ILootDef
-    {
-        private readonly ItemType itemType;
-        private readonly byte tier;
-
-        public string Lootstate { get; set; }
-
-        public PinkBag(ItemType itemType, byte tier)
-        {
-            this.itemType = itemType;
-            this.tier = tier;
-        }
-
-        public void Populate(
-            Enemy enemy,
-            Tuple<Player, int> playerData,
-            Random rnd,
-            string lootState,
-            IList<LootDef> lootDefs
-            )
-        {
-            Lootstate = lootState;
-
-            if (playerData == null)
-                return;
-
-            double rng = rnd.NextDouble();
-            double probability = .15 * Settings.WOTMG_RATE; // 15%
-
-            ILootDef[] pinkbag = new ILootDef[] { new Drops(new TierLoot(tier, itemType, probability)) };
-
-            if (rng <= probability)
-                pinkbag[0].Populate(enemy, playerData, rnd, Lootstate, lootDefs);
-        }
-    }
-
-    public class PurpleBag : ILootDef
-    {
-        private readonly ItemType itemType;
-        private readonly byte tier;
-
-        public string Lootstate { get; set; }
-
-        public PurpleBag(ItemType itemType, byte tier)
-        {
-            this.itemType = itemType;
-            this.tier = tier;
-        }
-
-        public void Populate(
-            Enemy enemy,
-            Tuple<Player, int> playerData,
-            Random rnd,
-            string lootState,
-            IList<LootDef> lootDefs
-            )
-        {
-            Lootstate = lootState;
-
-            if (playerData == null)
-                return;
-
-            double rng = rnd.NextDouble();
-            double probability = .15 * Settings.WOTMG_RATE; // 15%
-
-            ILootDef[] pinkbag = new ILootDef[] { new Drops(new TierLoot(tier, itemType, probability)) };
-
-            if (rng <= probability * Settings.WOTMG_RATE)
-                pinkbag[0].Populate(enemy, playerData, rnd, Lootstate, lootDefs);
-        }
-    }
-
-    public enum EggType : int
-    {
-        TIER_0 = 0,
-        TIER_1 = 4,
-        TIER_2 = 8,
-        TIER_3 = 12,
-        TIER_4 = 16,
-        TIER_5 = 20,
-        TIER_6 = 24,
-        TIER_7 = 28
-    }
-
     public class EggBasket : ILootDef
     {
         private readonly EggType rarity;
 
         public string Lootstate { get; set; }
+        public BagType BagType { get; set; }
 
         public EggBasket(EggType rarity)
         {
@@ -178,13 +307,7 @@ namespace LoESoft.GameServer.logic.loot
             this.rarity = rarity[new Random().Next(0, rarity.Length)];
         }
 
-        public void Populate(
-            Enemy enemy,
-            Tuple<Player, int> playerData,
-            Random rnd,
-            string lootState,
-            IList<LootDef> lootDefs
-            )
+        public void Populate(Enemy enemy, Tuple<Player, int> playerData, Random rnd, string lootState, IList<LootDef> lootDefs)
         {
             Lootstate = lootState;
 
@@ -220,6 +343,60 @@ namespace LoESoft.GameServer.logic.loot
         }
     }
 
+    public class PinkBag : ILootDef
+    {
+        private readonly ItemType itemType;
+        private readonly byte tier;
+
+        public string Lootstate { get; set; }
+        public BagType BagType { get; set; }
+
+        public PinkBag(ItemType itemType, byte tier)
+        {
+            this.itemType = itemType;
+            this.tier = tier;
+        }
+
+        public void Populate(Enemy enemy, Tuple<Player, int> playerData, Random rnd, string lootState, IList<LootDef> lootDefs)
+        {
+            BagType = BagType.Pink;
+            Lootstate = lootState;
+
+            if (playerData == null)
+                return;
+
+            var pinkBag = new ILootDef[] { new Drops(new TierLoot(tier, itemType, BagType)) };
+            pinkBag[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
+        }
+    }
+
+    public class PurpleBag : ILootDef
+    {
+        private readonly ItemType itemType;
+        private readonly byte tier;
+
+        public BagType BagType { get; set; }
+        public string Lootstate { get; set; }
+
+        public PurpleBag(ItemType itemType, byte tier)
+        {
+            this.itemType = itemType;
+            this.tier = tier;
+        }
+
+        public void Populate(Enemy enemy, Tuple<Player, int> playerData, Random rnd, string lootState, IList<LootDef> lootDefs)
+        {
+            BagType = BagType.Purple;
+            Lootstate = lootState;
+
+            if (playerData == null)
+                return;
+
+            var purpleBag = new ILootDef[] { new Drops(new TierLoot(tier, itemType, BagType)) };
+            purpleBag[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
+        }
+    }
+
     public class CyanBag : ILootDef
     {
         private readonly string itemName;
@@ -228,6 +405,7 @@ namespace LoESoft.GameServer.logic.loot
         private readonly bool setByTier;
 
         public string Lootstate { get; set; }
+        public BagType BagType { get; set; }
 
         public CyanBag(string itemName)
         {
@@ -248,52 +426,18 @@ namespace LoESoft.GameServer.logic.loot
             setByTier = true;
         }
 
-        public void Populate(
-            Enemy enemy,
-            Tuple<Player, int> playerData,
-            Random rnd,
-            string lootState,
-            IList<LootDef> lootDefs
-            )
+        public void Populate(Enemy enemy, Tuple<Player, int> playerData, Random rnd, string lootState, IList<LootDef> lootDefs)
         {
+            BagType = BagType.Cyan;
             Lootstate = lootState;
 
             if (playerData == null)
                 return;
 
-            double rng = rnd.NextDouble();
-            double probability = .01 * Settings.WOTMG_RATE; // 1%
-
-            ILootDef[] cyanbag = !setByTier ? new ILootDef[] { new Drops(new ItemLoot(itemName, probability)) } :
-                new ILootDef[] { new Drops(new TierLoot(tier, itemType, probability)) };
-
-            if (rng <= probability * Settings.WOTMG_RATE)
-                cyanbag[0].Populate(enemy, playerData, rnd, Lootstate, lootDefs);
+            var cyanBag = !setByTier ? new ILootDef[] { new Drops(new ItemLoot(itemName, 0.1)) }
+                : new ILootDef[] { new Drops(new TierLoot(tier, itemType, BagType)) };
+            cyanBag[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
         }
-    }
-
-    public sealed class Potions
-    {
-        public readonly static string POTION_OF_LIFE = "Potion of Life";
-        public readonly static string POTION_OF_MANA = "Potion of Mana";
-        public readonly static string POTION_OF_ATTACK = "Potion of Attack";
-        public readonly static string POTION_OF_DEFENSE = "Potion of Defense";
-        public readonly static string POTION_OF_SPEED = "Potion of Speed";
-        public readonly static string POTION_OF_DEXTERITY = "Potion of Dexterity";
-        public readonly static string POTION_OF_VITALITY = "Potion of Vitality";
-        public readonly static string POTION_OF_WISDOM = "Potion of Wisdom";
-    }
-
-    public sealed class GreaterPotions
-    {
-        public readonly static string GREATER_POTION_OF_LIFE = "Greater Potion of Life";
-        public readonly static string GREATER_POTION_OF_MANA = "Greater Potion of Mana";
-        public readonly static string GREATER_POTION_OF_ATTACK = "Greater Potion of Attack";
-        public readonly static string GREATER_POTION_OF_DEFENSE = "Greater Potion of Defense";
-        public readonly static string GREATER_POTION_OF_SPEED = "Greater Potion of Speed";
-        public readonly static string GREATER_POTION_OF_DEXTERITY = "Greater Potion of Dexterity";
-        public readonly static string GREATER_POTION_OF_VITALITY = "Greater Potion of Vitality";
-        public readonly static string GREATER_POTION_OF_WISDOM = "Greater Potion of Wisdom";
     }
 
     public class BlueBag : ILootDef
@@ -305,6 +449,7 @@ namespace LoESoft.GameServer.logic.loot
         private readonly bool single;
 
         public string Lootstate { get; set; }
+        public BagType BagType { get; set; }
 
         public BlueBag(string itemName, bool alwaysDrop = false)
         {
@@ -320,50 +465,28 @@ namespace LoESoft.GameServer.logic.loot
             single = false;
         }
 
-        public void Populate(
-            Enemy enemy,
-            Tuple<Player, int> playerData,
-            Random rnd,
-            string lootState,
-            IList<LootDef> lootDefs
-            )
+        public void Populate(Enemy enemy, Tuple<Player, int> playerData, Random rnd, string lootState, IList<LootDef> lootDefs)
         {
+            BagType = BagType.Blue;
             Lootstate = lootState;
 
             if (playerData == null)
                 return;
 
-            double rng = rnd.NextDouble();
-            double probability = !alwaysDrop ? .25 * Settings.WOTMG_RATE : 1; // 25% (always drop: 100%)
-
-            if (!single)
+            if (single)
             {
-                List<KeyValuePair<string, bool>> itemNamesDrops = new List<KeyValuePair<string, bool>>();
-
-                if (itemNames.Length != alwaysDrops.Length)
-                    return;
+                var blueBag = new ILootDef[] { new Drops(new ItemLoot(itemName, alwaysDrop ? 1 : 0.1 * Settings.WOTMG_RATE)) };
+                blueBag[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
+            }
+            else
+            {
+                var blueBag = new List<ILootDef>();
 
                 for (int i = 0; i < itemNames.Length; i++)
-                    itemNamesDrops.Add(new KeyValuePair<string, bool>(itemNames[i], alwaysDrops[i]));
+                    blueBag.Add(new Drops(new ItemLoot(itemNames[i], alwaysDrops[i] ? 1 : 0.1 * Settings.WOTMG_RATE)));
 
-                List<ILootDef> validateItems = new List<ILootDef>();
-
-                foreach (KeyValuePair<string, bool> itemNamesDrop in itemNamesDrops)
-                    validateItems.Add(new MostDamagers(3, new ItemLoot(itemNamesDrop.Key, !itemNamesDrop.Value ? .25 : 1)));
-
-                ILootDef[] bluebags = validateItems.ToArray();
-
-                if (rng <= probability * Settings.WOTMG_RATE)
-                    foreach (var i in bluebags)
-                        i.Populate(enemy, playerData, rnd, Lootstate, lootDefs);
-
-                return;
+                blueBag.Select(drop => { drop.Populate(enemy, playerData, rnd, lootState, lootDefs); return drop; }).ToList();
             }
-
-            ILootDef[] bluebag = new ILootDef[] { new MostDamagers(3, new ItemLoot(itemName, probability)) };
-
-            if (rng <= probability * Settings.WOTMG_RATE)
-                bluebag[0].Populate(enemy, playerData, rnd, Lootstate, lootDefs);
         }
     }
 
@@ -373,6 +496,7 @@ namespace LoESoft.GameServer.logic.loot
         private readonly string itemName;
 
         public string Lootstate { get; set; }
+        public BagType BagType { get; set; }
 
         public WhiteBag(string itemName, bool eventChest = false)
         {
@@ -386,47 +510,16 @@ namespace LoESoft.GameServer.logic.loot
             this.itemName = itemName[new Random().Next(0, itemName.Length)];
         }
 
-        public void Populate(
-            Enemy enemy,
-            Tuple<Player, int> playerData,
-            Random rnd,
-            string lootState,
-            IList<LootDef> lootDefs
-            )
+        public void Populate(Enemy enemy, Tuple<Player, int> playerData, Random rnd, string lootState, IList<LootDef> lootDefs)
         {
+            BagType = BagType.Blue;
             Lootstate = lootState;
 
             if (playerData == null)
                 return;
 
-            List<Tuple<Player, int>> candidates = enemy.DamageCounter.GetPlayerData().ToList();
-            double rng = rnd.NextDouble();
-            double probability = 0;
-
-            int playersCount = candidates.Count;
-            int mostDamagers = 0;
-            int enemyHP = (int) enemy.ObjectDesc.MaxHP;
-
-            if (playersCount == 1)
-                probability = .0001;
-            else if (playersCount > 1 && playersCount <= 3)
-                probability = .0001 + .0001 * playersCount;
-            else
-            {
-                probability = .0002 + .000005 * playersCount;
-
-                if (playersCount >= 30)
-                    mostDamagers = playersCount / 10;
-            }
-
-            probability *= Settings.WOTMG_RATE;
-
-            ILootDef[] whitebag = mostDamagers >= 3 ?
-                new ILootDef[] { new MostDamagers(mostDamagers, new ItemLoot(itemName, probability * (eventChest ? .8 : 1))) } :
-                new ILootDef[] { new Drops(new ItemLoot(itemName, probability * (eventChest ? .8 : 1))) };
-
-            if (rng <= probability * Settings.WOTMG_RATE)
-                whitebag[0].Populate(enemy, playerData, rnd, Lootstate, lootDefs);
+            var booster = new LootBoosters(0.001, enemy, playerData, rnd, lootState, lootDefs);
+            booster.UpdateLootCache(itemName, new ILootDef[] { new Drops(new ItemLoot(itemName, 1)) });
         }
     }
 
@@ -436,6 +529,7 @@ namespace LoESoft.GameServer.logic.loot
         private readonly double probability;
 
         public string Lootstate { get; set; }
+        public BagType BagType { get; set; }
 
         public ItemLoot(string item, double probability)
         {
@@ -459,13 +553,8 @@ namespace LoESoft.GameServer.logic.loot
             EmbeddedData dat = GameServer.Manager.GameData;
 
             try
-            {
-                lootDefs.Add(new LootDef(dat.Items[dat.IdToObjectType[item]], probability, lootState));
-            }
-            catch (KeyNotFoundException)
-            {
-                Log.Error($"Item '{item}', wasn't added in loot list of entity '{enemy.Name}', because doesn't contains in assets.");
-            }
+            { lootDefs.Add(new LootDef(dat.Items[dat.IdToObjectType[item]], probability, lootState)); }
+            catch (KeyNotFoundException) { Log.Error($"Item '{item}', wasn't added in loot list of entity '{enemy.Name}', because doesn't contains in assets."); }
         }
     }
 
@@ -474,6 +563,7 @@ namespace LoESoft.GameServer.logic.loot
         private readonly ILootDef[] children;
 
         public string Lootstate { get; set; }
+        public BagType BagType { get; set; }
 
         public LootState(string subState, params ILootDef[] lootDefs)
         {
@@ -481,13 +571,7 @@ namespace LoESoft.GameServer.logic.loot
             Lootstate = subState;
         }
 
-        public void Populate(
-            Enemy enemy,
-            Tuple<Player, int> playerDat,
-            Random rand,
-            string lootState,
-            IList<LootDef> lootDefs
-            )
+        public void Populate(Enemy enemy, Tuple<Player, int> playerDat, Random rand, string lootState, IList<LootDef> lootDefs)
         {
             foreach (ILootDef i in children)
                 i.Populate(enemy, playerDat, rand, Lootstate, lootDefs);
@@ -519,6 +603,7 @@ namespace LoESoft.GameServer.logic.loot
         private readonly double probability;
 
         public string Lootstate { get; set; }
+        public BagType BagType { get; set; }
 
         public EggLoot(EggRarity rarity, double probability)
         {
@@ -554,16 +639,60 @@ namespace LoESoft.GameServer.logic.loot
         public static readonly int[] ArmorSlotType = { 6, 7, 14 };
         public static readonly int[] RingSlotType = { 9 };
         public static readonly int[] PotionSlotType = { 10 };
-        private readonly double probability;
 
+        private readonly double probability;
         private readonly byte tier;
+        private readonly ItemType type;
         private readonly int[] types;
 
+        public BagType BagType { get; set; }
         public string Lootstate { get; set; }
 
-        public TierLoot(byte tier, ItemType type, double probability = 0)
+        public TierLoot(byte tier, ItemType type) : this(tier, type, BagType.Pink)
+        {
+        }
+
+        public TierLoot(byte tier, ItemType type, double val) : this(tier, type, BagType.Pink)
+        {
+        }
+
+        public TierLoot(byte tier, ItemType type, BagType bag)
         {
             this.tier = tier;
+            this.type = type;
+
+            double bagProbability = 0;
+
+            switch (bag)
+            {
+                case BagType.Pink:
+                    bagProbability = 0.95;
+                    break;
+
+                case BagType.Purple:
+                    bagProbability = 0.9;
+                    break;
+
+                case BagType.Cyan:
+                    bagProbability = 0.85;
+                    break;
+
+                case BagType.Blue:
+                    bagProbability = 0.8;
+                    break;
+
+                case BagType.White:
+                    bagProbability = 0.75;
+                    break;
+
+                case BagType.None:
+                default:
+                    bagProbability = 1;
+                    break;
+            }
+
+            probability = GetProbability * bagProbability * Settings.WOTMG_RATE;
+
             switch (type)
             {
                 case ItemType.Weapon:
@@ -589,26 +718,34 @@ namespace LoESoft.GameServer.logic.loot
                 default:
                     throw new NotSupportedException(type.ToString());
             }
-            this.probability = probability != 0 ? probability : ReturnProbability(type, tier);
         }
 
-        private double ReturnProbability(ItemType type, byte tier)
+        private double GetProbability
         {
-            double _tier = tier + 1;
-            double probability = 0;
-            switch (type)
+            get
             {
-                case ItemType.Weapon:
-                case ItemType.Armor:
-                    probability = 5 / (_tier * 10);
-                    break;
+                double _tier = tier + 1;
+                double probability = 0;
 
-                case ItemType.Ability:
-                case ItemType.Ring:
-                    probability = 2.5 / (_tier * 10);
-                    break;
+                switch (type)
+                {
+                    case ItemType.Weapon:
+                    case ItemType.Armor:
+                        probability = 5 / (_tier * 7.5);
+                        break;
+
+                    case ItemType.Ability:
+                    case ItemType.Ring:
+                        probability = 2.5 / (_tier * 7.5);
+                        break;
+
+                    default:
+                        probability = 1;
+                        break;
+                }
+
+                return probability;
             }
-            return probability;
         }
 
         public void Populate(
@@ -638,6 +775,7 @@ namespace LoESoft.GameServer.logic.loot
         private readonly double threshold;
 
         public string Lootstate { get; set; }
+        public BagType BagType { get; set; }
 
         public Threshold(double threshold, params ILootDef[] children)
         {
@@ -667,6 +805,7 @@ namespace LoESoft.GameServer.logic.loot
         private readonly ILootDef[] children;
 
         public string Lootstate { get; set; }
+        public BagType BagType { get; set; }
 
         public Drops(params ILootDef[] children)
         {
@@ -702,6 +841,7 @@ namespace LoESoft.GameServer.logic.loot
         }
 
         public string Lootstate { get; set; }
+        public BagType BagType { get; set; }
 
         public void Populate(
             Enemy enemy,
@@ -740,6 +880,7 @@ namespace LoESoft.GameServer.logic.loot
         }
 
         public string Lootstate { get; set; }
+        public BagType BagType { get; set; }
 
         public void Populate(
             Enemy enemy,

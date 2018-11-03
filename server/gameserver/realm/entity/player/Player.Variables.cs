@@ -1,5 +1,6 @@
 ﻿#region
 
+using LoESoft.Core;
 using LoESoft.Core.config;
 using LoESoft.GameServer.logic;
 using LoESoft.GameServer.networking;
@@ -70,6 +71,7 @@ namespace LoESoft.GameServer.realm.entity.player
         public bool Invited { get; set; }
         public bool Muted { get; set; }
         public int Level { get; set; }
+        public List<LootCache> LootCaches { get; set; }
         public List<string> Locked { get; set; }
         public bool LootDropBoost { get { return LootDropBoostTimeLeft > 0; } set { LootDropBoostTimeLeft = value ? LootDropBoostTimeLeft : 0.0f; } }
         public float LootDropBoostTimeLeft { get; set; }

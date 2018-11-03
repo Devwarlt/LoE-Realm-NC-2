@@ -17,18 +17,18 @@ namespace LoESoft.GameServer.realm.mapsetpiece
         private static readonly string Floor = "Partial Red Floor";
 
         private static readonly Loot chest = new Loot(
-            new TierLoot(7, ItemType.Weapon, 0.3),
-            new TierLoot(8, ItemType.Weapon, 0.2),
-            new TierLoot(9, ItemType.Weapon, 0.1),
-            new TierLoot(6, ItemType.Armor, 0.3),
-            new TierLoot(7, ItemType.Armor, 0.2),
-            new TierLoot(8, ItemType.Armor, 0.1),
-            new TierLoot(2, ItemType.Ability, 0.3),
-            new TierLoot(3, ItemType.Ability, 0.2),
-            new TierLoot(4, ItemType.Ability, 0.1),
-            new TierLoot(2, ItemType.Ring, 0.25),
-            new TierLoot(3, ItemType.Ring, 0.15),
-            new TierLoot(1, ItemType.Potion, 0.5)
+            new TierLoot(7, ItemType.Weapon, BagType.None),
+            new TierLoot(8, ItemType.Weapon, BagType.None),
+            new TierLoot(9, ItemType.Weapon, BagType.None),
+            new TierLoot(6, ItemType.Armor, BagType.None),
+            new TierLoot(7, ItemType.Armor, BagType.None),
+            new TierLoot(8, ItemType.Armor, BagType.None),
+            new TierLoot(2, ItemType.Ability, BagType.None),
+            new TierLoot(3, ItemType.Ability, BagType.None),
+            new TierLoot(4, ItemType.Ability, BagType.None),
+            new TierLoot(2, ItemType.Ring, BagType.None),
+            new TierLoot(3, ItemType.Ring, BagType.None),
+            new TierLoot(1, ItemType.Potion, BagType.None)
             );
 
         private readonly Random rand = new Random();

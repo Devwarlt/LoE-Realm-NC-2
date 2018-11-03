@@ -518,6 +518,12 @@ namespace LoESoft.Core
             Init(acc.Database, "char." + acc.AccountId + "." + charId);
         }
 
+        //public LootCache[] LootCaches
+        //{
+        //    get { return JsonConvert.DeserializeObject<LootCache[]>(GetValue<string>("lootCache")); }
+        //    set { SetValue("lootCache", JsonConvert.SerializeObject(value)); }
+        //}
+
         public ushort ObjectType
         {
             get { return GetValue<ushort>("charType", 782); }

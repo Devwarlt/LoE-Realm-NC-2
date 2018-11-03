@@ -597,7 +597,6 @@
     <Compile Include="realm\world\worlds\Vault.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\EyeOfTheDragon.cs" />
     <Compile Include="realm\entity\Entity.ActivateBoost.cs" />
-    <Compile Include="logic\loot\Loot System\LootSystem.cs" />
     <Compile Include="logic\monsters\Dungeons\Sprite World\Enemies.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -628,16 +627,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="logic\loot\Loot System\xmls\Low Sand.xml" />
-    <Content Include="logic\loot\Loot System\xmls\Low Forest.xml" />
-    <Content Include="logic\loot\Loot System\xmls\Low Plains.xml" />
-    <Content Include="logic\loot\Loot System\xmls\Shore Plains.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="logic\loot\Loot System\xmls\Shore Sand.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="logic\loot\Sample.xml" />
     <Content Include="networking\error\e0.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

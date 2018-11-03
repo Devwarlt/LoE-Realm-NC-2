@@ -38,6 +38,7 @@ namespace LoESoft.GameServer.realm.entity.player
             {
                 if (client.Account.Admin == true)
                     Admin = 1;
+                LootCaches = new List<LootCache>(); // (client.Character.LootCaches ?? new LootCache[] { }).ToList();
                 AccountType = client.Account.AccountType;
                 AccountPerks = new AccountTypePerks(AccountType);
                 AccountLifetime = client.Account.AccountLifetime;

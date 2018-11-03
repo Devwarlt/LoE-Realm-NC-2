@@ -466,6 +466,7 @@ namespace LoESoft.Core
             int newId = (int) Hashes.Increment(0, acc.Key, "nextCharId").Exec();
             character = new DbChar(acc, newId)
             {
+                //LootCaches = new LootCache[] { },
                 ObjectType = type,
                 Level = 1,
                 Experience = 0,
@@ -501,8 +502,10 @@ namespace LoESoft.Core
         public DbChar LoadCharacter(DbAccount acc, int charId)
         {
             var ret = new DbChar(acc, charId);
+
             if (ret.IsNull)
                 return null;
+
             return ret;
         }
 
