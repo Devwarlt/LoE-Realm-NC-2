@@ -42,6 +42,8 @@ namespace LoESoft.GameServer
 
         public static DateTime WhiteListTurnOff { get; private set; }
 
+        public static string LootCachePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "/loe-nc-2/loots/");
+
         private static void Main(string[] args)
         {
             Console.Title = "Loading...";
@@ -50,6 +52,9 @@ namespace LoESoft.GameServer
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             Thread.CurrentThread.Name = "Entry";
+
+            if (!Directory.Exists(LootCachePath))
+                Directory.CreateDirectory(LootCachePath);
 
             using (var db = new Database())
             {

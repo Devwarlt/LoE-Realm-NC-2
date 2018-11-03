@@ -210,8 +210,9 @@ namespace LoESoft.GameServer.realm.entity.player
 
         public void SaveToCharacter()
         {
+            ExportLootCaches(LootCaches);
+
             var chr = Client.Character;
-            //chr.LootCaches = LootCaches.ToArray();
             chr.Experience = Experience;
             chr.Level = Level;
             chr.Tex1 = Texture1;
