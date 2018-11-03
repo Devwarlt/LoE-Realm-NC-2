@@ -95,21 +95,22 @@ namespace LoESoft.GameServer.realm.entity.merchant
             #endregion "Region 1 & 2"
 
             #region "Region 4"
-
-            { 3273, new Tuple<int, CurrencyType>(20, CurrencyType.Fame) }, // Soft Drink
-            { 3275, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Fries
-            { 3270, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, // Great Taco
-            { 3269, new Tuple<int, CurrencyType>(150, CurrencyType.Fame) }, // Power Pizza
-            { 3268, new Tuple<int, CurrencyType>(240, CurrencyType.Fame) }, // Chocolate Cream Sandwich Cookie
-            { 3274, new Tuple<int, CurrencyType>(330, CurrencyType.Fame) }, // Grapes of Wrath
-            { 3272, new Tuple<int, CurrencyType>(450, CurrencyType.Fame) }, // Superburger
-            { 3271, new Tuple<int, CurrencyType>(700, CurrencyType.Fame) }, // Double Cheeseburger Deluxe
-            { 3276, new Tuple<int, CurrencyType>(1000, CurrencyType.Fame) }, // Ambrosia
-            { 3280, new Tuple<int, CurrencyType>(40, CurrencyType.Fame) }, // Cranberries
-            { 3281, new Tuple<int, CurrencyType>(60, CurrencyType.Fame) }, // Ear of Corn
-            { 3282, new Tuple<int, CurrencyType>(90, CurrencyType.Fame) }, // Sliced Yam
-            { 3283, new Tuple<int, CurrencyType>(120, CurrencyType.Fame) }, // Pumpkin Pie
-            { 3286, new Tuple<int, CurrencyType>(300, CurrencyType.Fame) } // Thanksgiving Turkey
+            { 0x32a, new Tuple<int, CurrencyType>(5000, CurrencyType.Fame) }, // Char Slot Unlocker
+            { 0x32b, new Tuple<int, CurrencyType>(2500, CurrencyType.Fame) } // Vault Chest Unlocker
+            //{ 3273, new Tuple<int, CurrencyType>(20, CurrencyType.Fame) }, // Soft Drink
+            //{ 3275, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Fries
+            //{ 3270, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, // Great Taco
+            //{ 3269, new Tuple<int, CurrencyType>(150, CurrencyType.Fame) }, // Power Pizza
+            //{ 3268, new Tuple<int, CurrencyType>(240, CurrencyType.Fame) }, // Chocolate Cream Sandwich Cookie
+            //{ 3274, new Tuple<int, CurrencyType>(330, CurrencyType.Fame) }, // Grapes of Wrath
+            //{ 3272, new Tuple<int, CurrencyType>(450, CurrencyType.Fame) }, // Superburger
+            //{ 3271, new Tuple<int, CurrencyType>(700, CurrencyType.Fame) }, // Double Cheeseburger Deluxe
+            //{ 3276, new Tuple<int, CurrencyType>(1000, CurrencyType.Fame) }, // Ambrosia
+            //{ 3280, new Tuple<int, CurrencyType>(40, CurrencyType.Fame) }, // Cranberries
+            //{ 3281, new Tuple<int, CurrencyType>(60, CurrencyType.Fame) }, // Ear of Corn
+            //{ 3282, new Tuple<int, CurrencyType>(90, CurrencyType.Fame) }, // Sliced Yam
+            //{ 3283, new Tuple<int, CurrencyType>(120, CurrencyType.Fame) }, // Pumpkin Pie
+            //{ 3286, new Tuple<int, CurrencyType>(300, CurrencyType.Fame) } // Thanksgiving Turkey
             #endregion "Region 4"
         };
     }

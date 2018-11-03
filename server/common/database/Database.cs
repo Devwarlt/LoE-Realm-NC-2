@@ -431,6 +431,18 @@ namespace LoESoft.Core
             return newid;
         }
 
+        public void AddChest(DbAccount acc)
+        {
+            acc.VaultCount++;
+            acc.Flush();
+        }
+
+        public void AddChar(DbAccount acc)
+        {
+            acc.MaxCharSlot++;
+            acc.Flush();
+        }
+
         public DbChar GetAliveCharacter(DbAccount acc)
         {
             int chara = 1;

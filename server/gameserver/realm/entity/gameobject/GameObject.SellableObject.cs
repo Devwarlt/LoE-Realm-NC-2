@@ -19,8 +19,8 @@ namespace LoESoft.GameServer.realm.entity
         {
             if (objType == 0x0505) //Vault chest
             {
-                Price = 500;
-                Currency = CurrencyType.Gold;
+                Price = 2500;
+                Currency = CurrencyType.Fame;
                 RankReq = 0;
             }
             else if (objType == 0x0736)
@@ -68,8 +68,8 @@ namespace LoESoft.GameServer.realm.entity
             {
                 if (TryDeduct(player))
                 {
-                    GameServer.Manager.Database.UpdateCredit(player.Client.Account, -Price);
-                    player.Credits = player.Client.Account.Credits;
+                    GameServer.Manager.Database.UpdateFame(player.Client.Account, -Price);
+                    player.Fame = player.Client.Account.Fame;
                     player.UpdateCount++;
                     player.SaveToCharacter();
                     (Owner as Vault).AddChest(this);
@@ -83,8 +83,8 @@ namespace LoESoft.GameServer.realm.entity
                 {
                     player.Client.SendMessage(new BUYRESULT
                     {
-                        Result = BUY_NO_GOLD,
-                        Message = "{\"key\":\"server.not_enough_gold\"}"
+                        Result = 0,
+                        Message = "{\"key\":\"server.not_enough_fame\"}"
                     });
                 }
             }

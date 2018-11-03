@@ -1386,6 +1386,40 @@ namespace LoESoft.GameServer.realm.entity.player
                     case ActivateEffects.PermaPet:
                     case ActivateEffects.PetSkin:
                     case ActivateEffects.Unlock:
+                        {
+                            if (Owner.Id == (int) WorldID.VAULT_ID)
+                            {
+                                SendInfo("You cannot use this item in Vault!");
+                                return true;
+                            }
+
+                            if (eff.Slot == null)
+                            {
+                                SendInfo($"There is no unlock action for this item.");
+                                return true;
+                            }
+
+                            string message;
+
+                            switch (eff.Slot)
+                            {
+                                case "char":
+                                    message = "Character Slot";
+                                    GameServer.Manager.Database.AddChar(Client.Account);
+                                    break;
+                                case "vault":
+                                    message = "Vault Chest";
+                                    GameServer.Manager.Database.AddChest(Client.Account);
+                                    break;
+                                default:
+                                    SendInfo($"There is no unlock action to slot '{eff.Slot}' in game actions."); return true;
+                            }
+
+                            SendInfo($"You have successfully received +1 {message}!");
+                            UpdateCount++;
+                            SaveToCharacter();
+                            return false;
+                        }
                     case ActivateEffects.MysteryDyes:
                     default:
                         return true;
