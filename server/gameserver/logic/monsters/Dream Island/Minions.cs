@@ -110,6 +110,7 @@ namespace LoESoft.GameServer.logic
                     )
                 ),
                 new Drops(
+                    new ItemLoot("Succubus Horn x 1", 0.005),
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
                         new PurpleBag(ItemType.Weapon, 9),
@@ -155,6 +156,7 @@ namespace LoESoft.GameServer.logic
                     )
                 ),
                 new Drops(
+                    new ItemLoot("Succubus Horn x 1", 0.01),
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
                         new PurpleBag(ItemType.Weapon, 9),
@@ -215,6 +217,7 @@ namespace LoESoft.GameServer.logic
                     )
                 ),
                 new Drops(
+                    new ItemLoot("Succubus Horn x 1", 0.01),
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
                         new PurpleBag(ItemType.Weapon, 9),
@@ -276,6 +279,9 @@ namespace LoESoft.GameServer.logic
                     )
                 ),
                 new Drops(
+                    new MostDamagers(3,
+                        new ItemLoot("Succubus Horn x 1", 1)
+                        ),
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
                         new PurpleBag(ItemType.Weapon, 9),
@@ -339,6 +345,9 @@ namespace LoESoft.GameServer.logic
                     )
                 ),
                 new Drops(
+                    new MostDamagers(1,
+                        new ItemLoot("Succubus Horn x 1", 1)
+                        ),
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
                         new PurpleBag(ItemType.Weapon, 9),
@@ -400,6 +409,7 @@ namespace LoESoft.GameServer.logic
                     )
                 ),
                 new Drops(
+                    new ItemLoot("Succubus Horn x 1", 0.01),
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
                         new PurpleBag(ItemType.Weapon, 9),
