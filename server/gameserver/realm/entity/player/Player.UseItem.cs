@@ -1360,11 +1360,34 @@ namespace LoESoft.GameServer.realm.entity.player
                                 return true;
                             }
 
-                            if (!Owner.Name.Contains("Vault"))
+                            if (Owner.Name.Contains("Vault"))
                             {
-                                SendInfo("You have to be in Vault to use this item.");
-                                return false;
+                                SendInfo("You cannot use this feature in Vault.");
+                                return true;
                             }
+
+                            Action action = () =>
+                            {
+                                switch (item.DisplayId)
+                                {
+                                    case "Succubus Horn x 20":
+                                        var umbral = new List<string> { "Umbral Staff", "Umbral Wand", "Umbral Sword", "Umbral Bow", "Umbral Dagger", "Umbral Katana" };
+                                        var egg = new List<string> { "lcp egg t4-75", "lcp egg t5-75", "lcp egg t6-75", "lcp egg t7-75" };
+                                        var gifts = Client.Account.Gifts.ToList();
+                                        gifts.Add(GameServer.Manager.GameData.IdToObjectType[umbral[new Random().Next(0, umbral.Count)]]);
+                                        gifts.Add(GameServer.Manager.GameData.IdToObjectType[egg[new Random().Next(0, egg.Count)]]);
+
+                                        Experience += 200000;
+                                        GameServer.Manager.Database.UpdateFame(Client.Account, 1000);
+                                        GameServer.Manager.Database.UpdateCredit(Client.Account, 200);
+                                        Fame = Client.Account.Fame;
+                                        Credits = Client.Account.Credits;
+                                        Client.Account.Gifts = gifts.ToArray();
+                                        Client.Account.Flush();
+                                        Client.Account.Reload();
+                                        break;
+                                }
+                            };
 
                             if (Inventory[4] != null && Inventory[5] != null && Inventory[6] != null && Inventory[7] != null &&
                                 Inventory[8] != null && Inventory[9] != null && Inventory[10] != null && Inventory[11] != null)
@@ -1377,6 +1400,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                     if (Inventory[i] == null)
                                     {
                                         Inventory[i] = GameServer.Manager.GameData.Items[(ushort) Utils.FromString(eff.Id)];
+                                        action.Invoke();
                                         UpdateCount++;
                                         SaveToCharacter();
                                         return false;
@@ -1412,7 +1436,8 @@ namespace LoESoft.GameServer.realm.entity.player
                                     GameServer.Manager.Database.AddChest(Client.Account);
                                     break;
                                 default:
-                                    SendInfo($"There is no unlock action to slot '{eff.Slot}' in game actions."); return true;
+                                    SendInfo($"There is no unlock action to slot '{eff.Slot}' in game actions.");
+                                    return true;
                             }
 
                             SendInfo($"You have successfully received +1 {message}!");

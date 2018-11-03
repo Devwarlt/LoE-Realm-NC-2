@@ -435,12 +435,14 @@ namespace LoESoft.Core
         {
             acc.VaultCount++;
             acc.Flush();
+            acc.Reload();
         }
 
         public void AddChar(DbAccount acc)
         {
             acc.MaxCharSlot++;
             acc.Flush();
+            acc.Reload();
         }
 
         public DbChar GetAliveCharacter(DbAccount acc)

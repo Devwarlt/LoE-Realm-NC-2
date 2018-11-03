@@ -310,9 +310,6 @@ namespace LoESoft.GameServer.logic.loot
         {
             Lootstate = lootState;
 
-            if (playerData != null)
-                return;
-
             Item[] candidates = GameServer.Manager.GameData.Items
                 .Where(item => item.Value.SlotType == 9000)
                 .Where(item => item.Value.MinStars <= (int) rarity)
@@ -320,8 +317,7 @@ namespace LoESoft.GameServer.logic.loot
                 .ToArray();
 
             Item onlyOne = candidates[new Random().Next(0, candidates.Length)];
-
-            double rng = rnd.NextDouble();
+            
             double probability = 0;
 
             if (onlyOne.MinStars < 8)
@@ -335,10 +331,8 @@ namespace LoESoft.GameServer.logic.loot
 
             probability *= Settings.WOTMG_RATE;
 
-            ILootDef[] eggbasket = new ILootDef[] { new Drops(new ItemLoot(onlyOne.DisplayId, probability)) };
-
-            if (rng <= probability * Settings.WOTMG_RATE)
-                eggbasket[0].Populate(enemy, playerData, rnd, Lootstate, lootDefs);
+            var eggBasket = new ILootDef[] { new Drops(new ItemLoot(onlyOne.DisplayId, probability)) };
+            eggBasket[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
         }
     }
 
