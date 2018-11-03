@@ -353,12 +353,28 @@ namespace LoESoft.GameServer.realm.entity.merchant
             List<int> largeclothlist = new List<int>();
 
             // region 1 + region 2
-            foreach (KeyValuePair<ushort, Item> item in data.Items.Where(_ => BLACKLIST.keys.All(i => (i != _.Value.ObjectType))))
-                if (item.Value.SlotType == 10 && item.Value.ObjectId.Contains("Key") && item.Value.Class == "Equipment" && item.Value.Soulbound && item.Value.Consumable)
-                {
-                    region1list.Add(item.Value.ObjectType);
-                    region2list.Add(item.Value.ObjectType);
-                }
+            //foreach (KeyValuePair<ushort, Item> item in data.Items.Where(_ => BLACKLIST.keys.All(i => (i != _.Value.ObjectType))))
+            //    if (item.Value.SlotType == 10 && item.Value.ObjectId.Contains("Key") && item.Value.Class == "Equipment" && item.Value.Soulbound && item.Value.Consumable)
+            //    {
+            //        region1list.Add(item.Value.ObjectType);
+            //        region2list.Add(item.Value.ObjectType);
+            //    }
+            region1list.Add(0x236E); // glife
+            region1list.Add(0x236F); // gmana
+            region1list.Add(0x2368); // gatt
+            region1list.Add(0x2369); // gdef
+            region1list.Add(0x236A); // gspd
+            region1list.Add(0x236D); // gdex
+            region1list.Add(0x236B); // gvit
+            region1list.Add(0x236C); // gwis
+            region2list.Add(0xae9); // life
+            region2list.Add(0xaea); // mana
+            region2list.Add(0xa1f); // att
+            region2list.Add(0xa20); // def
+            region2list.Add(0xa21); // spd
+            region2list.Add(0xa4c); // dex
+            region2list.Add(0xa34); // vit
+            region2list.Add(0xa35); // wis
 
             // region 3
             foreach (KeyValuePair<ushort, Item> item in data.Items)
@@ -369,9 +385,11 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 }
 
             // region 4
-            foreach (KeyValuePair<ushort, Item> item in data.Items)
-                if (item.Value.SlotType == 10 && item.Value.Description.Contains("Food for your pet.") && item.Value.Soulbound)
-                    region4list.Add(item.Value.ObjectType);
+            //foreach (KeyValuePair<ushort, Item> item in data.Items)
+            //    if (item.Value.SlotType == 10 && item.Value.Description.Contains("Food for your pet.") && item.Value.Soulbound)
+            //        region4list.Add(item.Value.ObjectType);
+            region4list.Add(0x32a);
+            region4list.Add(0x32b);
 
             // region 5
             foreach (KeyValuePair<ushort, Item> item in data.Items)
