@@ -184,10 +184,10 @@ namespace LoESoft.GameServer.logic.loot
                     }
                     else
                     {
-                        Log.Info($"{player.Name} failed to obtain a white bag item '{objectId} (on {lootCache.Attempts} of {lootCache.MaxAttempts} attempt{(lootCache.MaxAttempts > 1 ? "s" : "")})!");
+                        Log.Info($"{player.Name} failed to obtain a white bag item '{objectId}' (on {lootCache.Attempts} of {lootCache.MaxAttempts} attempt{(lootCache.MaxAttempts > 1 ? "s" : "")})!");
 
                         LootCache.Utils.UpdateAttempts(player.LootCaches, objectId);
-                        LootCache.Utils.UpdateMaxAttempts(player.LootCaches, objectId, (int) (100 / chance));
+                        LootCache.Utils.UpdateMaxAttempts(player.LootCaches, objectId, (int)(100 / chance));
                     }
                 }
                 else
@@ -220,14 +220,14 @@ namespace LoESoft.GameServer.logic.loot
                     }
                     else
                     {
-                        Log.Info($"{player.Name} failed to obtain a white bag item '{objectId} (on 1st attempt)!");
+                        Log.Info($"{player.Name} failed to obtain a white bag item '{objectId}' (on 1st attempt)!");
 
                         player.LootCaches.Add(new LootCache()
                         {
                             ObjectId = objectId,
                             Attempts = 1,
-                            MaxAttempts = (int) (100 / chance),
-                            AttemptsBase = (int) (100 / chance)
+                            MaxAttempts = (int)(100 / chance),
+                            AttemptsBase = (int)(100 / chance)
                         });
                     }
                 }
@@ -312,12 +312,12 @@ namespace LoESoft.GameServer.logic.loot
 
             Item[] candidates = GameServer.Manager.GameData.Items
                 .Where(item => item.Value.SlotType == 9000)
-                .Where(item => item.Value.MinStars <= (int) rarity)
+                .Where(item => item.Value.MinStars <= (int)rarity)
                 .Select(item => item.Value)
                 .ToArray();
 
             Item onlyOne = candidates[new Random().Next(0, candidates.Length)];
-            
+
             double probability = 0;
 
             if (onlyOne.MinStars < 8)
@@ -602,7 +602,7 @@ namespace LoESoft.GameServer.logic.loot
                 return;
             Item[] candidates = GameServer.Manager.GameData.Items
                 .Where(item => item.Value.SlotType == 9000)
-                .Where(item => item.Value.MinStars <= (int) rarity)
+                .Where(item => item.Value.MinStars <= (int)rarity)
                 .Select(item => item.Value)
                 .ToArray();
             foreach (Item i in candidates)

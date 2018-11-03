@@ -46,29 +46,29 @@ namespace LoESoft.Core
             if (!fields.TryGetValue(key, out KeyValuePair<byte[], bool> val))
                 return def;
             if (typeof(T) == typeof(int))
-                return (T) (object) int.Parse(Encoding.UTF8.GetString(val.Key));
+                return (T)(object)int.Parse(Encoding.UTF8.GetString(val.Key));
             else if (typeof(T) == typeof(ushort))
-                return (T) (object) ushort.Parse(Encoding.UTF8.GetString(val.Key));
+                return (T)(object)ushort.Parse(Encoding.UTF8.GetString(val.Key));
             else if (typeof(T) == typeof(bool))
-                return (T) (object) (val.Key[0] != 0);
+                return (T)(object)(val.Key[0] != 0);
             else if (typeof(T) == typeof(DateTime))
-                return (T) (object) DateTime.FromBinary(BitConverter.ToInt64(val.Key, 0));
+                return (T)(object)DateTime.FromBinary(BitConverter.ToInt64(val.Key, 0));
             else if (typeof(T) == typeof(byte[]))
-                return (T) (object) val.Key;
+                return (T)(object)val.Key;
             else if (typeof(T) == typeof(ushort[]))
             {
                 ushort[] ret = new ushort[val.Key.Length / 2];
                 Buffer.BlockCopy(val.Key, 0, ret, 0, val.Key.Length);
-                return (T) (object) ret;
+                return (T)(object)ret;
             }
             else if (typeof(T) == typeof(int[]))
             {
                 int[] ret = new int[val.Key.Length / 4];
                 Buffer.BlockCopy(val.Key, 0, ret, 0, val.Key.Length);
-                return (T) (object) ret;
+                return (T)(object)ret;
             }
             else if (typeof(T) == typeof(string))
-                return (T) (object) Encoding.UTF8.GetString(val.Key);
+                return (T)(object)Encoding.UTF8.GetString(val.Key);
             else
                 throw new NotSupportedException();
         }
@@ -80,20 +80,20 @@ namespace LoESoft.Core
                 typeof(T) == typeof(string))
                 buff = Encoding.UTF8.GetBytes(val.ToString());
             else if (typeof(T) == typeof(bool))
-                buff = new byte[] { (byte) ((bool) (object) val ? 1 : 0) };
+                buff = new byte[] { (byte)((bool)(object)val ? 1 : 0) };
             else if (typeof(T) == typeof(DateTime))
-                buff = BitConverter.GetBytes(((DateTime) (object) val).ToBinary());
+                buff = BitConverter.GetBytes(((DateTime)(object)val).ToBinary());
             else if (typeof(T) == typeof(byte[]))
-                buff = (byte[]) (object) val;
+                buff = (byte[])(object)val;
             else if (typeof(T) == typeof(ushort[]))
             {
-                var v = (ushort[]) (object) val;
+                var v = (ushort[])(object)val;
                 buff = new byte[v.Length * 2];
                 Buffer.BlockCopy(v, 0, buff, 0, buff.Length);
             }
             else if (typeof(T) == typeof(int[]))
             {
-                var v = (int[]) (object) val;
+                var v = (int[])(object)val;
                 buff = new byte[v.Length * 4];
                 Buffer.BlockCopy(v, 0, buff, 0, buff.Length);
             }
@@ -198,7 +198,7 @@ namespace LoESoft.Core
 
         public int AccountType
         {
-            get { return GetValue("accountType", (int) config.AccountType.FREE_ACCOUNT); }
+            get { return GetValue("accountType", (int)config.AccountType.FREE_ACCOUNT); }
             set { SetValue("accountType", value); }
         }
 
@@ -517,12 +517,6 @@ namespace LoESoft.Core
             CharId = charId;
             Init(acc.Database, "char." + acc.AccountId + "." + charId);
         }
-
-        //public LootCache[] LootCaches
-        //{
-        //    get { return JsonConvert.DeserializeObject<LootCache[]>(GetValue<string>("lootCache")); }
-        //    set { SetValue("lootCache", JsonConvert.SerializeObject(value)); }
-        //}
 
         public ushort ObjectType
         {
