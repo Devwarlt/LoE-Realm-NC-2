@@ -95,7 +95,6 @@ namespace LoESoft.GameServer.logic.loot
         private Random _rnd { get; set; }
         private string _lootState { get; set; }
         private IList<LootDef> _lootDefs { get; set; }
-
         private List<Player> PlayersData { get; set; }
         private double Chance { get; set; }
         private int EnemyHP { get; set; }
@@ -362,9 +361,6 @@ namespace LoESoft.GameServer.logic.loot
             BagType = BagType.Pink;
             Lootstate = lootState;
 
-            if (playerData == null)
-                return;
-
             var pinkBag = new ILootDef[] { new Drops(new TierLoot(tier, itemType, BagType)) };
             pinkBag[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
         }
@@ -388,9 +384,6 @@ namespace LoESoft.GameServer.logic.loot
         {
             BagType = BagType.Purple;
             Lootstate = lootState;
-
-            if (playerData == null)
-                return;
 
             var purpleBag = new ILootDef[] { new Drops(new TierLoot(tier, itemType, BagType)) };
             purpleBag[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
@@ -431,9 +424,6 @@ namespace LoESoft.GameServer.logic.loot
             BagType = BagType.Cyan;
             Lootstate = lootState;
 
-            if (playerData == null)
-                return;
-
             var cyanBag = !setByTier ? new ILootDef[] { new Drops(new ItemLoot(itemName, 0.1)) }
                 : new ILootDef[] { new Drops(new TierLoot(tier, itemType, BagType)) };
             cyanBag[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
@@ -469,9 +459,6 @@ namespace LoESoft.GameServer.logic.loot
         {
             BagType = BagType.Blue;
             Lootstate = lootState;
-
-            if (playerData == null)
-                return;
 
             if (single)
             {
@@ -514,9 +501,6 @@ namespace LoESoft.GameServer.logic.loot
         {
             BagType = BagType.Blue;
             Lootstate = lootState;
-
-            if (playerData == null)
-                return;
 
             var booster = new LootBoosters(0.001, enemy, playerData, rnd, lootState, lootDefs);
             booster.UpdateLootCache(itemName, new ILootDef[] { new Drops(new ItemLoot(itemName, 1)) });
