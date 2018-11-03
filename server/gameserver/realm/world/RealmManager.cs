@@ -52,6 +52,7 @@ namespace LoESoft.GameServer.realm
         public Database Database { get; private set; }
         public bool Terminating { get; private set; }
         public int TPS { get; private set; }
+        public System.Timers.Timer SaveMonitor { get; private set; }
 
         private ConcurrentDictionary<string, Vault> Vaults { get; set; }
 
@@ -73,6 +74,13 @@ namespace LoESoft.GameServer.realm
             Vaults = new ConcurrentDictionary<string, Vault>();
             Random = new Random();
             Database = db;
+            SaveMonitor = new System.Timers.Timer(30000);
+            SaveMonitor.AutoReset = true;
+            SaveMonitor.Elapsed += delegate
+            {
+                if (ClientManager.Keys.Count != 0)
+                    ClientManager.Values.Select(client => { client.Client?.Save(); return client; }).ToList();
+            };
         }
 
         #region "Initialize, Run and Stop"
@@ -80,15 +88,10 @@ namespace LoESoft.GameServer.realm
         public void Initialize()
         {
             GameData = new EmbeddedData();
-
-            //LootSerialization.PopulateLoot();
-
+            SaveMonitor.Start();
             Behaviors = new BehaviorDb(this);
-
             QuestPortraits.Add("Eyeguard of Surrender", 20);
-
             Player.HandleQuests(GameData);
-
             Merchant.HandleMerchant(GameData);
 
             AddWorld((int) WorldID.NEXUS_ID, Worlds[0] = new Nexus());
@@ -98,15 +101,10 @@ namespace LoESoft.GameServer.realm
             AddWorld((int) WorldID.DAILY_QUEST_ID, new DailyQuestRoom());
 
             Monitor = new RealmPortalMonitor(this);
-
             Task.Factory.StartNew(() => GameWorld.AutoName(1, true)).ContinueWith(_ => AddWorld(_.Result), TaskScheduler.Default);
-
             InterServer = new ISManager(this);
-
             Chat = new ChatManager(this);
-
             Commands = new CommandManager(this);
-
             NPCs npcs = new NPCs();
             npcs.Initialize(this);
 
@@ -128,6 +126,7 @@ namespace LoESoft.GameServer.realm
 
         public void Stop()
         {
+            SaveMonitor.Stop();
             Terminating = true;
             List<Client> saveAccountUnlock = new List<Client>();
             foreach (ClientData cData in ClientManager.Values)
@@ -135,7 +134,6 @@ namespace LoESoft.GameServer.realm
                 saveAccountUnlock.Add(cData.Client);
                 TryDisconnect(cData.Client, DisconnectReason.STOPPING_REALM_MANAGER);
             }
-
             GameData?.Dispose();
             logic?.Join();
             network?.Join();
