@@ -23,6 +23,10 @@ namespace LoESoft.Core
         {
             Key = key;
             Database = db;
+
+            if (db.Connection.State == RedisConnectionBase.ConnectionState.Closing || db.Connection.State == RedisConnectionBase.ConnectionState.Closed)
+                db.Connection = db.Gateway.GetConnection();
+
             fields =
                 new ConcurrentDictionary<string, KeyValuePair<byte[], bool>>(
                     db

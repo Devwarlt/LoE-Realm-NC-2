@@ -62,7 +62,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
         public static readonly Dictionary<int, Tuple<int, CurrencyType>> prices = new Dictionary<int, Tuple<int, CurrencyType>>
         {
             #region "Region 1 & 2"
-            
+
             { 0x236E, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // glife
             { 0x236F, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // gmana
             { 0x2368, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // gatt
@@ -110,11 +110,14 @@ namespace LoESoft.GameServer.realm.entity.merchant
             //{ 283, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, // The Hive Key
             //{ 32695, new Tuple<int, CurrencyType>(250, CurrencyType.Fame) }, // Ice Tomb Key
             //{ 303, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, // Mountain Temple Key
+
             #endregion "Region 1 & 2"
 
             #region "Region 4"
+
             { 0x32a, new Tuple<int, CurrencyType>(5000, CurrencyType.Fame) }, // Char Slot Unlocker
-            { 0x32b, new Tuple<int, CurrencyType>(2500, CurrencyType.Fame) } // Vault Chest Unlocker
+            { 0x32b, new Tuple<int, CurrencyType>(2500, CurrencyType.Fame) }, // Vault Chest Unlocker
+            { 0xc6c, new Tuple<int, CurrencyType>(500, CurrencyType.Fame) } // Backpack
 
             //{ 3273, new Tuple<int, CurrencyType>(20, CurrencyType.Fame) }, // Soft Drink
             //{ 3275, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Fries
@@ -130,6 +133,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
             //{ 3282, new Tuple<int, CurrencyType>(90, CurrencyType.Fame) }, // Sliced Yam
             //{ 3283, new Tuple<int, CurrencyType>(120, CurrencyType.Fame) }, // Pumpkin Pie
             //{ 3286, new Tuple<int, CurrencyType>(300, CurrencyType.Fame) } // Thanksgiving Turkey
+
             #endregion "Region 4"
         };
     }

@@ -102,21 +102,21 @@ namespace LoESoft.GameServer.realm.entity.merchant
         {
             MType = -1;
             var list = new int[0];
-            if (Owner.Map[(int) X, (int) Y].Region == TileRegion.Store_1)
+            if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_1)
                 list = region1list;
-            else if (Owner.Map[(int) X, (int) Y].Region == TileRegion.Store_2)
+            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_2)
                 list = region2list;
-            else if (Owner.Map[(int) X, (int) Y].Region == TileRegion.Store_3)
+            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_3)
                 list = region3list;
-            else if (Owner.Map[(int) X, (int) Y].Region == TileRegion.Store_4)
+            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_4)
                 list = region4list;
-            else if (Owner.Map[(int) X, (int) Y].Region == TileRegion.Store_5)
+            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_5)
                 list = region5list;
-            else if (Owner.Map[(int) X, (int) Y].Region == TileRegion.Store_6)
+            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_6)
                 list = region6list;
-            else if (Owner.Map[(int) X, (int) Y].Region == TileRegion.Store_7)
+            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_7)
                 list = region7list;
-            else if (Owner.Map[(int) X, (int) Y].Region == TileRegion.Store_8)
+            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_8)
                 list = region8list;
             /*else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_12)
                 list = accessorylist;
@@ -168,8 +168,8 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 if (prices.TryGetValue(MType, out Tuple<int, CurrencyType> price))
                 {
                     if (Discount != 0)
-                        Price = (int) (price.Item1 - (price.Item1 * ((double) Discount / 100))) < 1 ?
-                            price.Item1 : (int) (price.Item1 - (price.Item1 * ((double) Discount / 100)));
+                        Price = (int)(price.Item1 - (price.Item1 * ((double)Discount / 100))) < 1 ?
+                            price.Item1 : (int)(price.Item1 - (price.Item1 * ((double)Discount / 100)));
                     else
                         Price = price.Item1;
                     Currency = price.Item2;
@@ -390,6 +390,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
             //        region4list.Add(item.Value.ObjectType);
             region4list.Add(0x32a);
             region4list.Add(0x32b);
+            region4list.Add(0xc6c);
 
             // region 5
             foreach (KeyValuePair<ushort, Item> item in data.Items)
