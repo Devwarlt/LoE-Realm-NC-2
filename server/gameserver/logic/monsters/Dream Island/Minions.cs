@@ -109,8 +109,10 @@ namespace LoESoft.GameServer.logic
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
                     )
                 ),
+                new Threshold(0.6,
+                    new ItemLoot("Succubus Horn x 1", 0.01)
+                    ),
                 new Drops(
-                    new ItemLoot("Succubus Horn x 1", 0.005),
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
                         new PurpleBag(ItemType.Weapon, 9),
@@ -155,8 +157,10 @@ namespace LoESoft.GameServer.logic
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
                     )
                 ),
+                new Threshold(0.3,
+                    new ItemLoot("Succubus Horn x 1", 0.05)
+                    ),
                 new Drops(
-                    new ItemLoot("Succubus Horn x 1", 0.01),
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
                         new PurpleBag(ItemType.Weapon, 9),
@@ -216,8 +220,10 @@ namespace LoESoft.GameServer.logic
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
                     )
                 ),
+                new Threshold(0.3,
+                    new ItemLoot("Succubus Horn x 1", 0.1)
+                    ),
                 new Drops(
-                    new ItemLoot("Succubus Horn x 1", 0.01),
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
                         new PurpleBag(ItemType.Weapon, 9),
@@ -278,10 +284,10 @@ namespace LoESoft.GameServer.logic
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
                     )
                 ),
+                new Threshold(0.1,
+                    new ItemLoot("Succubus Horn x 1", 0.9)
+                    ),
                 new Drops(
-                    new MostDamagers(3,
-                        new ItemLoot("Succubus Horn x 1", 1)
-                        ),
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
                         new PurpleBag(ItemType.Weapon, 9),
@@ -344,10 +350,10 @@ namespace LoESoft.GameServer.logic
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
                     )
                 ),
+                new Threshold(0.2,
+                    new ItemLoot("Succubus Horn x 1", 0.8)
+                    ),
                 new Drops(
-                    new MostDamagers(1,
-                        new ItemLoot("Succubus Horn x 1", 1)
-                        ),
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
                         new PurpleBag(ItemType.Weapon, 9),
@@ -408,8 +414,10 @@ namespace LoESoft.GameServer.logic
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
                     )
                 ),
+                new Threshold(0.3,
+                    new ItemLoot("Succubus Horn x 1", 0.15)
+                    ),
                 new Drops(
-                    new ItemLoot("Succubus Horn x 1", 0.01),
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
                         new PurpleBag(ItemType.Weapon, 9),

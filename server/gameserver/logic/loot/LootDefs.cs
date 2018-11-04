@@ -332,7 +332,7 @@ namespace LoESoft.GameServer.logic.loot
 
             probability *= Settings.WOTMG_RATE;
 
-            var eggBasket = new ILootDef[] { new Drops(new ItemLoot(onlyOne.DisplayId, probability)) };
+            var eggBasket = new ILootDef[] { new Drops(new ItemLoot(onlyOne.ObjectType, probability)) };
             eggBasket[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
         }
     }
@@ -794,6 +794,10 @@ namespace LoESoft.GameServer.logic.loot
             )
         {
             Lootstate = lootState;
+
+            if (playerDat == null)
+                return;
+
             if (playerDat.Item2 / enemy.ObjectDesc.MaxHP >= threshold)
             {
                 foreach (ILootDef i in children)
