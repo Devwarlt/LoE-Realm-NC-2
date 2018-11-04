@@ -2,6 +2,7 @@
 
 using BookSleeve;
 using LoESoft.Core.config;
+using LoESoft.Core.database;
 using log4net;
 using Newtonsoft.Json;
 using System;
@@ -14,23 +15,16 @@ using System.Text;
 
 namespace LoESoft.Core
 {
-    public class Database : RedisConnection
+    public class Database
     {
         public static ILog log = LogManager.GetLogger(nameof(Database));
+        public RedisConnection Connection { get; set; }
+        public RedisConnectionGateway Gateway { get; set; }
 
         public Database()
-            : base(
-                  host: Settings.REDIS_DATABASE.HOST,
-                  port: Settings.REDIS_DATABASE.PORT,
-                  ioTimeout: Settings.REDIS_DATABASE.IO_TIMEOUT,
-                  password: Settings.REDIS_DATABASE.PASSWORD == "" ? null : Settings.REDIS_DATABASE.PASSWORD,
-                  maxUnsent: Settings.REDIS_DATABASE.MAX_UNSENT,
-                  allowAdmin: Settings.REDIS_DATABASE.ALLOW_ADMIN,
-                  syncTimeout: Settings.REDIS_DATABASE.SYNC_TIMEOUT
-                  )
         {
-            SetKeepAlive(Settings.RESTART_DELAY_MINUTES * 60 * 2);
-            Open().Wait();
+            Gateway = RedisConnectionGateway.Current;
+            Connection = Gateway.GetConnection();
         }
 
         public static readonly List<string> BlackListedNames = new List<string>
@@ -58,10 +52,10 @@ namespace LoESoft.Core
         {
             return new DbAccount(this, "0")
             {
-                AccountType = (int) AccountType.FREE_ACCOUNT,
+                AccountType = (int)AccountType.FREE_ACCOUNT,
                 AccountLifetime = DateTime.MinValue,
                 UUID = uuid,
-                Name = Names[(uint) uuid.GetHashCode() % Names.Length],
+                Name = Names[(uint)uuid.GetHashCode() % Names.Length],
                 Admin = false,
                 NameChosen = false,
                 Verified = false,
@@ -107,7 +101,7 @@ namespace LoESoft.Core
         {
             string lockToken = Guid.NewGuid().ToString();
             string key = "lock." + acc.AccountId;
-            using (var trans = CreateTransaction())
+            using (var trans = Connection.CreateTransaction())
             {
                 trans.AddCondition(Condition.KeyNotExists(1, key));
 
@@ -120,17 +114,17 @@ namespace LoESoft.Core
             }
         }
 
-        public int GetLockTime(DbAccount acc) => (int) Keys.TimeToLive(1, $"lock.{acc.AccountId}").Exec();
+        public int GetLockTime(DbAccount acc) => (int)Connection.Keys.TimeToLive(1, $"lock.{acc.AccountId}").Exec();
 
-        public int GetLockTime(string accId) => (int) Keys.TimeToLive(1, $"lock.{accId}").Exec();
+        public int GetLockTime(string accId) => (int)Connection.Keys.TimeToLive(1, $"lock.{accId}").Exec();
 
         public bool RenewLock(DbAccount acc, int sec = 60)
         {
             string key = $"lock.{acc.AccountId}";
-            using (var trans = CreateTransaction())
+            using (var trans = Connection.CreateTransaction())
             {
                 trans.AddCondition(Condition.KeyEquals(1, key, acc.LockToken));
-                Keys.Expire(1, key, sec);
+                Connection.Keys.Expire(1, key, sec);
                 return trans.Execute().Exec();
             }
         }
@@ -138,7 +132,7 @@ namespace LoESoft.Core
         public void ReleaseLock(DbAccount acc)
         {
             string key = $"lock.{acc.AccountId}";
-            using (var trans = CreateTransaction())
+            using (var trans = Connection.CreateTransaction())
             {
                 trans.AddCondition(Condition.KeyEquals(1, key, acc.LockToken));
                 trans.Keys.Remove(1, key);
@@ -146,17 +140,17 @@ namespace LoESoft.Core
             }
         }
 
-        public IDisposable Lock(DbAccount acc) => new l(this, acc);
+        public IDisposable Lock(DbAccount acc) => new L(this, acc);
 
-        public bool LockOk(IDisposable l) => ((l) l).lockOk;
+        public bool LockOk(IDisposable l) => ((L)l).lockOk;
 
-        private struct l : IDisposable
+        private struct L : IDisposable
         {
             private Database db;
-            private DbAccount acc;
+            private readonly DbAccount acc;
             internal bool lockOk;
 
-            public l(Database db, DbAccount acc)
+            public L(Database db, DbAccount acc)
             {
                 this.db = db;
                 this.acc = acc;
@@ -176,7 +170,7 @@ namespace LoESoft.Core
         public string AcquireLock(string key)
         {
             string lockToken = Guid.NewGuid().ToString();
-            using (var trans = CreateTransaction())
+            using (var trans = Connection.CreateTransaction())
             {
                 trans.AddCondition(Condition.KeyNotExists(1, key));
 
@@ -189,7 +183,7 @@ namespace LoESoft.Core
 
         public void ReleaseLock(string key, string token)
         {
-            using (var trans = CreateTransaction())
+            using (var trans = Connection.CreateTransaction())
             {
                 trans.AddCondition(Condition.KeyEquals(1, key, token));
                 trans.Keys.Remove(1, key);
@@ -199,8 +193,8 @@ namespace LoESoft.Core
 
         public bool RenameUUID(DbAccount acc, string newUuid, string lockToken)
         {
-            string p = Hashes.GetString(0, "login", acc.UUID.ToUpperInvariant()).Exec();
-            using (var trans = CreateTransaction())
+            string p = Connection.Hashes.GetString(0, "login", acc.UUID.ToUpperInvariant()).Exec();
+            using (var trans = Connection.CreateTransaction())
             {
                 trans.AddCondition(Condition.KeyEquals(1, REG_LOCK, lockToken));
                 trans.Hashes.Remove(0, "login", acc.UUID.ToUpperInvariant());
@@ -217,11 +211,11 @@ namespace LoESoft.Core
         {
             if (Names.Contains(newName, StringComparer.InvariantCultureIgnoreCase))
                 return false;
-            using (var trans = CreateTransaction())
+            using (var trans = Connection.CreateTransaction())
             {
                 trans.AddCondition(Condition.KeyEquals(1, NAME_LOCK, lockToken));
-                Hashes.Remove(0, "names", acc.Name.ToUpperInvariant());
-                Hashes.Set(0, "names", newName.ToUpperInvariant(), acc.AccountId.ToString());
+                Connection.Hashes.Remove(0, "names", acc.Name.ToUpperInvariant());
+                Connection.Hashes.Set(0, "names", newName.ToUpperInvariant(), acc.AccountId.ToString());
                 if (!trans.Execute().Exec())
                     return false;
             }
@@ -250,17 +244,17 @@ namespace LoESoft.Core
         public RegisterStatus Register(string uuid, string password, bool isGuest, out DbAccount acc)
         {
             acc = null;
-            if (!Hashes.SetIfNotExists(0, "logins", uuid.ToUpperInvariant(), "{}").Exec())
+            if (!Connection.Hashes.SetIfNotExists(0, "logins", uuid.ToUpperInvariant(), "{}").Exec())
                 return RegisterStatus.UsedName;
 
-            int newAccId = (int) Strings.Increment(0, "nextAccId").Exec();
+            int newAccId = (int)Connection.Strings.Increment(0, "nextAccId").Exec();
 
             acc = new DbAccount(this, newAccId.ToString())
             {
-                AccountType = (int) AccountType.FREE_ACCOUNT,
+                AccountType = (int)AccountType.FREE_ACCOUNT,
                 AccountLifetime = DateTime.MinValue,
                 UUID = uuid,
-                Name = Names[(uint) uuid.GetHashCode() % Names.Length],
+                Name = Names[(uint)uuid.GetHashCode() % Names.Length],
                 Admin = false,
                 NameChosen = false,
                 Verified = Settings.STARTUP.VERIFIED,
@@ -313,7 +307,7 @@ namespace LoESoft.Core
             return RegisterStatus.OK;
         }
 
-        public bool HasUUID(string uuid) => Hashes.Exists(0, "login", uuid.ToUpperInvariant()).Exec();
+        public bool HasUUID(string uuid) => Connection.Hashes.Exists(0, "login", uuid.ToUpperInvariant()).Exec();
 
         public DbAccount GetAccountById(string id)
         {
@@ -334,11 +328,11 @@ namespace LoESoft.Core
             return ret;
         }
 
-        public string ResolveId(string name) => Hashes.GetString(0, "names", name.ToUpperInvariant()).Exec() == null ? "0" : Hashes.GetString(0, "names", name.ToUpperInvariant()).Exec();
+        public string ResolveId(string name) => Connection.Hashes.GetString(0, "names", name.ToUpperInvariant()).Exec() ?? "0";
 
-        public string ResolveIgn(string accId) => Hashes.GetString(0, $"account.{accId}", "name").Exec();
+        public string ResolveIgn(string accId) => Connection.Hashes.GetString(0, $"account.{accId}", "name").Exec();
 
-        public string ResolveIgn(DbAccount acc) => Hashes.GetString(0, $"account.{acc.AccountId}", "name").Exec();
+        public string ResolveIgn(DbAccount acc) => Connection.Hashes.GetString(0, $"account.{acc.AccountId}", "name").Exec();
 
         public void AddSkin(DbAccount acc, int skin)
         {
@@ -361,7 +355,7 @@ namespace LoESoft.Core
             boxList.Add(box);
             int[] result = boxList.ToArray();
             acc.PurchasedBoxes = result;
-            Hashes.Set(0, acc.Key, "PurchasedBoxes", Utils.GetCommaSepString(acc.PurchasedBoxes));
+            Connection.Hashes.Set(0, acc.Key, "PurchasedBoxes", Utils.GetCommaSepString(acc.PurchasedBoxes));
             Update(acc);
         }
 
@@ -371,36 +365,36 @@ namespace LoESoft.Core
             packageList.Add(package);
             int[] result = packageList.ToArray();
             acc.PurchasedPackages = result;
-            Hashes.Set(0, acc.Key, "purchasedPackages", Utils.GetCommaSepString(acc.PurchasedPackages));
+            Connection.Hashes.Set(0, acc.Key, "purchasedPackages", Utils.GetCommaSepString(acc.PurchasedPackages));
             Update(acc);
         }
 
         public void UpdateCredit(DbAccount acc, int amount)
         {
             if (amount > 0)
-                WaitAll(Hashes.Increment(0, acc.Key, "credits", amount));
+                Connection.WaitAll(Connection.Hashes.Increment(0, acc.Key, "credits", amount));
             else
-                Hashes.Increment(0, acc.Key, "credits", amount).Wait();
+                Connection.Hashes.Increment(0, acc.Key, "credits", amount).Wait();
             Update(acc);
         }
 
         public void UpdateFame(DbAccount acc, int amount)
         {
             if (amount > 0)
-                WaitAll(
-                    Hashes.Increment(0, acc.Key, "totalFame", amount),
-                    Hashes.Increment(0, acc.Key, "fame", amount));
+                Connection.WaitAll(
+                    Connection.Hashes.Increment(0, acc.Key, "totalFame", amount),
+                    Connection.Hashes.Increment(0, acc.Key, "fame", amount));
             else
-                Hashes.Increment(0, acc.Key, "fame", amount).Wait();
+                Connection.Hashes.Increment(0, acc.Key, "fame", amount).Wait();
             Update(acc);
         }
 
         public void UpdateTokens(DbAccount acc, int amount)
         {
             if (amount > 0)
-                WaitAll(Hashes.Increment(0, acc.Key, "fortuneTokens", amount));
+                Connection.WaitAll(Connection.Hashes.Increment(0, acc.Key, "fortuneTokens", amount));
             else
-                Hashes.Increment(0, acc.Key, "fortuneTokens", amount).Wait();
+                Connection.Hashes.Increment(0, acc.Key, "fortuneTokens", amount).Wait();
             Update(acc);
         }
 
@@ -408,7 +402,7 @@ namespace LoESoft.Core
         {
             acc.AccountLifetime = DateTime.Now;
             acc.AccountLifetime = acc.AccountLifetime.AddDays(amount);
-            acc.AccountType = (int) accType;
+            acc.AccountType = (int)accType;
             Update(acc);
         }
 
@@ -424,7 +418,7 @@ namespace LoESoft.Core
 
         public int CreateChest(DbVault vault)
         {
-            int id = (int) Hashes.Increment(0, vault.Account.Key, "vaultCount").Exec();
+            int id = (int)Connection.Hashes.Increment(0, vault.Account.Key, "vaultCount").Exec();
             int newid = id - 1; //since index of vaults is zero it'll be reduced by 1 then incremented to index again
             vault[newid] = Enumerable.Repeat(-1, 8).ToArray();
             vault.Flush();
@@ -448,36 +442,36 @@ namespace LoESoft.Core
         public DbChar GetAliveCharacter(DbAccount acc)
         {
             int chara = 1;
-            foreach (var i in Sets.GetAll(0, "alive." + acc.AccountId).Exec().Reverse())
+            foreach (var i in Connection.Sets.GetAll(0, "alive." + acc.AccountId).Exec().Reverse())
                 chara = BitConverter.ToInt32(i, 0);
             return LoadCharacter(acc, chara);
         }
 
         public IEnumerable<int> GetAliveCharacters(DbAccount acc)
         {
-            foreach (var i in Sets.GetAll(0, "alive." + acc.AccountId).Exec())
+            foreach (var i in Connection.Sets.GetAll(0, "alive." + acc.AccountId).Exec())
                 yield return BitConverter.ToInt32(i, 0);
         }
 
         public IEnumerable<int> GetDeadCharacters(DbAccount acc)
         {
-            foreach (var i in Lists.Range(0, "dead." + acc.AccountId, 0, int.MaxValue).Exec())
+            foreach (var i in Connection.Lists.Range(0, "dead." + acc.AccountId, 0, int.MaxValue).Exec())
                 yield return BitConverter.ToInt32(i, 0);
         }
 
-        public bool IsAlive(DbChar character) => Sets.Contains(0, $"alive.{character.Account.AccountId}", BitConverter.GetBytes(character.CharId)).Exec();
+        public bool IsAlive(DbChar character) => Connection.Sets.Contains(0, $"alive.{character.Account.AccountId}", BitConverter.GetBytes(character.CharId)).Exec();
 
         public CreateStatus CreateCharacter(EmbeddedData dat, DbAccount acc, ushort type, int skin, out DbChar character)
         {
             var @class = dat.ObjectTypeToElement[type];
 
-            if (Sets.GetLength(0, "alive." + acc.AccountId).Exec() >= acc.MaxCharSlot)
+            if (Connection.Sets.GetLength(0, "alive." + acc.AccountId).Exec() >= acc.MaxCharSlot)
             {
                 character = null;
                 return CreateStatus.ReachCharLimit;
             }
 
-            int newId = (int) Hashes.Increment(0, acc.Key, "nextCharId").Exec();
+            int newId = (int)Connection.Hashes.Increment(0, acc.Key, "nextCharId").Exec();
             character = new DbChar(acc, newId)
             {
                 //LootCaches = new LootCache[] { },
@@ -509,7 +503,7 @@ namespace LoESoft.Core
                 LastSeen = DateTime.Now
             };
             character.Flush();
-            Sets.Add(0, "alive." + acc.AccountId, BitConverter.GetBytes(newId));
+            Connection.Sets.Add(0, "alive." + acc.AccountId, BitConverter.GetBytes(newId));
             return CreateStatus.OK;
         }
 
@@ -536,7 +530,7 @@ namespace LoESoft.Core
 
         public bool SaveCharacter(DbAccount acc, DbChar character, bool lockAcc)
         {
-            using (var trans = CreateTransaction())
+            using (var trans = Connection.CreateTransaction())
             {
                 if (lockAcc)
                     trans.AddCondition(Condition.KeyEquals(1,
@@ -551,10 +545,10 @@ namespace LoESoft.Core
 
         public void DeleteCharacter(DbAccount acc, int charId)
         {
-            Keys.Remove(0, $"char.{acc.AccountId}.{charId}");
+            Connection.Keys.Remove(0, $"char.{acc.AccountId}.{charId}");
             var buff = BitConverter.GetBytes(charId);
-            Sets.Remove(0, $"alive.{acc.AccountId}", buff);
-            Lists.Remove(0, $"dead.{acc.AccountId}", buff);
+            Connection.Sets.Remove(0, $"alive.{acc.AccountId}", buff);
+            Connection.Lists.Remove(0, $"dead.{acc.AccountId}", buff);
         }
 
         public void Death(EmbeddedData dat, DbAccount acc, DbChar character, FameStats stats, string killer)
@@ -574,8 +568,8 @@ namespace LoESoft.Core
             death.Flush();
 
             var idBuff = BitConverter.GetBytes(character.CharId);
-            Sets.Remove(0, $"alive.{acc.AccountId}", idBuff);
-            Lists.AddFirst(0, $"dead.{acc.AccountId}", idBuff);
+            Connection.Sets.Remove(0, $"alive.{acc.AccountId}", idBuff);
+            Connection.Lists.AddFirst(0, $"dead.{acc.AccountId}", idBuff);
 
             UpdateFame(acc, finalFame);
 
@@ -590,7 +584,7 @@ namespace LoESoft.Core
 
         public void VerifyAge(DbAccount acc)
         {
-            Hashes.Set(0, acc.Key, "isAgeVerified", "1");
+            Connection.Hashes.Set(0, acc.Key, "isAgeVerified", "1");
             Update(acc);
         }
 
@@ -600,7 +594,7 @@ namespace LoESoft.Core
             if (acc.Credits < (price = data.ObjectDescs[type].UnlockCost))
                 return;
 
-            Hashes.Set(0, $"classAvailability.{acc.AccountId}", type.ToString(),
+            Connection.Hashes.Set(0, $"classAvailability.{acc.AccountId}", type.ToString(),
                 JsonConvert.SerializeObject(new DbClassAvailabilityEntry()
                 {
                     Id = data.ObjectTypeToId[type],
@@ -626,19 +620,19 @@ namespace LoESoft.Core
 
         public void MuteAccount(DbAccount acc)
         {
-            Hashes.Set(0, acc.Key, "muted", "1");
+            Connection.Hashes.Set(0, acc.Key, "muted", "1");
             Update(acc);
         }
 
         public void UnmuteAccount(DbAccount acc)
         {
-            Hashes.Set(0, acc.Key, "muted", "0");
+            Connection.Hashes.Set(0, acc.Key, "muted", "0");
             Update(acc);
         }
 
         public void BanAccount(DbAccount acc)
         {
-            Hashes.Set(0, acc.Key, "banned", "1");
+            Connection.Hashes.Set(0, acc.Key, "banned", "1");
             Update(acc);
         }
 
@@ -694,8 +688,10 @@ namespace LoESoft.Core
             }
             catch
             {
-                List<int> x = new List<int>();
-                x.Add(lockId);
+                List<int> x = new List<int>
+                {
+                    lockId
+                };
                 int[] result = x.ToArray();
                 acc.Locked = result;
                 Update(acc);
@@ -724,8 +720,10 @@ namespace LoESoft.Core
             }
             catch
             {
-                List<int> x = new List<int>();
-                x.Add(lockId);
+                List<int> x = new List<int>
+                {
+                    lockId
+                };
                 int[] result = x.ToArray();
                 acc.Ignored = result;
                 Update(acc);
@@ -741,8 +739,8 @@ namespace LoESoft.Core
 
             guildName = guildName.Trim();
 
-            int newGuildId = (int) Strings.Increment(0, "newGuildId").Exec();
-            if (!Hashes.SetIfNotExists(0, "guilds", guildName.ToUpperInvariant(), Convert.ToString(newGuildId)).Exec())
+            int newGuildId = (int)Connection.Strings.Increment(0, "newGuildId").Exec();
+            if (!Connection.Hashes.SetIfNotExists(0, "guilds", guildName.ToUpperInvariant(), Convert.ToString(newGuildId)).Exec())
                 return GuildCreateStatus.UsedName;
 
             guild = new DbGuild(this, newGuildId)
@@ -791,9 +789,10 @@ namespace LoESoft.Core
 
             if (guild.Members == null)
             {
-                List<int> gfounder = new List<int>();
-
-                gfounder.Add(Convert.ToInt32(acc.AccountId));
+                List<int> gfounder = new List<int>
+                {
+                    Convert.ToInt32(acc.AccountId)
+                };
                 guild.Members = gfounder.ToArray();
             }
             else
@@ -834,7 +833,7 @@ namespace LoESoft.Core
             var idBuff = BitConverter.GetBytes(guild.Id);
 
             if (members.Count <= 0)
-                using (var t = CreateTransaction())
+                using (var t = Connection.CreateTransaction())
                     t.Hashes.Remove(0, "guilds", guild.Name.ToUpperInvariant());
 
             acc.GuildId = "-1";

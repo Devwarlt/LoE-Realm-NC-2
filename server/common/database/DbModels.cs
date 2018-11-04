@@ -26,6 +26,7 @@ namespace LoESoft.Core
             fields =
                 new ConcurrentDictionary<string, KeyValuePair<byte[], bool>>(
                     db
+                    .Connection
                     .Hashes
                     .GetAll(0, key)
                     .Exec()
@@ -115,7 +116,7 @@ namespace LoESoft.Core
                 if (i.Value.Value)
                     update.Add(i.Key, i.Value.Key);
 
-            Database.Hashes.Set(0, Key, update);
+            Database.Connection.Hashes.Set(0, Key, update);
         }
 
         public void Flush(RedisConnection conn = null)
@@ -127,7 +128,7 @@ namespace LoESoft.Core
             foreach (var i in fields)
                 if (i.Value.Value)
                     update.Add(i.Key, i.Value.Key);
-            (conn ?? Database).Hashes.Set(0, Key, update);
+            (conn ?? Database.Connection).Hashes.Set(0, Key, update);
         }
 
         public void Reload()    //Discard all updates
@@ -138,6 +139,7 @@ namespace LoESoft.Core
             fields =
                 new ConcurrentDictionary<string, KeyValuePair<byte[], bool>>(
                     Database
+                    .Connection
                     .Hashes
                     .GetAll(0, Key)
                     .Exec()
@@ -159,7 +161,7 @@ namespace LoESoft.Core
         {
             Db = db;
             UUID = uuid;
-            var json = db.Hashes.GetString(0, "logins", uuid.ToUpperInvariant()).Exec();
+            var json = db.Connection.Hashes.GetString(0, "logins", uuid.ToUpperInvariant()).Exec();
             if (json == null)
                 IsNull = true;
             else
@@ -178,7 +180,7 @@ namespace LoESoft.Core
 
         public void Flush()
         {
-            Db.Hashes.Set(0, "logins", UUID.ToUpperInvariant(), JsonConvert.SerializeObject(this));
+            Db.Connection.Hashes.Set(0, "logins", UUID.ToUpperInvariant(), JsonConvert.SerializeObject(this));
         }
     }
 
@@ -787,7 +789,7 @@ namespace LoESoft.Core
     {
         public DbNews(Database db, int count)
         {
-            News = db.SortedSets.Range(0, "news", 0, 10, false).Exec()
+            News = db.Connection.SortedSets.Range(0, "news", 0, 10, false).Exec()
                 .Select(x =>
                 {
                     var ret = JsonConvert.DeserializeObject<DbNewsEntry>(
@@ -844,7 +846,7 @@ namespace LoESoft.Core
             else
                 begin = 0;
 
-            Entries = db.SortedSets.Range(0, "legends", begin, double.PositiveInfinity, false, count: count).Exec()
+            Entries = db.Connection.SortedSets.Range(0, "legends", begin, double.PositiveInfinity, false, count: count).Exec()
                 .Select(x => new DbLegendEntry()
                 {
                     TotalFame = BitConverter.ToInt32(x.Key, 0),
@@ -862,7 +864,7 @@ namespace LoESoft.Core
             Buffer.BlockCopy(BitConverter.GetBytes(entry.TotalFame), 0, buff, 0, 4);
             Buffer.BlockCopy(BitConverter.GetBytes(entry.AccId), 0, buff, 4, 4);
             Buffer.BlockCopy(BitConverter.GetBytes(entry.ChrId), 0, buff, 8, 4);
-            db.SortedSets.Add(0, "legends", buff, t);
+            db.Connection.SortedSets.Add(0, "legends", buff, t);
         }
 
         private DbLegendEntry[] Entries { get; set; }

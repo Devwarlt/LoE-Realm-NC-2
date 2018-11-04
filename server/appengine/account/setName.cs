@@ -37,7 +37,7 @@ namespace LoESoft.AppEngine.account
                     while ((lockToken = Database.AcquireLock(key)) == null)
                         ;
 
-                    if (Database.Hashes.Exists(0, "names", name.ToUpperInvariant()).Exec())
+                    if (Database.Connection.Hashes.Exists(0, "names", name.ToUpperInvariant()).Exec())
                     {
                         WriteErrorLine("Duplicated name");
                         return;

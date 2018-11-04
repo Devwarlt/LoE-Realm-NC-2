@@ -4,6 +4,12 @@ using LoESoft.GameServer.logic.transitions;
 
 namespace LoESoft.GameServer.logic
 {
+    public class GodParams
+    {
+        public const int MAX_AMOUNT = 2;
+        public const int RANGE = 48;
+    }
+
     partial class BehaviorDb
     {
         private _ MountainsGods = () => Behav()
@@ -16,7 +22,7 @@ namespace LoESoft.GameServer.logic
                         new Wander()
                         ),
                     new Shoot(10, shoots: 3, shootAngle: 20, aim: 1, coolDown: 500),
-                    new Reproduce(max: 3)
+                    new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE)
                     ),
                 new Threshold(.01,
                     new TierLoot(6, ItemType.Weapon, 0.04),
@@ -41,7 +47,7 @@ namespace LoESoft.GameServer.logic
                         ),
                     new Shoot(12, index: 0, shoots: 4, shootAngle: 10),
                     new Shoot(10, index: 1, aim: 1),
-                    new Reproduce(max: 3),
+                    new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE),
                     new Reproduce("Sprite Child", 35, 5, 0, 5000)
                     ),
                 new Threshold(.01,
@@ -80,7 +86,7 @@ namespace LoESoft.GameServer.logic
                         ),
                     new Shoot(12, shoots: 5, shootAngle: 10, coolDown: 1000),
                     new Grenade(4, 150, range: 8, coolDown: 3000),
-                    new Reproduce(max: 3)
+                    new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE)
                     ),
                 new Threshold(.01,
                     new TierLoot(6, ItemType.Weapon, 0.04),
@@ -106,7 +112,7 @@ namespace LoESoft.GameServer.logic
                         new Wander()
                         ),
                     new Shoot(12, shoots: 5, shootAngle: 10, aim: 1, coolDown: 1250),
-                    new Reproduce(max: 3)
+                    new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE)
                     ),
                 new Threshold(.01,
                     new TierLoot(6, ItemType.Weapon, 0.04),
@@ -131,7 +137,7 @@ namespace LoESoft.GameServer.logic
                         ),
                     new Shoot(12, index: 0, shoots: 5, shootAngle: 72, aim: 0.5, coolDown: 750),
                     new Shoot(10, index: 1, aim: 1),
-                    new Reproduce(max: 3)
+                    new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE)
                     ),
                 new Threshold(.01,
                     new TierLoot(6, ItemType.Weapon, 0.04),
@@ -156,7 +162,7 @@ namespace LoESoft.GameServer.logic
                         new Wander()
                         ),
                     new Shoot(12, shoots: 5, shootAngle: 72, coolDown: 500),
-                    new Reproduce(max: 3),
+                    new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE),
                     new DropPortalOnDeath("Mad Lab Portal", .17)
                     ),
                 new Threshold(.01,
@@ -182,7 +188,7 @@ namespace LoESoft.GameServer.logic
                         ),
                     new Shoot(12, index: 0, shoots: 5, shootAngle: 10, aim: 1, coolDown: 1000),
                     new Shoot(10, index: 1, aim: 1, coolDown: 650),
-                    new Reproduce(max: 2)
+                    new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE)
                     ),
                 new Threshold(.01,
                     new TierLoot(6, ItemType.Weapon, 0.04),
@@ -206,7 +212,7 @@ namespace LoESoft.GameServer.logic
                         new Wander()
                         ),
                     new Shoot(12, shoots: 7, shootAngle: 25, aim: 0.5, coolDown: 900),
-                    new Reproduce(max: 3),
+                    new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE),
                     new DropPortalOnDeath("Undead Lair Portal", 0.17)
                     ),
                 new Threshold(.01,
@@ -324,8 +330,8 @@ namespace LoESoft.GameServer.logic
                             new StayAbove(10, 200),
                             new Wander(8)
                             ),
-                        new AddCond(ConditionEffectIndex.Invulnerable), // ok
-                        new Reproduce(max: 3, radius: 20),
+                        new AddCond(ConditionEffectIndex.Invulnerable), // ok,
+                        new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE),
                         new PlayerWithinTransition(8, "Attacking")
                         ),
                     new State("Attacking",

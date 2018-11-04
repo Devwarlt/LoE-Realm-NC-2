@@ -49,32 +49,32 @@ namespace LoESoft.AppEngine
 
             XmlConfigurator.ConfigureAndWatch(new FileInfo("_appengine.config"));
 
-            using (Database = new Database())
-            {
-                GameData = new EmbeddedData();
+            Database = new Database();
+            GameData = new EmbeddedData();
 
-                InstanceId = Guid.NewGuid().ToString();
+            InstanceId = Guid.NewGuid().ToString();
 
-                Manager = new ISManager();
-                Manager.Run();
+            Manager = new ISManager();
+            Manager.Run();
 
-                Log.Info("Initializing AppEngine...");
+            Log.Info("Initializing AppEngine...");
 
-                AppEngineManager = new AppEngineManager(Restart);
-                AppEngineManager.Start();
+            AppEngineManager = new AppEngineManager(Restart);
+            AppEngineManager.Start();
 
-                Console.Title = Settings.APPENGINE.TITLE;
+            Console.Title = Settings.APPENGINE.TITLE;
 
-                while (Console.ReadKey(true).Key != ConsoleKey.Escape)
-                    ;
+            while (Console.ReadKey(true).Key != ConsoleKey.Escape)
+                ;
 
-                AppEngineManager._shutdown = true;
+            Database.Connection.Dispose();
 
-                Log.Warn("Terminating AppEngine, disposing all instances.");
+            AppEngineManager._shutdown = true;
 
-                var webSocketIAsyncResult = new WebSocketDelegate(AppEngineManager.SafeShutdown).BeginInvoke(new AsyncCallback(AppEngineManager.SafeDispose), null);
-                webSocketIAsyncResult.AsyncWaitHandle.WaitOne(5000, true);
-            }
+            Log.Warn("Terminating AppEngine, disposing all instances.");
+
+            var webSocketIAsyncResult = new WebSocketDelegate(AppEngineManager.SafeShutdown).BeginInvoke(new AsyncCallback(AppEngineManager.SafeDispose), null);
+            webSocketIAsyncResult.AsyncWaitHandle.WaitOne(5000, true);
         }
     }
 }

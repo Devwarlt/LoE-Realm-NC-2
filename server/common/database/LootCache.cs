@@ -14,7 +14,7 @@ namespace LoESoft.Core
         public class Utils
         {
             public static bool ContainsIn(List<LootCache> caches, string objectId)
-                => caches.Where(cache => cache.ObjectId == objectId).FirstOrDefault() != null;
+                => caches.Where(cache => cache.ObjectId == objectId).ToList().Count != 0;
 
             public static void UpdateTotal(List<LootCache> caches, string objectId)
                 => caches.Where(cache => cache.ObjectId == objectId).Select(cache =>

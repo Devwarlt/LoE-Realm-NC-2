@@ -1,5 +1,6 @@
 ﻿#region
 
+using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm;
 using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
@@ -16,12 +17,14 @@ namespace LoESoft.GameServer.logic.loot
         public readonly Item Item;
         public readonly double Probabilty;
         public readonly string LootState;
+        public readonly bool WhiteBag;
 
-        public LootDef(Item item, double probabilty, string lootState)
+        public LootDef(Item item, double probabilty, string lootState, bool whiteBag = false)
         {
             Item = item;
             Probabilty = probabilty;
             LootState = lootState;
+            WhiteBag = whiteBag;
         }
     }
 
@@ -78,7 +81,7 @@ namespace LoESoft.GameServer.logic.loot
 
                 Tuple<Player, int>[] dats = enemy.DamageCounter.GetPlayerData();
                 Dictionary<Player, IList<Item>> loots = enemy.DamageCounter.GetPlayerData().ToDictionary(
-                    d => d.Item1, d => (IList<Item>) new List<Item>());
+                    d => d.Item1, d => (IList<Item>)new List<Item>());
 
                 foreach (Item loot in sharedLoots.Where(item => item.BagType > 1)) //Hope fixed item doesn't need to be soulbound only
                     loots[dats[rand.Next(dats.Length)].Item1].Add(loot);
@@ -101,6 +104,22 @@ namespace LoESoft.GameServer.logic.loot
                                     playerLoot.Add(IncreaseTier(GameServer.Manager, i.Item, consideration));
                                 else
                                     playerLoot.Add(i.Item);
+
+                                if (i.WhiteBag)
+                                    GameServer.Manager.ClientManager.Values.Select(client =>
+                                    {
+                                        client.Client.SendMessage(new TEXT()
+                                        {
+                                            BubbleTime = 0,
+                                            Stars = -1,
+                                            Name = "@ANNOUNCEMENT",
+                                            Text = $" {dat.Item1.Name} dropped a white bag item '{i.Item.DisplayId}'!",
+                                            NameColor = 0x123456,
+                                            TextColor = 0x123456
+                                        });
+
+                                        return client;
+                                    }).ToList();
                             }
                         }
                     }
@@ -212,8 +231,8 @@ namespace LoESoft.GameServer.logic.loot
                 container.Inventory[j] = items[j];
             container.BagOwners = owners;
             container.Move(
-                enemy.X + (float) ((rand.NextDouble() * 2 - 1) * 0.5),
-                enemy.Y + (float) ((rand.NextDouble() * 2 - 1) * 0.5));
+                enemy.X + (float)((rand.NextDouble() * 2 - 1) * 0.5),
+                enemy.Y + (float)((rand.NextDouble() * 2 - 1) * 0.5));
             container.Size = 80;
             enemy.Owner.EnterWorld(container);
         }
