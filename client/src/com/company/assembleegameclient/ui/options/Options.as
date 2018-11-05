@@ -26,6 +26,8 @@ import flash.ui.Mouse;
 import flash.ui.MouseCursor;
 import flash.ui.MouseCursorData;
 
+import kabam.rotmg.core.StaticInjectorContext;
+
 import kabam.rotmg.game.view.components.StatView;
 import kabam.rotmg.text.model.TextKey;
 import kabam.rotmg.text.view.TextFieldDisplayConcrete;
@@ -33,6 +35,7 @@ import kabam.rotmg.text.view.stringBuilder.LineBuilder;
 import kabam.rotmg.text.view.stringBuilder.StaticStringBuilder;
 import kabam.rotmg.text.view.stringBuilder.StringBuilder;
 import kabam.rotmg.ui.UIUtils;
+import kabam.rotmg.ui.signals.ToggleShowTierTagSignal;
 
 public class Options extends Sprite {
 

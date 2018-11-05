@@ -42,12 +42,6 @@ namespace LoESoft.AppEngine.account
                         return;
                     }
 
-                    if (DateTime.UtcNow <= package.EndDate)
-                    {
-                        WriteLine("<Error>This package over already.</Error>");
-                        return;
-                    }
-
                     if (Database.CheckPackage(acc, package.PackageId, package.MaxPurchase))
                     {
                         WriteLine($"<Error>You can only purchase {package.Name} {package.MaxPurchase} time{((package.MaxPurchase <= 1) ? "" : "s")}.</Error>");

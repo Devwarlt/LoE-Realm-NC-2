@@ -71,9 +71,7 @@ public class CurrentCharacterMediator extends Mediator {
         this.view.showPackageButton();
     }
 
-    private function onBeginner():void {
-        this.view.showBeginnersOfferButton();
-    }
+    private function onBeginner():void { }
 
     override public function destroy():void {
         this.nameChanged.remove(this.onNameChanged);

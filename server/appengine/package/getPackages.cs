@@ -66,8 +66,7 @@ namespace LoESoft.AppEngine.package
                             int maxpurchase_ = Convert.ToInt32(packageResponse[i]["MaxPurchase"].InnerText);
                             int weight_ = Convert.ToInt32(packageResponse[i]["Weight"].InnerText);
                             string bgurl_ = packageResponse[i]["BgURL"].InnerText;
-                            var date = packageResponse[i]["EndDate"].InnerText;
-                            DateTime enddate_ = UnixTimeStampToDateTime(Convert.ToDouble(date.Remove(date.Length - 3)));
+                            DateTime enddate_ = UnixTimeStampToDateTime(Convert.ToDouble(packageResponse[i]["EndDate"].InnerText));
                             string contents_ = packageResponse[i]["Contents"].InnerText;
                             return new SerializePackageResponse
                             {

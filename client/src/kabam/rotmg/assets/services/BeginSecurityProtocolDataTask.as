@@ -74,9 +74,9 @@ public class BeginSecurityProtocolDataTask extends BaseTask {
 
     private function onTextError():void {
         var _local1:String = (
-                "Max number of attempts reached limit and server detected invalid protocols into " +
-                "your client, make sure to use properly game client to avoid this message.\n\n" +
-                "Kind Regards, LoESoft"
+            "Max number of attempts reached limit and server detected invalid protocols into " +
+            "your client, make sure to use properly game client to avoid this message.\n\n" +
+            "Kind Regards, LoESoft"
         );
         var _local2:ErrorDialog = new ErrorDialog(_local1, true);
         this.openDialog.dispatch(_local2);
