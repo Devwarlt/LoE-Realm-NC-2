@@ -215,6 +215,7 @@ namespace LoESoft.GameServer.realm.entity.player
             ExportMonsterCaches(MonsterCaches);
 
             var chr = Client.Character;
+            //chr.LootCaches = LootCaches.ToArray();
             chr.Experience = Experience;
             chr.Level = Level;
             chr.Tex1 = Texture1;

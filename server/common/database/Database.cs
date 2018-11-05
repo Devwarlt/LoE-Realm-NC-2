@@ -472,6 +472,7 @@ namespace LoESoft.Core
             int newId = (int)Connection.Hashes.Increment(0, acc.Key, "nextCharId").Exec();
             character = new DbChar(acc, newId)
             {
+                //LootCaches = new LootCache[] { },
                 ObjectType = type,
                 Level = 1,
                 Experience = 0,

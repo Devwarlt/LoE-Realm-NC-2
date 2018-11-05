@@ -109,7 +109,7 @@ namespace LoESoft.GameServer.logic.loot
             _rnd = rnd;
             _lootState = lootState;
             _lootDefs = lootDefs;
-
+            
             var players = _enemy.DamageCounter.GetPlayerData().ToList();
 
             PlayersData = players.Where(player => player.Item1 != null).Select(player => player.Item1).ToList();
@@ -513,9 +513,6 @@ namespace LoESoft.GameServer.logic.loot
 
             var whitebag = new ILootDef[] { new Drops(new ItemLoot(itemName, probability * (eventChest ? .8 : 1), true)) };
             whitebag[0].Populate(enemy, playerData, rnd, Lootstate, lootDefs);
-
-            //var booster = new LootBoosters(0.001, enemy, playerData, rnd, lootState, lootDefs);
-            //booster.UpdateLootCache(itemName, new ILootDef[] { new Drops(new ItemLoot(itemName, 1)) });
         }
     }
 
