@@ -2,6 +2,7 @@
 
 using LoESoft.Core;
 using LoESoft.Core.config;
+using LoESoft.Core.database;
 using LoESoft.GameServer.logic;
 using LoESoft.GameServer.logic.skills.Pets;
 using LoESoft.GameServer.networking;
@@ -38,7 +39,10 @@ namespace LoESoft.GameServer.realm.entity.player
             {
                 if (client.Account.Admin == true)
                     Admin = 1;
-                LootCaches = ImportLootCaches();
+                Achievements = new List<string>();
+                ActualTask = null;
+                MonsterCaches = new List<MonsterCache>();
+                Task = null;
                 AccountType = client.Account.AccountType;
                 AccountPerks = new AccountTypePerks(AccountType);
                 AccountLifetime = client.Account.AccountLifetime;
@@ -48,14 +52,13 @@ namespace LoESoft.GameServer.realm.entity.player
                 Name = client.Account.Name;
                 AccountId = client.Account.AccountId;
                 FameCounter = new FameCounter(this);
-                //TaskManager = new TaskManager(this); // pending addition for future versions
                 Tokens = client.Account.FortuneTokens;
                 HpPotionPrice = 5;
                 MpPotionPrice = 5;
                 Level = client.Character.Level == 0 ? 1 : client.Character.Level;
                 Experience = client.Character.Experience;
                 ExperienceGoal = GetExpGoal(Level);
-                Stars = AccountType >= (int) Core.config.AccountType.LEGENDS_OF_LOE_ACCOUNT ? 70 : GetStars();
+                Stars = AccountType >= (int)Core.config.AccountType.LEGENDS_OF_LOE_ACCOUNT ? 70 : GetStars();
                 Texture1 = client.Character.Tex1;
                 Texture2 = client.Character.Tex2;
                 Credits = client.Account.Credits;
@@ -69,20 +72,20 @@ namespace LoESoft.GameServer.realm.entity.player
                     PetHealing = new List<List<int>>();
                     PetAttack = new List<int>();
                     PetID = client.Character.Pet;
-                    Tuple<int, int, double> HPData = PetHPHealing.MinMaxBonus(Resolve((ushort) PetID).ObjectDesc.HPTier, Stars);
-                    Tuple<int, int, double> MPData = PetMPHealing.MinMaxBonus(Resolve((ushort) PetID).ObjectDesc.MPTier, Stars);
-                    PetHealing.Add(new List<int> { HPData.Item1, HPData.Item2, (int) ((HPData.Item3 - 1) * 100) });
-                    PetHealing.Add(new List<int> { MPData.Item1, MPData.Item2, (int) ((MPData.Item3 - 1) * 100) });
+                    Tuple<int, int, double> HPData = PetHPHealing.MinMaxBonus(Resolve((ushort)PetID).ObjectDesc.HPTier, Stars);
+                    Tuple<int, int, double> MPData = PetMPHealing.MinMaxBonus(Resolve((ushort)PetID).ObjectDesc.MPTier, Stars);
+                    PetHealing.Add(new List<int> { HPData.Item1, HPData.Item2, (int)((HPData.Item3 - 1) * 100) });
+                    PetHealing.Add(new List<int> { MPData.Item1, MPData.Item2, (int)((MPData.Item3 - 1) * 100) });
                     PetAttack.Add(7750 - Stars * 100);
                     PetAttack.Add(30 + Stars);
-                    PetAttack.Add(Resolve((ushort) PetID).ObjectDesc.Projectiles[0].MinDamage);
-                    PetAttack.Add(Resolve((ushort) PetID).ObjectDesc.Projectiles[0].MaxDamage);
+                    PetAttack.Add(Resolve((ushort)PetID).ObjectDesc.Projectiles[0].MinDamage);
+                    PetAttack.Add(Resolve((ushort)PetID).ObjectDesc.Projectiles[0].MaxDamage);
                 }
                 LootDropBoostTimeLeft = client.Character.LootDropTimer;
                 lootDropBoostFreeTimer = LootDropBoost;
                 LootTierBoostTimeLeft = client.Character.LootTierTimer;
                 lootTierBoostFreeTimer = LootTierBoost;
-                FameGoal = (AccountType >= (int) Core.config.AccountType.LEGENDS_OF_LOE_ACCOUNT) ? 0 : GetFameGoal(FameCounter.ClassStats[ObjectType].BestFame);
+                FameGoal = (AccountType >= (int)Core.config.AccountType.LEGENDS_OF_LOE_ACCOUNT) ? 0 : GetFameGoal(FameCounter.ClassStats[ObjectType].BestFame);
                 Glowing = false;
                 DbGuild guild = GameServer.Manager.Database.GetGuild(client.Account.GuildId);
                 if (guild != null)
@@ -95,7 +98,7 @@ namespace LoESoft.GameServer.realm.entity.player
                     Guild = "";
                     GuildRank = -1;
                 }
-                HP = client.Character.HP <= 0 ? (int) ObjectDesc.MaxHP : client.Character.HP;
+                HP = client.Character.HP <= 0 ? (int)ObjectDesc.MaxHP : client.Character.HP;
                 MP = client.Character.MP;
                 ConditionEffects = 0;
                 OxygenBar = 100;
@@ -119,14 +122,14 @@ namespace LoESoft.GameServer.realm.entity.player
                             _ =>
                                 _ == -1
                                     ? null
-                                    : (GameServer.Manager.GameData.Items.ContainsKey((ushort) _) ? GameServer.Manager.GameData.Items[(ushort) _] : null))
+                                    : (GameServer.Manager.GameData.Items.ContainsKey((ushort)_) ? GameServer.Manager.GameData.Items[(ushort)_] : null))
                             .ToArray();
                     Item[] backpack =
                         client.Character.Backpack.Select(
                             _ =>
                                 _ == -1
                                     ? null
-                                    : (GameServer.Manager.GameData.Items.ContainsKey((ushort) _) ? GameServer.Manager.GameData.Items[(ushort) _] : null))
+                                    : (GameServer.Manager.GameData.Items.ContainsKey((ushort)_) ? GameServer.Manager.GameData.Items[(ushort)_] : null))
                             .ToArray();
 
                     Inventory = inv.Concat(backpack).ToArray();
@@ -147,7 +150,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                 _ =>
                                     _ == -1
                                         ? null
-                                        : (GameServer.Manager.GameData.Items.ContainsKey((ushort) _) ? GameServer.Manager.GameData.Items[(ushort) _] : null))
+                                        : (GameServer.Manager.GameData.Items.ContainsKey((ushort)_) ? GameServer.Manager.GameData.Items[(ushort)_] : null))
                                 .ToArray();
                     XElement xElement = GameServer.Manager.GameData.ObjectTypeToElement[ObjectType].Element("SlotTypes");
                     if (xElement != null)
@@ -155,13 +158,13 @@ namespace LoESoft.GameServer.realm.entity.player
                             Utils.FromCommaSepString32(
                                 xElement.Value);
                 }
-                Stats = (int[]) client.Character.Stats.Clone();
+                Stats = (int[])client.Character.Stats.Clone();
 
                 for (var i = 0; i < SlotTypes.Length; i++)
                     if (SlotTypes[i] == 0)
                         SlotTypes[i] = 10;
 
-                if (Client.Account.AccountType >= (int) Core.config.AccountType.TUTOR_ACCOUNT)
+                if (Client.Account.AccountType >= (int)Core.config.AccountType.TUTOR_ACCOUNT)
                     return;
 
                 for (var i = 0; i < 4; i++)
@@ -198,7 +201,7 @@ namespace LoESoft.GameServer.realm.entity.player
                         {
                             RestartPrice = 100
                         });
-                        HP = (int) ObjectDesc.MaxHP;
+                        HP = (int)ObjectDesc.MaxHP;
                         ApplyConditionEffect(new ConditionEffect
                         {
                             Effect = ConditionEffectIndex.Paused,
@@ -291,7 +294,7 @@ namespace LoESoft.GameServer.realm.entity.player
             SetNewbiePeriod();
             base.Init(owner);
             List<int> gifts = Client.Account.Gifts.ToList();
-            if (owner.Id == (int) WorldID.NEXUS_ID || owner.Name == "Vault")
+            if (owner.Id == (int)WorldID.NEXUS_ID || owner.Name == "Vault")
             {
                 Client.SendMessage(new GLOBAL_NOTIFICATION
                 {
@@ -303,7 +306,7 @@ namespace LoESoft.GameServer.realm.entity.player
             {
                 HatchlingPet = false;
                 HatchlingNotification = false;
-                Pet = Resolve((ushort) PetID);
+                Pet = Resolve((ushort)PetID);
                 Pet.Move(x, y);
                 Pet.SetPlayerOwner(this);
                 Owner.EnterWorld(Pet);
@@ -315,7 +318,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
             CheckSetTypeSkin();
 
-            if ((AccountType) AccountType == Core.config.AccountType.LOESOFT_ACCOUNT)
+            if ((AccountType)AccountType == Core.config.AccountType.LOESOFT_ACCOUNT)
             {
                 ConditionEffect invincible = new ConditionEffect
                 {
@@ -335,6 +338,13 @@ namespace LoESoft.GameServer.realm.entity.player
             }
 
             ApplyConditionEffect(AccountPerks.SetAccountTypeIcon());
+
+            Achievements = ImportAchivementCache();
+            ActualTask = ImportTaskCache();
+            MonsterCaches = ImportMonsterCaches();
+
+            if (ActualTask != null)
+                Task = GameTask.Tasks[ActualTask];
         }
 
         public void Teleport(RealmTime time, TELEPORT packet)
@@ -492,21 +502,21 @@ namespace LoESoft.GameServer.realm.entity.player
             newFame += Math.Max(0, Math.Min(80000, Experience) - 45200) * 0.003;
             newFame += Math.Max(0, Math.Min(101200, Experience) - 80000) * 0.002;
             newFame += Math.Max(0, Experience - 101200) * 0.0005;
-            newFame += Math.Min(Math.Floor((double) FameCounter.Stats.MinutesActive / 6), 30);
+            newFame += Math.Min(Math.Floor((double)FameCounter.Stats.MinutesActive / 6), 30);
 
             newFame = Math.Floor(newFame);
 
             if (newFame == Fame)
                 return;
 
-            Fame = (int) newFame;
+            Fame = (int)newFame;
             int newGoal;
             var stats = FameCounter.ClassStats[ObjectType];
             if (stats.BestFame > Fame)
                 newGoal = GetFameGoal(stats.BestFame);
             else
                 newGoal = GetFameGoal(Fame);
-            if (newGoal > FameGoal && AccountType < (int) Core.config.AccountType.LEGENDS_OF_LOE_ACCOUNT)
+            if (newGoal > FameGoal && AccountType < (int)Core.config.AccountType.LEGENDS_OF_LOE_ACCOUNT)
             {
                 Owner.BroadcastMessage(new NOTIFICATION
                 {
@@ -516,7 +526,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 }, null);
                 Stars = GetStars();
             }
-            FameGoal = (AccountType >= (int) Core.config.AccountType.LEGENDS_OF_LOE_ACCOUNT) ? 0 : newGoal;
+            FameGoal = (AccountType >= (int)Core.config.AccountType.LEGENDS_OF_LOE_ACCOUNT) ? 0 : newGoal;
             UpdateCount++;
         }
 
@@ -573,15 +583,15 @@ namespace LoESoft.GameServer.realm.entity.player
             if (exp > 0)
             {
                 if (XpBoosted)
-                    Experience += (int) (exp * 2 * Settings.WOTMG_RATE);
+                    Experience += (int)(exp * 2 * Settings.WOTMG_RATE);
                 else
-                    Experience += (int) (exp * Settings.WOTMG_RATE);
+                    Experience += (int)(exp * Settings.WOTMG_RATE);
                 UpdateCount++;
                 foreach (var i in Owner.PlayersCollision.HitTest(X, Y, 16).Where(i => i != this).OfType<Player>())
                 {
                     try
                     {
-                        i.Experience += (int) ((i.XpBoosted ? exp * 2 : exp) * Settings.WOTMG_RATE);
+                        i.Experience += (int)((i.XpBoosted ? exp * 2 : exp) * Settings.WOTMG_RATE);
                         i.UpdateCount++;
                         i.CheckLevelUp();
                     }
@@ -602,7 +612,7 @@ namespace LoESoft.GameServer.realm.entity.player
             )
         {
             ProjectileId = id;
-            return CreateProjectile(desc, objType, (int) StatsManager.GetAttackDamage(desc.MinDamage, desc.MaxDamage), time, position, angle);
+            return CreateProjectile(desc, objType, (int)StatsManager.GetAttackDamage(desc.MinDamage, desc.MaxDamage), time, position, angle);
         }
 
         public override void Tick(RealmTime time)

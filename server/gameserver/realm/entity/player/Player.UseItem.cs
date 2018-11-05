@@ -51,7 +51,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                             for (var i = 0; i < 20; i++)
                             {
-                                Projectile proj = CreateProjectile(prjDesc, item.ObjectType, Random.Next(prjDesc.MinDamage, prjDesc.MaxDamage), time.TotalElapsedMs, target, (float) (i * (Math.PI * 2) / 20));
+                                Projectile proj = CreateProjectile(prjDesc, item.ObjectType, Random.Next(prjDesc.MinDamage, prjDesc.MaxDamage), time.TotalElapsedMs, target, (float)(i * (Math.PI * 2) / 20));
 
                                 Owner.AddProjectileFromId(Id, proj.ProjectileId, proj);
 
@@ -65,7 +65,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                     ContainerType = item.ObjectType,
                                     StartingPos = target,
                                     Angle = proj.Angle,
-                                    Damage = (short) proj.Damage
+                                    Damage = (short)proj.Damage
                                 };
                                 prjs[i] = proj;
                             }
@@ -101,7 +101,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             var rangeHN = eff.Range;
                             if (eff.UseWisMod)
                             {
-                                amountHN = (int) UseWisMod(eff.Amount, 0);
+                                amountHN = (int)UseWisMod(eff.Amount, 0);
                                 rangeHN = UseWisMod(eff.Range);
                             }
 
@@ -363,13 +363,13 @@ namespace LoESoft.GameServer.realm.entity.player
                                     break;
                                 if (targets[i].HasConditionEffect(ConditionEffectIndex.Invincible))
                                     continue;
-                                Entity prev = i == 0 ? (Entity) this : targets[i - 1];
+                                Entity prev = i == 0 ? (Entity)this : targets[i - 1];
                                 targets[i]?.Damage(this, time, eff.TotalDamage, false);
                                 if (eff.ConditionEffect != null)
                                     targets[i].ApplyConditionEffect(new ConditionEffect
                                     {
                                         Effect = eff.ConditionEffect.Value,
-                                        DurationMS = (int) (eff.EffectDuration * 1000)
+                                        DurationMS = (int)(eff.EffectDuration * 1000)
                                     });
                                 pkts.Add(new SHOWEFFECT
                                 {
@@ -672,7 +672,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                 if (MP >= item.MpEndCost)
                                 {
                                     Shoot(time, item, pkt.ItemUsePos);
-                                    MP -= (int) item.MpEndCost;
+                                    MP -= (int)item.MpEndCost;
                                 }
                                 Targetlink = target;
                                 ninjaShoot = false;
@@ -805,7 +805,7 @@ namespace LoESoft.GameServer.realm.entity.player
                         {
                             bool targetPlayer = eff.Target.Equals("player");
                             bool centerPlayer = eff.Center.Equals("player");
-                            int duration = (eff.UseWisMod) ? (int) (UseWisMod(eff.DurationSec) * 1000) : eff.DurationMS;
+                            int duration = (eff.UseWisMod) ? (int)(UseWisMod(eff.DurationSec) * 1000) : eff.DurationMS;
                             float range = (eff.UseWisMod) ? UseWisMod(eff.Range) : eff.Range;
 
                             Owner?.Aoe((eff.Center.Equals("mouse")) ? target : new Position { X = X, Y = Y }, range, targetPlayer, entity =>
@@ -827,7 +827,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             // replaced this last bit with what I had, never noticed any issue with it. Perhaps I'm wrong?
                             BroadcastSync(new SHOWEFFECT()
                             {
-                                EffectType = (EffectType) eff.VisualEffect,
+                                EffectType = (EffectType)eff.VisualEffect,
                                 TargetId = Id,
                                 Color = new ARGB(eff.Color ?? 0xffffffff),
                                 PosA = centerPlayer ? new Position { X = range } : target,
@@ -992,7 +992,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             // Default represent divine rarity
                             switch (item.Tier)
                             {
-                                case (int) EggRarity.Common:
+                                case (int)EggRarity.Common:
                                     {
                                         convertedEgg =
                                                 chance <= success ?
@@ -1000,7 +1000,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                     }
                                     break;
 
-                                case (int) EggRarity.Uncommon:
+                                case (int)EggRarity.Uncommon:
                                     {
                                         convertedEgg =
                                             chance <= success ?
@@ -1008,7 +1008,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                     }
                                     break;
 
-                                case (int) EggRarity.Rare:
+                                case (int)EggRarity.Rare:
                                     {
                                         convertedEgg =
                                             chance <= success ?
@@ -1016,7 +1016,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                     }
                                     break;
 
-                                case (int) EggRarity.Legendary:
+                                case (int)EggRarity.Legendary:
                                     {
                                         convertedEgg =
                                             chance <= success ?
@@ -1088,7 +1088,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             ApplyConditionEffect(new ConditionEffect
                             {
                                 DurationMS = eff.DurationMS,
-                                Effect = (ConditionEffectIndex) bit
+                                Effect = (ConditionEffectIndex)bit
                             });
                             UpdateCount++;
                             Owner?.Timers.Add(new WorldTimer(eff.DurationMS, (world, t) =>
@@ -1134,8 +1134,8 @@ namespace LoESoft.GameServer.realm.entity.player
                             bool noStack = eff.NoStack;
                             if (eff.UseWisMod)
                             {
-                                amountSBA = (int) UseWisMod(eff.Amount, 0);
-                                durationSBA = (int) (UseWisMod(eff.DurationSec) * 1000);
+                                amountSBA = (int)UseWisMod(eff.Amount, 0);
+                                durationSBA = (int)(UseWisMod(eff.DurationSec) * 1000);
                                 rangeSBA = UseWisMod(eff.Range);
                             }
 
@@ -1147,7 +1147,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                     ApplyConditionEffect(new ConditionEffect
                                     {
                                         DurationMS = durationSBA,
-                                        Effect = (ConditionEffectIndex) bit
+                                        Effect = (ConditionEffectIndex)bit
                                     });
                                     ActivateBoost[idx].Push(amountSBA);
                                     HP += amountSBA;
@@ -1170,7 +1170,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                         ApplyConditionEffect(new ConditionEffect
                                         {
                                             DurationMS = durationSBA,
-                                            Effect = (ConditionEffectIndex) bit
+                                            Effect = (ConditionEffectIndex)bit
                                         });
                                         player.UpdateCount++;
                                         Owner?.Timers.Add(new WorldTimer(durationSBA, (world, t) =>
@@ -1200,7 +1200,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                             if (eff.UseWisMod)
                             {
-                                durationCEA = (int) (UseWisMod(eff.DurationSec) * 1000);
+                                durationCEA = (int)(UseWisMod(eff.DurationSec) * 1000);
                                 rangeCEA = UseWisMod(eff.Range);
                             }
 
@@ -1241,7 +1241,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             int durationCES = eff.DurationMS;
 
                             if (eff.UseWisMod)
-                                durationCES = (int) (UseWisMod(eff.DurationSec) * 1000);
+                                durationCES = (int)(UseWisMod(eff.DurationSec) * 1000);
 
                             uint color = 0xffffffff;
 
@@ -1280,13 +1280,13 @@ namespace LoESoft.GameServer.realm.entity.player
                                 return true;
                             }
 
-                            if (AccountType == (int) Core.config.AccountType.VIP_ACCOUNT)
+                            if (AccountType == (int)Core.config.AccountType.VIP_ACCOUNT)
                             {
                                 SendInfo($"You can only use {item.DisplayId} when your VIP account lifetime over.");
                                 return true;
                             }
 
-                            if (AccountType >= (int) Core.config.AccountType.LEGENDS_OF_LOE_ACCOUNT)
+                            if (AccountType >= (int)Core.config.AccountType.LEGENDS_OF_LOE_ACCOUNT)
                             {
                                 SendInfo($"Only VIP account type can use {item.DisplayId}.");
                                 return true;
@@ -1321,7 +1321,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                             acc.AccountLifetime = DateTime.Now;
                             acc.AccountLifetime = acc.AccountLifetime.AddDays(days);
-                            acc.AccountType = (int) Core.config.AccountType.VIP_ACCOUNT;
+                            acc.AccountType = (int)Core.config.AccountType.VIP_ACCOUNT;
                             acc.Flush();
                             acc.Reload();
 
@@ -1331,7 +1331,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                             RECONNECT _reconnect = new RECONNECT
                             {
-                                GameId = (int) WorldID.NEXUS_ID, // change to Drasta Citadel in future versions!
+                                GameId = (int)WorldID.NEXUS_ID, // change to Drasta Citadel in future versions!
                                 Host = string.Empty,
                                 Key = Empty<byte>.Array,
                                 Name = "Nexus",
@@ -1373,18 +1373,23 @@ namespace LoESoft.GameServer.realm.entity.player
                                     case "Succubus Horn x 20":
                                         var umbral = new List<string> { "Umbral Staff", "Umbral Wand", "Umbral Sword", "Umbral Bow", "Umbral Dagger", "Umbral Katana" };
                                         var egg = new List<string> { "lcp egg t4-75", "lcp egg t5-75", "lcp egg t6-75", "lcp egg t7-75" };
+                                        var getUmbral = umbral[new Random().Next(0, umbral.Count)];
+                                        var getEgg = egg[new Random().Next(0, egg.Count)];
                                         var gifts = Client.Account.Gifts.ToList();
-                                        gifts.Add(GameServer.Manager.GameData.IdToObjectType[umbral[new Random().Next(0, umbral.Count)]]);
-                                        gifts.Add(GameServer.Manager.GameData.IdToObjectType[egg[new Random().Next(0, egg.Count)]]);
+                                        gifts.Add(GameServer.Manager.GameData.IdToObjectType[getUmbral]);
+                                        gifts.Add(GameServer.Manager.GameData.IdToObjectType[getEgg]);
 
                                         Experience += 200000;
                                         GameServer.Manager.Database.UpdateFame(Client.Account, 1000);
                                         GameServer.Manager.Database.UpdateCredit(Client.Account, 200);
-                                        Fame = Client.Account.Fame;
+                                        CurrentFame = Client.Account.Fame;
                                         Credits = Client.Account.Credits;
                                         Client.Account.Gifts = gifts.ToArray();
                                         Client.Account.Flush();
                                         Client.Account.Reload();
+
+                                        SendInfo($"You received as bonus reward: 200,000 EXP + 1000 Fame + 200 Realm Gold + 1 x {getUmbral} (Vault) + 1 x {getEgg} (Vault)!");
+
                                         break;
                                 }
                             };
@@ -1399,7 +1404,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                 for (int i = 4; i < 12; i++)
                                     if (Inventory[i] == null)
                                     {
-                                        Inventory[i] = GameServer.Manager.GameData.Items[(ushort) Utils.FromString(eff.Id)];
+                                        Inventory[i] = GameServer.Manager.GameData.Items[(ushort)Utils.FromString(eff.Id)];
                                         action.Invoke();
                                         UpdateCount++;
                                         SaveToCharacter();
@@ -1411,7 +1416,7 @@ namespace LoESoft.GameServer.realm.entity.player
                     case ActivateEffects.PetSkin:
                     case ActivateEffects.Unlock:
                         {
-                            if (Owner.Id == (int) WorldID.VAULT_ID)
+                            if (Owner.Id == (int)WorldID.VAULT_ID)
                             {
                                 SendInfo("You cannot use this item in Vault!");
                                 return true;
@@ -1431,10 +1436,12 @@ namespace LoESoft.GameServer.realm.entity.player
                                     message = "Character Slot";
                                     GameServer.Manager.Database.AddChar(Client.Account);
                                     break;
+
                                 case "vault":
                                     message = "Vault Chest";
                                     GameServer.Manager.Database.AddChest(Client.Account);
                                     break;
+
                                 default:
                                     SendInfo($"There is no unlock action to slot '{eff.Slot}' in game actions.");
                                     return true;
@@ -1520,8 +1527,8 @@ namespace LoESoft.GameServer.realm.entity.player
             for (int i = 0; i < item.NumProjectiles; i++)
             {
                 Projectile proj = CreateProjectile(prjDesc, item.ObjectType,
-                    (int) StatsManager.GetAttackDamage(prjDesc.MinDamage, prjDesc.MaxDamage),
-                    time.TotalElapsedMs, new Position { X = X, Y = Y }, (float) (startAngle + arcGap * i));
+                    (int)StatsManager.GetAttackDamage(prjDesc.MinDamage, prjDesc.MaxDamage),
+                    time.TotalElapsedMs, new Position { X = X, Y = Y }, (float)(startAngle + arcGap * i));
                 Owner?.EnterWorld(proj);
                 FameCounter.Shoot(proj);
             }
@@ -1543,7 +1550,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             DurationMS = (int) eff.EffectDuration
                         }
                     });
-                int remainingDmg = (int) StatsManager.GetDefenseDamage(enemy, eff.TotalDamage, enemy.ObjectDesc.Defense);
+                int remainingDmg = (int)StatsManager.GetDefenseDamage(enemy, eff.TotalDamage, enemy.ObjectDesc.Defense);
                 int perDmg = remainingDmg * 1000 / eff.DurationMS;
                 WorldTimer tmr = null;
                 int x = 0;
@@ -1587,7 +1594,7 @@ namespace LoESoft.GameServer.realm.entity.player
         private bool CheatEngineDetect(Item item, USEITEM pkt)
         {
             foreach (Player player in Owner?.Players.Values)
-                if (player?.Client.Account.AccountType >= (int) Core.config.AccountType.TUTOR_ACCOUNT)
+                if (player?.Client.Account.AccountType >= (int)Core.config.AccountType.TUTOR_ACCOUNT)
                     player.SendInfo(string.Format("Cheat engine detected for player {0},\nItem should be {1}, but its {2}.",
                 Name, Inventory[pkt.SlotObject.SlotId].ObjectId, item.ObjectId));
             GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHEAT_ENGINE_DETECTED);

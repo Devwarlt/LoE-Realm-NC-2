@@ -2,6 +2,7 @@
 
 using LoESoft.Core;
 using LoESoft.Core.config;
+using LoESoft.Core.database;
 using LoESoft.GameServer.logic;
 using LoESoft.GameServer.networking;
 using System;
@@ -71,6 +72,7 @@ namespace LoESoft.GameServer.realm.entity.player
         public bool Invited { get; set; }
         public bool Muted { get; set; }
         public int Level { get; set; }
+        public List<MonsterCache> MonsterCaches { get; set; }
         public List<LootCache> LootCaches { get; set; }
         public List<string> Locked { get; set; }
         public bool LootDropBoost { get { return LootDropBoostTimeLeft > 0; } set { LootDropBoostTimeLeft = value ? LootDropBoostTimeLeft : 0.0f; } }
@@ -115,7 +117,7 @@ namespace LoESoft.GameServer.realm.entity.player
         public int UpdatesSend { get; private set; }
         public int UpdatesReceived { get; set; }
         public const int SIGHTRADIUS = 15;
-        private const int APPOX_AREA_OF_SIGHT = (int) (Math.PI * SIGHTRADIUS * SIGHTRADIUS + 1);
+        private const int APPOX_AREA_OF_SIGHT = (int)(Math.PI * SIGHTRADIUS * SIGHTRADIUS + 1);
         private readonly HashSet<Entity> clientEntities = new HashSet<Entity>();
         private readonly HashSet<IntPoint> clientStatic = new HashSet<IntPoint>(new IntPointComparer());
         private readonly ConcurrentDictionary<Entity, int> lastUpdate = new ConcurrentDictionary<Entity, int>();

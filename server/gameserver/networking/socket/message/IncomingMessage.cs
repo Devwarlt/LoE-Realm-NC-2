@@ -19,10 +19,7 @@ namespace LoESoft.GameServer.networking
             try
             {
                 if (!socket.Connected)
-                {
-                    GameServer.Manager.TryDisconnect(client, DisconnectReason.CONNECTION_LOST);
                     return;
-                }
 
                 if (e.SocketError != SocketError.Success)
                 {
@@ -47,10 +44,7 @@ namespace LoESoft.GameServer.networking
         private void RPRM(SocketAsyncEventArgs e)
         {
             if (e.BytesTransferred < 5)
-            {
-                Manager.TryDisconnect(client, DisconnectReason.INVALID_MESSAGE_LENGTH);
                 return;
-            }
 
             if (e.Buffer[0] == 0xae
                 && e.Buffer[1] == 0x7a
@@ -78,7 +72,7 @@ namespace LoESoft.GameServer.networking
 
             try
             {
-                (e.UserToken as IncomingToken).Message = Message.Messages[(MessageID) e.Buffer[4]].CreateInstance();
+                (e.UserToken as IncomingToken).Message = Message.Messages[(MessageID)e.Buffer[4]].CreateInstance();
 
                 _incomingState = IncomingStage.ReceivingData;
 
@@ -88,7 +82,7 @@ namespace LoESoft.GameServer.networking
             }
             catch
             {
-                Log.Warn($"[({e.Buffer[4]}) {((MessageID) e.Buffer[4]).ToString()}] Message has been disposed.");
+                Log.Warn($"[({e.Buffer[4]}) {((MessageID)e.Buffer[4]).ToString()}] Message has been disposed.");
                 e.Dispose();
             }
         }

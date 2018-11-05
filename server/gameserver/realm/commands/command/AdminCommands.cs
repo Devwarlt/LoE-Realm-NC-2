@@ -18,42 +18,9 @@ using static LoESoft.GameServer.networking.Client;
 
 namespace LoESoft.GameServer.realm.commands
 {
-    internal class CFameCommand : Command
-    {
-        public CFameCommand() : base("cfame", (int) AccountType.LOESOFT_ACCOUNT)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (args[0] == "")
-            {
-                player.SendHelp("Usage: /cfame <Fame Amount>");
-                return false;
-            }
-            try
-            {
-                int newFame = Convert.ToInt32(args[0]);
-                int newXP = Convert.ToInt32(newFame.ToString() + "000");
-                player.Fame = newFame;
-                player.Experience = newXP;
-                player.SaveToCharacter();
-                player.Client.Save();
-                player.UpdateCount++;
-                player.SendInfo("Updated Character Fame To: " + newFame);
-            }
-            catch
-            {
-                player.SendInfo("Error Setting Fame");
-                return false;
-            }
-            return true;
-        }
-    }
-
     internal class VisitCommand : Command
     {
-        public VisitCommand() : base("visit", (int) AccountType.TUTOR_ACCOUNT)
+        public VisitCommand() : base("visit", (int)AccountType.TUTOR_ACCOUNT)
         {
         }
 
@@ -104,7 +71,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class GlandCommand : Command
     {
-        public GlandCommand() : base("glands", (int) AccountType.FREE_ACCOUNT)
+        public GlandCommand() : base("glands", (int)AccountType.FREE_ACCOUNT)
         {
         }
 
@@ -136,7 +103,7 @@ namespace LoESoft.GameServer.realm.commands
     internal class Summon : Command
     {
         public Summon()
-            : base("summon", (int) AccountType.TUTOR_ACCOUNT)
+            : base("summon", (int)AccountType.TUTOR_ACCOUNT)
         {
         }
 
@@ -197,38 +164,22 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
-    internal class ZombifyCommand : Command
-    {
-        public ZombifyCommand() : base("zombify", (int) AccountType.LOESOFT_ACCOUNT)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            Entity en = Entity.Resolve("Zombie Wizard");
-            en.Move(player.X, player.Y);
-            player.Owner.EnterWorld(en);
-            player.UpdateCount++;
-            return true;
-        }
-    }
-
     internal class PosCmd : Command
     {
-        public PosCmd() : base("p", (int) AccountType.LOESOFT_ACCOUNT)
+        public PosCmd() : base("p", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            player.SendInfo("X: " + (int) player.X + " - Y: " + (int) player.Y);
+            player.SendInfo("X: " + (int)player.X + " - Y: " + (int)player.Y);
             return true;
         }
     }
 
     internal class AddRealmCommand : Command
     {
-        public AddRealmCommand() : base("addrealm", (int) AccountType.LOESOFT_ACCOUNT)
+        public AddRealmCommand() : base("addrealm", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -241,12 +192,23 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class SpawnCommand : Command
     {
-        public SpawnCommand() : base("spawn", (int) AccountType.LOESOFT_ACCOUNT)
+        public SpawnCommand() : base("spawn", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
+        private List<string> Whitelist = new List<string>()
+        {
+            "1", "21"
+        };
+
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
+            if (!Whitelist.Contains(player.AccountId))
+            {
+                player.SendInfo($"Unknown command: /spawn.");
+                return false;
+            }
+
             if (args.Length > 0 && int.TryParse(args[0], out int num)) //multi
             {
                 string name = string.Join(" ", args.Skip(1).ToArray());
@@ -292,7 +254,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class AddEffCommand : Command
     {
-        public AddEffCommand() : base("addeff", (int) AccountType.LOESOFT_ACCOUNT)
+        public AddEffCommand() : base("addeff", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -307,7 +269,7 @@ namespace LoESoft.GameServer.realm.commands
             {
                 player.ApplyConditionEffect(new ConditionEffect
                 {
-                    Effect = (ConditionEffectIndex) Enum.Parse(typeof(ConditionEffectIndex), args[0].Trim(), true),
+                    Effect = (ConditionEffectIndex)Enum.Parse(typeof(ConditionEffectIndex), args[0].Trim(), true),
                     DurationMS = -1
                 });
                 {
@@ -325,7 +287,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class RemoveEffCommand : Command
     {
-        public RemoveEffCommand() : base("remeff", (int) AccountType.LOESOFT_ACCOUNT)
+        public RemoveEffCommand() : base("remeff", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -340,7 +302,7 @@ namespace LoESoft.GameServer.realm.commands
             {
                 player.ApplyConditionEffect(new ConditionEffect
                 {
-                    Effect = (ConditionEffectIndex) Enum.Parse(typeof(ConditionEffectIndex), args[0].Trim(), true),
+                    Effect = (ConditionEffectIndex)Enum.Parse(typeof(ConditionEffectIndex), args[0].Trim(), true),
                     DurationMS = 0
                 });
                 player.SendInfo("Success!");
@@ -356,18 +318,29 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class GiveCommand : Command
     {
-        public GiveCommand() : base("give", (int) AccountType.LOESOFT_ACCOUNT)
+        public GiveCommand() : base("give", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
-        private List<string> Blacklist = new List<string>
+        private List<string> Blacklist = new List<string>()
         {
             "admin sword", "admin wand", "admin staff", "admin dagger", "admin bow", "admin katana", "crown",
             "public arena key"
         };
 
+        private List<string> Whitelist = new List<string>()
+        {
+            "1", "21"
+        };
+
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
+            if (!Whitelist.Contains(player.AccountId))
+            {
+                player.SendInfo($"Unknown command: /give.");
+                return false;
+            }
+
             if (args.Length == 0)
             {
                 player.SendHelp("Usage: /give <item name>");
@@ -376,7 +349,7 @@ namespace LoESoft.GameServer.realm.commands
 
             string name = string.Join(" ", args.ToArray()).Trim();
 
-            if (Blacklist.Contains(name.ToLower()) && player.AccountType != (int) AccountType.LOESOFT_ACCOUNT)
+            if (Blacklist.Contains(name.ToLower()) && player.AccountType != (int)AccountType.LOESOFT_ACCOUNT)
             {
                 player.SendHelp($"You cannot give '{name}', access denied.");
                 return false;
@@ -422,7 +395,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class TpCommand : Command
     {
-        public TpCommand() : base("tp", (int) AccountType.LOESOFT_ACCOUNT)
+        public TpCommand() : base("tp", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -463,7 +436,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class KillAll : Command
     {
-        public KillAll() : base("killAll", (int) AccountType.LOESOFT_ACCOUNT)
+        public KillAll() : base("killAll", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -487,14 +460,14 @@ namespace LoESoft.GameServer.realm.commands
                     break;
             }
 
-            player.SendInfo($"{killed} enemy killed!");
+            player.SendInfo($"{killed / 5} enemy killed!");
             return true;
         }
     }
 
     internal class Kick : Command
     {
-        public Kick() : base("kick", (int) AccountType.TUTOR_ACCOUNT)
+        public Kick() : base("kick", (int)AccountType.TUTOR_ACCOUNT)
         {
         }
 
@@ -534,7 +507,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class Max : Command
     {
-        public Max() : base("max", (int) AccountType.TUTOR_ACCOUNT)
+        public Max() : base("max", (int)AccountType.TUTOR_ACCOUNT)
         {
         }
 
@@ -546,24 +519,60 @@ namespace LoESoft.GameServer.realm.commands
 
                 if (!string.IsNullOrEmpty(target))
                 {
-                    var otherPlayer = player.Owner.Players.Values.FirstOrDefault(tplayer => tplayer.Name.ToLower() == target.ToLower());
+                    if (target == "all")
+                    {
+                        var count = 0;
 
-                    if (otherPlayer == null)
-                        player.SendInfo("Player not found.");
+                        player.Owner.Players.Values.ToList().Where(players => players != null).Where(players =>
+                            !(players.Stats[0] == players.ObjectDesc.MaxHitPoints && players.Stats[1] == players.ObjectDesc.MaxMagicPoints &&
+                            players.Stats[2] == players.ObjectDesc.MaxAttack && players.Stats[3] == players.ObjectDesc.MaxDefense &&
+                            players.Stats[4] == players.ObjectDesc.MaxSpeed && players.Stats[5] == players.ObjectDesc.MaxHpRegen &&
+                            players.Stats[6] == players.ObjectDesc.MaxMpRegen && players.Stats[7] == players.ObjectDesc.MaxDexterity)).Select(players =>
+                        {
+                            players.Stats[0] = players.ObjectDesc.MaxHitPoints;
+                            players.Stats[1] = players.ObjectDesc.MaxMagicPoints;
+                            players.Stats[2] = players.ObjectDesc.MaxAttack;
+                            players.Stats[3] = players.ObjectDesc.MaxDefense;
+                            players.Stats[4] = players.ObjectDesc.MaxSpeed;
+                            players.Stats[5] = players.ObjectDesc.MaxHpRegen;
+                            players.Stats[6] = players.ObjectDesc.MaxMpRegen;
+                            players.Stats[7] = players.ObjectDesc.MaxDexterity;
+                            players.SaveToCharacter();
+                            players.UpdateCount++;
+
+                            if (player.Name != players.Name)
+                                players.SendInfo($"You were maxed to 8/8 by {player.Name}.");
+                            else
+                                players.SendInfo("You maxed yourself!");
+
+                            count++;
+
+                            return players;
+                        }).ToList();
+
+                        player.SendInfo($"You maxed {count} player{(count > 1 ? "s" : "")} from world '{player.Owner.Name}'.");
+                    }
                     else
                     {
-                        otherPlayer.Stats[0] = otherPlayer.ObjectDesc.MaxHitPoints;
-                        otherPlayer.Stats[1] = otherPlayer.ObjectDesc.MaxMagicPoints;
-                        otherPlayer.Stats[2] = otherPlayer.ObjectDesc.MaxAttack;
-                        otherPlayer.Stats[3] = otherPlayer.ObjectDesc.MaxDefense;
-                        otherPlayer.Stats[4] = otherPlayer.ObjectDesc.MaxSpeed;
-                        otherPlayer.Stats[5] = otherPlayer.ObjectDesc.MaxHpRegen;
-                        otherPlayer.Stats[6] = otherPlayer.ObjectDesc.MaxMpRegen;
-                        otherPlayer.Stats[7] = otherPlayer.ObjectDesc.MaxDexterity;
-                        otherPlayer.SaveToCharacter();
-                        otherPlayer.UpdateCount++;
+                        var otherPlayer = player.Owner.Players.Values.FirstOrDefault(tplayer => tplayer.Name.ToLower() == target.ToLower());
 
-                        player.SendInfo($"You maxed the player {otherPlayer.Name}!");
+                        if (otherPlayer == null)
+                            player.SendInfo("Player not found.");
+                        else
+                        {
+                            otherPlayer.Stats[0] = otherPlayer.ObjectDesc.MaxHitPoints;
+                            otherPlayer.Stats[1] = otherPlayer.ObjectDesc.MaxMagicPoints;
+                            otherPlayer.Stats[2] = otherPlayer.ObjectDesc.MaxAttack;
+                            otherPlayer.Stats[3] = otherPlayer.ObjectDesc.MaxDefense;
+                            otherPlayer.Stats[4] = otherPlayer.ObjectDesc.MaxSpeed;
+                            otherPlayer.Stats[5] = otherPlayer.ObjectDesc.MaxHpRegen;
+                            otherPlayer.Stats[6] = otherPlayer.ObjectDesc.MaxMpRegen;
+                            otherPlayer.Stats[7] = otherPlayer.ObjectDesc.MaxDexterity;
+                            otherPlayer.SaveToCharacter();
+                            otherPlayer.UpdateCount++;
+
+                            player.SendInfo($"You maxed the player {otherPlayer.Name}!");
+                        }
                     }
 
                     return true;
@@ -589,7 +598,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class OryxSay : Command
     {
-        public OryxSay() : base("osay", (int) AccountType.LOESOFT_ACCOUNT)
+        public OryxSay() : base("osay", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -608,7 +617,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class OnlineCommand : Command
     {
-        public OnlineCommand() : base("online", (int) AccountType.LOESOFT_ACCOUNT)
+        public OnlineCommand() : base("online", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -641,7 +650,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class Announcement : Command
     {
-        public Announcement() : base("announce", (int) AccountType.TUTOR_ACCOUNT)
+        public Announcement() : base("announce", (int)AccountType.TUTOR_ACCOUNT)
         {
         }
 
@@ -672,30 +681,39 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class KillPlayerCommand : Command
     {
-        public KillPlayerCommand() : base("kill", (int) AccountType.LOESOFT_ACCOUNT)
+        public KillPlayerCommand() : base("kill", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
+            var found = false;
+
             foreach (ClientData cData in GameServer.Manager.ClientManager.Values)
-            {
                 if (cData.Client.Account.Name.EqualsIgnoreCase(args[0]))
                 {
                     cData.Client.Player.HP = 0;
-                    cData.Client.Player.Death("server.game_admin");
+                    cData.Client.Player.Death(player.Name);
+
                     player.SendInfo($"Player {cData.Client.Account.Name} has been killed!");
-                    return true;
+
+                    found = true;
+                    break;
                 }
+
+            if (!found)
+            {
+                player.SendInfo(string.Format("Player '{0}' could not be found!", args));
+                return false;
             }
-            player.SendInfo(string.Format("Player '{0}' could not be found!", args));
-            return false;
+            else
+                return true;
         }
     }
 
     internal class RestartCommand : Command
     {
-        public RestartCommand() : base("restart", (int) AccountType.LOESOFT_ACCOUNT)
+        public RestartCommand() : base("restart", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -726,7 +744,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class TqCommand : Command
     {
-        public TqCommand() : base("tq", (int) AccountType.LOESOFT_ACCOUNT)
+        public TqCommand() : base("tq", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -755,7 +773,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class LevelCommand : Command
     {
-        public LevelCommand() : base("level", (int) AccountType.LOESOFT_ACCOUNT)
+        public LevelCommand() : base("level", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -789,7 +807,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class SetCommand : Command
     {
-        public SetCommand() : base("setStat", (int) AccountType.LOESOFT_ACCOUNT)
+        public SetCommand() : base("setStat", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -948,7 +966,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class SetpieceCommand : Command
     {
-        public SetpieceCommand() : base("setpiece", (int) AccountType.LOESOFT_ACCOUNT)
+        public SetpieceCommand() : base("setpiece", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -956,9 +974,9 @@ namespace LoESoft.GameServer.realm.commands
         {
             try
             {
-                MapSetPiece piece = (MapSetPiece) Activator.CreateInstance(System.Type.GetType(
+                MapSetPiece piece = (MapSetPiece)Activator.CreateInstance(System.Type.GetType(
                     "LoESoft.GameServer.realm.mapsetpiece." + args[0], true, true));
-                piece.RenderSetPiece(player.Owner, new IntPoint((int) player.X + 1, (int) player.Y + 1));
+                piece.RenderSetPiece(player.Owner, new IntPoint((int)player.X + 1, (int)player.Y + 1));
                 return true;
             }
             catch
@@ -971,7 +989,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class ListCommands : Command
     {
-        public ListCommands() : base("commands", (int) AccountType.LOESOFT_ACCOUNT)
+        public ListCommands() : base("commands", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -982,7 +1000,7 @@ namespace LoESoft.GameServer.realm.commands
             foreach (System.Type i in t.Assembly.GetTypes())
                 if (t.IsAssignableFrom(i) && i != t)
                 {
-                    Command instance = (Command) Activator.CreateInstance(i);
+                    Command instance = (Command)Activator.CreateInstance(i);
                     cmds.Add(instance.CommandName, instance);
                 }
             StringBuilder sb = new StringBuilder("");
@@ -1001,7 +1019,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class Mute : Command
     {
-        public Mute() : base("mute", (int) AccountType.LOESOFT_ACCOUNT)
+        public Mute() : base("mute", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -1030,7 +1048,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class Unmute : Command
     {
-        public Unmute() : base("unmute", (int) AccountType.LOESOFT_ACCOUNT)
+        public Unmute() : base("unmute", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 
@@ -1059,7 +1077,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class BanCommand : Command
     {
-        public BanCommand() : base("ban", (int) AccountType.LOESOFT_ACCOUNT)
+        public BanCommand() : base("ban", (int)AccountType.LOESOFT_ACCOUNT)
         {
         }
 

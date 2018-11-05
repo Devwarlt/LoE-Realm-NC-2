@@ -428,15 +428,13 @@ namespace LoESoft.Core
         public void AddChest(DbAccount acc)
         {
             acc.VaultCount++;
-            acc.Flush();
-            acc.Reload();
+            Update(acc);
         }
 
         public void AddChar(DbAccount acc)
         {
             acc.MaxCharSlot++;
-            acc.Flush();
-            acc.Reload();
+            Update(acc);
         }
 
         public DbChar GetAliveCharacter(DbAccount acc)
@@ -474,7 +472,6 @@ namespace LoESoft.Core
             int newId = (int)Connection.Hashes.Increment(0, acc.Key, "nextCharId").Exec();
             character = new DbChar(acc, newId)
             {
-                //LootCaches = new LootCache[] { },
                 ObjectType = type,
                 Level = 1,
                 Experience = 0,
@@ -530,17 +527,23 @@ namespace LoESoft.Core
 
         public bool SaveCharacter(DbAccount acc, DbChar character, bool lockAcc)
         {
-            using (var trans = Connection.CreateTransaction())
+            try
             {
-                if (lockAcc)
-                    trans.AddCondition(Condition.KeyEquals(1,
-                        $"lock.{acc.AccountId}", acc.LockToken));
-                character.Flush(trans);
-                var stats = new DbClassStats(acc);
-                stats.Update(character);
-                stats.Flush(trans);
-                return trans.Execute().Exec();
+                using (var trans = Connection.CreateTransaction())
+                {
+                    if (lockAcc)
+                        trans.AddCondition(Condition.KeyEquals(1,
+                            $"lock.{acc.AccountId}", acc.LockToken));
+                    character.Flush(trans);
+                    var stats = new DbClassStats(acc);
+                    stats.Update(character);
+                    stats.Flush(trans);
+                    return trans.Execute().Exec();
+                }
             }
+            catch { }
+
+            return false;
         }
 
         public void DeleteCharacter(DbAccount acc, int charId)

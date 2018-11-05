@@ -8,7 +8,18 @@
     "image": "https://raw.githubusercontent.com/FinnishFX/finnishfx.github.io/master/tfr/1.2/UpdateNews.png",
     "endTime": 4080326400000,
     "linkDetail": "https://github.com/Devwarlt/LoE-Realm-NC",
-    "priority": 100
+    "priority": 4
+  },
+  {
+    "slot": 2,
+    "linkType": 2,
+    "platform": "kabam.com,kongregate,steam,rotmg",
+    "startTime": 946684800000,
+    "title": "Dreamer Pack",
+    "image": "https://raw.githubusercontent.com/FinnishFX/finnishfx.github.io/master/tfr/1.2/UpdateTeaser.png",
+    "endTime": 154172159900000,
+    "linkDetail": 702,
+    "priority": 3
   },
   {
     "slot": 2,
@@ -17,9 +28,20 @@
     "startTime": 946684800000,
     "title": "Chicago Pack",
     "image": "https://raw.githubusercontent.com/FinnishFX/finnishfx.github.io/master/tfr/1.2/UpdateTeaser.png",
-    "endTime": 4080326400000,
+    "endTime": 154137599900000,
     "linkDetail": 701,
-    "priority": 95
+    "priority": 2
+  },
+  {
+    "slot": 2,
+    "linkType": 1,
+    "platform": "kabam.com,kongregate,steam,rotmg",
+    "startTime": 946684800000,
+    "title": "Join Us",
+    "image": "https://raw.githubusercontent.com/FinnishFX/finnishfx.github.io/master/tfr/static/DiscordBanner.png",
+    "endTime": 4080326400000,
+    "linkDetail": "https://discord.gg/jHNTjun",
+    "priority": 2
   },
   {
     "slot": 3,
@@ -30,6 +52,6 @@
     "image": "https://raw.githubusercontent.com/FinnishFX/finnishfx.github.io/master/tfr/static/DiscordBanner.png",
     "endTime": 4080326400000,
     "linkDetail": "https://discord.gg/jHNTjun",
-    "priority": 90
+    "priority": 1
   }
 ]

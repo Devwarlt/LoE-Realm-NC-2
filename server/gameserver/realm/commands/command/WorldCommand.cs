@@ -4,7 +4,6 @@ using LoESoft.Core.config;
 using LoESoft.GameServer.logic;
 using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.networking.outgoing;
-using LoESoft.GameServer.realm.entity.npc;
 using LoESoft.GameServer.realm.entity.player;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +15,7 @@ namespace LoESoft.GameServer.realm.commands
 {
     internal class GuildCommand : Command
     {
-        public GuildCommand() : base("g", (int) AccountType.FREE_ACCOUNT)
+        public GuildCommand() : base("g", (int)AccountType.FREE_ACCOUNT)
         {
         }
 
@@ -47,7 +46,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class TutorialCommand : Command
     {
-        public TutorialCommand() : base("tutorial", (int) AccountType.FREE_ACCOUNT)
+        public TutorialCommand() : base("tutorial", (int)AccountType.FREE_ACCOUNT)
         {
         }
 
@@ -57,7 +56,7 @@ namespace LoESoft.GameServer.realm.commands
             {
                 Host = "",
                 Port = Settings.GAMESERVER.PORT,
-                GameId = (int) WorldID.TUT_ID,
+                GameId = (int)WorldID.TUT_ID,
                 Name = "Tutorial",
                 Key = Empty<byte>.Array,
             });
@@ -67,7 +66,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class TradeCommand : Command
     {
-        public TradeCommand() : base("trade", (int) AccountType.FREE_ACCOUNT)
+        public TradeCommand() : base("trade", (int)AccountType.FREE_ACCOUNT)
         {
         }
 
@@ -110,7 +109,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class ServerCommand : Command
     {
-        public ServerCommand() : base("server", (int) AccountType.FREE_ACCOUNT)
+        public ServerCommand() : base("server", (int)AccountType.FREE_ACCOUNT)
         {
         }
 
@@ -123,7 +122,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class PauseCommand : Command
     {
-        public PauseCommand() : base("pause", (int) AccountType.FREE_ACCOUNT)
+        public PauseCommand() : base("pause", (int)AccountType.FREE_ACCOUNT)
         {
         }
 
@@ -165,7 +164,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class TeleportCommand : Command
     {
-        public TeleportCommand() : base("teleport", (int) AccountType.FREE_ACCOUNT)
+        public TeleportCommand() : base("teleport", (int)AccountType.FREE_ACCOUNT)
         {
         }
 
@@ -202,7 +201,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class TellCommand : Command
     {
-        public TellCommand() : base("tell", (int) AccountType.FREE_ACCOUNT)
+        public TellCommand() : base("tell", (int)AccountType.FREE_ACCOUNT)
         {
         }
 
@@ -220,8 +219,8 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            string playername = args[0].Trim();
-            string msg = string.Join(" ", args, 1, args.Length - 1);
+            var playername = args[0].Trim();
+            var msg = string.Join(" ", args, 1, args.Length - 1);
 
             if (string.Equals(player.Name.ToLower(), playername.ToLower()))
             {
@@ -231,12 +230,14 @@ namespace LoESoft.GameServer.realm.commands
 
             if (string.Join(" ", args, 0, 1).ToLower() == "npc")
             {
-                string npcName = $"NPC {Utils.FirstCharToUpper(string.Join(" ", args, 1, 1).ToLower())}";
+                var npcName = $"NPC {Utils.FirstCharToUpper(string.Join(" ", args, 1, 1).ToLower())}";
+
                 if (NPCs.Database.ContainsKey($"NPC {Utils.FirstCharToUpper(string.Join(" ", args, 1, 1).ToLower())}"))
                 {
-                    string npcMsg = args.Length > 2 ? string.Join(" ", args, 2, 1) : null;
-                    NPC npc = NPCs.Database.ContainsKey(npcName) ? NPCs.Database[npcName] : null;
-                    if (npcMsg == null || npcMsg == string.Empty || npcMsg == "" || npcMsg == " ")
+                    var npcMsg = args.Length > 2 ? string.Join(" ", args.Skip(2)) : null;
+                    var npc = NPCs.Database.ContainsKey(npcName) ? NPCs.Database[npcName] : null;
+
+                    if (npcMsg == null)
                     {
                         player.SendInfo($"Send a valid message to NPC {Utils.FirstCharToUpper(string.Join(" ", args, 1, 1).ToLower())}.");
                         return false;

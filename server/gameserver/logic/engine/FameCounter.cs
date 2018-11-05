@@ -1,10 +1,12 @@
 ﻿#region
 
 using LoESoft.Core;
+using LoESoft.Core.database;
 using LoESoft.GameServer.realm;
 using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
 using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -62,8 +64,45 @@ namespace LoESoft.GameServer.logic
                 if (enemy.ObjectDesc.Oryx)
                     Stats.OryxKills++;
 
-                if (enemy.ObjectDesc.TaskID != -1)
-                    Player.TaskManager.ProcessTask(enemy.ObjectDesc.TaskID);
+                //if (enemy.ObjectDesc.TaskID != -1)
+                //    Player.TaskManager.ProcessTask(enemy.ObjectDesc.TaskID);
+            }
+
+            // process task below
+            if (Player.ActualTask != null)
+            {
+                var monsterData = Player.MonsterCaches.FirstOrDefault(monster => monster.ObjectId == enemy.ObjectDesc.ObjectId);
+
+                if (monsterData == null)
+                    Player.MonsterCaches.Add(new MonsterCache()
+                    {
+                        ObjectId = enemy.ObjectDesc.ObjectId,
+                        TaskCount = -1,
+                        TaskLimit = -1,
+                        Total = 1
+                    });
+                else
+                {
+                    if (monsterData.TaskCount != -1 && monsterData.TaskLimit != -1)
+                    {
+                        if (monsterData.TaskCount == monsterData.TaskLimit)
+                            monsterData.Total++;
+                        else
+                        {
+                            foreach (var i in Player.Task.MonsterDatas)
+                                if (i.ObjectId == monsterData.ObjectId)
+                                {
+                                    monsterData.TaskCount++;
+                                    monsterData.Total++;
+                                    break;
+                                }
+
+                            Player.SendHelp($"[{monsterData.TaskCount}/{monsterData.TaskLimit}] {monsterData.ObjectId}.");
+                        }
+                    }
+                    else
+                        monsterData.Total++;
+                }
             }
         }
 

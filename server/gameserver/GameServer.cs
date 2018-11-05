@@ -43,6 +43,9 @@ namespace LoESoft.GameServer
         public static DateTime WhiteListTurnOff { get; private set; }
 
         public static string LootCachePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "/loe-nc-2/loots/");
+        public static string MonsterCachePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "/loe-nc-2/monsters/");
+        public static string TaskCachePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "/loe-nc-2/tasks/");
+        public static string AchievementCachePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "/loe-nc-2/achievements/");
 
         private static void Main(string[] args)
         {
@@ -53,8 +56,10 @@ namespace LoESoft.GameServer
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             Thread.CurrentThread.Name = "Entry";
 
-            if (!Directory.Exists(LootCachePath))
-                Directory.CreateDirectory(LootCachePath);
+            if (!Directory.Exists(LootCachePath)) Directory.CreateDirectory(LootCachePath);
+            if (!Directory.Exists(MonsterCachePath)) Directory.CreateDirectory(MonsterCachePath);
+            if (!Directory.Exists(TaskCachePath)) Directory.CreateDirectory(TaskCachePath);
+            if (!Directory.Exists(AchievementCachePath)) Directory.CreateDirectory(AchievementCachePath);
 
             var db = new Database();
             GameUsage = -1;

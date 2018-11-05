@@ -280,7 +280,7 @@ namespace LoESoft.GameServer.networking
 
                 SendMessage(new FAILURE
                 {
-                    ErrorId = (int) FailureIDs.JSON_DIALOG,
+                    ErrorId = (int)FailureIDs.JSON_DIALOG,
                     ErrorDescription =
                         JSONErrorIDHandler.
                             FormatedJSONError(
@@ -295,7 +295,7 @@ namespace LoESoft.GameServer.networking
                 return false;
             }
 
-            Log.Info($"[({(int) DisconnectReason.RECONNECT}) {DisconnectReason.RECONNECT.ToString()}] Reconnect player '{Account.Name} (Account ID: {Account.AccountId})' to {msg.Name}.");
+            Log.Info($"[({(int)DisconnectReason.RECONNECT}) {DisconnectReason.RECONNECT.ToString()}] Reconnect player '{Account.Name} (Account ID: {Account.AccountId})' to {msg.Name}.");
 
             Save();
 

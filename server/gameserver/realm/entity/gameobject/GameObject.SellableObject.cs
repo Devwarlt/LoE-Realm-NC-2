@@ -38,7 +38,7 @@ namespace LoESoft.GameServer.realm.entity
         protected override void ExportStats(IDictionary<StatsType, object> stats)
         {
             stats[StatsType.MERCHANDISE_PRICE_STAT] = Price;
-            stats[StatsType.MERCHANDISE_CURRENCY_STAT] = (int) Currency;
+            stats[StatsType.MERCHANDISE_CURRENCY_STAT] = (int)Currency;
             stats[StatsType.MERCHANDISE_RANK_REQ_STAT] = RankReq;
             base.ExportStats(stats);
         }
@@ -69,7 +69,7 @@ namespace LoESoft.GameServer.realm.entity
                 if (TryDeduct(player))
                 {
                     GameServer.Manager.Database.UpdateFame(player.Client.Account, -Price);
-                    player.Fame = player.Client.Account.Fame;
+                    player.CurrentFame = player.Client.Account.Fame;
                     player.UpdateCount++;
                     player.SaveToCharacter();
                     (Owner as Vault).AddChest(this);
