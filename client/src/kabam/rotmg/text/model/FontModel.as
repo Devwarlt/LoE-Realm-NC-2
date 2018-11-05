@@ -8,12 +8,15 @@ public class FontModel {
     public static const MyriadPro:Class = FontModel_MyriadPro;
     public static const MyriadPro_Bold:Class = FontModel_MyriadPro_Bold;
 
+    public static var DEFAULT_FONT_NAME:String = "";
+
     private var fontInfo:FontInfo;
 
     public function FontModel() {
         Font.registerFont(MyriadPro);
         Font.registerFont(MyriadPro_Bold);
         var _local1:Font = new MyriadPro();
+        DEFAULT_FONT_NAME = _local1.fontName;
         this.fontInfo = new FontInfo();
         this.fontInfo.setName(_local1.fontName);
     }

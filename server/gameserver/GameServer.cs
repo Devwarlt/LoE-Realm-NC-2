@@ -42,6 +42,11 @@ namespace LoESoft.GameServer
 
         public static DateTime WhiteListTurnOff { get; private set; }
 
+        public static string LootCachePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "/loe-nc-2/loots/");
+        public static string MonsterCachePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "/loe-nc-2/monsters/");
+        public static string TaskCachePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "/loe-nc-2/tasks/");
+        public static string AchievementCachePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "/loe-nc-2/achievements/");
+
         private static void Main(string[] args)
         {
             Console.Title = "Loading...";
@@ -51,65 +56,69 @@ namespace LoESoft.GameServer
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             Thread.CurrentThread.Name = "Entry";
 
-            using (var db = new Database())
+            if (!Directory.Exists(LootCachePath)) Directory.CreateDirectory(LootCachePath);
+            if (!Directory.Exists(MonsterCachePath)) Directory.CreateDirectory(MonsterCachePath);
+            if (!Directory.Exists(TaskCachePath)) Directory.CreateDirectory(TaskCachePath);
+            if (!Directory.Exists(AchievementCachePath)) Directory.CreateDirectory(AchievementCachePath);
+
+            var db = new Database();
+            GameUsage = -1;
+
+            Manager = new RealmManager(db);
+
+            AutoRestart = Settings.NETWORKING.RESTART.ENABLE_RESTART;
+
+            Manager.Initialize();
+            Manager.Run();
+
+            Log._("Message", Message.Messages.Count);
+
+            Server server = new Server(Manager);
+
+            PolicyServer policy = new PolicyServer();
+
+            Console.CancelKeyPress += (sender, e) => e.Cancel = true;
+
+            Settings.DISPLAY_SUPPORTED_VERSIONS();
+
+            Log.Info("Initializing GameServer...");
+
+            policy.Start();
+            server.Start();
+
+            if (AutoRestart)
             {
-                GameUsage = -1;
-
-                Manager = new RealmManager(db);
-
-                AutoRestart = Settings.NETWORKING.RESTART.ENABLE_RESTART;
-
-                Manager.Initialize();
-                Manager.Run();
-
-                Log._("Message", Message.Messages.Count);
-
-                Server server = new Server(Manager);
-
-                PolicyServer policy = new PolicyServer();
-
-                Console.CancelKeyPress += (sender, e) => e.Cancel = true;
-
-                Settings.DISPLAY_SUPPORTED_VERSIONS();
-
-                Log.Info("Initializing GameServer...");
-
-                policy.Start();
-                server.Start();
-
-                if (AutoRestart)
-                {
-                    Chat = Manager.Chat;
-                    Uptime = DateTime.Now;
-                    Restart();
-                    Usage();
-                }
-
-                Console.Title = Settings.GAMESERVER.TITLE;
-
-                Log.Info("Initializing GameServer... OK!");
-
-                Console.CancelKeyPress += delegate
-                {
-                    Shutdown?.Set();
-                };
-
-                while (Console.ReadKey(true).Key != ConsoleKey.Escape)
-                    ;
-
-                Log.Info("Terminating...");
-
-                server?.Stop();
-                policy?.Stop();
-                Manager?.Stop();
-                Shutdown?.Dispose();
-
-                Log.Warn("Terminated GameServer.");
-
-                Thread.Sleep(1000);
-
-                Environment.Exit(0);
+                Chat = Manager.Chat;
+                Uptime = DateTime.Now;
+                Restart();
+                Usage();
             }
+
+            Console.Title = Settings.GAMESERVER.TITLE;
+
+            Log.Info("Initializing GameServer... OK!");
+
+            Console.CancelKeyPress += delegate
+            {
+                Shutdown?.Set();
+            };
+
+            while (Console.ReadKey(true).Key != ConsoleKey.Escape)
+                ;
+
+            Log.Info("Terminating...");
+
+            server?.Stop();
+            policy?.Stop();
+            Manager?.Stop();
+            Manager?.Database.Connection.Dispose();
+            Shutdown?.Dispose();
+
+            Log.Warn("Terminated GameServer.");
+
+            Thread.Sleep(1000);
+
+            Environment.Exit(0);
         }
 
         private static int ToMiliseconds(int minutes) => minutes * 60 * 1000;

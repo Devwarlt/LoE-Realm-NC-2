@@ -102,21 +102,21 @@ namespace LoESoft.GameServer.realm.entity.merchant
         {
             MType = -1;
             var list = new int[0];
-            if (Owner.Map[(int) X, (int) Y].Region == TileRegion.Store_1)
+            if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_1)
                 list = region1list;
-            else if (Owner.Map[(int) X, (int) Y].Region == TileRegion.Store_2)
+            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_2)
                 list = region2list;
-            else if (Owner.Map[(int) X, (int) Y].Region == TileRegion.Store_3)
+            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_3)
                 list = region3list;
-            else if (Owner.Map[(int) X, (int) Y].Region == TileRegion.Store_4)
+            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_4)
                 list = region4list;
-            else if (Owner.Map[(int) X, (int) Y].Region == TileRegion.Store_5)
+            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_5)
                 list = region5list;
-            else if (Owner.Map[(int) X, (int) Y].Region == TileRegion.Store_6)
+            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_6)
                 list = region6list;
-            else if (Owner.Map[(int) X, (int) Y].Region == TileRegion.Store_7)
+            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_7)
                 list = region7list;
-            else if (Owner.Map[(int) X, (int) Y].Region == TileRegion.Store_8)
+            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_8)
                 list = region8list;
             /*else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_12)
                 list = accessorylist;
@@ -168,8 +168,8 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 if (prices.TryGetValue(MType, out Tuple<int, CurrencyType> price))
                 {
                     if (Discount != 0)
-                        Price = (int) (price.Item1 - (price.Item1 * ((double) Discount / 100))) < 1 ?
-                            price.Item1 : (int) (price.Item1 - (price.Item1 * ((double) Discount / 100)));
+                        Price = (int)(price.Item1 - (price.Item1 * ((double)Discount / 100))) < 1 ?
+                            price.Item1 : (int)(price.Item1 - (price.Item1 * ((double)Discount / 100)));
                     else
                         Price = price.Item1;
                     Currency = price.Item2;
@@ -353,12 +353,28 @@ namespace LoESoft.GameServer.realm.entity.merchant
             List<int> largeclothlist = new List<int>();
 
             // region 1 + region 2
-            foreach (KeyValuePair<ushort, Item> item in data.Items.Where(_ => BLACKLIST.keys.All(i => (i != _.Value.ObjectType))))
-                if (item.Value.SlotType == 10 && item.Value.ObjectId.Contains("Key") && item.Value.Class == "Equipment" && item.Value.Soulbound && item.Value.Consumable)
-                {
-                    region1list.Add(item.Value.ObjectType);
-                    region2list.Add(item.Value.ObjectType);
-                }
+            //foreach (KeyValuePair<ushort, Item> item in data.Items.Where(_ => BLACKLIST.keys.All(i => (i != _.Value.ObjectType))))
+            //    if (item.Value.SlotType == 10 && item.Value.ObjectId.Contains("Key") && item.Value.Class == "Equipment" && item.Value.Soulbound && item.Value.Consumable)
+            //    {
+            //        region1list.Add(item.Value.ObjectType);
+            //        region2list.Add(item.Value.ObjectType);
+            //    }
+            region1list.Add(0x236E); // glife
+            region1list.Add(0x236F); // gmana
+            region1list.Add(0x2368); // gatt
+            region1list.Add(0x2369); // gdef
+            region1list.Add(0x236A); // gspd
+            region1list.Add(0x236D); // gdex
+            region1list.Add(0x236B); // gvit
+            region1list.Add(0x236C); // gwis
+            region2list.Add(0xae9); // life
+            region2list.Add(0xaea); // mana
+            region2list.Add(0xa1f); // att
+            region2list.Add(0xa20); // def
+            region2list.Add(0xa21); // spd
+            region2list.Add(0xa4c); // dex
+            region2list.Add(0xa34); // vit
+            region2list.Add(0xa35); // wis
 
             // region 3
             foreach (KeyValuePair<ushort, Item> item in data.Items)
@@ -369,9 +385,12 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 }
 
             // region 4
-            foreach (KeyValuePair<ushort, Item> item in data.Items)
-                if (item.Value.SlotType == 10 && item.Value.Description.Contains("Food for your pet.") && item.Value.Soulbound)
-                    region4list.Add(item.Value.ObjectType);
+            //foreach (KeyValuePair<ushort, Item> item in data.Items)
+            //    if (item.Value.SlotType == 10 && item.Value.Description.Contains("Food for your pet.") && item.Value.Soulbound)
+            //        region4list.Add(item.Value.ObjectType);
+            region4list.Add(0x32a);
+            region4list.Add(0x32b);
+            region4list.Add(0xc6c);
 
             // region 5
             foreach (KeyValuePair<ushort, Item> item in data.Items)

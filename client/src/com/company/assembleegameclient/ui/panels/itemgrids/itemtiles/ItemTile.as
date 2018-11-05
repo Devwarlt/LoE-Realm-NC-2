@@ -1,7 +1,9 @@
 ﻿package com.company.assembleegameclient.ui.panels.itemgrids.itemtiles {
 import com.company.assembleegameclient.objects.ObjectLibrary;
 import com.company.assembleegameclient.objects.Player;
+import com.company.assembleegameclient.parameters.Parameters;
 import com.company.assembleegameclient.ui.panels.itemgrids.ItemGrid;
+import com.company.assembleegameclient.util.TierUtil;
 import com.company.util.GraphicsUtil;
 
 import flash.display.GraphicsPath;
@@ -9,6 +11,8 @@ import flash.display.GraphicsSolidFill;
 import flash.display.IGraphicsData;
 import flash.display.Shape;
 import flash.display.Sprite;
+
+import io.decagames.rotmg.ui.labels.UILabel;
 
 import kabam.rotmg.constants.ItemConstants;
 
@@ -28,6 +32,8 @@ public class ItemTile extends Sprite {
     public var tileId:int;
     public var ownerGrid:ItemGrid;
     public var blockingItemUpdates:Boolean;
+    private var tierText:UILabel;
+    private var tagContainer:Sprite;
 
     public function ItemTile(_arg1:int, _arg2:ItemGrid) {
         this.fill_ = new GraphicsSolidFill(this.getBackgroundColor(), 1);
@@ -63,6 +69,7 @@ public class ItemTile extends Sprite {
             return (true);
         }
         this.itemSprite.setType(_arg1);
+        this.setTierTag();
         this.updateUseability(this.ownerGrid.curPlayer);
         return (true);
     }
@@ -106,6 +113,39 @@ public class ItemTile extends Sprite {
         return (0x545454);
     }
 
-
+    public function setTierTag():void{
+        this.clearTierTag();
+        var _local1:XML = ObjectLibrary.xmlLibrary_[this.itemSprite.itemId];
+        if (_local1)
+        {
+            this.tierText = TierUtil.getTierTag(_local1);
+            if (this.tierText)
+            {
+                if (!this.tagContainer)
+                {
+                    this.tagContainer = new Sprite();
+                    addChild(this.tagContainer);
+                }
+                this.tierText.filters = TierUtil.getTextOutlineFilter();
+                this.tierText.x = (WIDTH - this.tierText.width);
+                this.tierText.y = ((HEIGHT / 2) + 5);
+                this.toggleTierTag(Parameters.data_.showTierTag);
+                this.tagContainer.addChild(this.tierText);
+            }
+        }
+    }
+    private function clearTierTag():void{
+        if (((((this.tierText) && (this.tagContainer))) && (this.tagContainer.contains(this.tierText))))
+        {
+            this.tagContainer.removeChild(this.tierText);
+            this.tierText = null;
+        }
+    }
+    public function toggleTierTag(_arg1:Boolean):void{
+        if (this.tierText)
+        {
+            this.tierText.visible = _arg1;
+        }
+    }
 }
 }

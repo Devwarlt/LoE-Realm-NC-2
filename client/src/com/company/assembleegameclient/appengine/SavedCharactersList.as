@@ -13,6 +13,9 @@ import kabam.rotmg.servers.api.LatLong;
 
 import org.swiftsuspenders.Injector;
 
+import robotlegs.bender.framework.api.ILogger;
+import robotlegs.bender.framework.impl.Logger;
+
 public class SavedCharactersList extends Event {
 
     public static const SAVED_CHARS_LIST:String = "SAVED_CHARS_LIST";
@@ -56,6 +59,9 @@ public class SavedCharactersList extends Event {
     public var deadMusic_:String;
     private var account:Account;
 
+    [Inject]
+    public static var logger:Logger = StaticInjectorContext.getInjector().getInstance(ILogger);
+
     public function SavedCharactersList(_arg1:String) {
         var _local4:*;
         var _local5:Account;
@@ -63,30 +69,35 @@ public class SavedCharactersList extends Event {
         this.charStats_ = {};
         this.news_ = new Vector.<SavedNewsItem>();
         super(SAVED_CHARS_LIST);
-        this.origData_ = _arg1;
-        this.charsXML_ = new XML(this.origData_);
-        var _local2:XML = XML(this.charsXML_.Account);
-        this.parseUserData(_local2);
-        this.parseBeginnersPackageData(_local2);
-        this.parseGuildData(_local2);
-        this.parseCharacterData();
-        this.parseCharacterStatsData();
-        this.parseNewsData();
-        this.parseGeoPositioningData();
-        this.parseSalesForceData();
-        this.parseTOSPopup();
-        this.reportUnlocked();
-        var _local3:Injector = StaticInjectorContext.getInjector();
-        if (_local3) {
-            _local5 = _local3.getInstance(Account);
-            _local5.reportIntStat("BestLevel", this.bestOverallLevel());
-            _local5.reportIntStat("BestFame", this.bestOverallFame());
-            _local5.reportIntStat("NumStars", this.numStars_);
-            _local5.verify(_local2.hasOwnProperty("VerifiedEmail"));
+        try {
+            this.origData_ = _arg1;
+            this.charsXML_ = new XML(this.origData_);
+            var _local2:XML = XML(this.charsXML_.Account);
+            this.parseUserData(_local2);
+            this.parseBeginnersPackageData(_local2);
+            this.parseGuildData(_local2);
+            this.parseCharacterData();
+            this.parseCharacterStatsData();
+            this.parseNewsData();
+            this.parseGeoPositioningData();
+            this.parseSalesForceData();
+            this.parseTOSPopup();
+            this.reportUnlocked();
+            var _local3:Injector = StaticInjectorContext.getInjector();
+            if (_local3) {
+                _local5 = _local3.getInstance(Account);
+                _local5.reportIntStat("BestLevel", this.bestOverallLevel());
+                _local5.reportIntStat("BestFame", this.bestOverallFame());
+                _local5.reportIntStat("NumStars", this.numStars_);
+                _local5.verify(_local2.hasOwnProperty("VerifiedEmail"));
+            }
+            this.classAvailability = new Object();
+            for each (_local4 in this.charsXML_.ClassAvailabilityList.ClassAvailability) {
+                this.classAvailability[_local4.@id.toString()] = _local4.toString();
+            }
         }
-        this.classAvailability = new Object();
-        for each (_local4 in this.charsXML_.ClassAvailabilityList.ClassAvailability) {
-            this.classAvailability[_local4.@id.toString()] = _local4.toString();
+        catch (error:Error) {
+            logger.info(error.getStackTrace());
         }
     }
 

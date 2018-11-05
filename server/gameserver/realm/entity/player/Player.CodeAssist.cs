@@ -77,7 +77,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
             public int LastServerTime() => _lastServerTime;
 
-            public float TimeDiff() => _count < _capacity ? 1 : (float) _clientElapsed / _serverElapsed;
+            public float TimeDiff() => _count < _capacity ? 1 : (float)_clientElapsed / _serverElapsed;
         }
 
         public PlayerShootStatus ValidatePlayerShoot(Item item, int time)
@@ -85,7 +85,7 @@ namespace LoESoft.GameServer.realm.entity.player
             if (item != Inventory[0])
                 return PlayerShootStatus.ITEM_MISMATCH;
 
-            int dt = (int) (1 / StatsManager.GetAttackFrequency() * 1 / item.RateOfFire);
+            int dt = (int)(1 / StatsManager.GetAttackFrequency() * 1 / item.RateOfFire);
 
             if (time < _time.LastClientTime() + dt)
                 return PlayerShootStatus.COOLDOWN_STILL_ACTIVE;
@@ -148,7 +148,7 @@ namespace LoESoft.GameServer.realm.entity.player
             NULL
         }
 
-        private Tuple<bool, AccType> GetAccountType() => (AccountType >= (int) Core.config.AccountType.VIP_ACCOUNT && AccountType <= (int) Core.config.AccountType.LEGENDS_OF_LOE_ACCOUNT) ? Tuple.Create(true, AccountType == (int) Core.config.AccountType.VIP_ACCOUNT ? AccType.VIP_ACCOUNT : AccType.LEGENDS_OF_LOE_ACCOUNT) : Tuple.Create(false, AccType.NULL);
+        private Tuple<bool, AccType> GetAccountType() => (AccountType >= (int)Core.config.AccountType.VIP_ACCOUNT && AccountType <= (int)Core.config.AccountType.LEGENDS_OF_LOE_ACCOUNT) ? Tuple.Create(true, AccountType == (int)Core.config.AccountType.VIP_ACCOUNT ? AccType.VIP_ACCOUNT : AccType.LEGENDS_OF_LOE_ACCOUNT) : Tuple.Create(false, AccType.NULL);
 
         public void CalculateBoost()
         {
@@ -210,6 +210,10 @@ namespace LoESoft.GameServer.realm.entity.player
 
         public void SaveToCharacter()
         {
+            ExportAchievementCache(Achievements);
+            ExportTaskCache(ActualTask);
+            ExportMonsterCaches(MonsterCaches);
+
             var chr = Client.Character;
             //chr.LootCaches = LootCaches.ToArray();
             chr.Experience = Experience;
@@ -246,8 +250,8 @@ namespace LoESoft.GameServer.realm.entity.player
             chr.MagicPotions = MagicPotions;
             chr.HasBackpack = HasBackpack;
             chr.Skin = PlayerSkin;
-            chr.LootDropTimer = (int) LootDropBoostTimeLeft;
-            chr.LootTierTimer = (int) LootTierBoostTimeLeft;
+            chr.LootDropTimer = (int)LootDropBoostTimeLeft;
+            chr.LootTierTimer = (int)LootTierBoostTimeLeft;
             chr.FameStats = FameCounter.Stats.Write();
             chr.LastSeen = DateTime.Now;
         }
@@ -276,7 +280,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 {
                     Host = "",
                     Port = Settings.GAMESERVER.PORT,
-                    GameId = (int) WorldID.NEXUS_ID,
+                    GameId = (int)WorldID.NEXUS_ID,
                     Name = "Nexus",
                     Key = Empty<byte>.Array,
                 });
@@ -349,7 +353,7 @@ namespace LoESoft.GameServer.realm.entity.player
             else
             {
                 hpRegenCounter += StatsManager.GetHPRegen() * time.ElapsedMsDelta / 1000f;
-                var regen = (int) hpRegenCounter;
+                var regen = (int)hpRegenCounter;
                 if (regen > 0)
                 {
                     HP = Math.Min(Stats[0] + Boost[0], HP + regen);
@@ -363,7 +367,7 @@ namespace LoESoft.GameServer.realm.entity.player
             else
             {
                 mpRegenCounter += StatsManager.GetMPRegen() * time.ElapsedMsDelta / 1000f;
-                var regen = (int) mpRegenCounter;
+                var regen = (int)mpRegenCounter;
                 if (regen <= 0)
                     return;
                 MP = Math.Min(Stats[1] + Boost[1], MP + regen);
@@ -420,7 +424,7 @@ namespace LoESoft.GameServer.realm.entity.player
                     else
                         Client?.SendMessage(new FAILURE
                         {
-                            ErrorId = (int) FailureIDs.JSON_DIALOG,
+                            ErrorId = (int)FailureIDs.JSON_DIALOG,
                             ErrorDescription =
                                 JSONErrorIDHandler.
                                     FormatedJSONError(
@@ -439,7 +443,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                 Client.SendMessage(new PING()
                 {
-                    Serial = (int) time.TotalElapsedMs
+                    Serial = (int)time.TotalElapsedMs
                 });
 
                 return UpdateOnPing();
@@ -478,7 +482,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 TimeMap = _sum / _cnt;
 
                 _latSum += (time.TotalElapsedMs - pkt.Serial) / 2;
-                Latency = (int) _latSum / _cnt;
+                Latency = (int)_latSum / _cnt;
 
                 _pongTime = time.TotalElapsedMs;
             }
@@ -526,7 +530,7 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             var dx = a.X - b.X;
             var dy = a.Y - b.Y;
-            return (float) Math.Sqrt(dx * dx + dy * dy);
+            return (float)Math.Sqrt(dx * dx + dy * dy);
         }
 
         public void SendAccountList(List<string> list, int id)
@@ -593,12 +597,12 @@ namespace LoESoft.GameServer.realm.entity.player
             double m = (value < 0) ? -1 : 1;
             double n = (value * totalWisdom / 150) + (value * m);
             n = Math.Floor(n * Math.Pow(10, offset)) / Math.Pow(10, offset);
-            if (n - (int) n * m >= 1 / Math.Pow(10, offset) * m)
+            if (n - (int)n * m >= 1 / Math.Pow(10, offset) * m)
             {
-                return ((int) (n * 10)) / 10.0f;
+                return ((int)(n * 10)) / 10.0f;
             }
 
-            return (int) n;
+            return (int)n;
         }
 
         internal static List<ushort> Special = new List<ushort>

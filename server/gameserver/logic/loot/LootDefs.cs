@@ -95,7 +95,6 @@ namespace LoESoft.GameServer.logic.loot
         private Random _rnd { get; set; }
         private string _lootState { get; set; }
         private IList<LootDef> _lootDefs { get; set; }
-
         private List<Player> PlayersData { get; set; }
         private double Chance { get; set; }
         private int EnemyHP { get; set; }
@@ -110,12 +109,12 @@ namespace LoESoft.GameServer.logic.loot
             _rnd = rnd;
             _lootState = lootState;
             _lootDefs = lootDefs;
-
-            var players = enemy.DamageCounter.GetPlayerData().ToList();
+            
+            var players = _enemy.DamageCounter.GetPlayerData().ToList();
 
             PlayersData = players.Where(player => player.Item1 != null).Select(player => player.Item1).ToList();
             Chance = chance;
-            EnemyHP = enemy.HP;
+            EnemyHP = _enemy.HP;
             Players = players.Count;
             PlayersBelowLvl20 = players.Where(playerCache => playerCache.Item1.Level < 20).Count();
             PlayersMaxed = players.Where(playerCache =>
@@ -150,11 +149,10 @@ namespace LoESoft.GameServer.logic.loot
                 var rng = new Random().NextDouble(0, 100);
                 var chance = GetTotalChance;
                 var success = rng <= chance;
+                var lootCache = player.LootCaches.FirstOrDefault(item => item.ObjectId == objectId);
 
-                if (LootCache.Utils.ContainsIn(player.LootCaches, objectId))
+                if (lootCache != null)
                 {
-                    var lootCache = player.LootCaches.Where(item => item.ObjectId == objectId).FirstOrDefault();
-
                     if (lootCache.Attempts + 1 >= lootCache.MaxAttempts || success)
                     {
                         loot[0].Populate(_enemy, _playerData, _rnd, _lootState, _lootDefs);
@@ -175,7 +173,8 @@ namespace LoESoft.GameServer.logic.loot
                                 Recipient = target.Name,
                                 Text = msg.ToSafeText(),
                                 CleanText = "",
-                                NameColor = 0x123456
+                                NameColor = 0x123456,
+                                TextColor = 0x123456
                             });
 
                             return target;
@@ -185,10 +184,10 @@ namespace LoESoft.GameServer.logic.loot
                     }
                     else
                     {
-                        Log.Info($"{player.Name} failed to obtain a white bag item '{objectId} (on {lootCache.Attempts} of {lootCache.MaxAttempts} attempt{(lootCache.MaxAttempts > 1 ? "s" : "")})!");
+                        Log.Info($"{player.Name} failed to obtain a white bag item '{objectId}' (on {lootCache.Attempts} of {lootCache.MaxAttempts} attempt{(lootCache.MaxAttempts > 1 ? "s" : "")})!");
 
                         LootCache.Utils.UpdateAttempts(player.LootCaches, objectId);
-                        LootCache.Utils.UpdateMaxAttempts(player.LootCaches, objectId, (int) (100 / chance));
+                        LootCache.Utils.UpdateMaxAttempts(player.LootCaches, objectId, (int)(100 / chance));
                     }
                 }
                 else
@@ -213,7 +212,8 @@ namespace LoESoft.GameServer.logic.loot
                                 Recipient = target.Name,
                                 Text = msg.ToSafeText(),
                                 CleanText = "",
-                                NameColor = 0x123456
+                                NameColor = 0x123456,
+                                TextColor = 0x123456
                             });
 
                             return target;
@@ -221,14 +221,14 @@ namespace LoESoft.GameServer.logic.loot
                     }
                     else
                     {
-                        Log.Info($"{player.Name} failed to obtain a white bag item '{objectId} (on 1st attempt)!");
+                        Log.Info($"{player.Name} failed to obtain a white bag item '{objectId}' (on 1st attempt)!");
 
                         player.LootCaches.Add(new LootCache()
                         {
                             ObjectId = objectId,
                             Attempts = 1,
-                            MaxAttempts = (int) (100 / chance),
-                            AttemptsBase = (int) (100 / chance)
+                            MaxAttempts = (int)(100 / chance),
+                            AttemptsBase = (int)(100 / chance)
                         });
                     }
                 }
@@ -311,18 +311,14 @@ namespace LoESoft.GameServer.logic.loot
         {
             Lootstate = lootState;
 
-            if (playerData != null)
-                return;
-
             Item[] candidates = GameServer.Manager.GameData.Items
                 .Where(item => item.Value.SlotType == 9000)
-                .Where(item => item.Value.MinStars <= (int) rarity)
+                .Where(item => item.Value.MinStars <= (int)rarity)
                 .Select(item => item.Value)
                 .ToArray();
 
-            Item onlyOne = candidates[new Random().Next(0, candidates.Length)];
+            var onlyOne = candidates[new Random().Next(0, candidates.Length)];
 
-            double rng = rnd.NextDouble();
             double probability = 0;
 
             if (onlyOne.MinStars < 8)
@@ -336,10 +332,8 @@ namespace LoESoft.GameServer.logic.loot
 
             probability *= Settings.WOTMG_RATE;
 
-            ILootDef[] eggbasket = new ILootDef[] { new Drops(new ItemLoot(onlyOne.DisplayId, probability)) };
-
-            if (rng <= probability * Settings.WOTMG_RATE)
-                eggbasket[0].Populate(enemy, playerData, rnd, Lootstate, lootDefs);
+            var eggBasket = new ILootDef[] { new Drops(new ItemLoot(onlyOne.ObjectType, probability)) };
+            eggBasket[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
         }
     }
 
@@ -361,9 +355,6 @@ namespace LoESoft.GameServer.logic.loot
         {
             BagType = BagType.Pink;
             Lootstate = lootState;
-
-            if (playerData == null)
-                return;
 
             var pinkBag = new ILootDef[] { new Drops(new TierLoot(tier, itemType, BagType)) };
             pinkBag[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
@@ -388,9 +379,6 @@ namespace LoESoft.GameServer.logic.loot
         {
             BagType = BagType.Purple;
             Lootstate = lootState;
-
-            if (playerData == null)
-                return;
 
             var purpleBag = new ILootDef[] { new Drops(new TierLoot(tier, itemType, BagType)) };
             purpleBag[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
@@ -431,9 +419,6 @@ namespace LoESoft.GameServer.logic.loot
             BagType = BagType.Cyan;
             Lootstate = lootState;
 
-            if (playerData == null)
-                return;
-
             var cyanBag = !setByTier ? new ILootDef[] { new Drops(new ItemLoot(itemName, 0.1)) }
                 : new ILootDef[] { new Drops(new TierLoot(tier, itemType, BagType)) };
             cyanBag[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
@@ -469,9 +454,6 @@ namespace LoESoft.GameServer.logic.loot
         {
             BagType = BagType.Blue;
             Lootstate = lootState;
-
-            if (playerData == null)
-                return;
 
             if (single)
             {
@@ -515,26 +497,50 @@ namespace LoESoft.GameServer.logic.loot
             BagType = BagType.Blue;
             Lootstate = lootState;
 
-            if (playerData == null)
-                return;
+            double probability = 0;
 
-            var booster = new LootBoosters(0.001, enemy, playerData, rnd, lootState, lootDefs);
-            booster.UpdateLootCache(itemName, new ILootDef[] { new Drops(new ItemLoot(itemName, 1)) });
+            var candidates = enemy.DamageCounter.GetPlayerData().ToList();
+            var rng = rnd.NextDouble();
+            var playersCount = candidates.Count;
+            var enemyHP = (int)enemy.ObjectDesc.MaxHP;
+
+            if (playersCount == 1)
+                probability = .0001;
+            else if (playersCount > 1 && playersCount <= 3)
+                probability = .0001 + .0001 * playersCount;
+            else
+                probability = .0002 + .000005 * playersCount;
+
+            var whitebag = new ILootDef[] { new Drops(new ItemLoot(itemName, probability * (eventChest ? .8 : 1), true)) };
+            whitebag[0].Populate(enemy, playerData, rnd, Lootstate, lootDefs);
         }
     }
 
     public class ItemLoot : ILootDef
     {
+        private readonly ushort id;
         private readonly string item;
         private readonly double probability;
+        private readonly bool isId;
+        private readonly bool whiteBag;
 
         public string Lootstate { get; set; }
         public BagType BagType { get; set; }
 
-        public ItemLoot(string item, double probability)
+        public ItemLoot(ushort id, double probability, bool whiteBag = false)
+        {
+            this.id = id;
+            this.probability = probability;
+            isId = true;
+            this.whiteBag = whiteBag;
+        }
+
+        public ItemLoot(string item, double probability, bool whiteBag = false)
         {
             this.item = item;
             this.probability = probability;
+            isId = false;
+            this.whiteBag = whiteBag;
         }
 
         public void Populate(
@@ -547,13 +553,10 @@ namespace LoESoft.GameServer.logic.loot
         {
             Lootstate = lootState;
 
-            if (playerDat != null)
-                return;
-
             EmbeddedData dat = GameServer.Manager.GameData;
 
             try
-            { lootDefs.Add(new LootDef(dat.Items[dat.IdToObjectType[item]], probability, lootState)); }
+            { lootDefs.Add(new LootDef(dat.Items[isId ? id : dat.IdToObjectType[item]], probability, lootState, whiteBag)); }
             catch (KeyNotFoundException) { Log.Error($"Item '{item}', wasn't added in loot list of entity '{enemy.Name}', because doesn't contains in assets."); }
         }
     }
@@ -620,11 +623,9 @@ namespace LoESoft.GameServer.logic.loot
             )
         {
             Lootstate = lootState;
-            if (playerDat != null)
-                return;
             Item[] candidates = GameServer.Manager.GameData.Items
                 .Where(item => item.Value.SlotType == 9000)
-                .Where(item => item.Value.MinStars <= (int) rarity)
+                .Where(item => item.Value.MinStars <= (int)rarity)
                 .Select(item => item.Value)
                 .ToArray();
             foreach (Item i in candidates)
@@ -757,8 +758,6 @@ namespace LoESoft.GameServer.logic.loot
             )
         {
             Lootstate = lootState;
-            if (playerDat != null)
-                return;
             Item[] candidates = GameServer.Manager.GameData.Items
                 .Where(item => Array.IndexOf(types, item.Value.SlotType) != -1)
                 .Where(item => item.Value.Tier == tier)
@@ -792,7 +791,11 @@ namespace LoESoft.GameServer.logic.loot
             )
         {
             Lootstate = lootState;
-            if (playerDat != null && playerDat.Item2 / enemy.ObjectDesc.MaxHP >= threshold)
+
+            if (playerDat == null)
+                return;
+
+            if (playerDat.Item2 / enemy.ObjectDesc.MaxHP >= threshold)
             {
                 foreach (ILootDef i in children)
                     i.Populate(enemy, null, rand, lootState, lootDefs);
@@ -821,11 +824,9 @@ namespace LoESoft.GameServer.logic.loot
             )
         {
             Lootstate = lootState;
-            if (playerDat != null)
-            {
-                foreach (ILootDef i in children)
-                    i.Populate(enemy, null, rand, lootState, lootDefs);
-            }
+
+            foreach (ILootDef i in children)
+                i.Populate(enemy, null, rand, lootState, lootDefs);
         }
     }
 

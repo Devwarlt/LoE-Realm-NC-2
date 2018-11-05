@@ -84,6 +84,8 @@
     <Compile Include="config\internal\GameServer.cs" />
     <Compile Include="config\Utils.cs" />
     <Compile Include="database\LootCache.cs" />
+    <Compile Include="database\MonsterCache.cs" />
+    <Compile Include="database\RedisConnectionGateway.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="models\AccountType.cs" />
     <Compile Include="config\Settings.cs" />

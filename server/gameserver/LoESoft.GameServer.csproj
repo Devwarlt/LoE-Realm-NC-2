@@ -422,6 +422,8 @@
     <Compile Include="GameServer.cs" />
     <Compile Include="realm\ChatColor.cs" />
     <Compile Include="realm\ChatManager.cs" />
+    <Compile Include="realm\entity\player\Player.IO.cs" />
+    <Compile Include="realm\entity\player\Player.Tasks.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\DreamIsle.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\Frog.cs" />
     <Compile Include="realm\commands\command\TestingCommands.cs" />

@@ -7,7 +7,7 @@ namespace LoESoft.GameServer.realm
 {
     internal partial class Realm
     {
-        public readonly double RealmEventProbability = .25; // 25%
+        public readonly double RealmEventProbability = 0.45; // 45%
 
         public readonly List<RealmEvent> RealmEventCache = new List<RealmEvent>
         {

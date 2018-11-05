@@ -31,7 +31,7 @@ namespace LoESoft.Core
         public InterServerChannel(Database db, string instId)
         {
             Database = db;
-            conn = db.GetOpenSubscriberChannel();
+            conn = db.Connection.GetOpenSubscriberChannel();
             InstanceId = instId;
         }
 
@@ -52,7 +52,7 @@ namespace LoESoft.Core
             };
             try
             {
-                Database?.Publish(channel, JsonConvert.SerializeObject(message));
+                Database.Connection?.Publish(channel, JsonConvert.SerializeObject(message));
             }
             catch (Exception)
             {

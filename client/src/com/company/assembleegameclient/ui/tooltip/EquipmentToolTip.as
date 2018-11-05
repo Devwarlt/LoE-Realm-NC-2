@@ -6,6 +6,7 @@ import com.company.assembleegameclient.objects.Player;
 import com.company.assembleegameclient.parameters.Parameters;
 import com.company.assembleegameclient.ui.LineBreakDesign;
 import com.company.assembleegameclient.util.TextureRedrawer;
+import com.company.assembleegameclient.util.TierUtil;
 import com.company.util.AssetLibrary;
 import com.company.util.BitmapUtil;
 import com.company.util.KeyCodes;
@@ -17,6 +18,8 @@ import flash.filters.DropShadowFilter;
 import flash.utils.Dictionary;
 import flash.utils.Timer;
 import flash.utils.setInterval;
+
+import io.decagames.rotmg.ui.labels.UILabel;
 
 import kabam.rotmg.constants.ActivationType;
 import kabam.rotmg.core.StaticInjectorContext;
@@ -39,7 +42,7 @@ public class EquipmentToolTip extends ToolTip {
     private var iconSize:Number = 60;
     private var icon:Bitmap;
     public var titleText:TextFieldDisplayConcrete;
-    private var tierText:TextFieldDisplayConcrete;
+    private var tierText:UILabel;
     private var descText:TextFieldDisplayConcrete;
     private var line1:LineBreakDesign;
     private var effectsText:TextFieldDisplayConcrete;
@@ -58,7 +61,6 @@ public class EquipmentToolTip extends ToolTip {
     private var uniqueEffects:Vector.<Effect>;
     private var itemSlotTypeId:int;
     private var invType:int;
-    private var inventorySlotID:uint;
     private var inventoryOwnerType:String;
     private var isInventoryFull:Boolean;
     private var playerCanUse:Boolean;
@@ -66,7 +68,6 @@ public class EquipmentToolTip extends ToolTip {
     private var powerText:TextFieldDisplayConcrete;
     private var keyInfoResponse:KeyInfoResponseSignal;
     private var originalObjectType:int;
-    private var time:Timer;
     private var flashtext:TextFieldDisplayConcrete;
     private var repeat:int = 0;
 
@@ -156,7 +157,7 @@ public class EquipmentToolTip extends ToolTip {
             _local1 = ((((this.playerCanUse) || ((this.player == null)))) ? 0xFFFFFF : 16549442);
             this.powerText = new TextFieldDisplayConcrete().setSize(12).setColor(_local1).setBold(true).setTextWidth((((MAX_WIDTH - this.icon.width) - 4) - 30)).setWordWrap(true);
             this.powerText.setStringBuilder(new StaticStringBuilder().setString((/*"Feed Power: " + this.objectXML.feedPower*/"")));
-            this.powerText.filters = [new DropShadowFilter(0, 0, 0, 0.5, 12, 12)];
+            this.powerText.filters = TierUtil.getTextOutlineFilter();
             waiter.push(this.powerText.textChanged);
             addChild(this.powerText);
         }
@@ -219,49 +220,11 @@ public class EquipmentToolTip extends ToolTip {
     }
 
     private function addTierText():void {
-        var _local1:Boolean = (this.isPet() == false);
-        var _local2:Boolean = (this.objectXML.hasOwnProperty("Consumable") == false);
-        var _local3:Boolean = (this.objectXML.hasOwnProperty("Treasure") == false);
-        var _local4:Boolean = this.objectXML.hasOwnProperty("Tier");
-        var _local5:Boolean = this.objectXML.hasOwnProperty("LT");
-        var _local6:Boolean = this.objectXML.hasOwnProperty("SRT");
-        var _local7:Boolean = this.objectXML.hasOwnProperty("FT");
-        if (((((_local1) && (_local2))) && (_local3))) {
-            this.tierText = new TextFieldDisplayConcrete().setSize(16).setColor(0xFFFFFF).setTextWidth(30).setBold(true);
-            if (_local4) {
-                this.tierText.setStringBuilder(new LineBuilder().setParams(TextKey.TIER_ABBR, {"tier": this.objectXML.Tier}));
-            }
-            else if (_local5) {
-                this.tierText.setColor(0xFF6347);
-                this.tierText.setStringBuilder(new LineBuilder().setParams("LT"));
-            }
-            else if (_local6) {
-                this.tierText.setColor(0xFFD700);
-                this.tierText.setStringBuilder(new LineBuilder().setParams("SRT"));
-            }
-            else if (_local7) {
-                this.tierText.setStringBuilder(new LineBuilder().setParams("FT"));
-                SetFlash(this.tierText);
-            }
-            else {
-                if (this.objectXML.hasOwnProperty("@setType")) {
-                    this.tierText.setColor(0xFF9900);
-                    this.tierText.setStringBuilder(new StaticStringBuilder("ST"));
-                }
-                else {
-                    this.tierText.setColor(9055202);
-                    this.tierText.setStringBuilder(new LineBuilder().setParams(TextKey.UNTIERED_ABBR));
-                }
-            }
+        this.tierText = TierUtil.getTierTag(this.objectXML, 16);
+        this.tierText.filters = TierUtil.getTextOutlineFilter();
+
+        if (this.tierText)
             addChild(this.tierText);
-        }
-    }
-    private function SetFlash(_arg1:TextFieldDisplayConcrete):void {
-        this.repeat = 0;
-        this.flashtext = _arg1;
-        this.time = new Timer(100);
-        this.time.start();
-        this.time.addEventListener(TimerEvent.TIMER, OnFlash);
     }
 
     private function OnFlash(_arg1:TimerEvent):void {
@@ -295,7 +258,7 @@ public class EquipmentToolTip extends ToolTip {
         else {
             this.titleText.setStringBuilder(new LineBuilder().setParams(ObjectLibrary.typeToDisplayId_[this.objectType]));
         }
-        this.titleText.filters = [new DropShadowFilter(0, 0, 0, 0.5, 12, 12)];
+        this.titleText.filters = TierUtil.getTextOutlineFilter();
         waiter.push(this.titleText.textChanged);
         addChild(this.titleText);
     }
@@ -321,7 +284,7 @@ public class EquipmentToolTip extends ToolTip {
             this.effectsText = new TextFieldDisplayConcrete().setSize(14).setColor(0xB3B3B3).setTextWidth(MAX_WIDTH).setWordWrap(true).setHTML(true);
             _local1 = this.getEffectsStringBuilder();
             this.effectsText.setStringBuilder(_local1);
-            this.effectsText.filters = [new DropShadowFilter(0, 0, 0, 0.5, 12, 12)];
+            this.effectsText.filters = TierUtil.getTextOutlineFilter();
             if (_local1.hasLines()) {
                 addChild(this.line1);
                 addChild(this.effectsText);
@@ -911,7 +874,7 @@ public class EquipmentToolTip extends ToolTip {
         if (this.restrictions.length != 0) {
             this.restrictionsText = new TextFieldDisplayConcrete().setSize(14).setColor(0xB3B3B3).setTextWidth((MAX_WIDTH - 4)).setIndent(-10).setLeftMargin(10).setWordWrap(true).setHTML(true);
             this.restrictionsText.setStringBuilder(this.buildRestrictionsLineBuilder());
-            this.restrictionsText.filters = [new DropShadowFilter(0, 0, 0, 0.5, 12, 12)];
+            this.restrictionsText.filters = TierUtil.getTextOutlineFilter();
             waiter.push(this.restrictionsText.textChanged);
             addChild(this.restrictionsText);
         }
@@ -957,7 +920,7 @@ public class EquipmentToolTip extends ToolTip {
         else {
             this.descText.setStringBuilder(new LineBuilder().setParams(String(this.objectXML.Description)));
         }
-        this.descText.filters = [new DropShadowFilter(0, 0, 0, 0.5, 12, 12)];
+        this.descText.filters = TierUtil.getTextOutlineFilter();
         waiter.push(this.descText.textChanged);
         addChild(this.descText);
     }

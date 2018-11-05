@@ -23,9 +23,14 @@ namespace LoESoft.Core
         {
             Key = key;
             Database = db;
+
+            if (db.Connection.State == RedisConnectionBase.ConnectionState.Closing || db.Connection.State == RedisConnectionBase.ConnectionState.Closed)
+                db.Connection = db.Gateway.GetConnection();
+
             fields =
                 new ConcurrentDictionary<string, KeyValuePair<byte[], bool>>(
                     db
+                    .Connection
                     .Hashes
                     .GetAll(0, key)
                     .Exec()
@@ -46,29 +51,29 @@ namespace LoESoft.Core
             if (!fields.TryGetValue(key, out KeyValuePair<byte[], bool> val))
                 return def;
             if (typeof(T) == typeof(int))
-                return (T) (object) int.Parse(Encoding.UTF8.GetString(val.Key));
+                return (T)(object)int.Parse(Encoding.UTF8.GetString(val.Key));
             else if (typeof(T) == typeof(ushort))
-                return (T) (object) ushort.Parse(Encoding.UTF8.GetString(val.Key));
+                return (T)(object)ushort.Parse(Encoding.UTF8.GetString(val.Key));
             else if (typeof(T) == typeof(bool))
-                return (T) (object) (val.Key[0] != 0);
+                return (T)(object)(val.Key[0] != 0);
             else if (typeof(T) == typeof(DateTime))
-                return (T) (object) DateTime.FromBinary(BitConverter.ToInt64(val.Key, 0));
+                return (T)(object)DateTime.FromBinary(BitConverter.ToInt64(val.Key, 0));
             else if (typeof(T) == typeof(byte[]))
-                return (T) (object) val.Key;
+                return (T)(object)val.Key;
             else if (typeof(T) == typeof(ushort[]))
             {
                 ushort[] ret = new ushort[val.Key.Length / 2];
                 Buffer.BlockCopy(val.Key, 0, ret, 0, val.Key.Length);
-                return (T) (object) ret;
+                return (T)(object)ret;
             }
             else if (typeof(T) == typeof(int[]))
             {
                 int[] ret = new int[val.Key.Length / 4];
                 Buffer.BlockCopy(val.Key, 0, ret, 0, val.Key.Length);
-                return (T) (object) ret;
+                return (T)(object)ret;
             }
             else if (typeof(T) == typeof(string))
-                return (T) (object) Encoding.UTF8.GetString(val.Key);
+                return (T)(object)Encoding.UTF8.GetString(val.Key);
             else
                 throw new NotSupportedException();
         }
@@ -80,20 +85,20 @@ namespace LoESoft.Core
                 typeof(T) == typeof(string))
                 buff = Encoding.UTF8.GetBytes(val.ToString());
             else if (typeof(T) == typeof(bool))
-                buff = new byte[] { (byte) ((bool) (object) val ? 1 : 0) };
+                buff = new byte[] { (byte)((bool)(object)val ? 1 : 0) };
             else if (typeof(T) == typeof(DateTime))
-                buff = BitConverter.GetBytes(((DateTime) (object) val).ToBinary());
+                buff = BitConverter.GetBytes(((DateTime)(object)val).ToBinary());
             else if (typeof(T) == typeof(byte[]))
-                buff = (byte[]) (object) val;
+                buff = (byte[])(object)val;
             else if (typeof(T) == typeof(ushort[]))
             {
-                var v = (ushort[]) (object) val;
+                var v = (ushort[])(object)val;
                 buff = new byte[v.Length * 2];
                 Buffer.BlockCopy(v, 0, buff, 0, buff.Length);
             }
             else if (typeof(T) == typeof(int[]))
             {
-                var v = (int[]) (object) val;
+                var v = (int[])(object)val;
                 buff = new byte[v.Length * 4];
                 Buffer.BlockCopy(v, 0, buff, 0, buff.Length);
             }
@@ -115,7 +120,7 @@ namespace LoESoft.Core
                 if (i.Value.Value)
                     update.Add(i.Key, i.Value.Key);
 
-            Database.Hashes.Set(0, Key, update);
+            Database.Connection.Hashes.Set(0, Key, update);
         }
 
         public void Flush(RedisConnection conn = null)
@@ -127,7 +132,7 @@ namespace LoESoft.Core
             foreach (var i in fields)
                 if (i.Value.Value)
                     update.Add(i.Key, i.Value.Key);
-            (conn ?? Database).Hashes.Set(0, Key, update);
+            (conn ?? Database.Connection).Hashes.Set(0, Key, update);
         }
 
         public void Reload()    //Discard all updates
@@ -138,6 +143,7 @@ namespace LoESoft.Core
             fields =
                 new ConcurrentDictionary<string, KeyValuePair<byte[], bool>>(
                     Database
+                    .Connection
                     .Hashes
                     .GetAll(0, Key)
                     .Exec()
@@ -159,7 +165,7 @@ namespace LoESoft.Core
         {
             Db = db;
             UUID = uuid;
-            var json = db.Hashes.GetString(0, "logins", uuid.ToUpperInvariant()).Exec();
+            var json = db.Connection.Hashes.GetString(0, "logins", uuid.ToUpperInvariant()).Exec();
             if (json == null)
                 IsNull = true;
             else
@@ -178,7 +184,7 @@ namespace LoESoft.Core
 
         public void Flush()
         {
-            Db.Hashes.Set(0, "logins", UUID.ToUpperInvariant(), JsonConvert.SerializeObject(this));
+            Db.Connection.Hashes.Set(0, "logins", UUID.ToUpperInvariant(), JsonConvert.SerializeObject(this));
         }
     }
 
@@ -198,7 +204,7 @@ namespace LoESoft.Core
 
         public int AccountType
         {
-            get { return GetValue("accountType", (int) config.AccountType.FREE_ACCOUNT); }
+            get { return GetValue("accountType", (int)config.AccountType.FREE_ACCOUNT); }
             set { SetValue("accountType", value); }
         }
 
@@ -793,7 +799,7 @@ namespace LoESoft.Core
     {
         public DbNews(Database db, int count)
         {
-            News = db.SortedSets.Range(0, "news", 0, 10, false).Exec()
+            News = db.Connection.SortedSets.Range(0, "news", 0, 10, false).Exec()
                 .Select(x =>
                 {
                     var ret = JsonConvert.DeserializeObject<DbNewsEntry>(
@@ -850,7 +856,7 @@ namespace LoESoft.Core
             else
                 begin = 0;
 
-            Entries = db.SortedSets.Range(0, "legends", begin, double.PositiveInfinity, false, count: count).Exec()
+            Entries = db.Connection.SortedSets.Range(0, "legends", begin, double.PositiveInfinity, false, count: count).Exec()
                 .Select(x => new DbLegendEntry()
                 {
                     TotalFame = BitConverter.ToInt32(x.Key, 0),
@@ -868,7 +874,7 @@ namespace LoESoft.Core
             Buffer.BlockCopy(BitConverter.GetBytes(entry.TotalFame), 0, buff, 0, 4);
             Buffer.BlockCopy(BitConverter.GetBytes(entry.AccId), 0, buff, 4, 4);
             Buffer.BlockCopy(BitConverter.GetBytes(entry.ChrId), 0, buff, 8, 4);
-            db.SortedSets.Add(0, "legends", buff, t);
+            db.Connection.SortedSets.Add(0, "legends", buff, t);
         }
 
         private DbLegendEntry[] Entries { get; set; }

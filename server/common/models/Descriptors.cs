@@ -721,6 +721,9 @@ public class ActivateEffect
             Chance = int.Parse(elem.Attribute("chance").Value);
 
         NoStack = elem.Attribute("noStack") != null;
+
+        if (elem.Attribute("slot") != null)
+            Slot = elem.Attribute("slot").Value;
     }
 
     public ActivateEffects Effect { get; private set; }
@@ -751,6 +754,7 @@ public class ActivateEffect
     public bool NoStack { get; private set; }
     public ushort PetType { get; private set; }
     public int Chance { get; private set; }
+    public string Slot { get; private set; }
 }
 
 public class PortalDesc

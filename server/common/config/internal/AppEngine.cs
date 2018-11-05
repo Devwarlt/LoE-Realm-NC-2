@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -13,7 +14,6 @@ namespace LoESoft.Core.config
         {
             public static readonly string TITLE = "[LoESoft] (New Chicago) LoE Realm - AppEngine";
             public static readonly string FILE = ProcessFile("appengine");
-            public static readonly int TTL = 1;
             public static readonly int PRODUCTION_PORT = 5555;
 
             public static readonly List<Tuple<string, string, double>> SERVERS = new List<Tuple<string, string, double>> {
@@ -60,7 +60,7 @@ namespace LoESoft.Core.config
 
             public static List<ServerItem> GetServerItem()
             {
-                List<ServerItem> gameserver = new List<ServerItem>();
+                var gameserver = new List<ServerItem>();
 
                 for (int i = 0; i < AMOUNT; i++)
                     gameserver.Add(new ServerItem()
@@ -90,7 +90,7 @@ namespace LoESoft.Core.config
             /// <returns></returns>
             public static double GetUsage(string dns, int port)
             {
-                IPAddress[] IPs = Dns.GetHostAddresses(dns);
+                var IPs = Dns.GetHostAddresses(dns);
 
                 if (IsListening(dns, port))
                     try

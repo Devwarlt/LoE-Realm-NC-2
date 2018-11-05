@@ -25,8 +25,8 @@ public class PackageButton extends BasePackageButton {
     private var _icon:DisplayObject;
     internal var durationText:TextFieldDisplayConcrete;
     internal var quantityText:TextFieldDisplayConcrete;
-    internal var quantityStringBuilder:StaticStringBuilder;
-    internal var durationStringBuilder:LineBuilder;
+    public var quantityStringBuilder:StaticStringBuilder;
+    public var durationStringBuilder:LineBuilder;
 
     public function PackageButton() {
         this.clicked = new Signal();
@@ -94,7 +94,7 @@ public class PackageButton extends BasePackageButton {
             _local3 = TextKey.PACKAGE_BUTTON_DAY;
         }
         this.durationText.textChanged.addOnce(this.layout);
-        this.durationStringBuilder.setParams(_local3, {"number": _local2});
+        this.durationStringBuilder.setParams(_local3, {"number": 123});
         this.durationText.setStringBuilder(this.durationStringBuilder);
     }
 

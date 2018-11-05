@@ -71,7 +71,7 @@ import starling.utils.Color;
 [SWF(frameRate="60", backgroundColor="#000000", width="800", height="600")]
 public class WebMain extends Sprite {
 
-    public static const USER_PREFERENCES:SharedObject = SharedObject.getLocal("LOE_V6_CLIENT_PREFERENCES", "/");
+    public static const USER_PREFERENCES:SharedObject = SharedObject.getLocal("loe-nc-" + Parameters.FULL_BUILD, "/");
 
     public static var ENVIRONMENT:String;
     public static var STAGE:Stage;
