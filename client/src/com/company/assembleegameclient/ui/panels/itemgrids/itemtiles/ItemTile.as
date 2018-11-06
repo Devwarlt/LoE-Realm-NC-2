@@ -119,7 +119,8 @@ public class ItemTile extends Sprite {
         if (_local1)
         {
             this.tierText = TierUtil.getTierTag(_local1);
-            if (this.tierText)
+
+            if (this.tierText != null)
             {
                 if (!this.tagContainer)
                 {

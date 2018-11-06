@@ -221,10 +221,11 @@ public class EquipmentToolTip extends ToolTip {
 
     private function addTierText():void {
         this.tierText = TierUtil.getTierTag(this.objectXML, 16);
-        this.tierText.filters = TierUtil.getTextOutlineFilter();
 
-        if (this.tierText)
+        if (this.tierText != null) {
+            this.tierText.filters = TierUtil.getTextOutlineFilter();
             addChild(this.tierText);
+        }
     }
 
     private function OnFlash(_arg1:TimerEvent):void {
