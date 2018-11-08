@@ -2,6 +2,7 @@
 LoE Realm New Chicago version source code project.
 
 # How to setup this source?
+- https://youtu.be/86m6G74H_jU
 - https://github.com/Devwarlt/LoE-Realm-NC/blob/master/HowToSetup.md
 
 # Discord:
