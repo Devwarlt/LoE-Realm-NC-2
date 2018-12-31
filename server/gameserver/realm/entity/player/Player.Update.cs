@@ -31,7 +31,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             (_ as Container).BoostedBag = true;
                 }
 
-                if (visibleTiles.ContainsKey(new IntPoint((int) _.X, (int) _.Y)))
+                if (visibleTiles.ContainsKey(new IntPoint((int)_.X, (int)_.Y)))
                     if (clientEntities.Add(_))
                         newEntities.Add(_);
 
@@ -67,34 +67,37 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             var world = GameServer.Manager.GetWorld(Owner.Id);
             var ret = new List<ObjectDef>();
-
-            blocksight = world.Dungeon ? Sight.RayCast(this, SIGHTRADIUS) : Sight.GetSightCircle(SIGHTRADIUS);
-            blocksight.Where(_ =>
+            try
             {
-                var x = _.X + xBase;
-                var y = _.Y + yBase;
-                var t = Owner.Map[x, y];
+                blocksight = world.Dungeon ? Sight.RayCast(this, SIGHTRADIUS) : Sight.GetSightCircle(SIGHTRADIUS);
+                blocksight.Where(_ =>
+                {
+                    var x = _.X + xBase;
+                    var y = _.Y + yBase;
+                    var t = Owner.Map[x, y];
 
-                return !(x < 0 || x >= Owner.Map.Width || y < 0 || y >= Owner.Map.Height || t.ObjId == 0 || t.ObjType == 0 || !clientStatic.Add(new IntPoint(x, y)) || t.ObjDesc == null);
-            }).Select(_ =>
-            {
-                var x = _.X + xBase;
-                var y = _.Y + yBase;
-                var t = Owner.Map[x, y];
-                var d = t.ToDef(x, y);
-                var c = t.ObjDesc.Class;
+                    return !(x < 0 || x >= Owner.Map.Width || y < 0 || y >= Owner.Map.Height || t.ObjId == 0 || t.ObjType == 0 || !clientStatic.Add(new IntPoint(x, y)) || t.ObjDesc == null);
+                }).Select(_ =>
+                {
+                    var x = _.X + xBase;
+                    var y = _.Y + yBase;
+                    var t = Owner.Map[x, y];
+                    var d = t.ToDef(x, y);
+                    var c = t.ObjDesc.Class;
 
-                if (c == "ConnectedWall" || c == "CaveWall")
-                    if (d.Stats.Stats.Count(__ => __.Key == StatsType.CONNECT_STAT && __.Value != null) == 0)
-                        d.Stats.Stats = new KeyValuePair<StatsType, object>[] {
+                    if (c == "ConnectedWall" || c == "CaveWall")
+                        if (d.Stats.Stats.Count(__ => __.Key == StatsType.CONNECT_STAT && __.Value != null) == 0)
+                            d.Stats.Stats = new KeyValuePair<StatsType, object>[] {
                             new KeyValuePair<StatsType, object>(StatsType.CONNECT_STAT,
                             (int)ConnectionComputer.Compute((xx, yy) => Owner.Map[x + xx, y + yy].ObjType == t.ObjType).Bits)
                         };
 
-                ret.Add(d);
+                    ret.Add(d);
 
-                return _;
-            }).ToList();
+                    return _;
+                }).ToList();
+            }
+            catch { }
 
             return ret;
         }
@@ -118,14 +121,14 @@ namespace LoESoft.GameServer.realm.entity.player
             blocksight = world.Dungeon ? Sight.RayCast(this, SIGHTRADIUS) : Sight.GetSightCircle(SIGHTRADIUS);
             blocksight.Where(_ =>
             {
-                var x = _.X + (int) X;
-                var y = _.Y + (int) Y;
+                var x = _.X + (int)X;
+                var y = _.Y + (int)Y;
 
                 return !(x < 0 || x >= Owner.Map.Width || y < 0 || y >= Owner.Map.Height || tiles[x, y] >= Owner.Map[x, y].UpdateCount);
             }).Select(_ =>
             {
-                var x = _.X + (int) X;
-                var y = _.Y + (int) Y;
+                var x = _.X + (int)X;
+                var y = _.Y + (int)Y;
                 var t = Owner.Map[x, y];
 
                 if (!visibleTiles.ContainsKey(new IntPoint(x, y)))
@@ -133,8 +136,8 @@ namespace LoESoft.GameServer.realm.entity.player
 
                 tilesUpdate.Add(new UPDATE.TileData
                 {
-                    X = (short) x,
-                    Y = (short) y,
+                    X = (short)x,
+                    Y = (short)y,
                     Tile = t.TileId
                 });
 
@@ -155,8 +158,8 @@ namespace LoESoft.GameServer.realm.entity.player
 
             sendEntities.Select(_ => { lastUpdate[_] = _.UpdateCount; return _; }).ToList();
 
-            var newStatics = GetNewStatics((int) X, (int) Y);
-            var removeStatics = GetRemovedStatics((int) X, (int) Y);
+            var newStatics = GetNewStatics((int)X, (int)Y);
+            var removeStatics = GetRemovedStatics((int)X, (int)Y);
             var removedIds = new List<int>();
 
             if (!world.Dungeon)
