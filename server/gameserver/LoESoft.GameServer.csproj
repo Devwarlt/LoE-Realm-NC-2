@@ -478,7 +478,6 @@
     <Compile Include="realm\entity\Entity.Projectile.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\special\AbyssIdol_LavaBomb.cs" />
     <Compile Include="networking\LogicTicker.cs" />
-    <Compile Include="networking\NetworkTicker.cs" />
     <Compile Include="realm\world\RealmManager.cs" />
     <Compile Include="realm\world\RealmPortalMonitor.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\AbyssDeath.cs" />

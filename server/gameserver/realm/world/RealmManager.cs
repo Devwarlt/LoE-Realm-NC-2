@@ -48,7 +48,6 @@ namespace LoESoft.GameServer.realm
         public LogicTicker Logic { get; private set; }
         public int MaxClients { get; private set; }
         public RealmPortalMonitor Monitor { get; private set; }
-        public NetworkTicker Network { get; private set; }
         public Database Database { get; private set; }
         public bool Terminating { get; private set; }
         public int TPS { get; private set; }
@@ -56,11 +55,6 @@ namespace LoESoft.GameServer.realm
 
         private ConcurrentDictionary<string, Vault> Vaults { get; set; }
 
-#pragma warning disable CS0649 // Field 'RealmManager.logic' is never assigned to, and will always have its default value null
-        private Thread logic;
-#pragma warning restore CS0649 // Field 'RealmManager.logic' is never assigned to, and will always have its default value null
-#pragma warning disable CS0649 // Field 'RealmManager.network' is never assigned to, and will always have its default value null
-        private Thread network;
 #pragma warning restore CS0649 // Field 'RealmManager.network' is never assigned to, and will always have its default value null
         private int nextWorldId;
 
@@ -74,8 +68,7 @@ namespace LoESoft.GameServer.realm
             Vaults = new ConcurrentDictionary<string, Vault>();
             Random = new Random();
             Database = db;
-            SaveMonitor = new System.Timers.Timer(30000);
-            SaveMonitor.AutoReset = true;
+            SaveMonitor = new System.Timers.Timer(30000) { AutoReset = true };
             SaveMonitor.Elapsed += delegate
             {
                 if (ClientManager.Keys.Count != 0)
@@ -91,14 +84,15 @@ namespace LoESoft.GameServer.realm
             SaveMonitor.Start();
             Behaviors = new BehaviorDb(this);
             QuestPortraits.Add("Eyeguard of Surrender", 20);
+
             Player.HandleQuests(GameData);
             Merchant.HandleMerchant(GameData);
 
-            AddWorld((int) WorldID.NEXUS_ID, Worlds[0] = new Nexus());
-            AddWorld((int) WorldID.MARKET, new ClothBazaar());
-            AddWorld((int) WorldID.TEST_ID, new Test());
-            AddWorld((int) WorldID.TUT_ID, new Tutorial(true));
-            AddWorld((int) WorldID.DAILY_QUEST_ID, new DailyQuestRoom());
+            AddWorld((int)WorldID.NEXUS_ID, Worlds[0] = new Nexus());
+            AddWorld((int)WorldID.MARKET, new ClothBazaar());
+            AddWorld((int)WorldID.TEST_ID, new Test());
+            AddWorld((int)WorldID.TUT_ID, new Tutorial(true));
+            AddWorld((int)WorldID.DAILY_QUEST_ID, new DailyQuestRoom());
 
             Monitor = new RealmPortalMonitor(this);
             Task.Factory.StartNew(() => GameWorld.AutoName(1, true)).ContinueWith(_ => AddWorld(_.Result), TaskScheduler.Default);
@@ -114,14 +108,7 @@ namespace LoESoft.GameServer.realm
         public void Run()
         {
             Logic = new LogicTicker(this);
-            var logic = new Task(() => Logic.TickLoop(), TaskCreationOptions.LongRunning);
-            logic.ContinueWith(GameServer.Stop, TaskContinuationOptions.OnlyOnFaulted);
-            logic.Start();
-
-            Network = new NetworkTicker(this);
-            var network = new Task(() => Network.TickLoop(), TaskCreationOptions.LongRunning);
-            network.ContinueWith(GameServer.Stop, TaskContinuationOptions.OnlyOnFaulted);
-            network.Start();
+            Logic.Handle();
         }
 
         public void Stop()
@@ -134,9 +121,8 @@ namespace LoESoft.GameServer.realm
                 saveAccountUnlock.Add(cData.Client);
                 TryDisconnect(cData.Client, DisconnectReason.STOPPING_REALM_MANAGER);
             }
-            GameData?.Dispose();
-            logic?.Join();
-            network?.Join();
+            GameData.Dispose();
+            Logic.Dispose();
         }
 
         #endregion
@@ -200,7 +186,7 @@ namespace LoESoft.GameServer.realm
                 {
                     ClientManager.TryRemove(client.Account.AccountId, out ClientData _disposableCData);
 
-                    Log.Info($"[({(int) reason}) {reason.ToString()}] Disconnect player '{_disposableCData.Client.Account.Name} (Account ID: {_disposableCData.Client.Account.AccountId})'.");
+                    Log.Info($"[({(int)reason}) {reason.ToString()}] Disconnect player '{_disposableCData.Client.Account.Name} (Account ID: {_disposableCData.Client.Account.AccountId})'.");
 
                     _disposableCData.Client.Save();
                     _disposableCData.Client.State = ProtocolState.Disconnected;
@@ -209,7 +195,7 @@ namespace LoESoft.GameServer.realm
                 }
                 else
                 {
-                    Log.Info($"[({(int) reason}) {reason.ToString()}] Disconnect player '{client.Account.Name} (Account ID: {client.Account.AccountId})'.");
+                    Log.Info($"[({(int)reason}) {reason.ToString()}] Disconnect player '{client.Account.Name} (Account ID: {client.Account.AccountId})'.");
 
                     client.Save();
                     client.State = ProtocolState.Disconnected;
@@ -324,7 +310,7 @@ namespace LoESoft.GameServer.realm
         public Vault PlayerVault(Client processor)
         {
             if (!Vaults.TryGetValue(processor.Account.AccountId, out Vault v))
-                Vaults.TryAdd(processor.Account.AccountId, v = (Vault) AddWorld(new Vault(false, processor)));
+                Vaults.TryAdd(processor.Account.AccountId, v = (Vault)AddWorld(new Vault(false, processor)));
             else
                 v.Reload(processor);
             return v;

@@ -1,105 +1,101 @@
 #region
 
-using LoESoft.GameServer.realm.entity.player;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 
 #endregion
 
 namespace LoESoft.GameServer.realm
 {
-    public class LogicTicker
+    using Timer = System.Timers.Timer;
+
+    public class LogicTicker : IDisposable
     {
-        private readonly ConcurrentQueue<Action<RealmTime>>[] pendings;
+        private RealmManager _manager { get; set; }
+        private Timer[] _timers { get; set; }
+        private Stopwatch _watcher { get; set; } = new Stopwatch();
+        private long _deltaTime { get; set; } = 0;
+        private long _ticks { get; set; } = 0;
 
-        public RealmTime CurrentTime
-        { get { return ThisTime; } }
+        private const int COOLDOWN_DELAY = 33; // 33 milliseconds (30 Hz)
 
-        private RealmTime ThisTime { get; set; }
-
-        public int MsPT;
-        public int TPS;
+        public RealmTime CurrentTime { get; private set; }
 
         public LogicTicker(RealmManager manager)
         {
-            Manager = manager;
-            pendings = new ConcurrentQueue<Action<RealmTime>>[5];
-            for (int i = 0; i < 5; i++)
-                pendings[i] = new ConcurrentQueue<Action<RealmTime>>();
+            _manager = manager;
+            _timers = new Timer[4];
 
-            TPS = manager.TPS;
-            MsPT = 1000 / TPS;
+            for (var i = 0; i < 4; i++)
+                _timers[i] = new Timer(COOLDOWN_DELAY) { AutoReset = true };
         }
 
-        public RealmManager Manager { get; private set; }
-
-        public void AddPendingAction(Action<RealmTime> callback) => AddPendingAction(callback, PendingPriority.Normal);
-
-        public void AddPendingAction(Action<RealmTime> callback, PendingPriority priority) => pendings[(int) priority].Enqueue(callback);
-
-        public void TickLoop()
+        public void Handle()
         {
-            Stopwatch watch = new Stopwatch();
-            long dt = 0;
-            long count = 0;
+            _watcher.Start();
 
-            watch.Start();
-            RealmTime t = new RealmTime();
-            do
+            _timers[0].Elapsed += delegate // realm time thread
             {
-                if (Manager.Terminating)
-                    break;
+                var elapsedticks = _deltaTime / COOLDOWN_DELAY;
 
-                long times = dt / MsPT;
-                dt -= times * MsPT;
-                times++;
+                _deltaTime -= elapsedticks * COOLDOWN_DELAY;
 
-                long b = watch.ElapsedMilliseconds;
+                elapsedticks++;
 
-                count += times;
+                _ticks += elapsedticks;
 
-                t.TotalElapsedMs = b;
-                t.TickCount = count;
-                t.TickDelta = (int) times;
-                t.ElapsedMsDelta = (int) (times * MsPT);
-
-                foreach (ConcurrentQueue<Action<RealmTime>> i in pendings)
+                CurrentTime = new RealmTime()
                 {
-                    while (i.TryDequeue(out Action<RealmTime> callback))
-                    {
-                        try
-                        {
-                            callback(t);
-                        }
-                        catch (Exception) { }
-                    }
-                }
-                TickWorlds1(t);
-                Manager.InterServer.Tick(t);
+                    TotalElapsedMs = _watcher.ElapsedMilliseconds,
+                    TickCount = _ticks,
+                    TickDelta = (int)elapsedticks,
+                    ElapsedMsDelta = (int)(elapsedticks * COOLDOWN_DELAY)
+                };
 
-                Player[] tradingPlayers = TradeManager.TradingPlayers.Where(_ => _.Owner == null).ToArray();
-                foreach (var player in tradingPlayers)
-                    TradeManager.TradingPlayers.Remove(player);
+                _manager.InterServer.Tick(CurrentTime);
 
-                KeyValuePair<Player, Player>[] requestPlayers = TradeManager.CurrentRequests.Where(_ => _.Key.Owner == null || _.Value.Owner == null).ToArray();
-                foreach (var players in requestPlayers)
-                    TradeManager.CurrentRequests.Remove(players);
-
-                Thread.Sleep(MsPT);
-
-                dt += Math.Max(0, watch.ElapsedMilliseconds - b - MsPT);
-            } while (true);
+                _deltaTime += Math.Max(0, _watcher.ElapsedMilliseconds - CurrentTime.TotalElapsedMs - COOLDOWN_DELAY);
+            };
+            _timers[1].Elapsed += delegate // world tick thread
+            {
+                _manager.Worlds.Values.Distinct().Select(i =>
+                {
+                    i.Tick(CurrentTime);
+                    return i;
+                }).ToArray();
+            };
+            _timers[2].Elapsed += delegate // trade thread
+            {
+                TradeManager.TradingPlayers.Where(_ => _.Owner == null)
+                .Select(i => TradeManager.TradingPlayers.Remove(i)).ToArray();
+            };
+            _timers[3].Elapsed += delegate // requests thread
+            {
+                TradeManager.CurrentRequests.Where(_ => _.Key.Owner == null || _.Value.Owner == null)
+                .Select(i => TradeManager.CurrentRequests.Remove(i)).ToArray();
+            };
+            _timers.Select(timer =>
+            {
+                timer.Start();
+                return timer;
+            }).ToList();
         }
 
-        private void TickWorlds1(RealmTime t) //Continous simulation
+        public void Dispose()
         {
-            ThisTime = t;
-            foreach (World i in Manager.Worlds.Values.Distinct())
-                i.Tick(t);
+            _watcher.Stop();
+            _timers.Select(timer =>
+            {
+                timer.Stop();
+                return timer;
+            }).ToList();
         }
+
+        public void AddPendingAction(Action<RealmTime> callback)
+            => callback?.Invoke(CurrentTime);
+
+        public void AddPendingAction(Action<RealmTime> callback, PendingPriority priority)
+            => callback?.Invoke(CurrentTime);
     }
 }
