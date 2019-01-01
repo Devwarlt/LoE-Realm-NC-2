@@ -159,6 +159,14 @@ namespace LoESoft.GameServer.networking.handlers
                         }
                         break;
 
+                    case ErrorIDs.ACCESS_DENIED_DUE_RESTART:
+                        {
+                            labels = new[] { "{CLIENT_NAME}" };
+                            arguments = new[] { acc.Name };
+                            reason = DisconnectReason.ACCESS_DENIED_DUE_RESTART;
+                        }
+                        break;
+
                     default:
                         {
                             labels = new[] { "{UNKNOW_ERROR_INSTANCE}" };
@@ -266,12 +274,6 @@ namespace LoESoft.GameServer.networking.handlers
 
                 if (world.IsLimbo)
                     world = world.GetInstance(client);
-
-                if (Settings.EVENT_RATE > 1 && !client.EventNotification)
-                {
-                    client.Player.SendInfo(Settings.EVENT_MESSAGE);
-                    client.EventNotification = true;
-                }
 
                 client.Random = new wRandom(world.Seed);
                 client.TargetWorld = world.Id;

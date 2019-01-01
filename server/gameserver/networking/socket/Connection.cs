@@ -44,7 +44,7 @@ namespace LoESoft.GameServer.networking
             REALM_MANAGER_DISCONNECT = 29,
             STOPPING_REALM_MANAGER = 30,
             DUPER_DISCONNECT = 31,
-            ACCESS_DENIED = 32,
+            ACCESS_DENIED_DUE_RESTART = 32,
             VIP_ACCOUNT_OVER = 33,
             DEXTERITY_HACK_MOD = 34,
             RECONNECT = 35,

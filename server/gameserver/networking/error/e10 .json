@@ -1,0 +1,7 @@
+﻿[
+  {
+    "title": "Access Denied",
+    "titleColor": 16724016,
+    "description": "Dear <b>{CLIENT_NAME}</b>, unfortunately you cannot join game while doing restart, please wait..."
+  }
+]

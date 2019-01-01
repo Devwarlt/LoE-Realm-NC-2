@@ -35,7 +35,7 @@ namespace LoESoft.GameServer.realm.world
                 if (i.Value.Client.Account.AccountType != (int) LoESoft.Core.config.AccountType.LOESOFT_ACCOUNT || !i.Value.Client.Account.Admin)
                 {
                     i.Value.SendError(string.Format("[Staff Member: {0}] You cannot access Test world with account type {1}.", i.Value.Client.Account.Admin, nameof(i.Value.Client.Account.AccountType)));
-                    GameServer.Manager.TryDisconnect(i.Value.Client, DisconnectReason.ACCESS_DENIED);
+                    GameServer.Manager.TryDisconnect(i.Value.Client, DisconnectReason.ACCESS_DENIED_DUE_RESTART);
                 }
             }
         }

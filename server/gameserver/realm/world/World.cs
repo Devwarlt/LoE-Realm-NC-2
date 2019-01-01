@@ -1,5 +1,6 @@
 ﻿#region
 
+using LoESoft.Core.config;
 using LoESoft.Core.models;
 using LoESoft.GameServer.networking;
 using LoESoft.GameServer.networking.outgoing;
@@ -230,7 +231,7 @@ namespace LoESoft.GameServer.realm
             {
                 if (i.ObjectDesc != null &&
                     (i.ObjectDesc.OccupySquare || i.ObjectDesc.EnemyOccupySquare))
-                    Obstacles[(int) (i.X - 0.5), (int) (i.Y - 0.5)] = 2;
+                    Obstacles[(int)(i.X - 0.5), (int)(i.Y - 0.5)] = 2;
                 EnterWorld(i);
             }
         }
@@ -238,7 +239,15 @@ namespace LoESoft.GameServer.realm
         public virtual int EnterWorld(Entity entity)
         {
             if (entity is Player player)
+            {
+                if (Settings.EVENT_RATE > 1 && !player.Client.EventNotification)
+                {
+                    player.SendInfo(Settings.EVENT_MESSAGE);
+                    player.Client.EventNotification = true;
+                }
+
                 TryAdd(player);
+            }
             else
             {
                 if (entity is Enemy enemy)

@@ -136,39 +136,41 @@ namespace LoESoft.GameServer.realm
 
         public ConnectionProtocol TryConnect(Client client)
         {
-            try
+            if (AccessDenied)
+                return new ConnectionProtocol(false, ErrorIDs.ACCESS_DENIED_DUE_RESTART); // Prevent account in use issue along restart.
+            else
             {
-                ClientData _cData = new ClientData
+                try
                 {
-                    ID = client.Account.AccountId,
-                    Client = client,
-                    DNS = client.Socket.RemoteEndPoint.ToString().Split(':')[0],
-                    Registered = DateTime.Now
-                };
-
-                if (ClientManager.Count >= MaxClients) // When server is full.
-                    return new ConnectionProtocol(false, ErrorIDs.SERVER_FULL);
-
-                if (ClientManager.ContainsKey(_cData.ID))
-                {
-                    if (_cData.Client != null)
+                    ClientData _cData = new ClientData
                     {
-                        TryDisconnect(ClientManager[_cData.ID].Client, DisconnectReason.OLD_CLIENT_DISCONNECT); // Old client.
+                        ID = client.Account.AccountId,
+                        Client = client,
+                        DNS = client.Socket.RemoteEndPoint.ToString().Split(':')[0],
+                        Registered = DateTime.Now
+                    };
 
-                        return new ConnectionProtocol(ClientManager.TryAdd(_cData.ID, _cData), ErrorIDs.NORMAL_CONNECTION); // Normal connection with reconnect type.
+                    if (ClientManager.Count >= MaxClients) // When server is full.
+                        return new ConnectionProtocol(false, ErrorIDs.SERVER_FULL);
+
+                    if (ClientManager.ContainsKey(_cData.ID))
+                    {
+                        if (_cData.Client != null)
+                        {
+                            TryDisconnect(ClientManager[_cData.ID].Client, DisconnectReason.OLD_CLIENT_DISCONNECT); // Old client.
+
+                            return new ConnectionProtocol(ClientManager.TryAdd(_cData.ID, _cData), ErrorIDs.NORMAL_CONNECTION); // Normal connection with reconnect type.
+                        }
+
+                        return new ConnectionProtocol(false, ErrorIDs.LOST_CONNECTION); // User dropped connection while reconnect.
                     }
 
-                    return new ConnectionProtocol(false, ErrorIDs.LOST_CONNECTION); // User dropped connection while reconnect.
+                    return new ConnectionProtocol(ClientManager.TryAdd(_cData.ID, _cData), ErrorIDs.NORMAL_CONNECTION); // Normal connection with reconnect type.
                 }
+                catch (Exception e) { Log.Error($"An error occurred.\n{e}"); }
 
-                return new ConnectionProtocol(ClientManager.TryAdd(_cData.ID, _cData), ErrorIDs.NORMAL_CONNECTION); // Normal connection with reconnect type.
+                return new ConnectionProtocol(false, ErrorIDs.LOST_CONNECTION); // User dropped connection while reconnect.
             }
-            catch (Exception e)
-            {
-                Log.Error($"An error occurred.\n{e}");
-            }
-
-            return new ConnectionProtocol(false, ErrorIDs.LOST_CONNECTION); // User dropped connection while reconnect.
         }
 
         public void TryDisconnect(Client client, DisconnectReason reason = DisconnectReason.UNKNOW_ERROR_INSTANCE)

@@ -22,7 +22,7 @@ namespace LoESoft.GameServer.networking.handlers
         {
             int skin = client.Account.OwnedSkins.Contains(message.SkinType) ? message.SkinType : 0;
 
-            CreateStatus status = Manager.Database.CreateCharacter(Manager.GameData, client.Account, (ushort) message.ClassType, skin, out DbChar character);
+            CreateStatus status = Manager.Database.CreateCharacter(Manager.GameData, client.Account, (ushort)message.ClassType, skin, out DbChar character);
 
             if (status == CreateStatus.ReachCharLimit)
             {
@@ -40,9 +40,7 @@ namespace LoESoft.GameServer.networking.handlers
                 client.SendMessage(new CREATE_SUCCESS
                 {
                     CharacterID = client.Character.CharId,
-                    ObjectID =
-                        Manager.Worlds[client.TargetWorld].EnterWorld(
-                            client.Player = new Player(client))
+                    ObjectID = Manager.Worlds[client.TargetWorld].EnterWorld(client.Player = new Player(client))
                 });
 
                 client.State = ProtocolState.Ready;

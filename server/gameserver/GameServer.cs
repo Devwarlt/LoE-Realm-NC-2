@@ -11,6 +11,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using static LoESoft.GameServer.networking.Client;
@@ -125,16 +126,9 @@ namespace LoESoft.GameServer
 
         public static void Usage()
         {
-            Thread parallel_thread = new Thread(() =>
-            {
-                do
-                {
-                    Thread.Sleep(ToMiliseconds(Settings.GAMESERVER.TTL) / 60);
-                    GameUsage = Manager.ClientManager.Count;
-                } while (true);
-            });
-
-            parallel_thread.Start();
+            var timer = new System.Timers.Timer(ToMiliseconds(Settings.GAMESERVER.TTL) / 60) { AutoReset = false };
+            timer.Elapsed += delegate { GameUsage = Manager.ClientManager.Count; };
+            timer.Start();
         }
 
         public async static void ForceShutdown(Exception ex = null)
@@ -155,53 +149,66 @@ namespace LoESoft.GameServer
 
         public static void Restart()
         {
-            Thread parallel_thread = new Thread(() =>
+            var timer = new System.Timers.Timer(ToMiliseconds((Settings.NETWORKING.RESTART.RESTART_DELAY_MINUTES <= 5 ? 6 : Settings.NETWORKING.RESTART.RESTART_DELAY_MINUTES) - 5))
+            { AutoReset = false };
+            timer.Elapsed += delegate
             {
-                Thread.Sleep(ToMiliseconds((Settings.NETWORKING.RESTART.RESTART_DELAY_MINUTES <= 5 ? 6 : Settings.NETWORKING.RESTART.RESTART_DELAY_MINUTES) - 5));
                 string message = null;
                 int i = 5;
+
                 do
                 {
                     message = $"Server will be restarted in {i} minute{(i <= 1 ? "" : "s")}.";
+
                     Log.Info(message);
+
                     try
                     {
-                        foreach (ClientData cData in Manager.ClientManager.Values)
+                        foreach (var cData in Manager.ClientManager.Values)
                             cData.Client.Player.SendInfo(message);
                     }
-                    catch (Exception ex)
-                    {
-                        ForceShutdown(ex);
-                    }
+                    catch (Exception ex) { ForceShutdown(ex); }
+
                     Thread.Sleep(ToMiliseconds(1));
+
                     i--;
                 } while (i != 0);
-                message = "Server is now offline.";
-                Log.Warn(message);
-                try
-                {
-                    foreach (ClientData cData in Manager.ClientManager.Values)
-                        cData.Client.Player.SendInfo(message);
-                }
-                catch (Exception ex)
-                {
-                    ForceShutdown(ex);
-                }
-                Thread.Sleep(2000);
-                try
-                {
-                    foreach (ClientData cData in Manager.ClientManager.Values)
-                        Manager.TryDisconnect(cData.Client, DisconnectReason.RESTART);
-                }
-                catch (Exception ex)
-                {
-                    ForceShutdown(ex);
-                }
-                Process.Start(Settings.GAMESERVER.FILE);
-                Environment.Exit(0);
-            });
 
-            parallel_thread.Start();
+                message = "Server is now offline.";
+
+                Log.Warn(message);
+
+                try
+                {
+                    Manager.ClientManager.Values.Where(j => j.Client != null).Select(k =>
+                    {
+                        k.Client.Player?.SendInfo(message);
+                        return k;
+                    }).ToList();
+                }
+                catch (Exception ex) { ForceShutdown(ex); }
+
+                Thread.Sleep(5 * 1000);
+
+                try
+                {
+                    AccessDenied = true;
+
+                    Manager.ClientManager.Values.Where(j => j.Client != null).Select(k =>
+                    {
+                        Manager.TryDisconnect(k.Client, DisconnectReason.RESTART);
+                        return k;
+                    }).ToList();
+                }
+                catch (Exception ex) { ForceShutdown(ex); }
+
+                Thread.Sleep(60 * 1000);
+
+                Process.Start(Settings.GAMESERVER.FILE);
+
+                Environment.Exit(0);
+            };
+            timer.Start();
         }
 
         public static void Stop(Task task = null)

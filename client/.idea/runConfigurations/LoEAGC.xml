@@ -18,7 +18,7 @@
         <option name="browser" value="a7bb68e0-33c0-4d6f-a81a-aac1fdb870c8" />
         <option name="launcherType" value="Player" />
         <option name="newPlayerInstance" value="false" />
-        <option name="playerPath" value="$USER_HOME$/Downloads/flashplayer_31_sa_debug.exe" />
+        <option name="playerPath" value="$USER_HOME$/Videos/RotMG/flashplayer_18_sa.exe" />
       </LauncherParameters>
     </option>
     <option name="mobileRunTarget" value="Emulator" />
@@ -32,8 +32,6 @@
     <option name="screenWidth" value="0" />
     <option name="url" value="http://" />
     <option name="usbDebugPort" value="7936" />
-    <method v="2">
-      <option name="Make" enabled="true" />
-    </method>
+    <method />
   </configuration>
 </component>

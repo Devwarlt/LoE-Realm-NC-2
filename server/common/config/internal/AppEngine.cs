@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -17,8 +16,8 @@ namespace LoESoft.Core.config
             public static readonly int PRODUCTION_PORT = 5555;
 
             public static readonly List<Tuple<string, string, double>> SERVERS = new List<Tuple<string, string, double>> {
-                Tuple.Create("Test Server", "<crossdomain>", 0.0),
-                Tuple.Create("Localhost", "127.0.0.1", 0.8)
+                Tuple.Create("Test Server", "<crossdomain>", 0.99),
+                Tuple.Create("Localhost", "127.0.0.1", -1d)
             };
 
             public static readonly int AMOUNT = SERVERS.Count;
@@ -69,7 +68,7 @@ namespace LoESoft.Core.config
                         DNS = CheckDDNS(SERVERS[i].Item2, i),
                         Lat = 0,
                         Long = 0,
-                        Usage = SERVER_MODE != ServerMode.Local ? GetUsage(CheckDDNS(SERVERS[i].Item2, i), GAMESERVER.PORT) : SERVERS[i].Item3,
+                        Usage = SERVERS[i].Item3,//SERVER_MODE != ServerMode.Local ? GetUsage(CheckDDNS(SERVERS[i].Item2, i), GAMESERVER.PORT) : SERVERS[i].Item3,
                         AdminOnly = false
                     });
 
