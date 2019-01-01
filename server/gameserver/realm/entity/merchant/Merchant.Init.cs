@@ -154,13 +154,13 @@ namespace LoESoft.GameServer.realm.entity.merchant
 
                 var s = Random.Next(0, 100);
 
-                if (s < 2 * Settings.WOTMG_RATE)
+                if (s < 2 * Settings.EVENT_RATE)
                     Discount = 50;
-                else if (s < 5 * Settings.WOTMG_RATE)
+                else if (s < 5 * Settings.EVENT_RATE)
                     Discount = 25;
-                else if (s < 10 * Settings.WOTMG_RATE)
+                else if (s < 10 * Settings.EVENT_RATE)
                     Discount = 15;
-                else if (s < 15 * Settings.WOTMG_RATE)
+                else if (s < 15 * Settings.EVENT_RATE)
                     Discount = 10;
                 else
                     Discount = 0;

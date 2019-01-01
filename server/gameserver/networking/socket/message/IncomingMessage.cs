@@ -1,4 +1,5 @@
 ﻿using LoESoft.Core.models;
+using LoESoft.GameServer.networking.incoming;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -52,7 +53,7 @@ namespace LoESoft.GameServer.networking
                 && e.Buffer[3] == 0xb2
                 && e.Buffer[4] == 0x95)
             {
-                byte[] c = Encoding.ASCII.GetBytes($"{Manager.MaxClients}:{GameServer.GameUsage}");
+                var c = Encoding.ASCII.GetBytes($"{Manager.MaxClients}:{GameServer.GameUsage}");
                 socket.Send(c);
                 return;
             }
@@ -93,18 +94,36 @@ namespace LoESoft.GameServer.networking
             if (e.BytesTransferred < (e.UserToken as IncomingToken).Length)
                 return;
 
-            Message dummy = (e.UserToken as IncomingToken).Message;
-
-            bool cont = false;
+            var msg = (e.UserToken as IncomingToken).Message;
+            var cont = client.IsReady();
 
             try
             {
-                dummy.Read(client, e.Buffer, 0, (e.UserToken as IncomingToken).Length);
+                msg.Read(client, e.Buffer, 0, (e.UserToken as IncomingToken).Length);
 
-                cont = IncomingMessageReceived(dummy);
+                if (cont)
+                {
+                    if (Manager.Terminating)
+                        return;
+
+                    if (client.State == ProtocolState.Disconnected)
+                        Manager.TryDisconnect(client, DisconnectReason.NETWORK_TICKER_DISCONNECT);
+                    else
+                        try
+                        {
+                            if (!MessageHandler.Handlers.TryGetValue(msg.ID, out IMessage handler))
+                                Log.Warn($"Unhandled message ID '{msg.ID}'.");
+                            else
+                                handler.Handle(client, (IncomingMessage)msg);
+                        }
+                        catch (NullReferenceException)
+                        {
+                            Log.Warn($"Unhandled Message ID '{msg.ID}'.");
+                            Manager.TryDisconnect(client, DisconnectReason.ERROR_WHEN_HANDLING_MESSAGE);
+                        }
+                        catch { }
+                }
             }
-            catch
-            { cont = false; }
             finally
             { _incomingState = IncomingStage.ProcessingMessage; }
 

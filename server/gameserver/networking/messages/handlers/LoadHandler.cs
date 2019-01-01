@@ -2,7 +2,6 @@
 
 using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.networking.outgoing;
-using LoESoft.GameServer.realm;
 using LoESoft.GameServer.realm.entity.player;
 using static LoESoft.GameServer.networking.Client;
 using FAILURE = LoESoft.GameServer.networking.outgoing.FAILURE;
@@ -24,14 +23,15 @@ namespace LoESoft.GameServer.networking.handlers
                 {
                     client.SendMessage(new FAILURE
                     {
-                        ErrorId = (int) FailureIDs.DEFAULT,
+                        ErrorId = (int)FailureIDs.DEFAULT,
                         ErrorDescription = "Character is dead."
                     });
                     Manager.TryDisconnect(client, DisconnectReason.CHARACTER_IS_DEAD);
                 }
                 else
                 {
-                    World target = Manager.Worlds[client.TargetWorld];
+                    var target = Manager.Worlds[client.TargetWorld];
+
                     client.SendMessage(new CREATE_SUCCESS
                     {
                         CharacterID = client.Character.CharId,
@@ -44,7 +44,7 @@ namespace LoESoft.GameServer.networking.handlers
             {
                 client.SendMessage(new FAILURE
                 {
-                    ErrorId = (int) FailureIDs.DEFAULT,
+                    ErrorId = (int)FailureIDs.DEFAULT,
                     ErrorDescription = "Failed to Load character."
                 });
                 Manager.TryDisconnect(client, DisconnectReason.FAILED_TO_LOAD_CHARACTER);

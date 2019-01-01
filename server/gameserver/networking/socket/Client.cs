@@ -34,6 +34,7 @@ namespace LoESoft.GameServer.networking
         public DbChar Character { get; internal set; }
         public DbAccount Account { get; internal set; }
         public wRandom Random { get; internal set; }
+        public bool EventNotification { get; internal set; }
         public int TargetWorld { get; internal set; }
         public string ConnectedBuild { get; internal set; }
         public Socket Socket { get; internal set; }

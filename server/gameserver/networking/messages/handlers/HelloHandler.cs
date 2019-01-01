@@ -5,7 +5,6 @@ using LoESoft.Core.config;
 using LoESoft.GameServer.networking.error;
 using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.networking.outgoing;
-using LoESoft.GameServer.realm;
 using LoESoft.GameServer.realm.world;
 using System;
 using System.Collections.Generic;
@@ -25,13 +24,13 @@ namespace LoESoft.GameServer.networking.handlers
 
         protected override void HandleMessage(Client client, HELLO message)
         {
-            KeyValuePair<string, bool> versionStatus = Settings.CheckClientVersion(message.BuildVersion);
+            var versionStatus = Settings.CheckClientVersion(message.BuildVersion);
 
             if (!versionStatus.Value)
             {
                 client.SendMessage(new FAILURE
                 {
-                    ErrorId = (int) FailureIDs.JSON_DIALOG,
+                    ErrorId = (int)FailureIDs.JSON_DIALOG,
                     ErrorDescription =
                         JSONErrorIDHandler.
                             FormatedJSONError(
@@ -46,15 +45,15 @@ namespace LoESoft.GameServer.networking.handlers
                 return;
             }
 
-            LoginStatus s1 = Manager.Database.Verify(message.GUID, message.Password, out DbAccount acc);
+            var s1 = Manager.Database.Verify(message.GUID, message.Password, out DbAccount acc);
 
             if (s1 == LoginStatus.AccountNotExists)
             {
-                RegisterStatus s2 = Manager.Database.Register(message.GUID, message.Password, true, out acc); //Register guest but do not allow join game.
+                var s2 = Manager.Database.Register(message.GUID, message.Password, true, out acc); //Register guest but do not allow join game.
 
                 client.SendMessage(new FAILURE()
                 {
-                    ErrorId = (int) FailureIDs.JSON_DIALOG,
+                    ErrorId = (int)FailureIDs.JSON_DIALOG,
                     ErrorDescription =
                         JSONErrorIDHandler.
                             FormatedJSONError(
@@ -72,7 +71,7 @@ namespace LoESoft.GameServer.networking.handlers
             {
                 client.SendMessage(new FAILURE
                 {
-                    ErrorId = (int) FailureIDs.DEFAULT,
+                    ErrorId = (int)FailureIDs.DEFAULT,
                     ErrorDescription = "Bad login."
                 });
 
@@ -87,12 +86,12 @@ namespace LoESoft.GameServer.networking.handlers
             {
                 do
                 {
-                    double timeout = client.CheckAccountInUseTimeout;
+                    var timeout = client.CheckAccountInUseTimeout;
 
                     if (timeout <= 0)
                         break;
 
-                    List<Message> outgoing = new List<Message>
+                    var outgoing = new List<Message>
                         {
                             new FAILURE
                             {
@@ -117,11 +116,11 @@ namespace LoESoft.GameServer.networking.handlers
                 client.RemoveAccountInUse();
             }
 
-            ConnectionProtocol TryConnect = Manager.TryConnect(client);
+            var TryConnect = Manager.TryConnect(client);
 
             if (!TryConnect.Connected)
             {
-                ErrorIDs errorID = TryConnect.ErrorID;
+                var errorID = TryConnect.ErrorID;
                 string[] labels;
                 string[] arguments;
                 DisconnectReason reason;
@@ -171,7 +170,7 @@ namespace LoESoft.GameServer.networking.handlers
 
                 client.SendMessage(new FAILURE
                 {
-                    ErrorId = (int) FailureIDs.JSON_DIALOG,
+                    ErrorId = (int)FailureIDs.JSON_DIALOG,
                     ErrorDescription =
                         JSONErrorIDHandler.
                             FormatedJSONError(
@@ -187,22 +186,22 @@ namespace LoESoft.GameServer.networking.handlers
             }
             else
             {
-                World world = Manager.GetWorld(message.GameId);
+                var world = Manager.GetWorld(message.GameId);
 
-                if (acc.AccountType == (int) AccountType.VIP_ACCOUNT)
+                if (acc.AccountType == (int)AccountType.VIP_ACCOUNT)
                 {
-                    DateTime _currentTime = DateTime.Now;
-                    DateTime _vipRegistration = acc.AccountLifetime;
+                    var _currentTime = DateTime.Now;
+                    var _vipRegistration = acc.AccountLifetime;
 
                     if (_vipRegistration <= _currentTime)
                     {
-                        acc.AccountType = (int) AccountType.FREE_ACCOUNT;
+                        acc.AccountType = (int)AccountType.FREE_ACCOUNT;
                         acc.Flush();
                         acc.Reload();
 
-                        FAILURE _failure = new FAILURE
+                        var _failure = new FAILURE
                         {
-                            ErrorId = (int) FailureIDs.JSON_DIALOG,
+                            ErrorId = (int)FailureIDs.JSON_DIALOG,
                             ErrorDescription =
                             JSONErrorIDHandler
                                 .FormatedJSONError(
@@ -224,7 +223,7 @@ namespace LoESoft.GameServer.networking.handlers
                 {
                     client.SendMessage(new FAILURE
                     {
-                        ErrorId = (int) FailureIDs.DEFAULT,
+                        ErrorId = (int)FailureIDs.DEFAULT,
                         ErrorDescription = "Invalid world."
                     });
 
@@ -239,7 +238,7 @@ namespace LoESoft.GameServer.networking.handlers
                     {
                         client.SendMessage(new FAILURE
                         {
-                            ErrorId = (int) FailureIDs.DEFAULT,
+                            ErrorId = (int)FailureIDs.DEFAULT,
                             ErrorDescription = "Invalid portal key."
                         });
 
@@ -252,7 +251,7 @@ namespace LoESoft.GameServer.networking.handlers
                     {
                         client.SendMessage(new FAILURE
                         {
-                            ErrorId = (int) FailureIDs.DEFAULT,
+                            ErrorId = (int)FailureIDs.DEFAULT,
                             ErrorDescription = "Portal key expired."
                         });
 
@@ -267,6 +266,12 @@ namespace LoESoft.GameServer.networking.handlers
 
                 if (world.IsLimbo)
                     world = world.GetInstance(client);
+
+                if (Settings.EVENT_RATE > 1 && !client.EventNotification)
+                {
+                    client.Player.SendInfo(Settings.EVENT_MESSAGE);
+                    client.EventNotification = true;
+                }
 
                 client.Random = new wRandom(world.Seed);
                 client.TargetWorld = world.Id;

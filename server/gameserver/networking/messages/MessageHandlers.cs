@@ -8,10 +8,8 @@ namespace LoESoft.GameServer.networking
     {
         protected ILog log4net;
 
-        private Client client;
-
-        public Client Client => client;
-        public RealmManager Manager => client.Manager;
+        public Client Client { get; private set; }
+        public RealmManager Manager => Client.Manager;
 
         public abstract MessageID ID { get; }
 
@@ -24,11 +22,11 @@ namespace LoESoft.GameServer.networking
 
         public void Handle(Client client, IncomingMessage message)
         {
-            this.client = client;
-            HandleMessage(client, (T) message);
+            Client = client;
+            HandleMessage(client, (T)message);
         }
 
-        protected void SendFailure(string text) => client.SendMessage(new FAILURE { ErrorId = 0, ErrorDescription = text });
+        protected void SendFailure(string text) => Client.SendMessage(new FAILURE { ErrorId = 0, ErrorDescription = text });
 
         public void NotImplementedMessageHandler()
         {
