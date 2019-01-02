@@ -79,7 +79,7 @@ namespace LoESoft.GameServer.networking
                 && e.Buffer[3] == 0xb2
                 && e.Buffer[4] == 0x95)
             {
-                var c = Encoding.ASCII.GetBytes($"{Manager.MaxClients}:{GameServer.GameUsage}");
+                var c = Encoding.ASCII.GetBytes($"{Manager.MaxClients}:{GameServer.Manager.ClientManager.Count}");
                 socket.Send(c);
                 return;
             }

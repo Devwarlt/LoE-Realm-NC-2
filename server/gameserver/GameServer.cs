@@ -92,7 +92,6 @@ namespace LoESoft.GameServer
                 Chat = Manager.Chat;
                 Uptime = DateTime.Now;
                 Restart();
-                Usage();
             }
 
             Console.Title = Settings.GAMESERVER.TITLE;
@@ -123,13 +122,6 @@ namespace LoESoft.GameServer
         }
 
         private static int ToMiliseconds(int minutes) => minutes * 60 * 1000;
-
-        public static void Usage()
-        {
-            var timer = new System.Timers.Timer(ToMiliseconds(Settings.GAMESERVER.TTL) / 60) { AutoReset = false };
-            timer.Elapsed += delegate { GameUsage = Manager.ClientManager.Count; };
-            timer.Start();
-        }
 
         public async static void ForceShutdown(Exception ex = null)
         {
