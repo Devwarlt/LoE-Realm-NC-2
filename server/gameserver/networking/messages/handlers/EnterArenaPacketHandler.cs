@@ -3,7 +3,6 @@
 using LoESoft.Core.config;
 using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.networking.outgoing;
-using LoESoft.GameServer.realm;
 using LoESoft.GameServer.realm.world;
 
 #endregion
@@ -34,7 +33,9 @@ namespace LoESoft.GameServer.networking.handlers
             }
             client.Player.UpdateCount++;
             client.Player.SaveToCharacter();
-            World world = GameServer.Manager.AddWorld(new Arena());
+
+            var world = GameServer.Manager.AddWorld(new Arena());
+
             client.Reconnect(new RECONNECT
             {
                 Host = "",

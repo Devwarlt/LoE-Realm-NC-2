@@ -14,7 +14,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using static LoESoft.GameServer.networking.Client;
 
 #endregion
@@ -68,7 +67,7 @@ namespace LoESoft.GameServer.realm
             Vaults = new ConcurrentDictionary<string, Vault>();
             Random = new Random();
             Database = db;
-            SaveMonitor = new System.Timers.Timer(30000) { AutoReset = true };
+            SaveMonitor = new System.Timers.Timer(60000) { AutoReset = true };
             SaveMonitor.Elapsed += delegate
             {
                 if (ClientManager.Keys.Count != 0)
@@ -95,7 +94,7 @@ namespace LoESoft.GameServer.realm
             AddWorld((int)WorldID.DAILY_QUEST_ID, new DailyQuestRoom());
 
             Monitor = new RealmPortalMonitor(this);
-            Task.Factory.StartNew(() => GameWorld.AutoName(1, true)).ContinueWith(_ => AddWorld(_.Result), TaskScheduler.Default);
+            AddWorld(GameWorld.AutoName(1, true));
             InterServer = new ISManager(this);
             Chat = new ChatManager(this);
             Commands = new CommandManager(this);
@@ -115,12 +114,15 @@ namespace LoESoft.GameServer.realm
         {
             SaveMonitor.Stop();
             Terminating = true;
-            List<Client> saveAccountUnlock = new List<Client>();
+
+            var saveAccountUnlock = new List<Client>();
+
             foreach (ClientData cData in ClientManager.Values)
             {
                 saveAccountUnlock.Add(cData.Client);
                 TryDisconnect(cData.Client, DisconnectReason.STOPPING_REALM_MANAGER);
             }
+
             GameData.Dispose();
             Logic.Dispose();
         }

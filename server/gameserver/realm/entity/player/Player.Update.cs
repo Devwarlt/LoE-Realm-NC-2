@@ -139,32 +139,37 @@ namespace LoESoft.GameServer.realm.entity.player
             var tilesUpdate = new List<UPDATE.TileData>(APPOX_AREA_OF_SIGHT);
 
             blocksight = world.Dungeon ? Sight.RayCast(this, SIGHTRADIUS) : Sight.GetSightCircle(SIGHTRADIUS);
-            blocksight.Where(_ =>
+
+            try
             {
-                var x = _.X + (int)X;
-                var y = _.Y + (int)Y;
-
-                return !(x < 0 || x >= Owner.Map.Width || y < 0 || y >= Owner.Map.Height || tiles[x, y] >= Owner.Map[x, y].UpdateCount);
-            }).Select(_ =>
-            {
-                var x = _.X + (int)X;
-                var y = _.Y + (int)Y;
-                var t = Owner.Map[x, y];
-
-                if (!visibleTiles.ContainsKey(new IntPoint(x, y)))
-                    visibleTiles[new IntPoint(x, y)] = true;
-
-                tilesUpdate.Add(new UPDATE.TileData
+                blocksight.Where(_ =>
                 {
-                    X = (short)x,
-                    Y = (short)y,
-                    Tile = t.TileId
-                });
+                    var x = _.X + (int)X;
+                    var y = _.Y + (int)Y;
 
-                tiles[x, y] = t.UpdateCount;
+                    return !(x < 0 || x >= Owner.Map.Width || y < 0 || y >= Owner.Map.Height || tiles[x, y] >= Owner.Map[x, y].UpdateCount);
+                }).Select(_ =>
+                {
+                    var x = _.X + (int)X;
+                    var y = _.Y + (int)Y;
+                    var t = Owner.Map[x, y];
 
-                return _;
-            }).ToList();
+                    if (!visibleTiles.ContainsKey(new IntPoint(x, y)))
+                        visibleTiles[new IntPoint(x, y)] = true;
+
+                    tilesUpdate.Add(new UPDATE.TileData
+                    {
+                        X = (short)x,
+                        Y = (short)y,
+                        Tile = t.TileId
+                    });
+
+                    tiles[x, y] = t.UpdateCount;
+
+                    return _;
+                }).ToList();
+            }
+            catch { }
 
             var dropEntities = GetRemovedEntities().Distinct().ToArray();
 

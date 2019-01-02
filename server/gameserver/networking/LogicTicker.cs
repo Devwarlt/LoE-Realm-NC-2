@@ -18,7 +18,7 @@ namespace LoESoft.GameServer.realm
         private long _deltaTime { get; set; } = 0;
         private long _ticks { get; set; } = 0;
 
-        private const int COOLDOWN_DELAY = 33; // 33 milliseconds (30 Hz)
+        private const int COOLDOWN_DELAY = 100;
 
         public RealmTime CurrentTime { get; private set; }
 
@@ -28,7 +28,10 @@ namespace LoESoft.GameServer.realm
             _timers = new Timer[4];
 
             for (var i = 0; i < 4; i++)
-                _timers[i] = new Timer(COOLDOWN_DELAY) { AutoReset = true };
+                if (i == 1)
+                    _timers[1] = new Timer(COOLDOWN_DELAY * 3) { AutoReset = true };
+                else
+                    _timers[i] = new Timer(COOLDOWN_DELAY) { AutoReset = true };
         }
 
         public void Handle()
@@ -59,21 +62,24 @@ namespace LoESoft.GameServer.realm
             };
             _timers[1].Elapsed += delegate // world tick thread
             {
-                _manager.Worlds.Values.Distinct().Select(i =>
-                {
-                    i.Tick(CurrentTime);
-                    return i;
-                }).ToArray();
+                if (_manager.Worlds.Values.Count != 0)
+                    _manager.Worlds.Values.Distinct().Select(i =>
+                    {
+                        i.Tick(CurrentTime);
+                        return i;
+                    }).ToArray();
             };
             _timers[2].Elapsed += delegate // trade thread
             {
-                TradeManager.TradingPlayers.Where(_ => _.Owner == null)
-                .Select(i => TradeManager.TradingPlayers.Remove(i)).ToArray();
+                if (TradeManager.TradingPlayers.Count != 0)
+                    TradeManager.TradingPlayers.Where(_ => _.Owner == null)
+                    .Select(i => TradeManager.TradingPlayers.Remove(i)).ToArray();
             };
             _timers[3].Elapsed += delegate // requests thread
             {
-                TradeManager.CurrentRequests.Where(_ => _.Key.Owner == null || _.Value.Owner == null)
-                .Select(i => TradeManager.CurrentRequests.Remove(i)).ToArray();
+                if (TradeManager.CurrentRequests.Count != 0)
+                    TradeManager.CurrentRequests.Where(_ => _.Key.Owner == null || _.Value.Owner == null)
+                    .Select(i => TradeManager.CurrentRequests.Remove(i)).ToArray();
             };
             _timers.Select(timer =>
             {

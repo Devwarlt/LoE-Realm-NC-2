@@ -10,6 +10,9 @@ namespace LoESoft.GameServer.networking
 {
     internal partial class NetworkHandler
     {
+        private const int MaxConnectionLostAttempts = 30;
+        private int ConnectionLostAttempts { get; set; } = 0;
+
         private void ProcessIncomingMessage(object sender, SocketAsyncEventArgs e) =>
             RIMM(e);
 
@@ -20,7 +23,17 @@ namespace LoESoft.GameServer.networking
             try
             {
                 if (!socket.Connected)
-                    return;
+                {
+                    ConnectionLostAttempts++;
+
+                    if (ConnectionLostAttempts == MaxConnectionLostAttempts)
+                    {
+                        GameServer.Manager.TryDisconnect(client, DisconnectReason.CONNECTION_LOST);
+                        return;
+                    }
+                }
+                else
+                    ConnectionLostAttempts = 0;
 
                 if (e.SocketError != SocketError.Success)
                 {
@@ -42,10 +55,23 @@ namespace LoESoft.GameServer.networking
             { return; }
         }
 
+        private const int MaxInvalidBytesTransferred = 30;
+        private int InvalidBytesTransferred { get; set; } = 0;
+
         private void RPRM(SocketAsyncEventArgs e)
         {
             if (e.BytesTransferred < 5)
-                return;
+            {
+                InvalidBytesTransferred++;
+
+                if (InvalidBytesTransferred == MaxInvalidBytesTransferred)
+                {
+                    Manager.TryDisconnect(client, DisconnectReason.INVALID_MESSAGE_LENGTH);
+                    return;
+                }
+            }
+            else
+                InvalidBytesTransferred = 0;
 
             if (e.Buffer[0] == 0xae
                 && e.Buffer[1] == 0x7a
@@ -115,11 +141,6 @@ namespace LoESoft.GameServer.networking
                                 Log.Warn($"Unhandled message ID '{msg.ID}'.");
                             else
                                 handler.Handle(client, (IncomingMessage)msg);
-                        }
-                        catch (NullReferenceException)
-                        {
-                            Log.Warn($"Unhandled Message ID '{msg.ID}'.");
-                            Manager.TryDisconnect(client, DisconnectReason.ERROR_WHEN_HANDLING_MESSAGE);
                         }
                         catch { }
                 }

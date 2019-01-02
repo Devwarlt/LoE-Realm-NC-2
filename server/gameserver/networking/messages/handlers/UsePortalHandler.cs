@@ -55,7 +55,7 @@ namespace LoESoft.GameServer.networking.handlers
                 {
                     client.SendMessage(new FAILURE
                     {
-                        ErrorId = (int) FailureIDs.DEFAULT,
+                        ErrorId = (int)FailureIDs.DEFAULT,
                         ErrorDescription = "Portal not found!"
                     });
                 }
@@ -86,28 +86,28 @@ namespace LoESoft.GameServer.networking.handlers
                                     if (w != null && GameServer.Manager.Worlds.ContainsKey(w.Id))
                                         world = w;
                                     else
-                                        world = GameServer.Manager.GetWorld((int) WorldID.NEXUS_ID);
+                                        world = GameServer.Manager.GetWorld((int)WorldID.NEXUS_ID);
                                 }
                                 else
-                                    world = GameServer.Manager.GetWorld((int) WorldID.NEXUS_ID);
+                                    world = GameServer.Manager.GetWorld((int)WorldID.NEXUS_ID);
                                 setWorldInstance = false;
                             }
                             break;
 
                         case 0x0750:
-                            world = GameServer.Manager.GetWorld((int) WorldID.MARKET);
+                            world = GameServer.Manager.GetWorld((int)WorldID.MARKET);
                             break;
 
                         case 0x071d:
-                            world = GameServer.Manager.GetWorld((int) WorldID.NEXUS_ID);
+                            world = GameServer.Manager.GetWorld((int)WorldID.NEXUS_ID);
                             break;
 
                         case 0x0712:
-                            world = GameServer.Manager.GetWorld((int) WorldID.NEXUS_ID);
+                            world = GameServer.Manager.GetWorld((int)WorldID.NEXUS_ID);
                             break;
 
                         case 0x1756:
-                            world = GameServer.Manager.GetWorld((int) WorldID.DAILY_QUEST_ID);
+                            world = GameServer.Manager.GetWorld((int)WorldID.DAILY_QUEST_ID);
                             break;
 
                         case 0x072f:
@@ -127,7 +127,7 @@ namespace LoESoft.GameServer.networking.handlers
                                 {
                                     try
                                     {
-                                        world = Manager.AddWorld((World) Activator.CreateInstance(worldType,
+                                        world = Manager.AddWorld((World)Activator.CreateInstance(worldType,
                                         System.Reflection.BindingFlags.CreateInstance, null, null,
                                         CultureInfo.InvariantCulture, null));
                                     }
@@ -149,26 +149,24 @@ namespace LoESoft.GameServer.networking.handlers
             if (world != null)
             {
                 if (world.IsFull)
-                {
                     player.SendError("{\"key\":\"server.dungeon_full\"}");
-                    return;
-                }
-
-                if (GameServer.Manager.LastWorld.ContainsKey(player.AccountId))
+                else
                 {
-                    GameServer.Manager.LastWorld.TryRemove(player.AccountId, out World dummy);
-                }
-                if (player.Owner is Nexus || player.Owner is GameWorld)
-                    GameServer.Manager.LastWorld.TryAdd(player.AccountId, player.Owner);
+                    if (GameServer.Manager.LastWorld.ContainsKey(player.AccountId))
+                        GameServer.Manager.LastWorld.TryRemove(player.AccountId, out World dummy);
 
-                client?.Reconnect(new RECONNECT
-                {
-                    Host = "",
-                    Port = Settings.GAMESERVER.PORT,
-                    GameId = world.Id,
-                    Name = world.Name,
-                    Key = world.PortalKey,
-                });
+                    if (player.Owner is Nexus || player.Owner is GameWorld)
+                        GameServer.Manager.LastWorld.TryAdd(player.AccountId, player.Owner);
+
+                    client?.Reconnect(new RECONNECT
+                    {
+                        Host = "",
+                        Port = Settings.GAMESERVER.PORT,
+                        GameId = world.Id,
+                        Name = world.Name,
+                        Key = world.PortalKey,
+                    });
+                }
             }
         }
     }

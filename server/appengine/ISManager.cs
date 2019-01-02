@@ -34,7 +34,7 @@ namespace LoESoft.AppEngine
         public ISManager() : base(AppEngine.Database, AppEngine.InstanceId)
         {
             AddHandler<NetworkMsg>(NETWORK, HandleNetwork);
-            AddHandler<Message>(CHAT, HandleChat);
+            //AddHandler<Message>(CHAT, HandleChat);
 
             Publish(NETWORK, new NetworkMsg()
             {

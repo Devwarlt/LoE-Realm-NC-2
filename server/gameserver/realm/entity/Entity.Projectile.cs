@@ -1,6 +1,5 @@
 ﻿#region
 
-using LoESoft.GameServer.networking.messages.handlers.hack;
 using System.Collections.Concurrent;
 
 #endregion
@@ -13,8 +12,8 @@ namespace LoESoft.GameServer.realm.entity
             : base(GameServer.Manager.GameData.IdToObjectType[desc.ObjectId])
         {
             ProjDesc = desc;
-            CheatHandler = new GodCheatHandler();
-            CheatHandler.SetProjectile(this);
+            //CheatHandler = new GodCheatHandler();
+            //CheatHandler.SetProjectile(this);
         }
 
         public static ConcurrentDictionary<int, bool> ProjectileCache = new ConcurrentDictionary<int, bool>();
@@ -23,7 +22,7 @@ namespace LoESoft.GameServer.realm.entity
 
         public static void Remove(int id) => ProjectileCache.TryRemove(id, out bool val);
 
-        private GodCheatHandler CheatHandler { get; set; }
+        //private GodCheatHandler CheatHandler { get; set; }
 
         public Entity ProjectileOwner { get; set; }
         public new byte ProjectileId { get; set; }
@@ -38,8 +37,8 @@ namespace LoESoft.GameServer.realm.entity
 
         public override void Tick(RealmTime time)
         {
-            if (ProjectileOwner is Enemy)
-                CheatHandler.Handler();
+            //if (ProjectileOwner is Enemy)
+            //    CheatHandler.Handler();
 
             base.Tick(time);
         }
