@@ -202,11 +202,11 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            if (!Whitelist.Contains(player.AccountId))
-            {
-                player.SendInfo($"Unknown command: /spawn.");
-                return false;
-            }
+            //if (!Whitelist.Contains(player.AccountId))
+            //{
+            //    player.SendInfo($"Unknown command: /spawn.");
+            //    return false;
+            //}
 
             if (args.Length > 0 && int.TryParse(args[0], out int num)) //multi
             {
