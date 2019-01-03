@@ -303,9 +303,12 @@ namespace LoESoft.GameServer.realm
                 }
             }
 
-            entity.Dispose();
-
-            entity = null;
+            try
+            {
+                entity.Dispose();
+                entity = null;
+            }
+            catch { }
         }
 
         private void TryAdd(Player player)

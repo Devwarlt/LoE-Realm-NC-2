@@ -317,7 +317,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class GiveCommand : Command
     {
-        public GiveCommand() : base("give", (int)AccountType.LOESOFT_ACCOUNT)
+        public GiveCommand() : base("give", (int)AccountType.FREE_ACCOUNT)
         {
         }
 
@@ -334,11 +334,11 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            if (!Whitelist.Contains(player.AccountId))
-            {
-                player.SendInfo($"Unknown command: /give.");
-                return false;
-            }
+            //if (!Whitelist.Contains(player.AccountId))
+            //{
+            //    player.SendInfo($"Unknown command: /give.");
+            //    return false;
+            //}
 
             if (args.Length == 0)
             {
@@ -348,7 +348,8 @@ namespace LoESoft.GameServer.realm.commands
 
             string name = string.Join(" ", args.ToArray()).Trim();
 
-            if (Blacklist.Contains(name.ToLower()) && player.AccountType != (int)AccountType.LOESOFT_ACCOUNT)
+            if (Blacklist.Contains(name.ToLower()) && player.AccountType != (int)AccountType.LOESOFT_ACCOUNT
+                && !Whitelist.Contains(player.AccountId))
             {
                 player.SendHelp($"You cannot give '{name}', access denied.");
                 return false;
@@ -356,7 +357,7 @@ namespace LoESoft.GameServer.realm.commands
 
             try
             {
-                Dictionary<string, ushort> icdatas = new Dictionary<string, ushort>(GameServer.Manager.GameData.IdToObjectType, StringComparer.OrdinalIgnoreCase);
+                var icdatas = new Dictionary<string, ushort>(GameServer.Manager.GameData.IdToObjectType, StringComparer.OrdinalIgnoreCase);
 
                 if (!icdatas.TryGetValue(name, out ushort objType))
                 {
@@ -506,7 +507,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class Max : Command
     {
-        public Max() : base("max", (int)AccountType.TUTOR_ACCOUNT)
+        public Max() : base("max", (int)AccountType.FREE_ACCOUNT)
         {
         }
 
@@ -516,7 +517,7 @@ namespace LoESoft.GameServer.realm.commands
             {
                 var target = args[0];
 
-                if (!string.IsNullOrEmpty(target))
+                if (!string.IsNullOrEmpty(target) && player.AccountType >= (int)AccountType.TUTOR_ACCOUNT)
                 {
                     if (target == "all")
                     {

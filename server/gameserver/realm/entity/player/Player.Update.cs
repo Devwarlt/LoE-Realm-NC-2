@@ -60,17 +60,21 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             var removedEntities = new List<int>();
 
-            clientEntities.Where(entity =>
-                !(entity is Player && entity.Owner != null) &&
-                ((MathsUtils.DistSqr(entity.X, entity.Y, X, Y) > SIGHTRADIUS * SIGHTRADIUS &&
-                !(entity is GameObject && (entity as GameObject).Static) && entity != Quest) ||
-                entity.Owner == null))
-            .Select(clientEntity =>
+            try
             {
-                removedEntities.Add(clientEntity.Id);
+                clientEntities.Where(entity =>
+                    !(entity is Player && entity.Owner != null) &&
+                    ((MathsUtils.DistSqr(entity.X, entity.Y, X, Y) > SIGHTRADIUS * SIGHTRADIUS &&
+                    !(entity is GameObject && (entity as GameObject).Static) && entity != Quest) ||
+                    entity.Owner == null))
+                .Select(clientEntity =>
+                {
+                    removedEntities.Add(clientEntity.Id);
 
-                return clientEntities;
-            }).ToList();
+                    return clientEntities;
+                }).ToList();
+            }
+            catch { }
 
             return removedEntities;
         }

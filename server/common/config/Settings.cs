@@ -10,7 +10,7 @@ namespace LoESoft.Core.config
             Production
         }
 
-        public static readonly double EVENT_RATE = 10;
+        public static readonly double EVENT_RATE = 1000;
         public static readonly string EVENT_MESSAGE = $"The server is hosting an event with +{EVENT_RATE * 100}% XP, loot drop rate and Shop discounts. Enjoy!";
         public static readonly ServerMode SERVER_MODE = ServerMode.Production;
         public static readonly bool ENABLE_RESTART_SYSTEM = SERVER_MODE == ServerMode.Production;

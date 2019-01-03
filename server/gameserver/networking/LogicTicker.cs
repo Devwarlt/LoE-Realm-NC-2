@@ -18,7 +18,7 @@ namespace LoESoft.GameServer.realm
         private long _deltaTime { get; set; } = 0;
         private long _ticks { get; set; } = 0;
 
-        private const int COOLDOWN_DELAY = 100;
+        private const int COOLDOWN_DELAY = 133;
 
         public RealmTime CurrentTime { get; private set; }
 
@@ -28,10 +28,7 @@ namespace LoESoft.GameServer.realm
             _timers = new Timer[4];
 
             for (var i = 0; i < 4; i++)
-                if (i == 1)
-                    _timers[1] = new Timer(COOLDOWN_DELAY * 3) { AutoReset = true };
-                else
-                    _timers[i] = new Timer(COOLDOWN_DELAY) { AutoReset = true };
+                _timers[i] = new Timer(COOLDOWN_DELAY) { AutoReset = true };
         }
 
         public void Handle()
