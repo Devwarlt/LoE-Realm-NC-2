@@ -1437,10 +1437,11 @@ namespace LoESoft.GameServer.realm.entity.player
                                     GameServer.Manager.Database.AddChar(Client.Account);
                                     break;
 
-                                case "vault":
-                                    message = "Vault Chest";
-                                    GameServer.Manager.Database.AddChest(Client.Account);
-                                    break;
+                                //broken
+                                //case "vault":
+                                //    message = "Vault Chest";
+                                //    GameServer.Manager.Database.AddChest(Client.Account);
+                                //    break;
 
                                 default:
                                     SendInfo($"There is no unlock action to slot '{eff.Slot}' in game actions.");

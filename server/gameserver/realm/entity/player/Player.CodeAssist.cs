@@ -223,6 +223,7 @@ namespace LoESoft.GameServer.realm.entity.player
             chr.Fame = Fame;
             chr.HP = HP;
             chr.MP = MP;
+
             if (PetID != 0)
                 chr.Pet = PetID;
             try

@@ -26,7 +26,15 @@ namespace LoESoft.GameServer.realm.entity.player
             var achievementCache = new List<string>();
 
             try
-            { achievementCache = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(Path.Combine(GameServer.AchievementCachePath, $"ac-char.{AccountId}.{Client.Character.CharId}.json"))); }
+            {
+                var path = Path.Combine(GameServer.AchievementCachePath, $"ac-char.{AccountId}.{Client.Character.CharId}.json");
+
+                if (File.Exists(path))
+                {
+                    var content = File.ReadAllText(path);
+                    achievementCache = JsonConvert.DeserializeObject<List<string>>(content);
+                }
+            }
             catch { }
 
             return achievementCache;
