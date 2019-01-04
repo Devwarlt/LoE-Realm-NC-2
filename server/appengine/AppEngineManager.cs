@@ -98,7 +98,7 @@ namespace LoESoft.AppEngine
                     i--;
                 } while (i != 0);
 
-                IAsyncResult webSocketIAsyncResult = new WebSocketDelegate(SafeShutdown).BeginInvoke(new AsyncCallback(SafeDispose), null);
+                var webSocketIAsyncResult = new WebSocketDelegate(SafeShutdown).BeginInvoke(new AsyncCallback(SafeDispose), null);
 
                 if (webSocketIAsyncResult.AsyncWaitHandle.WaitOne(5000, true))
                     Process.Start(Settings.APPENGINE.FILE);
@@ -110,11 +110,7 @@ namespace LoESoft.AppEngine
         public bool SafeShutdown()
         {
             if (_webqueue.Count != 0)
-                while (_webqueue.Count > 0)
-                {
-                    Log.Warn($"Awaiting {_webqueue.Count} queued item{(_webqueue.Count > 1 ? "s" : "")} to dispose, retrying in 1 second...");
-                    Thread.Sleep(1000);
-                };
+                _webqueue.Clear();
 
             return _isCompleted = true;
         }

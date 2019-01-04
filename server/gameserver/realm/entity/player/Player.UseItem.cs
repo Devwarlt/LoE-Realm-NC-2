@@ -23,8 +23,7 @@ namespace LoESoft.GameServer.realm.entity.player
             Position target = pkt.ItemUsePos;
             MP -= item.MpCost;
 
-            IContainer con = Owner?.GetEntity(pkt.SlotObject.ObjectId) as IContainer;
-            if (con == null)
+            if (!(Owner?.GetEntity(pkt.SlotObject.ObjectId) is IContainer con))
                 return true;
             if (CheatEngineDetectSlot(item, pkt, con))
                 CheatEngineDetect(item, pkt);
@@ -271,6 +270,9 @@ namespace LoESoft.GameServer.realm.entity.player
                             };
                             Owner?.Aoe(target, 3, false, enemy =>
                             {
+                                if (enemy.IsPet)
+                                    return;
+
                                 if (IsSpecial(enemy.ObjectType))
                                     return;
 
@@ -345,13 +347,12 @@ namespace LoESoft.GameServer.realm.entity.player
                             for (int i = 0; i < targets.Length; i++)
                             {
                                 targets[i] = current;
-                                Enemy next = current.GetNearestEntity(8, false,
+
+                                if (!(current.GetNearestEntity(8, false,
                                     enemy =>
                                         enemy is Enemy &&
                                         Array.IndexOf(targets, enemy) == -1 &&
-                                        this.Dist(enemy) <= 6) as Enemy;
-
-                                if (next == null)
+                                        this.Dist(enemy) <= 6) is Enemy next))
                                     break;
                                 current = next;
                             }
@@ -531,8 +532,6 @@ namespace LoESoft.GameServer.realm.entity.player
                                 return true;
                             }
 
-                            Portal portal = this.GetNearestEntity(5, GameServer.Manager.GameData.IdToObjectType[eff.LockedName]) as Portal;
-
                             Message[] packets = new Message[3];
                             packets[0] = new SHOWEFFECT
                             {
@@ -542,7 +541,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                 TargetId = Id
                             };
 
-                            if (portal == null)
+                            if (!(this.GetNearestEntity(5, GameServer.Manager.GameData.IdToObjectType[eff.LockedName]) is Portal portal))
                                 return true;
 
                             portal.Unlock(eff.DungeonName);
@@ -1366,7 +1365,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                 return true;
                             }
 
-                            Action action = () =>
+                            void action()
                             {
                                 switch (item.DisplayId)
                                 {
@@ -1392,7 +1391,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                                         break;
                                 }
-                            };
+                            }
 
                             if (Inventory[4] != null && Inventory[5] != null && Inventory[6] != null && Inventory[7] != null &&
                                 Inventory[8] != null && Inventory[9] != null && Inventory[10] != null && Inventory[11] != null)
@@ -1405,7 +1404,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                     if (Inventory[i] == null)
                                     {
                                         Inventory[i] = GameServer.Manager.GameData.Items[(ushort)Utils.FromString(eff.Id)];
-                                        action.Invoke();
+                                        action();
                                         UpdateCount++;
                                         SaveToCharacter();
                                         return false;

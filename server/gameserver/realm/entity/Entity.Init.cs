@@ -199,6 +199,7 @@ namespace LoESoft.GameServer.realm
             if (Owner != null && !(this is Projectile) && (!(this is GameObject) || (this as GameObject).Hittestable))
                 ((this is Enemy || this is GameObject && !(this is Decoy)) ? Owner.EnemiesCollision : Owner.PlayersCollision)
                     .Move(this, x, y);
+
             X = x;
             Y = y;
         }
@@ -457,6 +458,7 @@ namespace LoESoft.GameServer.realm
             if (tile.ObjType != 0)
             {
                 var objDesc = GameServer.Manager.GameData.ObjectDescs[tile.ObjType];
+
                 if (objDesc?.FullOccupy == true)
                     return true;
             }

@@ -18,7 +18,7 @@ namespace LoESoft.GameServer.realm
         private long _deltaTime { get; set; } = 0;
         private long _ticks { get; set; } = 0;
 
-        private const int COOLDOWN_DELAY = 133;
+        public const int COOLDOWN_DELAY = 133;
 
         public RealmTime CurrentTime { get; private set; }
 

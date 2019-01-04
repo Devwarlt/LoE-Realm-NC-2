@@ -60,45 +60,52 @@ namespace LoESoft.GameServer.logic.loot
         {
             try
             {
+                if (enemy == null)
+                    return;
+
+                if (enemy.Owner == null)
+                    return;
+
+                if (enemy.Owner.Name == null)
+                    return;
+
                 if (enemy.Owner.Name == "Arena")
                     return;
 
-                List<LootDef> consideration = new List<LootDef>();
+                var consideration = new List<LootDef>();
+                var sharedLoots = new List<Item>();
 
-                List<Item> sharedLoots = new List<Item>();
-
-                foreach (ILootDef i in this)
+                foreach (var i in this)
                     i.Populate(enemy, null, rand, i.Lootstate, consideration);
 
-                foreach (LootDef i in consideration)
-                {
+                foreach (var i in consideration)
                     if (i.LootState == enemy.LootState || i.LootState == null)
-                    {
                         if (rand.NextDouble() <= i.Probabilty)
                             sharedLoots.Add(i.Item);
-                    }
-                }
 
-                Tuple<Player, int>[] dats = enemy.DamageCounter.GetPlayerData();
-                Dictionary<Player, IList<Item>> loots = enemy.DamageCounter.GetPlayerData().ToDictionary(
-                    d => d.Item1, d => (IList<Item>)new List<Item>());
+                var dats = enemy.DamageCounter.GetPlayerData();
+                var loots = enemy.DamageCounter.GetPlayerData().ToDictionary(d => d.Item1, d => (IList<Item>)new List<Item>());
 
-                foreach (Item loot in sharedLoots.Where(item => item.BagType > 1)) //Hope fixed item doesn't need to be soulbound only
+                foreach (var loot in sharedLoots.Where(item => item.BagType > 1))
                     loots[dats[rand.Next(dats.Length)].Item1].Add(loot);
 
-                foreach (Tuple<Player, int> dat in dats)
+                foreach (var dat in dats)
                 {
                     consideration.Clear();
-                    foreach (ILootDef i in this)
+
+                    foreach (var i in this)
                         i.Populate(enemy, dat, rand, i.Lootstate, consideration);
 
-                    IList<Item> playerLoot = loots[dat.Item1];
-                    foreach (LootDef i in consideration)
+                    var playerLoot = loots[dat.Item1];
+
+                    foreach (var i in consideration)
                     {
                         if (i.LootState == enemy.LootState || i.LootState == null)
                         {
-                            double prob = dat.Item1.LootDropBoost ? i.Probabilty * 1.5 : i.Probabilty;
-                            if (rand.NextDouble() <= prob)
+                            var prob = dat.Item1.LootDropBoost ? i.Probabilty * 1.5 : i.Probabilty;
+                            var chance = rand.NextDouble();
+
+                            if (chance <= prob)
                             {
                                 if (dat.Item1.LootTierBoost)
                                     playerLoot.Add(IncreaseTier(GameServer.Manager, i.Item, consideration));
@@ -113,7 +120,7 @@ namespace LoESoft.GameServer.logic.loot
                                             BubbleTime = 0,
                                             Stars = -1,
                                             Name = "@ANNOUNCEMENT",
-                                            Text = $" {dat.Item1.Name} dropped a white bag item '{i.Item.DisplayId}'!",
+                                            Text = $" {dat.Item1.Name} dropped a white bag item '{i.Item.DisplayId}' with {chance * 100}% chance!",
                                             NameColor = 0x123456,
                                             TextColor = 0x123456
                                         });
@@ -127,17 +134,15 @@ namespace LoESoft.GameServer.logic.loot
 
                 AddBagsToWorld(enemy, sharedLoots, loots);
             }
-            catch (IndexOutOfRangeException)
-            {
-                return;
-            }
+            catch (IndexOutOfRangeException) { return; }
         }
 
         private Item IncreaseTier(RealmManager manager, Item item, List<LootDef> consideration)
         {
             if (item.SlotType == 10)
                 return item;
-            Item[] tier = manager.GameData.Items
+
+            var tier = manager.GameData.Items
                  .Where(i => item.SlotType == i.Value.SlotType)
                  .Where(i => i.Value.Tier >= item.Tier + 3)
                  .Where(i => consideration.Select(_ => _.Item).Contains(i.Value))
@@ -148,8 +153,9 @@ namespace LoESoft.GameServer.logic.loot
 
         private void AddBagsToWorld(Enemy enemy, IList<Item> shared, IDictionary<Player, IList<Item>> soulbound)
         {
-            List<Player> pub = new List<Player>(); //only people not getting soulbound
-            foreach (KeyValuePair<Player, IList<Item>> i in soulbound)
+            var pub = new List<Player>(); //only people not getting soulbound
+
+            foreach (var i in soulbound)
             {
                 if (i.Value.Count > 0)
                     ShowBags(enemy, i.Value, i.Key);
@@ -162,15 +168,16 @@ namespace LoESoft.GameServer.logic.loot
 
         private void ShowBags(Enemy enemy, IEnumerable<Item> loots, params Player[] owners)
         {
-            string[] ownerIds = owners?.Select(x => x.AccountId).ToArray();
-            int bagType = 0;
-            Item[] items = new Item[8];
-            int idx = 0;
+            var ownerIds = owners?.Select(x => x.AccountId).ToArray();
+            var bagType = 0;
+            var items = new Item[8];
+            var idx = 0;
 
-            foreach (Item i in loots)
+            foreach (var i in loots)
             {
                 if (i.BagType > bagType)
                     bagType = i.BagType;
+
                 items[idx] = i;
                 idx++;
 
