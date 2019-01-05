@@ -1077,7 +1077,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class BanCommand : Command
     {
-        public BanCommand() : base("ban", (int)AccountType.LOESOFT_ACCOUNT)
+        public BanCommand() : base("ban", (int)AccountType.TUTOR_ACCOUNT)
         {
         }
 
@@ -1085,19 +1085,47 @@ namespace LoESoft.GameServer.realm.commands
         {
             try
             {
-                Player p = GameServer.Manager.FindPlayer(args[0]);
-                if (p == null)
+                if (args.Length == 0)
                 {
-                    player.SendError("Player not found");
+                    player.SendHelp("Usage: /ban <id>");
                     return false;
                 }
-                p.Client.Manager.Database.BanAccount(p.Client.Account);
-                GameServer.Manager.TryDisconnect(p.Client, DisconnectReason.PLAYER_BANNED);
+
+                player.Client.Manager.Database.BanAccount(int.Parse(args[0]));
+                player.SendInfo("Player has been banned!");
                 return true;
             }
             catch
             {
                 player.SendError("Cannot ban!");
+                return false;
+            }
+        }
+    }
+
+    internal class UnBanCommand : Command
+    {
+        public UnBanCommand() : base("unban", (int)AccountType.TUTOR_ACCOUNT)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            try
+            {
+                if (args.Length == 0)
+                {
+                    player.SendHelp("Usage: /unban <id>");
+                    return false;
+                }
+
+                player.Client.Manager.Database.UnBanAccount(int.Parse(args[0]));
+                player.SendInfo("Player has been unbanned!");
+                return true;
+            }
+            catch
+            {
+                player.SendError("Cannot unban!");
                 return false;
             }
         }

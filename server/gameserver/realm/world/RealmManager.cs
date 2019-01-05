@@ -144,13 +144,16 @@ namespace LoESoft.GameServer.realm
             {
                 try
                 {
-                    ClientData _cData = new ClientData
+                    var _cData = new ClientData
                     {
                         ID = client.Account.AccountId,
                         Client = client,
                         DNS = client.Socket.RemoteEndPoint.ToString().Split(':')[0],
                         Registered = DateTime.Now
                     };
+
+                    if (_cData.Client.Account.Banned)
+                        return new ConnectionProtocol(false, ErrorIDs.ACCOUNT_BANNED);
 
                     if (ClientManager.Count >= MaxClients) // When server is full.
                         return new ConnectionProtocol(false, ErrorIDs.SERVER_FULL);

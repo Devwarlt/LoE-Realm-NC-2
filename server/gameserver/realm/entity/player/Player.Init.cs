@@ -580,18 +580,36 @@ namespace LoESoft.GameServer.realm.entity.player
                     Color = new ARGB(0xFF00FF00),
                     Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"Quest Complete!\"}}",
                 }, null);
-            if (exp > 0)
+            if (exp > 0 && Experience != int.MaxValue)
             {
+                double newexp = Experience;
+
                 if (XpBoosted)
-                    Experience += (int)(exp * 2 * Settings.EVENT_RATE);
+                    newexp += (int)(exp * 2 * Settings.EVENT_RATE);
                 else
-                    Experience += (int)(exp * Settings.EVENT_RATE);
+                    newexp += (int)(exp * Settings.EVENT_RATE);
+
+                if (newexp >= int.MaxValue)
+                {
+                    Experience = int.MaxValue;
+                    SendInfo("You achieved the maximum experience!");
+                }
+
                 UpdateCount++;
+
                 foreach (var i in Owner.PlayersCollision.HitTest(X, Y, 16).Where(i => i != this).OfType<Player>())
                 {
                     try
                     {
-                        i.Experience += (int)((i.XpBoosted ? exp * 2 : exp) * Settings.EVENT_RATE);
+                        double tempexp = i.Experience;
+                        tempexp += (int)((i.XpBoosted ? exp * 2 : exp) * Settings.EVENT_RATE);
+
+                        if (tempexp >= int.MaxValue)
+                        {
+                            i.Experience = int.MaxValue;
+                            i.SendInfo("You achieved the maximum experience!");
+                        }
+
                         i.UpdateCount++;
                         i.CheckLevelUp();
                     }
