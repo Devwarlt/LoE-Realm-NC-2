@@ -83,7 +83,6 @@ namespace LoESoft.GameServer.realm.commands
             }
 
             player.Move(1000f, 1000f);
-
             player.Owner.BroadcastMessage(new GOTO
             {
                 ObjectId = player.Id,
@@ -317,7 +316,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class GiveCommand : Command
     {
-        public GiveCommand() : base("give", (int)AccountType.FREE_ACCOUNT)
+        public GiveCommand() : base("give", (int)AccountType.DEM_ACCOUNT)
         {
         }
 
@@ -507,7 +506,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class Max : Command
     {
-        public Max() : base("max", (int)AccountType.FREE_ACCOUNT)
+        public Max() : base("max", (int)AccountType.GM_ACCOUNT)
         {
         }
 
@@ -519,7 +518,7 @@ namespace LoESoft.GameServer.realm.commands
 
                 if (!string.IsNullOrEmpty(target) && player.AccountType >= (int)AccountType.CM_ACCOUNT)
                 {
-                    if (target == "all")
+                    if (target == "all" && player.AccountType == (int)AccountType.DEM_ACCOUNT)
                     {
                         var count = 0;
 
