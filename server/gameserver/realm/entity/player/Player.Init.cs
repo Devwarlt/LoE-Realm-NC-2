@@ -187,8 +187,26 @@ namespace LoESoft.GameServer.realm.entity.player
 
             base.Move(x, y);
         }
-
-        public void Death(string killer, ObjectDesc desc = null)
+		private void AnnounceDeath(string killer)
+		{
+			var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
+			var rip = Name + " died to " + killer + "( " + playerDesc.ObjectId + ", " + Fame + " Fame )";
+			if (Fame >= 2000 && !Client.Account.Admin)
+			{
+				foreach (var w in GameServer.Manager.Worlds.Values)
+					foreach (var p in w.Players.Values)
+						p.SendDeathAnnounce(rip);
+				return;
+			}
+			else
+			{
+				foreach (var i in Owner.Players.Values)
+				{
+					i.SendDeathAnnounce(rip);
+				}
+			}
+		}
+		public void Death(string killer, ObjectDesc desc = null, Entity entity=null)
         {
             if (dying)
                 return;
@@ -221,7 +239,15 @@ namespace LoESoft.GameServer.realm.entity.player
                 return;
             }
             GenerateGravestone();
-            if (desc != null)
+			if ((entity is Player))
+			{
+				AnnounceDeath((entity as Player).Name + " the " + entity.ObjectDesc.ObjectId);
+			}
+			else
+			{
+				AnnounceDeath(killer);
+			}
+			if (desc != null)
                 if (desc.DisplayId != null)
                     killer = desc.DisplayId;
                 else
@@ -557,14 +583,15 @@ namespace LoESoft.GameServer.realm.entity.player
 
                 UpdateCount++;
 
-                if (Level == 20)
-                {
-                    foreach (var i in Owner.Players.Values)
-                        i.SendInfo(Name + " achieved level 20");
-                    XpBoosted = false;
-                    XpBoostTimeLeft = 0;
-                }
-                Quest = null;
+				var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
+				if (Level == 20)
+				{
+					foreach (var i in Owner.Players.Values)
+						i.SendInfo(Name + " achieved level 20" + " as a " + playerDesc.ObjectId);
+					XpBoosted = false;
+					XpBoostTimeLeft = 0;
+				}
+				Quest = null;
                 return true;
             }
             CalculateFame();

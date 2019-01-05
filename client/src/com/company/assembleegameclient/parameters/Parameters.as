@@ -12,7 +12,7 @@ import flash.utils.Dictionary;
 import kabam.rotmg.build.impl.BuildEnvironments;
 
 public class Parameters {
-    public static const IS_DEVELOPER_MODE:Boolean = false;
+    public static const IS_DEVELOPER_MODE:Boolean = true;
     public static const DISCORD_PERMANENTLY_INVITE:String = "https://discord.gg/jHNTjun";
     public static const CONNECTION_SECURITY_PROTOCOL:String = "http";
     public static const CLIENT_NAME:String = "(New Chicago 2) LoE Realm";
@@ -371,6 +371,8 @@ public class Parameters {
         setDefault("fullscreenMod", true);
         setDefault("mscale", 15);
         setDefault("showTierTag", true);
+        setDefaultKey("reconVault", KeyCodes.P);
+        setDefaultKey("reconRealm", KeyCodes.NUMBER_0);
         if (!data_.hasOwnProperty("needsSurvey")) {
             data_.needsSurvey = data_.needsTutorial;
             switch (int((Math.random() * 5))) {
