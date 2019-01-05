@@ -163,9 +163,9 @@ public enum ConditionEffectIndex
     FreeAccount = 50,
     NPCType = 51,
     VipAccount = 52,
-    TutorAccount = 53,
-    LegendsofLoEAccount = 54,
-    LoESoftAccount = 55
+    CmAccount = 53,
+    GmAccount = 54,
+    DemAccount = 55
 }
 
 public enum XMLBehaviorsType //TODO: Not implemented yet, only few of them

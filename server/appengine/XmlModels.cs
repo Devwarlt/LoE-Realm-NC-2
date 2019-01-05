@@ -278,8 +278,8 @@ namespace LoESoft.AppEngine
                 Name = acc.Name,
                 NameChosen = acc.NameChosen,
                 Converted = acc.Converted,
-                Admin = acc.AccountType == (int) Core.config.AccountType.LOESOFT_ACCOUNT,
-                MapEditor = acc.AccountType == (int) Core.config.AccountType.TUTOR_ACCOUNT,
+                Admin = acc.AccountType == (int)Core.config.AccountType.DEM_ACCOUNT,
+                MapEditor = acc.AccountType == (int)Core.config.AccountType.CM_ACCOUNT,
                 VerifiedEmail = acc.Verified,
                 Credits = acc.Credits,
                 NextCharSlotPrice = 100, // need adjusts

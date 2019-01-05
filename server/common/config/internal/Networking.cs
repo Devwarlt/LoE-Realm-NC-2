@@ -28,18 +28,11 @@ namespace LoESoft.Core.config
                 };
 
                 public static readonly string CROSS_DOMAIN_POLICY =
-                    @"<cross-domain-policy>
-                        <policy-file-request/>
+                    @"<?xml version=""1.0""?>
+                    <!DOCTYPE cross-domain-policy SYSTEM ""/xml/dtds/cross-domain-policy.dtd"">
+                    <cross-domain-policy>
                         <site-control permitted-cross-domain-policies=""master-only""/>
-                        <allow-access-from domain=""loesoft-games.github.io"" secure=""true""/>
-                        <allow-access-from domain=""loesoft-games.github.io"" to-ports=""*""/>
-                        <allow-http-request-headers-from domain=""loesoft-games.github.io"" headers=""*"" secure=""true""/>
-                        <allow-access-from domain=""loe-nc.servegame.com"" secure=""false""/>
-                        <allow-access-from domain=""loe-nc.servegame.com"" to-ports=""*""/>
-                        <allow-http-request-headers-from domain=""loe-nc.servegame.com"" headers=""*"" secure=""false""/>
-                        <allow-access-from domain=""*"" secure=""false""/>
                         <allow-access-from domain=""*"" to-ports=""*""/>
-                        <allow-http-request-headers-from domain=""*"" headers=""*"" secure=""false""/>
                     </cross-domain-policy>";
             }
         }

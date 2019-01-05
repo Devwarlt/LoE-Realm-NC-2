@@ -651,7 +651,7 @@ namespace LoESoft.GameServer.realm
                 ProjectileId = ProjectileId++,
                 Container = (short)container,
                 Damage = dmg,
-                BeginTime = time,
+                BeginTime = GameServer.Manager.Logic.CurrentTime.TotalElapsedMs,
                 BeginPos = pos,
                 Angle = angle,
                 X = pos.X,

@@ -32,7 +32,7 @@ namespace LoESoft.GameServer.networking.handlers
             prj.Owner.RemoveProjectileFromId(player.Id, message.BulletId);
 
             if (prj.ProjDesc.Effects.Length != 0)
-                foreach (ConditionEffect effect in prj.ProjDesc.Effects)
+                foreach (var effect in prj.ProjDesc.Effects)
                     if (effect.Target == 1)
                         continue;
                     else

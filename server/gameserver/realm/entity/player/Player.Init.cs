@@ -58,7 +58,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 Level = client.Character.Level == 0 ? 1 : client.Character.Level;
                 Experience = client.Character.Experience;
                 ExperienceGoal = GetExpGoal(Level);
-                Stars = AccountType >= (int)Core.config.AccountType.LEGENDS_OF_LOE_ACCOUNT ? 70 : GetStars();
+                Stars = AccountType >= (int)Core.config.AccountType.GM_ACCOUNT ? 70 : GetStars();
                 Texture1 = client.Character.Tex1;
                 Texture2 = client.Character.Tex2;
                 Credits = client.Account.Credits;
@@ -85,7 +85,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 lootDropBoostFreeTimer = LootDropBoost;
                 LootTierBoostTimeLeft = client.Character.LootTierTimer;
                 lootTierBoostFreeTimer = LootTierBoost;
-                FameGoal = (AccountType >= (int)Core.config.AccountType.LEGENDS_OF_LOE_ACCOUNT) ? 0 : GetFameGoal(FameCounter.ClassStats[ObjectType].BestFame);
+                FameGoal = (AccountType >= (int)Core.config.AccountType.GM_ACCOUNT) ? 0 : GetFameGoal(FameCounter.ClassStats[ObjectType].BestFame);
                 Glowing = false;
                 DbGuild guild = GameServer.Manager.Database.GetGuild(client.Account.GuildId);
                 if (guild != null)
@@ -164,7 +164,7 @@ namespace LoESoft.GameServer.realm.entity.player
                     if (SlotTypes[i] == 0)
                         SlotTypes[i] = 10;
 
-                if (Client.Account.AccountType >= (int)Core.config.AccountType.TUTOR_ACCOUNT)
+                if (Client.Account.AccountType >= (int)Core.config.AccountType.CM_ACCOUNT)
                     return;
 
                 for (var i = 0; i < 4; i++)
@@ -318,7 +318,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
             CheckSetTypeSkin();
 
-            if ((AccountType)AccountType == Core.config.AccountType.LOESOFT_ACCOUNT)
+            if ((AccountType)AccountType == Core.config.AccountType.DEM_ACCOUNT)
             {
                 ConditionEffect invincible = new ConditionEffect
                 {
@@ -516,7 +516,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 newGoal = GetFameGoal(stats.BestFame);
             else
                 newGoal = GetFameGoal(Fame);
-            if (newGoal > FameGoal && AccountType < (int)Core.config.AccountType.LEGENDS_OF_LOE_ACCOUNT)
+            if (newGoal > FameGoal && AccountType < (int)Core.config.AccountType.GM_ACCOUNT)
             {
                 Owner.BroadcastMessage(new NOTIFICATION
                 {
@@ -526,7 +526,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 }, null);
                 Stars = GetStars();
             }
-            FameGoal = (AccountType >= (int)Core.config.AccountType.LEGENDS_OF_LOE_ACCOUNT) ? 0 : newGoal;
+            FameGoal = (AccountType >= (int)Core.config.AccountType.GM_ACCOUNT) ? 0 : newGoal;
             UpdateCount++;
         }
 
@@ -594,6 +594,8 @@ namespace LoESoft.GameServer.realm.entity.player
                     Experience = int.MaxValue;
                     SendInfo("You achieved the maximum experience!");
                 }
+                else
+                    Experience = (int)newexp;
 
                 UpdateCount++;
 
@@ -609,6 +611,8 @@ namespace LoESoft.GameServer.realm.entity.player
                             i.Experience = int.MaxValue;
                             i.SendInfo("You achieved the maximum experience!");
                         }
+                        else
+                            i.Experience = (int)tempexp;
 
                         i.UpdateCount++;
                         i.CheckLevelUp();
