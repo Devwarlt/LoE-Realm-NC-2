@@ -1047,91 +1047,134 @@ public class GameObject extends BasicObject {
         }
     }
 
-    protected function drawHpBar(graphicsData:Vector.<IGraphicsData>, time:int):void {
-        var _local7:Number;
-        var _hpBarVariance:Number;
-        if (this.hpbarPath_ == null) {
-            this.hpBarLineStyle_ = new GraphicsStroke(1, true, LineScaleMode.NORMAL, CapsStyle.NONE, JointStyle.ROUND, 3, new GraphicsSolidFill(0, 1));
+    private var hpbarBgFill_:GraphicsSolidFill = null;
+    private var hpbarBgPath_:GraphicsPath = null;
+
+    protected function drawHpBar(param1:Vector.<IGraphicsData>, param2:int):void {
+        var _loc3_:Number = NaN;
+        var _loc4_:Number = NaN;
+        var _loc5_:Number = NaN;
+        var _loc6_:Number = NaN;
+        var _loc8_:int = 0;
+        var _loc9_:int = 0;
+        var _loc10_:int = 0;
+        var _loc11_:int = 0;
+        var _loc12_:int = 0;
+        var _loc13_:int = 0;
+
+        if(this.hpbarPath_ == null)
+        {
             this.hpbarBackFill_ = new GraphicsSolidFill();
-            this.hpbarBackPath_ = new GraphicsPath(GraphicsUtil.QUAD_COMMANDS, new Vector.<Number>());
+            this.hpbarBackPath_ = new GraphicsPath(GraphicsUtil.QUAD_COMMANDS,new Vector.<Number>());
             this.hpbarFill_ = new GraphicsSolidFill(0x10FF00);
-            this.hpbarPath_ = new GraphicsPath(GraphicsUtil.QUAD_COMMANDS, new Vector.<Number>());
+            this.hpbarPath_ = new GraphicsPath(GraphicsUtil.QUAD_COMMANDS,new Vector.<Number>());
+            this.hpbarBgFill_ = new GraphicsSolidFill(0x121212);
+            this.hpbarBgPath_ = new GraphicsPath(GraphicsUtil.QUAD_COMMANDS,new Vector.<Number>());
         }
-        var _local3:Number = this.maxHP_;
-        if (((!(this.ishpScaleSet)) && ((this.hp_ > this.maxHP_)))) {
-            this.maxHP_ = this.hp_;
-            _local3 = this.maxHP_;
-            this.ishpScaleSet = true;
+
+        var _loc7_:Number = this.maxHP_;
+
+        if(this.hp_ <= _loc7_)
+        {
+            _loc3_ = (_loc7_ - this.hp_) / _loc7_;
+            _loc5_ = (_loc7_ - this.hp_) / (_loc7_ / 2);
+            _loc6_ = (_loc7_ / 2 - this.hp_) / (_loc7_ / 2);
+
+            this.hpbarBackFill_.color = 0x121212;
+
+            if(this.props_.isEnemy_)
+            {
+                if(this.hp_ > this.maxHP_ / 2)
+                {
+                    this.hpbarFill_.color = MoreColorUtil.lerpColor(65280,16776960,_loc5_);
+                }
+                else
+                {
+                    this.hpbarFill_.color = MoreColorUtil.lerpColor(16776960,16711680,_loc6_);
+                }
+            }
         }
-        this.hpbarBackFill_.color = 0x121212;
-        var _hp:Number = this.hp_ / this.maxHP_;
-        if (_hp > .9)
-            this.hpbarFill_.color = 0x10FF00;
-        else if (_hp >= .75 && _hp < .9)
-            this.hpbarFill_.color = 0x00FF70;
-        else if (_hp >= .5 && _hp < .75)
-            this.hpbarFill_.color = 0xFFFF00;
-        else if (_hp >= .35)
-            this.hpbarFill_.color = 0xFFE34D;
-        else if (_hp >= .25 && _hp < .35)
-            this.hpbarFill_.color = 0xFF4500;
-        else if (_hp >= .15 && _hp < .25)
-            this.hpbarFill_.color = 0xFF003B;
         else
-            this.hpbarFill_.color = 0x4C0000;
-        if (_hp < .5) {
-            _local7 = ((_local3 - this.hp_) / _local3);
-            this.hpbarBackFill_.color = MoreColorUtil.lerpColor(0x121212, 0xFF0000, (Math.abs(Math.sin((time / 150))) * _local7));
+        {
+            this.hpbarBackFill_.color = 0x10FF00;
         }
-        var _hpBarWidth:int = 20;
-        var _hpBarHeight:int = 6;
-        var _hpBarDistance:int = 4;
+
+        if(Parameters.data_.HPBarPos)
+        {
+            _loc8_ = 20;
+            _loc9_ = -48;
+            _loc10_ = 4;
+        }
+        else
+        {
+            _loc8_ = 20;
+            if(map_.player_.objectId_ == this.objectId_)
+            {
+                _loc9_ = 7;
+            }
+            else
+            {
+                _loc9_ = 20;
+            }
+            _loc10_ = 4;
+        }
+
+        if(Parameters.data_.HPBarPos)
+        {
+            _loc11_ = 21;
+            _loc12_ = -49;
+            _loc13_ = 5;
+        }
+        else
+        {
+            _loc11_ = 21;
+            if(map_.player_.objectId_ == this.objectId_)
+            {
+                _loc12_ = 6;
+            }
+            else
+            {
+                _loc12_ = 19;
+            }
+            _loc13_ = 6;
+        }
+        if(this.props_.isEnemy_)
+        {
+            _loc8_ = 20;
+            _loc9_ = 7;
+            _loc10_ = 4;
+            _loc11_ = 21;
+            _loc12_ = 6;
+            _loc13_ = 6;
+        }
+
+        this.hpbarBgPath_.data.length = 0;
+        var vector0:Vector.<Number> = (this.hpbarBgPath_.data as Vector.<Number>);
+        vector0.push(posS_[0] - _loc11_,posS_[1] + _loc12_,posS_[0] + _loc11_,posS_[1] + _loc12_,posS_[0] + _loc11_,posS_[1] + _loc12_ + _loc13_,posS_[0] - _loc11_,posS_[1] + _loc12_ + _loc13_);
+        this.hpbarBgPath_.data = vector0;
+        param1.push(this.hpbarBgFill_);
+        param1.push(this.hpbarBgPath_);
+        param1.push(GraphicsUtil.END_FILL);
         this.hpbarBackPath_.data.length = 0;
-        var _local9:Vector.<Number> = (this.hpbarBackPath_.data as Vector.<Number>);
-        _local9.length = 0;
-        var _left:Number = posS_[0] - _hpBarWidth;
-        var _right:Number = posS_[0] + _hpBarWidth;
-        var _top:Number = posS_[1] + _hpBarDistance;
-        var _bottom:Number = posS_[1] + _hpBarDistance + _hpBarHeight;
-        _local9.push(
-                _left,
-                _top,
-                _right,
-                _top,
-                _right,
-                _bottom,
-                _left,
-                _bottom
-        );
-        this.hpbarBackPath_.data = _local9;
-        graphicsData.push(this.hpBarLineStyle_);
-        graphicsData.push(this.hpbarBackFill_);
-        graphicsData.push(this.hpbarBackPath_);
-        graphicsData.push(GraphicsUtil.END_FILL);
-        graphicsData.push(GraphicsUtil.END_STROKE);
-        if (this.hp_ > 0) {
-            _hpBarVariance = (((this.hp_ / this.maxHP_) * 2) * _hpBarWidth);
+        var vector1:Vector.<Number> = (this.hpbarBackPath_.data as Vector.<Number>);
+        vector1.push(posS_[0] - _loc8_,posS_[1] + _loc9_,posS_[0] + _loc8_,posS_[1] + _loc9_,posS_[0] + _loc8_,posS_[1] + _loc9_ + _loc10_,posS_[0] - _loc8_,posS_[1] + _loc9_ + _loc10_);
+        this.hpbarBackPath_.data = vector1;
+        param1.push(this.hpbarBackFill_);
+        param1.push(this.hpbarBackPath_);
+        param1.push(GraphicsUtil.END_FILL);
+        if(this.hp_ > 0)
+        {
+            _loc4_ = this.hp_ / this.maxHP_ * 2 * _loc8_;
             this.hpbarPath_.data.length = 0;
-            var _local10:Vector.<Number> = (this.hpbarPath_.data as Vector.<Number>);
-            _local10.push(
-                    _left,
-                    _top,
-                    _left + _hpBarVariance,
-                    _top,
-                    _left + _hpBarVariance,
-                    _bottom,
-                    _left,
-                    _bottom
-            );
-            this.hpbarPath_.data = _local10;
-            graphicsData.push(this.hpBarLineStyle_);
-            graphicsData.push(this.hpbarFill_);
-            graphicsData.push(this.hpbarPath_);
-            graphicsData.push(GraphicsUtil.END_FILL);
-            graphicsData.push(GraphicsUtil.END_STROKE);
+            var vector2:Vector.<Number> = (this.hpbarPath_.data as Vector.<Number>);
+            vector2.push(posS_[0] - _loc8_,posS_[1] + _loc9_,posS_[0] - _loc8_ + _loc4_,posS_[1] + _loc9_,posS_[0] - _loc8_ + _loc4_,posS_[1] + _loc9_ + _loc10_,posS_[0] - _loc8_,posS_[1] + _loc9_ + _loc10_);
+            this.hpbarPath_.data = vector2;
+            param1.push(this.hpbarFill_);
+            param1.push(this.hpbarPath_);
+            param1.push(GraphicsUtil.END_FILL);
         }
-        GraphicsFillExtra.setSoftwareDrawSolid(this.hpbarBackFill_, true);
-        GraphicsFillExtra.setSoftwareDrawSolid(this.hpbarFill_, true);
+        GraphicsFillExtra.setSoftwareDrawSolid(this.hpbarFill_,true);
+        GraphicsFillExtra.setSoftwareDrawSolid(this.hpbarBackFill_,true);
     }
 
     override public function draw(graphicsData:Vector.<IGraphicsData>, camera:Camera, time:int):void {

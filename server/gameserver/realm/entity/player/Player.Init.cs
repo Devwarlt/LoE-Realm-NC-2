@@ -1,6 +1,5 @@
 ﻿#region
 
-using LoESoft.Core;
 using LoESoft.Core.config;
 using LoESoft.Core.database;
 using LoESoft.GameServer.logic;
@@ -72,8 +71,8 @@ namespace LoESoft.GameServer.realm.entity.player
                     PetHealing = new List<List<int>>();
                     PetAttack = new List<int>();
                     PetID = client.Character.Pet;
-                    Tuple<int, int, double> HPData = PetHPHealing.MinMaxBonus(Resolve((ushort)PetID).ObjectDesc.HPTier, Stars);
-                    Tuple<int, int, double> MPData = PetMPHealing.MinMaxBonus(Resolve((ushort)PetID).ObjectDesc.MPTier, Stars);
+                    var HPData = PetHPHealing.MinMaxBonus(Resolve((ushort)PetID).ObjectDesc.HPTier, Stars);
+                    var MPData = PetMPHealing.MinMaxBonus(Resolve((ushort)PetID).ObjectDesc.MPTier, Stars);
                     PetHealing.Add(new List<int> { HPData.Item1, HPData.Item2, (int)((HPData.Item3 - 1) * 100) });
                     PetHealing.Add(new List<int> { MPData.Item1, MPData.Item2, (int)((MPData.Item3 - 1) * 100) });
                     PetAttack.Add(7750 - Stars * 100);
@@ -86,8 +85,8 @@ namespace LoESoft.GameServer.realm.entity.player
                 LootTierBoostTimeLeft = client.Character.LootTierTimer;
                 lootTierBoostFreeTimer = LootTierBoost;
                 FameGoal = (AccountType >= (int)Core.config.AccountType.GM_ACCOUNT) ? 0 : GetFameGoal(FameCounter.ClassStats[ObjectType].BestFame);
-                Glowing = false;
-                DbGuild guild = GameServer.Manager.Database.GetGuild(client.Account.GuildId);
+                Glowing = AccountType == (int)Core.config.AccountType.VIP_ACCOUNT;
+                var guild = GameServer.Manager.Database.GetGuild(client.Account.GuildId);
                 if (guild != null)
                 {
                     Guild = GameServer.Manager.Database.GetGuild(client.Account.GuildId).Name;

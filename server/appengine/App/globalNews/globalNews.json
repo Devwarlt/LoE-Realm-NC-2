@@ -18,7 +18,7 @@
     "title": "Join Us",
     "image": "https://raw.githubusercontent.com/FinnishFX/finnishfx.github.io/master/tfr/static/DiscordBanner.png",
     "endTime": 4080326400000,
-    "linkDetail": "https://discord.gg/jHNTjun",
+    "linkDetail": "https://discord.gg/htpVTFq",
     "priority": 2
   },
   {
@@ -26,22 +26,11 @@
     "linkType": 2,
     "platform": "kabam.com,kongregate,steam,rotmg",
     "startTime": 946684800,
-    "title": "Chicago Pack",
+    "title": "Beginner Pack",
     "image": "https://raw.githubusercontent.com/FinnishFX/finnishfx.github.io/master/tfr/1.2/UpdateTeaser.png",
     "endTime": 1541375999000,
     "linkDetail": 701,
     "priority": 3
-  },
-  {
-    "slot": 2,
-    "linkType": 2,
-    "platform": "kabam.com,kongregate,steam,rotmg",
-    "startTime": 946684800000,
-    "title": "Dreamer Pack",
-    "image": "https://raw.githubusercontent.com/FinnishFX/finnishfx.github.io/master/tfr/1.2/UpdateTeaser.png",
-    "endTime": 1541721599000,
-    "linkDetail": 702,
-    "priority": 4
   },
   {
     "slot": 3,
@@ -51,7 +40,7 @@
     "title": "Join Us",
     "image": "https://raw.githubusercontent.com/FinnishFX/finnishfx.github.io/master/tfr/static/DiscordBanner.png",
     "endTime": 4080326400000,
-    "linkDetail": "https://discord.gg/jHNTjun",
-    "priority": 5
+    "linkDetail": "https://discord.gg/htpVTFq",
+    "priority": 4
   }
 ]

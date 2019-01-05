@@ -16,8 +16,7 @@ namespace LoESoft.Core.config
             public static readonly int PRODUCTION_PORT = 5555;
 
             public static readonly List<Tuple<string, string, double>> SERVERS = new List<Tuple<string, string, double>> {
-                Tuple.Create("Test Server", "<crossdomain>", 0.99),
-                Tuple.Create("Localhost", "127.0.0.1", -1d)
+                Tuple.Create("Chicago", "loe-nc.servegame.com", 0d)
             };
 
             public static readonly int AMOUNT = SERVERS.Count;

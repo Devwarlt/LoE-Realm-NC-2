@@ -107,11 +107,7 @@ namespace LoESoft.GameServer.networking
 
                 socket.ReceiveAsync(e);
             }
-            catch
-            {
-                Log.Warn($"[({e.Buffer[4]}) {((MessageID)e.Buffer[4]).ToString()}] Message has been disposed.");
-                e.Dispose();
-            }
+            catch { e.Dispose(); }
         }
 
         private void RPRD(SocketAsyncEventArgs e)

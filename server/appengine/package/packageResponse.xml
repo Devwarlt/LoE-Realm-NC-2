@@ -2,24 +2,14 @@
 <PackageResponse>
   <Packages>
     <Package id="701">
-      <Name>Chicago Pack</Name>
+      <Name>Beginner Pack</Name>
       <Price>0</Price>
       <Quantity>1</Quantity>
       <MaxPurchase>1</MaxPurchase>
       <Weight>2</Weight>
       <BgURL>https://raw.githubusercontent.com/FinnishFX/finnishfx.github.io/master/tfr/1.2/UpdateNews.png</BgURL>
       <EndDate>1541375999</EndDate>
-      <Contents>16386,16386,16389,16389,16392,16392,16395,16395,16398,16401,16404,16407</Contents>
-    </Package>
-    <Package id="702">
-      <Name>Dreamer Pack</Name>
-      <Price>0</Price>
-      <Quantity>1</Quantity>
-      <MaxPurchase>1</MaxPurchase>
-      <Weight>2</Weight>
-      <BgURL>https://raw.githubusercontent.com/FinnishFX/finnishfx.github.io/master/tfr/1.2/UpdateNews.png</BgURL>
-      <EndDate>1541721599</EndDate>
-      <Contents>16416,16416,16419,16419</Contents>
+      <Contents>16386,16386,16386,16386</Contents>
     </Package>
   </Packages>
 </PackageResponse>

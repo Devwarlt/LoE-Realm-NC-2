@@ -1,11 +1,10 @@
 ﻿package com.company.assembleegameclient.ui.tooltip {
+
 import com.company.assembleegameclient.appengine.CharacterStats;
 import com.company.assembleegameclient.objects.ObjectLibrary;
 import com.company.assembleegameclient.objects.Player;
-import com.company.assembleegameclient.parameters.Parameters;
 import com.company.assembleegameclient.ui.GameObjectListItem;
 import com.company.assembleegameclient.ui.LineBreakDesign;
-import com.company.assembleegameclient.ui.StatusBar;
 import com.company.assembleegameclient.ui.panels.itemgrids.EquippedGrid;
 import com.company.assembleegameclient.ui.panels.itemgrids.InventoryGrid;
 import com.company.assembleegameclient.util.AnimatedChars;
@@ -14,14 +13,12 @@ import com.company.assembleegameclient.util.TextureRedrawer;
 
 import flash.filters.DropShadowFilter;
 
-import kabam.rotmg.assets.services.CharacterFactory;
 import kabam.rotmg.classes.model.CharacterClass;
 import kabam.rotmg.classes.model.CharacterSkin;
 import kabam.rotmg.classes.model.ClassesModel;
 import kabam.rotmg.constants.GeneralConstants;
 import kabam.rotmg.core.StaticInjectorContext;
 import kabam.rotmg.core.model.PlayerModel;
-import kabam.rotmg.game.view.components.StatsView;
 import kabam.rotmg.text.model.TextKey;
 import kabam.rotmg.text.view.TextFieldDisplayConcrete;
 import kabam.rotmg.text.view.stringBuilder.LineBuilder;
@@ -31,10 +28,6 @@ public class MyPlayerToolTip extends ToolTip {
     private var classes:ClassesModel;
     public var player_:Player;
     private var playerPanel_:GameObjectListItem;
-    private var hpBar_:StatusBar;
-    private var mpBar_:StatusBar;
-    private var hpBarBackground_:StatusBar;
-    private var mpBarBackground_:StatusBar;
     private var lineBreak_:LineBreakDesign;
     private var bestLevel_:TextFieldDisplayConcrete;
     private var nextClassQuest_:TextFieldDisplayConcrete;
@@ -44,8 +37,7 @@ public class MyPlayerToolTip extends ToolTip {
     private var accountName:String;
     private var charXML:XML;
     private var charStats:CharacterStats;
-    private var stats_:StatsView;
-    private var _XOffset:int = 12;
+    private var _XOffset:int = 4;
 
     public function MyPlayerToolTip(_arg1:String, _arg2:XML, _arg3:CharacterStats) {
         super(0x363636, 1, 0xFFFFFF, 1);
@@ -68,26 +60,6 @@ public class MyPlayerToolTip extends ToolTip {
         this.playerPanel_.x = this._XOffset;
         addChild(this.playerPanel_);
         _local5 = 36;
-        this.hpBarBackground_ = new StatusBar(176, 16, 0x545454, 0x545454, null);
-        this.hpBar_ = new StatusBar(176, 16, 14693428, 0x545454, TextKey.STATUS_BAR_HEALTH_POINTS);
-        this.hpBar_.x = this.hpBarBackground_.x = 6 + this._XOffset;
-        this.hpBar_.y = this.hpBarBackground_.y = _local5;
-        addChild(this.hpBarBackground_);
-        addChild(this.hpBar_);
-        _local5 = (_local5 + 22);
-        this.mpBarBackground_ = new StatusBar(176, 16, 0x545454, 0x545454, null);
-        this.mpBar_ = new StatusBar(176, 16, 6325472, 0x545454, TextKey.STATUS_BAR_MANA_POINTS);
-        this.mpBar_.x = this.mpBarBackground_.x = 6 + this._XOffset;
-        this.mpBar_.y = this.mpBarBackground_.y = _local5;
-        addChild(this.mpBarBackground_);
-        addChild(this.mpBar_);
-        _local5 = (_local5 + 22);
-        this.stats_ = new StatsView();
-        this.stats_.draw(this.player_, false, true);
-        this.stats_.x = 6 + this._XOffset;
-        this.stats_.y = (_local5 - 3);
-        addChild(this.stats_);
-        _local5 = (_local5 + 44);
         this.eGrid = new EquippedGrid(null, this.player_.slotTypes_, this.player_);
         this.eGrid.filters = [TextureRedrawer.OUTLINE_FILTER];
         this.eGrid.x = 8 + this._XOffset;
@@ -158,10 +130,6 @@ public class MyPlayerToolTip extends ToolTip {
     }
 
     override public function draw():void {
-        this.hpBarBackground_.draw(1, 1, 0, 1);
-        this.hpBar_.draw(this.player_.hp_, this.player_.maxHP_, Parameters.parse(this.player_.maxHPBoost_), this.player_.maxHPMax_, this.player_.level_);
-        this.mpBarBackground_.draw(1, 1, 0, 1);
-        this.mpBar_.draw(this.player_.mp_, this.player_.maxMP_, Parameters.parse(this.player_.maxMPBoost_), this.player_.maxMPMax_, this.player_.level_);
         this.lineBreak_.setWidthColor((width - 10), 0x1C1C1C);
         super.draw();
     }

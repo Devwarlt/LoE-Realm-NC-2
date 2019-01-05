@@ -31,7 +31,7 @@ namespace LoESoft.GameServer.realm.entity
 
         public override void Tick(RealmTime time)
         {
-            if (time.TotalElapsedMs - BeginTime >= ProjDesc.LifetimeMS)
+            if (time.TotalElapsedMs - BeginTime >= ProjDesc.LifetimeMS * ProjDesc.Speed)
             {
                 Destroy();
                 return;
