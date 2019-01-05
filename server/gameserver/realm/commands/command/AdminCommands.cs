@@ -17,7 +17,66 @@ using static LoESoft.GameServer.networking.Client;
 
 namespace LoESoft.GameServer.realm.commands
 {
-    internal class VisitCommand : Command
+	internal class RealmCommand : Command
+	{
+		public RealmCommand()
+			: base("realm", (int)AccountType.VIP_ACCOUNT)
+		{
+		}
+
+		protected override bool Process(Player player, RealmTime time, string[] args)
+		{
+			World world = player.Client.Manager.Monitor.GetRandomRealm();
+
+			player.Client.Reconnect(new RECONNECT
+			{
+				Host = "",
+				Port = Settings.GAMESERVER.PORT,
+				GameId = world.Id,
+				Name = world.Name,
+				Key = world.PortalKey,
+			});
+			return true;
+		}
+	}
+	internal class AutoTradeCommand : Command
+	{
+		public AutoTradeCommand() : base("autotrade", (int)AccountType.DEM_ACCOUNT)
+		{ }
+		protected override bool Process(Player player, RealmTime time, string[] args)
+		{
+			Player plr = GameServer.Manager.FindPlayer(args[0]);
+			if (plr != null && plr.Owner == player.Owner)
+			{
+				player.RequestTrade(time, new networking.incoming.REQUESTTRADE { Name = plr.Name });
+				plr.RequestTrade(time, new networking.incoming.REQUESTTRADE { Name = player.Name });
+				return true;
+			}
+			return true;
+		}
+	}
+	internal class VaultCommand : Command
+	{
+		public VaultCommand() : base("vault", (int)AccountType.VIP_ACCOUNT)
+		{ }
+		protected override bool Process(Player player, RealmTime time, string[] args)
+		{
+			if (player.Owner is Vault)
+			{
+				player.SendHelp("You are already in Vault...");
+			}
+			player.Client.Reconnect(new RECONNECT()
+			{
+				Host = "",
+				Port = Settings.GAMESERVER.PORT,
+				GameId = GameServer.Manager.PlayerVault(player.Client).Id,
+				Name = GameServer.Manager.PlayerVault(player.Client).Name,
+				Key = GameServer.Manager.PlayerVault(player.Client).PortalKey
+			});
+			return true;
+		}
+	}
+	internal class VisitCommand : Command
     {
         public VisitCommand() : base("visit", (int)AccountType.CM_ACCOUNT)
         {

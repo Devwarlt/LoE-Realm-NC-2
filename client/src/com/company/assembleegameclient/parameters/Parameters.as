@@ -371,6 +371,8 @@ public class Parameters {
         setDefault("fullscreenMod", true);
         setDefault("mscale", 12);
         setDefault("showTierTag", true);
+        setDefaultKey("reconVault", KeyCodes.P);
+        setDefaultKey("reconRealm", KeyCodes.NUMBER_0);
         if (!data_.hasOwnProperty("needsSurvey")) {
             data_.needsSurvey = data_.needsTutorial;
             switch (int((Math.random() * 5))) {

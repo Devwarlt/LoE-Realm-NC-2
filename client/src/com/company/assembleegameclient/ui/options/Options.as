@@ -491,6 +491,8 @@ public class Options extends Sprite {
     }
 
     private function addExperimentalOptions():void {
+        this.addOptionAndPosition(new KeyMapper("reconVault", "Recon Vault", "Allows you to reconnect to Vault!"));
+        this.addOptionAndPosition(new KeyMapper("reconRealm", "Recon Realm", "Allows you to reconnect to Realm!"));
         this.addOptionAndPosition(new ChoiceOption("disableEnemyParticles", makeOnOffLabels(), [true, false], "Disable enemy particles", "Disable particles when hit enemy and when enemy is dying.", null));
         this.addOptionAndPosition(new ChoiceOption("disableAllyParticles", makeOnOffLabels(), [true, false], "Disable ally particles", "Disable particles produces by shooting ally.", null));
         this.addOptionAndPosition(new ChoiceOption("disablePlayersHitParticles", makeOnOffLabels(), [true, false], "Disable players hit particles", "Disable particles when player or ally is hit.", null));

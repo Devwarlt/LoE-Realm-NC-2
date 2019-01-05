@@ -180,8 +180,10 @@ namespace LoESoft.GameServer.logic.loot
 
                 items[idx] = i;
                 idx++;
-
-                if (idx == 8)
+				if (LegendaryItems.Contains(i.ObjectId))
+					foreach (var p in enemy.Owner.Players.Values)
+						p.SendLootAnnounce(owners[0].Name + " has obtained LEGENDARY LOOT! : " + i.ObjectId);
+				if (idx == 8)
                 {
                     ShowBag(enemy, ownerIds, bagType, items);
 
@@ -194,8 +196,11 @@ namespace LoESoft.GameServer.logic.loot
             if (idx > 0)
                 ShowBag(enemy, ownerIds, bagType, items);
         }
-
-        private static void ShowBag(Enemy enemy, string[] owners, int bagType, Item[] items)
+		private static readonly string[] LegendaryItems = {
+			"Sword of Illumination",
+			"Doom Bow"
+		};
+		private static void ShowBag(Enemy enemy, string[] owners, int bagType, Item[] items)
         {
             ushort bag = 0x500;
             switch (bagType)
