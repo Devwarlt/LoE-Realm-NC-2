@@ -174,6 +174,8 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                                 player.Client.Account.Gifts = gifts.ToArray();
                                 player.Client.Account.Flush();
                                 player.Client.Account.Reload();
+                                player.ActualTask = null;
+                                player.SaveToCharacter();
 
                                 currentTask.Bonus?.Invoke(player);
                                 currentTask.GetAchievement(player.ActualTask, player);

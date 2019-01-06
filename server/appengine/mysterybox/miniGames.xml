@@ -1,38 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <MiniGames version="0.000000">
-   <MysteryBox id="118" title="Swoll Redux Box" weight="8">
-      <Description />
-      <Contents>
-         0x2367,0x2366,0x2365,0x2364,0x2584,4634,4636,4134,4421,3180,4634,4636,4134,4421,4634,4636,4134,4421
-      </Contents>
-      <Price amount="149" currency="0" />
-      <Image>https://loesoft-games.github.io/remote/assets/mysterybox/SwollReduxBox.png</Image>
-      <Icon />
-      <StartTime>2017-08-23 07:00:00</StartTime>
-      <Left>-1</Left>
-      <Total>-1</Total>
-   </MysteryBox>
-   <MysteryBox id="91" title="The Spectacular Ambrosia Box" weight="1">
-      <Description />
-      <Contents>
-         3276,3276,3276,3276,3276,3276,3276,3276,3276,3271,3271,3272,3269,3269,3268,3270,3275,3275
-      </Contents>
-      <Price amount="99" currency="0" />
-      <Image>https://loesoft-games.github.io/remote/assets/mysterybox/SAJP.png</Image>
-      <Icon />
-      <StartTime>2016-12-17 12:40:00</StartTime>
-      <Left>-1</Left>
-      <Total>-1</Total>
-   </MysteryBox>
-   <FortuneGame id = "-3" title = "Armor of the Mad God #1">
-      <Description />
-      <Contents>
-         2835,2833,3105,3176,8812,3290,3279,3278,8851,8781,9017,9015,3239,3133,4103,2873,2872,3105,2762,2761,2766,2764,2759,2760,2765,9015,3276,3264,3275,3133,3177,3178,3270,1803,3138,3269,3293,3180,3274,3272
-      </Contents>
-      <Price firstInGold="100" firstInToken="1" secondInGold="250" />
-      <Image>https://loesoft-games.github.io/remote/assets/thealchemist/MadGodArmorAlchemistRewards.png</Image>
-      <Icon />
-      <StartTime>2014-09-18 13:25:20</StartTime>
-      <EndTime>2014-09-23 13:33:00</EndTime>
-   </FortuneGame>
+  <MysteryBox id="118" title="Swoll Redux Box" weight="8">
+    <Description />
+    <Contents>
+      0x2367,0x2366,0x2365,0x2364,0x2584,0xc6c,0x4008,0x4009,0x400a,0x400b,0x400c,0x400d,0x400e,0x400f,0x4010,0x4011,0x4012
+    </Contents>
+    <Price amount="699" currency="1" />
+    <Image>https://loesoft-games.github.io/remote/assets/mysterybox/SwollReduxBox.png</Image>
+    <Icon />
+    <StartTime>2017-08-23 07:00:00</StartTime>
+    <Left>-1</Left>
+    <Total>10</Total>
+  </MysteryBox>
+  <FortuneGame id = "-3" title = "Armor of the Mad God #1">
+    <Description />
+    <Contents>
+      2835,2833,3105,3176,8812,3290,3279,3278,8851,8781,9017,9015,3239,3133,4103,2873,2872,3105,2762,2761,2766,2764,2759,2760,2765,9015,3276,3264,3275,3133,3177,3178,3270,1803,3138,3269,3293,3180,3274,3272
+    </Contents>
+    <Price firstInGold="100" firstInToken="1" secondInGold="250" />
+    <Image>https://loesoft-games.github.io/remote/assets/thealchemist/MadGodArmorAlchemistRewards.png</Image>
+    <Icon />
+    <StartTime>2014-09-18 13:25:20</StartTime>
+    <EndTime>2014-09-23 13:33:00</EndTime>
+  </FortuneGame>
 </MiniGames>
