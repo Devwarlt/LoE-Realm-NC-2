@@ -17,7 +17,37 @@ using static LoESoft.GameServer.networking.Client;
 
 namespace LoESoft.GameServer.realm.commands
 {
-    internal class RealmCommand : Command
+	internal class DonatorAnnounce : Command
+	{
+		public DonatorAnnounce() : base("dannounce", (int)AccountType.VIP_ACCOUNT)
+		{
+		}
+
+		protected override bool Process(Player player, RealmTime time, string[] args)
+		{
+			if (args.Length == 0)
+			{
+				player.SendHelp("Usage: /dannounce <saytext>");
+				return false;
+			}
+			string saytext = string.Join(" ", args);
+
+			foreach (ClientData cData in GameServer.Manager.ClientManager.Values)
+			{
+				cData.Client.SendMessage(new TEXT
+				{
+					BubbleTime = 10,
+					Stars = player.Stars,
+					Name = player.Name,
+					Text = " " + saytext,
+					NameColor = 0xFFFFFF,
+					TextColor = 0xFFFFFF
+				});
+			}
+			return true;
+		}
+	}
+	internal class RealmCommand : Command
     {
         public RealmCommand()
             : base("realm", (int)AccountType.VIP_ACCOUNT)

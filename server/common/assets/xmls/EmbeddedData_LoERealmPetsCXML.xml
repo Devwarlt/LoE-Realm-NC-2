@@ -10,6 +10,7 @@
 		<NoMiniMap />
 		<HPTier>0</HPTier>
 		<MPTier>0</MPTier>
+		<StasisImmune />
 		<Projectile id="0">
 			<ObjectId>White Superblast</ObjectId>
 			<ConditionEffect duration="3">Slowed</ConditionEffect>
@@ -29,6 +30,7 @@
 		<NoMiniMap />
 		<HPTier>1</HPTier>
 		<MPTier>1</MPTier>
+		<StasisImmune />
 		<Projectile id="0">
 			<ObjectId>LavaBombBlast</ObjectId>
 			<ConditionEffect duration="5">Slowed</ConditionEffect>
@@ -48,6 +50,7 @@
 		<NoMiniMap />
 		<HPTier>2</HPTier>
 		<MPTier>2</MPTier>
+		<StasisImmune />
 		<Projectile id="0">
 			<ObjectId>Stick</ObjectId>
 			<ConditionEffect duration="6">Slowed</ConditionEffect>
@@ -67,6 +70,7 @@
 		<NoMiniMap />
 		<HPTier>3</HPTier>
 		<MPTier>3</MPTier>
+		<StasisImmune />
 		<Projectile id="0">
 			<ObjectId>Ice Burst</ObjectId>
 			<ConditionEffect duration="2">Weak</ConditionEffect>
@@ -84,6 +88,7 @@
 			<Index>4</Index>
 		</AnimatedTexture>
 		<NoMiniMap />
+		<StasisImmune />
 		<HPTier>4</HPTier>
 		<MPTier>4</MPTier>
 		<Projectile id="0">
@@ -103,6 +108,7 @@
 			<File>LRPets8x8</File>
 			<Index>5</Index>
 		</AnimatedTexture>
+		<StasisImmune />
 		<NoMiniMap />
 		<HPTier>5</HPTier>
 		<MPTier>5</MPTier>
@@ -123,6 +129,7 @@
 			<File>LRPets8x8</File>
 			<Index>6</Index>
 		</AnimatedTexture>
+		<StasisImmune />
 		<NoMiniMap />
 		<HPTier>6</HPTier>
 		<MPTier>6</MPTier>
@@ -143,6 +150,7 @@
 			<File>LRPets8x8</File>
 			<Index>7</Index>
 		</AnimatedTexture>
+		<StasisImmune />
 		<NoMiniMap />
 		<HPTier>7</HPTier>
 		<MPTier>7</MPTier>
@@ -166,6 +174,7 @@
 		<NoMiniMap />
 		<HPTier>6</HPTier>
 		<MPTier>6</MPTier>
+		<StasisImmune />
 		<Projectile id="0">
 			<ObjectId>Muscle Ball</ObjectId>
 			<MinDamage>90</MinDamage>
@@ -198,6 +207,7 @@
 			<Index>8</Index>
 		</AnimatedTexture>
 		<NoMiniMap />
+		<StasisImmune />
 		<HPTier>6</HPTier>
 		<MPTier>6</MPTier>
 		<Projectile id="0">

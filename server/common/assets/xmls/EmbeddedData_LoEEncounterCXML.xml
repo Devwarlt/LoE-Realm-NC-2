@@ -1,5 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Objects>
+	<Object type="0x6720" id="World Boss 1">
+		<DisplayId>WORLD BOSS</DisplayId>
+		<Enemy />
+		<Class>Character</Class>
+		<AnimatedTexture>
+			<File>chars16x16dMountains1</File>
+			<Index>0x08</Index>
+		</AnimatedTexture>
+		<HitSound>monster/pythons_hit</HitSound>
+		<DeathSound>monster/pythons_death</DeathSound>
+		<Size>110</Size>
+		<MaxHitPoints>50000000</MaxHitPoints>
+		<Defense>60</Defense>
+		<XpMult>1100.0</XpMult>
+		<Projectile id="0">
+			<ObjectId>Puppet Green Wheel</ObjectId>
+			<Speed>25</Speed>
+			<Damage>200</Damage>
+			<LifetimeMS>8000</LifetimeMS>
+			<Amplitude>2.9</Amplitude>
+			<Frequency>2.5</Frequency>
+			<Size>100</Size>
+			<MultiHit />
+		</Projectile>
+		<Projectile id="1">
+			<ObjectId>Green Star</ObjectId>
+			<Speed>75</Speed>
+			<Damage>150</Damage>
+			<LifetimeMS>3000</LifetimeMS>
+			<Amplitude>1</Amplitude>
+			<Frequency>2.5</Frequency>
+			<Size>100</Size>
+			<MultiHit />
+			<PassesCover />
+		</Projectile>
+		<Projectile id="2">
+			<ObjectId>Green Spinner</ObjectId>
+			<Speed>200</Speed>
+			<Damage>0</Damage>
+			<LifetimeMS>750</LifetimeMS>
+			<ConditionEffect duration="10">Confused</ConditionEffect>
+			<Size>100</Size>
+			<MultiHit />
+			<PassesCover />
+		</Projectile>
+		<Projectile id="3">
+			<ObjectId>Green Missile</ObjectId>
+			<Speed>50</Speed>
+			<Damage>150</Damage>
+			<LifetimeMS>3000</LifetimeMS>
+			<Size>100</Size>
+			<MultiHit />
+			<PassesCover />
+		</Projectile>
+	</Object>
   <Object type="0x670a" id="Frog Bomb">
     <DisplayId>Frog Bomb</DisplayId>
     <Class>Character</Class>
