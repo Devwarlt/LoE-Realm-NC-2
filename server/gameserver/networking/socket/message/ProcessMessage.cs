@@ -5,6 +5,8 @@ namespace LoESoft.GameServer.networking
 {
     public partial class Client
     {
+        public static bool AccessDenied { get; set; } = false;
+
         public ProtocolState State { get; internal set; }
         public Player Player { get; internal set; }
 

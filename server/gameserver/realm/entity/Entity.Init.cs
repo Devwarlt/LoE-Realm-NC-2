@@ -103,8 +103,8 @@ namespace LoESoft.GameServer.realm
             set
             {
                 _conditionEffects = value;
-                _conditionEffects1 = (int) value;
-                _conditionEffects2 = (int) ((ulong) value >> 31);
+                _conditionEffects1 = (int)value;
+                _conditionEffects2 = (int)((ulong)value >> 31);
             }
         }
 
@@ -199,6 +199,7 @@ namespace LoESoft.GameServer.realm
             if (Owner != null && !(this is Projectile) && (!(this is GameObject) || (this as GameObject).Hittestable))
                 ((this is Enemy || this is GameObject && !(this is Decoy)) ? Owner.EnemiesCollision : Owner.PlayersCollision)
                     .Move(this, x, y);
+
             X = x;
             Y = y;
         }
@@ -278,8 +279,8 @@ namespace LoESoft.GameServer.realm
             float fx = 0;
             float fy = 0;
 
-            var isFarX = (X % .5f == 0 && x != X) || (int) (X / .5f) != (int) (x / .5f);
-            var isFarY = (Y % .5f == 0 && y != Y) || (int) (Y / .5f) != (int) (y / .5f);
+            var isFarX = (X % .5f == 0 && x != X) || (int)(X / .5f) != (int)(x / .5f);
+            var isFarY = (Y % .5f == 0 && y != Y) || (int)(Y / .5f) != (int)(y / .5f);
 
             if ((!isFarX && !isFarY) || RegionUnblocked(x, y))
             {
@@ -290,15 +291,15 @@ namespace LoESoft.GameServer.realm
 
             if (isFarX)
             {
-                fx = (x > X) ? (int) (x * 2) / 2f : (int) (X * 2) / 2f;
-                if ((int) fx > (int) X)
+                fx = (x > X) ? (int)(x * 2) / 2f : (int)(X * 2) / 2f;
+                if ((int)fx > (int)X)
                     fx = fx - 0.01f;
             }
 
             if (isFarY)
             {
-                fy = (y > Y) ? (int) (y * 2) / 2f : (int) (Y * 2) / 2f;
-                if ((int) fy > (int) Y)
+                fy = (y > Y) ? (int)(y * 2) / 2f : (int)(Y * 2) / 2f;
+                if ((int)fy > (int)Y)
                     fy = fy - 0.01f;
             }
 
@@ -360,8 +361,8 @@ namespace LoESoft.GameServer.realm
             if (TileOccupied(x, y))
                 return false;
 
-            var xFrac = x - (int) x;
-            var yFrac = y - (int) y;
+            var xFrac = x - (int)x;
+            var yFrac = y - (int)y;
 
             if (xFrac < 0.5)
             {
@@ -420,8 +421,8 @@ namespace LoESoft.GameServer.realm
 
         public bool TileOccupied(float x, float y)
         {
-            var x_ = (int) x;
-            var y_ = (int) y;
+            var x_ = (int)x;
+            var y_ = (int)y;
 
             var map = Owner.Map;
 
@@ -446,8 +447,8 @@ namespace LoESoft.GameServer.realm
 
         public bool TileFullOccupied(float x, float y)
         {
-            var xx = (int) x;
-            var yy = (int) y;
+            var xx = (int)x;
+            var yy = (int)y;
 
             if (!Owner.Map.Contains(xx, yy))
                 return true;
@@ -457,6 +458,7 @@ namespace LoESoft.GameServer.realm
             if (tile.ObjType != 0)
             {
                 var objDesc = GameServer.Manager.GameData.ObjectDescs[tile.ObjType];
+
                 if (objDesc?.FullOccupy == true)
                     return true;
             }
@@ -543,7 +545,7 @@ namespace LoESoft.GameServer.realm
             var tickPast = timeAgo * GameServer.Manager.TPS / 1000;
             if (tickPast > 255)
                 return null;
-            return posHistory[(byte) (posIdx - 2)];
+            return posHistory[(byte)(posIdx - 2)];
         }
 
         public static Entity Resolve(string name)
@@ -643,13 +645,13 @@ namespace LoESoft.GameServer.realm
             float angle
             )
         {
-            Projectile _projectile = new Projectile(desc)
+            var _projectile = new Projectile(desc)
             {
                 ProjectileOwner = this,
                 ProjectileId = ProjectileId++,
-                Container = (short) container,
+                Container = (short)container,
                 Damage = dmg,
-                BeginTime = time,
+                BeginTime = GameServer.Manager.Logic.CurrentTime.TotalElapsedMs,
                 BeginPos = pos,
                 Angle = angle,
                 X = pos.X,
@@ -690,13 +692,13 @@ namespace LoESoft.GameServer.realm
                 {
                     effects[i] -= time.ElapsedMsDelta;
                     if (effects[i] > 0)
-                        newEffects |= (ConditionEffects) ((ulong) 1 << i);
+                        newEffects |= (ConditionEffects)((ulong)1 << i);
                     else
                         effects[i] = 0;
                     tickingEffects = true;
                 }
                 else if (effects[i] != 0)
-                    newEffects |= (ConditionEffects) ((ulong) 1 << i);
+                    newEffects |= (ConditionEffects)((ulong)1 << i);
             if (newEffects != ConditionEffects)
             {
                 ConditionEffects = newEffects;
@@ -711,7 +713,7 @@ namespace LoESoft.GameServer.realm
 
         public bool HasConditionEffect(ConditionEffectIndex eff)
         {
-            return (ConditionEffects & (ConditionEffects) ((ulong) 1 << (int) eff)) != 0;
+            return (ConditionEffects & (ConditionEffects)((ulong)1 << (int)eff)) != 0;
         }
 
         public void ApplyConditionEffect(ConditionEffectIndex effect, int durationMs = -1)
@@ -719,11 +721,11 @@ namespace LoESoft.GameServer.realm
             if (!ApplyCondition(effect))
                 return;
 
-            var eff = (int) effect;
+            var eff = (int)effect;
 
             effects[eff] = durationMs;
             if (durationMs != 0)
-                ConditionEffects |= (ConditionEffects) ((ulong) 1 << eff);
+                ConditionEffects |= (ConditionEffects)((ulong)1 << eff);
 
             tickingEffects = true;
             UpdateCount++;

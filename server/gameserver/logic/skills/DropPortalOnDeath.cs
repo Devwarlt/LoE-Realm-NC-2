@@ -57,29 +57,29 @@ namespace LoESoft.GameServer.logic.behaviors
         {
             parent.Death += (sender, e) =>
             {
-                if (e.Host.Owner.Name == "Arena")
-                    return;
-                if (new Random().NextDouble() <= percent)
+                try
                 {
-                    Portal entity = portalID == 0
-                        ? Entity.Resolve(stringObjType) as Portal
-                        : Entity.Resolve(portalID) as Portal;
-                    Entity en = e.Host;
-                    World w = GameServer.Manager.GetWorld(e.Host.Owner.Id);
-                    entity.Move(en.X + xAdjustment, en.Y + yAdjustment);
-                    w.Timers.Add(new WorldTimer(dropDelay * 1000, (world, t) => { w.EnterWorld(entity); }));
-                    w.Timers.Add(new WorldTimer(despawnTime * 1000, (world, t) =>
-                      {
-                          try
-                          {
-                              w.LeaveWorld(entity);
-                          }
-                          catch (Exception ex)
-                          {
-                              log.ErrorFormat("Couldn't despawn portal.\n{0}", ex);
-                          }
-                      }));
+                    if (e.Host.Owner.Name == "Arena")
+                        return;
+
+                    if (new Random().NextDouble() <= percent)
+                    {
+                        Portal entity = portalID == 0
+                            ? Entity.Resolve(stringObjType) as Portal
+                            : Entity.Resolve(portalID) as Portal;
+                        Entity en = e.Host;
+                        World w = GameServer.Manager.GetWorld(e.Host.Owner.Id);
+                        entity.Move(en.X + xAdjustment, en.Y + yAdjustment);
+                        w.Timers.Add(new WorldTimer(dropDelay * 1000, (world, t) => { w.EnterWorld(entity); }));
+                        w.Timers.Add(new WorldTimer(despawnTime * 1000, (world, t) =>
+                        {
+                            try
+                            { w.LeaveWorld(entity); }
+                            catch (Exception ex) { log.ErrorFormat("Couldn't despawn portal.\n{0}", ex); }
+                        }));
+                    }
                 }
+                catch { }
             };
         }
 

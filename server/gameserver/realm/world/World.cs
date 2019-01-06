@@ -1,5 +1,6 @@
 ﻿#region
 
+using LoESoft.Core.config;
 using LoESoft.Core.models;
 using LoESoft.GameServer.networking;
 using LoESoft.GameServer.networking.outgoing;
@@ -18,6 +19,8 @@ using System.Threading;
 
 namespace LoESoft.GameServer.realm
 {
+    using Timer = System.Timers.Timer;
+
     public interface IDungeon { }
 
     public enum WorldID : int
@@ -50,15 +53,98 @@ namespace LoESoft.GameServer.realm
             AllowTeleport = true;
             ShowDisplays = true;
             MaxPlayers = -1;
-
             SetMusic("main");
-
             Timers.Add(new WorldTimer(120 * 1000, (w, t) =>
             {
                 canBeClosed = true;
                 if (NeedsPortalKey)
                     PortalKeyExpired = true;
             }));
+
+            _timers = new Timer[5];
+
+            for (var i = 0; i < 5; i++)
+                _timers[i] = new Timer(LogicTicker.COOLDOWN_DELAY) { AutoReset = true };
+
+            _timers[0].Elapsed += delegate // timers thread (world timer)
+            {
+                if (Timers.Count != 0)
+                    for (var i = 0; i < Timers.Count; i++)
+                        try
+                        {
+                            if (Timers[i] == null)
+                                continue;
+
+                            if (!Timers[i].Tick(this, _time))
+                                continue;
+
+                            Timers.RemoveAt(i);
+
+                            i--;
+                        }
+                        catch { }
+            };
+            _timers[1].Elapsed += delegate // players
+            {
+                if (Players.Count != 0)
+                    Players.Values.Select(player => { player.Tick(_time); return player; }).ToList();
+            };
+            _timers[2].Elapsed += delegate // enemies
+            {
+                if (EnemiesCollision != null)
+                {
+                    var collisions = EnemiesCollision.GetActiveChunks(PlayersCollision).ToList();
+
+                    if (collisions.Count != 0)
+                        collisions.Select(enemy =>
+                        {
+                            enemy.Tick(_time);
+                            return enemy;
+                        }).ToList();
+
+                    if (GameObjects.Count != 0)
+                        GameObjects.Where(x => x.Value is Decoy).Select(objects =>
+                        {
+                            objects.Value.Tick(_time);
+                            return objects;
+                        }).ToList();
+                }
+                else
+                {
+                    if (Enemies.Count != 0)
+                        Enemies.Values.Where(enemy => enemy != null).Select(enemy =>
+                        {
+                            enemy.Tick(_time);
+                            return enemy;
+                        }).ToList();
+
+                    if (GameObjects.Count != 0)
+                        GameObjects.Values.Where(objects => objects != null).Select(objects =>
+                        {
+                            objects.Tick(_time);
+                            return objects;
+                        }).ToList();
+                }
+            };
+            _timers[3].Elapsed += delegate // projectiles
+            {
+                if (Projectiles.Count != 0)
+                    Projectiles.Values.Where(projectile => projectile != null).Select(projectile =>
+                    {
+                        projectile.Tick(_time);
+                        return projectile;
+                    }).ToList();
+            };
+            _timers[4].Elapsed += delegate
+            {
+                if (Players.Count != 0 || !canBeClosed || !IsDungeon())
+                    return;
+
+                if (this is Vault vault)
+                    GameServer.Manager.RemoveVault(vault.AccountId);
+
+                GameServer.Manager.RemoveWorld(this);
+            };
         }
 
         public RealmManager Manager
@@ -72,6 +158,29 @@ namespace LoESoft.GameServer.realm
                 Seed = manager.Random.NextUInt32();
                 PortalKey = Utils.RandomBytes(NeedsPortalKey ? 16 : 0);
                 Init();
+            }
+        }
+
+        private RealmTime _time;
+
+        private Timer[] _timers { get; set; }
+        private bool _initialized { get; set; }
+
+        public virtual void Tick(RealmTime time)
+        {
+            if (IsLimbo)
+                return;
+
+            _time = time;
+
+            if (!_initialized)
+            {
+                _initialized = true;
+                _timers.Select(timer =>
+                {
+                    timer.Start();
+                    return timer;
+                }).ToArray();
             }
         }
 
@@ -230,7 +339,7 @@ namespace LoESoft.GameServer.realm
             {
                 if (i.ObjectDesc != null &&
                     (i.ObjectDesc.OccupySquare || i.ObjectDesc.EnemyOccupySquare))
-                    Obstacles[(int) (i.X - 0.5), (int) (i.Y - 0.5)] = 2;
+                    Obstacles[(int)(i.X - 0.5), (int)(i.Y - 0.5)] = 2;
                 EnterWorld(i);
             }
         }
@@ -238,7 +347,15 @@ namespace LoESoft.GameServer.realm
         public virtual int EnterWorld(Entity entity)
         {
             if (entity is Player player)
+            {
+                if (Settings.EVENT_RATE > 1 && !player.Client.EventNotification)
+                {
+                    player.SendInfo(Settings.EVENT_MESSAGE);
+                    player.Client.EventNotification = true;
+                }
+
                 TryAdd(player);
+            }
             else
             {
                 if (entity is Enemy enemy)
@@ -294,7 +411,9 @@ namespace LoESoft.GameServer.realm
                 }
             }
 
-            entity.Dispose();
+            try
+            { entity.Dispose(); }
+            catch { }
 
             entity = null;
         }
@@ -430,62 +549,6 @@ namespace LoESoft.GameServer.realm
         {
             foreach (var i in Players.Where(i => exclude(i.Value)))
                 i.Value.Client.SendMessage(msgs);
-        }
-
-        public virtual void Tick(RealmTime time)
-        {
-            try
-            {
-                if (IsLimbo)
-                    return;
-
-                for (var i = 0; i < Timers.Count; i++)
-                {
-                    try
-                    {
-                        if (Timers[i] == null)
-                            continue;
-                        if (!Timers[i].Tick(this, time))
-                            continue;
-                        Timers.RemoveAt(i);
-                        i--;
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-                }
-
-                foreach (var i in Players)
-                    i.Value.Tick(time);
-
-                if (EnemiesCollision != null)
-                {
-                    foreach (var i in EnemiesCollision.GetActiveChunks(PlayersCollision))
-                        i.Tick(time);
-                    foreach (var i in GameObjects.Where(x => x.Value is Decoy))
-                        i.Value.Tick(time);
-                }
-                else
-                {
-                    foreach (var i in Enemies)
-                        i.Value?.Tick(time);
-                    foreach (var i in GameObjects)
-                        i.Value?.Tick(time);
-                }
-                foreach (var i in Projectiles)
-                    i.Value?.Tick(time);
-
-                if (Players.Count != 0 || !canBeClosed || !IsDungeon())
-                    return;
-                if (this is Vault vault)
-                    GameServer.Manager.RemoveVault(vault.AccountId);
-                GameServer.Manager.RemoveWorld(this);
-            }
-            catch (Exception e)
-            {
-                Log.Error("World: " + Name + "\n" + e);
-            }
         }
 
         public bool IsFull =>

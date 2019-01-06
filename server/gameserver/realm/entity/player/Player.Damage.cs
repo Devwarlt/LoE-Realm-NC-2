@@ -45,29 +45,29 @@ namespace LoESoft.GameServer.realm.entity.player
                 {
                     if (HasConditionEffect(ConditionEffectIndex.Paused) ||
                         HasConditionEffect(ConditionEffectIndex.Stasis) ||
-                        HasConditionEffect(ConditionEffectIndex.Invincible))
+                        HasConditionEffect(ConditionEffectIndex.Invincible) ||
+                        HasConditionEffect(ConditionEffectIndex.Invulnerable))
                         return;
 
-                    dmg = (int) StatsManager.GetDefenseDamage(dmg, NoDef);
-                    if (!HasConditionEffect(ConditionEffectIndex.Invulnerable))
-                        HP -= dmg;
-                    UpdateCount++;
+                    dmg = (int)StatsManager.GetDefenseDamage(dmg, NoDef);
+                    HP -= dmg;
+
                     Owner.BroadcastMessage(new DAMAGE
                     {
                         TargetId = Id,
                         Effects = 0,
-                        Damage = (ushort) dmg,
-                        Killed = HP <= 0 || dmg >= HP,
+                        Damage = (ushort)dmg,
+                        Killed = HP <= 0,
                         BulletId = 0,
                         ObjectId = chr.Id
                     }, this);
-                    SaveToCharacter();
 
-                    if (HP <= 0 || dmg >= HP)
-                    {
-                        HP = 0;
+                    UpdateCount++;
+
+                    Client.Character.HP = HP;
+
+                    if (HP <= 0)
                         Death(chr.ObjectDesc.DisplayId, chr.ObjectDesc);
-                    }
                 }
                 catch (Exception) { }
             }

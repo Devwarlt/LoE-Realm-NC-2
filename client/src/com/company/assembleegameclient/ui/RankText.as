@@ -60,9 +60,9 @@ public class RankText extends Sprite {
 
     internal static const FREE_ACCOUNT:int = 0;
     internal static const VIP_ACCOUNT:int = 1;
-    internal static const LEGENDS_OF_LOE_ACCOUNT:int = 2;
-    internal static const TUTOR_ACCOUNT:int = 3;
-    internal static const LOESOFT_ACCOUNT:int = 4;
+    internal static const GM_ACCOUNT:int = 2;
+    internal static const CM_ACCOUNT:int = 3;
+    internal static const DEM_ACCOUNT:int = 4;
 
     private static function GetAccountType(accountType:int, full:Boolean = false):String {
         var label:String = null;
@@ -70,14 +70,14 @@ public class RankText extends Sprite {
             case VIP_ACCOUNT:
                 label = "VIP";
                 break;
-            case LEGENDS_OF_LOE_ACCOUNT:
-                label = "Legends of LoE";
+            case GM_ACCOUNT:
+                label = "GM";
                 break;
-            case TUTOR_ACCOUNT:
-                label = "Tutor";
+            case CM_ACCOUNT:
+                label = "CM";
                 break;
-            case LOESOFT_ACCOUNT:
-                label = "LoESoft";
+            case DEM_ACCOUNT:
+                label = "D&M";
                 break;
             case FREE_ACCOUNT:
             default:
@@ -91,11 +91,11 @@ public class RankText extends Sprite {
         switch (accountType) {
             case VIP_ACCOUNT:
                 return 0xFFFF00;
-            case LEGENDS_OF_LOE_ACCOUNT:
+            case GM_ACCOUNT:
                 return 0x1E90FF;
-            case TUTOR_ACCOUNT:
+            case CM_ACCOUNT:
                 return 0xB8860B;
-            case LOESOFT_ACCOUNT:
+            case DEM_ACCOUNT:
                 return 0xB03060;
             case FREE_ACCOUNT:
             default:

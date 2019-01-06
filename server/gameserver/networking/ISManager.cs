@@ -71,29 +71,40 @@ namespace LoESoft.GameServer.realm
 
         private void HandleNetwork(object sender, InterServerEventArgs<NetworkMsg> e)
         {
-            switch (e.Content.Code)
+            if (e.InstanceId == null)
             {
-                case NetworkCode.JOIN:
-                    if (availableInstance.TryAdd(e.InstanceId, 5))
-                    {
-                        Publish(NETWORK, new NetworkMsg()   //for the new instances
+                Publish(NETWORK, new NetworkMsg()   //for the new instances
+                {
+                    Code = NetworkCode.JOIN,
+                    Type = "World Server"
+                });
+            }
+            else
+            {
+                switch (e.Content.Code)
+                {
+                    case NetworkCode.JOIN:
+                        if (availableInstance.TryAdd(e.InstanceId, 5))
                         {
-                            Code = NetworkCode.JOIN,
-                            Type = "World Server"
-                        });
-                    }
-                    else
+                            Publish(NETWORK, new NetworkMsg()   //for the new instances
+                            {
+                                Code = NetworkCode.JOIN,
+                                Type = "World Server"
+                            });
+                        }
+                        else
+                            availableInstance[e.InstanceId] = 5;
+                        break;
+
+                    case NetworkCode.PING:
                         availableInstance[e.InstanceId] = 5;
-                    break;
+                        break;
 
-                case NetworkCode.PING:
-                    availableInstance[e.InstanceId] = 5;
-                    break;
-
-                case NetworkCode.QUIT:
-                    int dummy;
-                    availableInstance.TryRemove(e.InstanceId, out dummy);
-                    break;
+                    case NetworkCode.QUIT:
+                        int dummy;
+                        availableInstance.TryRemove(e.InstanceId, out dummy);
+                        break;
+                }
             }
         }
     }

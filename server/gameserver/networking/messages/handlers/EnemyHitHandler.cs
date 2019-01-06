@@ -2,7 +2,6 @@
 
 using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.realm;
-using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
 
 #endregion
@@ -20,12 +19,12 @@ namespace LoESoft.GameServer.networking.handlers
             if (player == null)
                 return;
 
-            Entity entity = player.Owner.GetEntity(message.TargetId);
+            var entity = player.Owner.GetEntity(message.TargetId);
 
             if (entity == null)
                 return;
 
-            Projectile prj = player.Owner.GetProjectileFromId(player.Id, message.BulletId);
+            var prj = player.Owner.GetProjectileFromId(player.Id, message.BulletId);
 
             if (prj == null)
                 return;
@@ -33,7 +32,7 @@ namespace LoESoft.GameServer.networking.handlers
             prj.Owner.RemoveProjectileFromId(player.Id, message.BulletId);
 
             if (prj.ProjDesc.Effects.Length != 0)
-                foreach (ConditionEffect effect in prj.ProjDesc.Effects)
+                foreach (var effect in prj.ProjDesc.Effects)
                     if (effect.Target == 1)
                         continue;
                     else

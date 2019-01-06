@@ -447,6 +447,12 @@ public class MapUserInput {
                 Parameters.data_.centerOnPlayer = !(Parameters.data_.centerOnPlayer);
                 Parameters.save();
                 break;
+            case Parameters.data_.reconVault:
+                this.gs_.gsc_.playerText("/vault");
+                break;
+            case Parameters.data_.reconRealm:
+                this.gs_.gsc_.playerText("/realm");
+                break;
             case Parameters.data_.toggleFullscreen:
                 if (Capabilities.playerType == "Desktop") {
                     Parameters.data_.fullscreenMode = !(Parameters.data_.fullscreenMode);

@@ -391,6 +391,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
             region4list.Add(0x32a);
             region4list.Add(0x32b);
             region4list.Add(0xc6c);
+            region4list.Add(0x575a);
 
             // region 5
             foreach (KeyValuePair<ushort, Item> item in data.Items)

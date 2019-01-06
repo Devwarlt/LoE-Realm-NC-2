@@ -15,7 +15,8 @@ namespace LoESoft.GameServer.networking
         NORMAL_CONNECTION = 6,
         OUTDATED_INTERNAL_CLIENT = 7,
         VIP_ACCOUNT_OVER = 8,
-        ACCOUNT_IN_USE = 9
+        ACCOUNT_IN_USE = 9,
+        ACCESS_DENIED_DUE_RESTART = 10
     }
 
     public enum FailureIDs : int

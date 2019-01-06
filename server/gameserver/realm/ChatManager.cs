@@ -1,6 +1,5 @@
 ﻿#region
 
-using LoESoft.Core;
 using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.entity.player;
 using System;
@@ -42,7 +41,7 @@ namespace LoESoft.GameServer.realm
         public ChatManager(RealmManager manager)
         {
             this.manager = manager;
-            manager.InterServer.AddHandler<Message>(ISManager.CHAT, HandleChat);
+            //manager.InterServer.AddHandler<Message>(ISManager.CHAT, HandleChat);
         }
 
         public static Dictionary<string, Tuple<DateTime, string>> ChatDataCache = new Dictionary<string, Tuple<DateTime, string>>(); // store only latest player message
@@ -146,10 +145,6 @@ namespace LoESoft.GameServer.realm
             };
 
             player.Client.SendMessage(_text);
-        }
-
-        private void HandleChat(object sender, InterServerEventArgs<Message> e)
-        {
         }
     }
 }

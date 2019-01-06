@@ -10,7 +10,7 @@ namespace LoESoft.Core.config
             public static readonly byte[] OUTGOING_CIPHER = ProcessToken("789A632F43A2F55CB0A4C3999C324DA0");
             public static readonly string APPENGINE_URL = "https://loesoft-games.github.io"; //"http://appengine.loesoft.org";
             public static readonly int CPU_HANDLER = 4096;
-            public static readonly int MAX_CONNECTIONS = 50;
+            public static readonly int MAX_CONNECTIONS = 100;
             public static readonly bool DISABLE_NAGLES_ALGORITHM = SERVER_MODE != ServerMode.Local;
 
             public static class RESTART
@@ -24,11 +24,12 @@ namespace LoESoft.Core.config
             {
                 public static readonly List<string> PRODUCTION_DDNS = new List<string>
                 {
-                    "loe-nc.servegame.com", "localhost"
+                    "loe-nc.servegame.com"
                 };
 
                 public static readonly string CROSS_DOMAIN_POLICY =
-                    @"<cross-domain-policy>
+                    @"<?xml version=""1.0""?>
+                    <cross-domain-policy>
                         <policy-file-request/>
                         <site-control permitted-cross-domain-policies=""master-only""/>
                         <allow-access-from domain=""loesoft-games.github.io"" secure=""true""/>
@@ -39,7 +40,6 @@ namespace LoESoft.Core.config
                         <allow-http-request-headers-from domain=""loe-nc.servegame.com"" headers=""*"" secure=""false""/>
                         <allow-access-from domain=""*"" secure=""false""/>
                         <allow-access-from domain=""*"" to-ports=""*""/>
-                        <allow-http-request-headers-from domain=""*"" headers=""*"" secure=""false""/>
                     </cross-domain-policy>";
             }
         }

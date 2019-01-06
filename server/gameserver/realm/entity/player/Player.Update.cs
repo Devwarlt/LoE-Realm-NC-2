@@ -15,31 +15,43 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             var newEntities = new List<Entity>();
 
-            Owner.Players.Where(i => clientEntities.Add(i.Value)).Select(_ => { newEntities.Add(_.Value); return _; }).ToList();
-            Owner.PlayersCollision.HitTest(X, Y, SIGHTRADIUS).OfType<Decoy>().Where(i => clientEntities.Add(i)).Select(_ => { newEntities.Add(_); return _; }).ToList();
-            Owner.EnemiesCollision.HitTest(X, Y, SIGHTRADIUS).Where(_ => MathsUtils.DistSqr(_.X, _.Y, X, Y) <= SIGHTRADIUS * SIGHTRADIUS).Select(_ =>
+            try { Owner.Players.Where(i => clientEntities.Add(i.Value)).Select(_ => { newEntities.Add(_.Value); return _; }).ToList(); }
+            catch { }
+
+            try { Owner.PlayersCollision.HitTest(X, Y, SIGHTRADIUS).OfType<Decoy>().Where(i => clientEntities.Add(i)).Select(_ => { newEntities.Add(_); return _; }).ToList(); }
+            catch { }
+
+            try
             {
-                if (_ is Container)
+                Owner.EnemiesCollision.HitTest(X, Y, SIGHTRADIUS).Where(_ => MathsUtils.DistSqr(_.X, _.Y, X, Y) <= SIGHTRADIUS * SIGHTRADIUS).Select(_ =>
                 {
-                    var owner = (_ as Container).BagOwners?.Length == 1 ? (_ as Container).BagOwners[0] : null;
+                    if (_ is Container)
+                    {
+                        var owner = (_ as Container).BagOwners?.Length == 1 ? (_ as Container).BagOwners[0] : null;
 
-                    if (owner != null && owner != AccountId)
-                        return _;
+                        if (owner != null && owner != AccountId)
+                            return _;
 
-                    if (owner == AccountId)
-                        if ((LootDropBoost || LootTierBoost) && (_.ObjectType != 0x500 || _.ObjectType != 0x506))
-                            (_ as Container).BoostedBag = true;
-                }
+                        if (owner == AccountId)
+                            if ((LootDropBoost || LootTierBoost) && (_.ObjectType != 0x500 || _.ObjectType != 0x506))
+                                (_ as Container).BoostedBag = true;
+                    }
 
-                if (visibleTiles.ContainsKey(new IntPoint((int)_.X, (int)_.Y)))
-                    if (clientEntities.Add(_))
-                        newEntities.Add(_);
+                    if (visibleTiles.ContainsKey(new IntPoint((int)_.X, (int)_.Y)))
+                        if (clientEntities.Add(_))
+                            newEntities.Add(_);
 
-                return _;
-            }).ToList();
+                    return _;
+                }).ToList();
+            }
+            catch { }
 
-            if (Quest != null && clientEntities.Add(Quest) && (Quest as Enemy).HP >= 0)
-                newEntities.Add(Quest);
+            try
+            {
+                if (Quest != null && clientEntities.Add(Quest) && (Quest as Enemy).HP >= 0)
+                    newEntities.Add(Quest);
+            }
+            catch { }
 
             return newEntities;
         }
@@ -48,17 +60,21 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             var removedEntities = new List<int>();
 
-            clientEntities.Where(entity =>
-                !(entity is Player && entity.Owner != null) &&
-                ((MathsUtils.DistSqr(entity.X, entity.Y, X, Y) > SIGHTRADIUS * SIGHTRADIUS &&
-                !(entity is GameObject && (entity as GameObject).Static) && entity != Quest) ||
-                entity.Owner == null))
-            .Select(clientEntity =>
+            try
             {
-                removedEntities.Add(clientEntity.Id);
+                clientEntities.Where(entity =>
+                    !(entity is Player && entity.Owner != null) &&
+                    ((MathsUtils.DistSqr(entity.X, entity.Y, X, Y) > SIGHTRADIUS * SIGHTRADIUS &&
+                    !(entity is GameObject && (entity as GameObject).Static) && entity != Quest) ||
+                    entity.Owner == null))
+                .Select(clientEntity =>
+                {
+                    removedEntities.Add(clientEntity.Id);
 
-                return clientEntities;
-            }).ToList();
+                    return clientEntities;
+                }).ToList();
+            }
+            catch { }
 
             return removedEntities;
         }
@@ -103,14 +119,22 @@ namespace LoESoft.GameServer.realm.entity.player
         }
 
         private IEnumerable<IntPoint> GetRemovedStatics(int xBase, int yBase)
-            => clientStatic.Where(_ =>
+        {
+            try
             {
-                var x = _.X - xBase;
-                var y = _.Y - yBase;
-                var t = Owner.Map[x, y];
+                return clientStatic.Where(_ =>
+                {
+                    var x = _.X - xBase;
+                    var y = _.Y - yBase;
+                    var t = Owner.Map[x, y];
 
-                return (x * x + y * y > SIGHTRADIUS * SIGHTRADIUS || t.ObjType == 0) && t.ObjId != 0;
-            }).ToList();
+                    return (x * x + y * y > SIGHTRADIUS * SIGHTRADIUS || t.ObjType == 0) && t.ObjId != 0;
+                }).ToList();
+            }
+            catch { }
+
+            return new List<IntPoint>();
+        }
 
         public void HandleUpdate(RealmTime time)
         {
@@ -119,32 +143,37 @@ namespace LoESoft.GameServer.realm.entity.player
             var tilesUpdate = new List<UPDATE.TileData>(APPOX_AREA_OF_SIGHT);
 
             blocksight = world.Dungeon ? Sight.RayCast(this, SIGHTRADIUS) : Sight.GetSightCircle(SIGHTRADIUS);
-            blocksight.Where(_ =>
+
+            try
             {
-                var x = _.X + (int)X;
-                var y = _.Y + (int)Y;
-
-                return !(x < 0 || x >= Owner.Map.Width || y < 0 || y >= Owner.Map.Height || tiles[x, y] >= Owner.Map[x, y].UpdateCount);
-            }).Select(_ =>
-            {
-                var x = _.X + (int)X;
-                var y = _.Y + (int)Y;
-                var t = Owner.Map[x, y];
-
-                if (!visibleTiles.ContainsKey(new IntPoint(x, y)))
-                    visibleTiles[new IntPoint(x, y)] = true;
-
-                tilesUpdate.Add(new UPDATE.TileData
+                blocksight.Where(_ =>
                 {
-                    X = (short)x,
-                    Y = (short)y,
-                    Tile = t.TileId
-                });
+                    var x = _.X + (int)X;
+                    var y = _.Y + (int)Y;
 
-                tiles[x, y] = t.UpdateCount;
+                    return !(x < 0 || x >= Owner.Map.Width || y < 0 || y >= Owner.Map.Height || tiles[x, y] >= Owner.Map[x, y].UpdateCount);
+                }).Select(_ =>
+                {
+                    var x = _.X + (int)X;
+                    var y = _.Y + (int)Y;
+                    var t = Owner.Map[x, y];
 
-                return _;
-            }).ToList();
+                    if (!visibleTiles.ContainsKey(new IntPoint(x, y)))
+                        visibleTiles[new IntPoint(x, y)] = true;
+
+                    tilesUpdate.Add(new UPDATE.TileData
+                    {
+                        X = (short)x,
+                        Y = (short)y,
+                        Tile = t.TileId
+                    });
+
+                    tiles[x, y] = t.UpdateCount;
+
+                    return _;
+                }).ToList();
+            }
+            catch { }
 
             var dropEntities = GetRemovedEntities().Distinct().ToArray();
 

@@ -51,15 +51,19 @@ namespace LoESoft.GameServer.logic
 
         public void OnStateEntry(Entity host, RealmTime time)
         {
-            if (!host.StoredBehaviors.TryGetValue(this, out object state))
-                state = null;
+            try
+            {
+                if (!host.StoredBehaviors.TryGetValue(this, out object state))
+                    state = null;
 
-            OnStateEntry(host, time, ref state);
+                OnStateEntry(host, time, ref state);
 
-            if (state == null)
-                host.StoredBehaviors.Remove(this);
-            else
-                host.StoredBehaviors[this] = state;
+                if (state == null)
+                    host.StoredBehaviors.Remove(this);
+                else
+                    host.StoredBehaviors[this] = state;
+            }
+            catch { }
         }
 
         protected virtual void OnStateEntry(Entity host, RealmTime time, ref object state)

@@ -24,12 +24,12 @@ namespace LoESoft.Core
             Key = key;
             Database = db;
 
-            if (db.Connection.State == RedisConnectionBase.ConnectionState.Closing || db.Connection.State == RedisConnectionBase.ConnectionState.Closed)
-                db.Connection = db.Gateway.GetConnection();
+            if (Database.Connection.State == RedisConnectionBase.ConnectionState.Closing || Database.Connection.State == RedisConnectionBase.ConnectionState.Closed)
+                Database.Connection = Database.Gateway.GetConnection();
 
             fields =
                 new ConcurrentDictionary<string, KeyValuePair<byte[], bool>>(
-                    db
+                    Database
                     .Connection
                     .Hashes
                     .GetAll(0, key)
@@ -80,31 +80,41 @@ namespace LoESoft.Core
 
         protected void SetValue<T>(string key, T val)
         {
-            byte[] buff;
-            if (typeof(T) == typeof(int) || typeof(T) == typeof(ushort) ||
-                typeof(T) == typeof(string))
-                buff = Encoding.UTF8.GetBytes(val.ToString());
-            else if (typeof(T) == typeof(bool))
-                buff = new byte[] { (byte)((bool)(object)val ? 1 : 0) };
-            else if (typeof(T) == typeof(DateTime))
-                buff = BitConverter.GetBytes(((DateTime)(object)val).ToBinary());
-            else if (typeof(T) == typeof(byte[]))
-                buff = (byte[])(object)val;
-            else if (typeof(T) == typeof(ushort[]))
+            try
             {
-                var v = (ushort[])(object)val;
-                buff = new byte[v.Length * 2];
-                Buffer.BlockCopy(v, 0, buff, 0, buff.Length);
+                byte[] buff;
+                if (typeof(T) == typeof(int) || typeof(T) == typeof(ushort) ||
+                    typeof(T) == typeof(string))
+                    buff = Encoding.UTF8.GetBytes(val.ToString());
+                else if (typeof(T) == typeof(bool))
+                    buff = new byte[] { (byte)((bool)(object)val ? 1 : 0) };
+                else if (typeof(T) == typeof(DateTime))
+                    buff = BitConverter.GetBytes(((DateTime)(object)val).ToBinary());
+                else if (typeof(T) == typeof(byte[]))
+                    buff = (byte[])(object)val;
+                else if (typeof(T) == typeof(ushort[]))
+                {
+                    var v = (ushort[])(object)val;
+                    buff = new byte[v.Length * 2];
+                    Buffer.BlockCopy(v, 0, buff, 0, buff.Length);
+                }
+                else if (typeof(T) == typeof(int[]))
+                {
+                    var v = (int[])(object)val;
+                    buff = new byte[v.Length * 4];
+                    Buffer.BlockCopy(v, 0, buff, 0, buff.Length);
+                }
+                else
+                    throw new NotSupportedException();
+
+                fields[key] = new KeyValuePair<byte[], bool>(buff, true);
             }
-            else if (typeof(T) == typeof(int[]))
+            catch (NullReferenceException)
             {
-                var v = (int[])(object)val;
-                buff = new byte[v.Length * 4];
-                Buffer.BlockCopy(v, 0, buff, 0, buff.Length);
+                if (Database.Connection.State == RedisConnectionBase.ConnectionState.Closing
+                    || Database.Connection.State == RedisConnectionBase.ConnectionState.Closed)
+                    Database.Connection = Database.Gateway.GetConnection();
             }
-            else
-                throw new NotSupportedException();
-            fields[key] = new KeyValuePair<byte[], bool>(buff, true);
         }
 
         private Dictionary<string, byte[]> update;

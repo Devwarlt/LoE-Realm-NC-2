@@ -5,7 +5,6 @@ using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.networking.messages.handlers.hack;
 using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm;
-using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
 using System.Linq;
 
@@ -21,12 +20,12 @@ namespace LoESoft.GameServer.networking.handlers
 
         private void Handle(Player player, PLAYERSHOOT message)
         {
-            if (!GameServer.Manager.GameData.Items.TryGetValue((ushort) message.ContainerType, out Item item))
+            if (!GameServer.Manager.GameData.Items.TryGetValue((ushort)message.ContainerType, out Item item))
                 return;
 
             bool ability = TierLoot.AbilitySlotType.ToList().Contains(item.SlotType);
 
-            DexterityCheatHandler _cheatHandler = new DexterityCheatHandler()
+            var _cheatHandler = new DexterityCheatHandler()
             {
                 Player = player,
                 Item = item,
@@ -39,11 +38,11 @@ namespace LoESoft.GameServer.networking.handlers
 
             _cheatHandler.Handler();
 
-            Projectile _projectile = player.PlayerShootProjectile(message.BulletId, item.Projectiles[0], item.ObjectType, Manager.Logic.CurrentTime.TotalElapsedMs, message.Position, message.Angle);
+            var _projectile = player.PlayerShootProjectile(message.BulletId, item.Projectiles[0], item.ObjectType, Manager.Logic.CurrentTime.TotalElapsedMs, message.Position, message.Angle);
 
             player.Owner.EnterWorld(_projectile);
 
-            ALLYSHOOT _allyShoot = new ALLYSHOOT
+            var _allyShoot = new ALLYSHOOT
             {
                 Angle = message.Angle,
                 BulletId = message.BulletId,

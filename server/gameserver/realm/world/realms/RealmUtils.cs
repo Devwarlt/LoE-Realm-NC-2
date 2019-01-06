@@ -16,19 +16,25 @@ namespace LoESoft.GameServer.realm
             mean + standardDeviation * GetNormal(rand);
 
         public static double GetUniform(Random rand) =>
-            ((uint) (rand.NextDouble() * uint.MaxValue) + 1.0) * 2.328306435454494e-10;
+            ((uint)(rand.NextDouble() * uint.MaxValue) + 1.0) * 2.328306435454494e-10;
 
         public int CountEnemies(params string[] enemies)
         {
-            List<ushort> enemyList = new List<ushort>();
+            var enemyList = new List<ushort>();
 
             foreach (var i in enemies)
             {
                 try
                 {
-                    enemyList.Add(GameServer.Manager.GameData.IdToObjectType[i]);
+                    ushort id = 0;
+
+                    if (GameServer.Manager.GameData.IdToObjectType.ContainsKey(i))
+                        id = GameServer.Manager.GameData.IdToObjectType[i];
+
+                    if (id != 0)
+                        enemyList.Add(id);
                 }
-                catch (Exception) { }
+                catch { }
             }
             return world.Enemies.Count(i => enemyList.Contains(i.Value.ObjectType));
         }
@@ -72,7 +78,7 @@ namespace LoESoft.GameServer.realm
             {
                 if (i.Value.Terrain == WmapTerrain.None)
                     continue;
-                enemyCounts[(int) i.Value.Terrain - 1]++;
+                enemyCounts[(int)i.Value.Terrain - 1]++;
             }
         }
 

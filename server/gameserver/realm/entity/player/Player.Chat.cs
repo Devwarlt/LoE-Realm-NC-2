@@ -44,8 +44,31 @@ namespace LoESoft.GameServer.realm.entity.player
             toSend += "}";
             SendInfo(toSend);
         }
-
-        public void SendInfo(string text)
+		public void SendLootAnnounce(string text)
+		{
+			Client.SendMessage(new TEXT()
+			{
+				BubbleTime = 0,
+				Stars = Stars,
+				Name = "Loot Notifer",
+				Text = text,
+				NameColor = 0xFFB6C1,
+				TextColor = 0xFFB6C1
+			});
+		}
+		public void SendDeathAnnounce(string text)
+		{
+			Client.SendMessage(new TEXT()
+			{
+				BubbleTime = 5,
+				Stars = Stars,
+				Name = "Death Notifer",
+				Text = text,
+				NameColor = 0xADD8E6,
+				TextColor = 0xADD8E6
+			});
+		}
+		public void SendInfo(string text)
         {
             Client.SendMessage(new TEXT()
             {

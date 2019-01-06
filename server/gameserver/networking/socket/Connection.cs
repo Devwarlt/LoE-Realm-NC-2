@@ -1,4 +1,5 @@
-﻿using LoESoft.Core.models;
+﻿using BookSleeve;
+using LoESoft.Core.models;
 using LoESoft.GameServer.networking.error;
 using LoESoft.GameServer.networking.outgoing;
 using System;
@@ -44,7 +45,7 @@ namespace LoESoft.GameServer.networking
             REALM_MANAGER_DISCONNECT = 29,
             STOPPING_REALM_MANAGER = 30,
             DUPER_DISCONNECT = 31,
-            ACCESS_DENIED = 32,
+            ACCESS_DENIED_DUE_RESTART = 32,
             VIP_ACCOUNT_OVER = 33,
             DEXTERITY_HACK_MOD = 34,
             RECONNECT = 35,
@@ -315,10 +316,14 @@ namespace LoESoft.GameServer.networking
                 if (Account != null)
                     Manager.Database.ReleaseLock(Account);
             }
-            catch (Exception ex)
+            catch (InvalidOperationException)
             {
-                Log.Error(ex.ToString());
+                if (Manager.Database.Connection.State == RedisConnectionBase.ConnectionState.Closing
+                    || Manager.Database.Connection.State == RedisConnectionBase.ConnectionState.Closed)
+                    Manager.Database.Connection = Manager.Database.Gateway.GetConnection();
             }
+            catch (Exception ex)
+            { Log.Error(ex.ToString()); }
         }
     }
 }

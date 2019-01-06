@@ -14,7 +14,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using static LoESoft.GameServer.networking.Client;
 
 #endregion
@@ -68,7 +67,7 @@ namespace LoESoft.GameServer.realm
             Vaults = new ConcurrentDictionary<string, Vault>();
             Random = new Random();
             Database = db;
-            SaveMonitor = new System.Timers.Timer(30000) { AutoReset = true };
+            SaveMonitor = new System.Timers.Timer(60000) { AutoReset = true };
             SaveMonitor.Elapsed += delegate
             {
                 if (ClientManager.Keys.Count != 0)
@@ -95,7 +94,7 @@ namespace LoESoft.GameServer.realm
             AddWorld((int)WorldID.DAILY_QUEST_ID, new DailyQuestRoom());
 
             Monitor = new RealmPortalMonitor(this);
-            Task.Factory.StartNew(() => GameWorld.AutoName(1, true)).ContinueWith(_ => AddWorld(_.Result), TaskScheduler.Default);
+            AddWorld(GameWorld.AutoName(1, true));
             InterServer = new ISManager(this);
             Chat = new ChatManager(this);
             Commands = new CommandManager(this);
@@ -115,12 +114,15 @@ namespace LoESoft.GameServer.realm
         {
             SaveMonitor.Stop();
             Terminating = true;
-            List<Client> saveAccountUnlock = new List<Client>();
+
+            var saveAccountUnlock = new List<Client>();
+
             foreach (ClientData cData in ClientManager.Values)
             {
                 saveAccountUnlock.Add(cData.Client);
                 TryDisconnect(cData.Client, DisconnectReason.STOPPING_REALM_MANAGER);
             }
+
             GameData.Dispose();
             Logic.Dispose();
         }
@@ -136,39 +138,44 @@ namespace LoESoft.GameServer.realm
 
         public ConnectionProtocol TryConnect(Client client)
         {
-            try
+            if (AccessDenied)
+                return new ConnectionProtocol(false, ErrorIDs.ACCESS_DENIED_DUE_RESTART); // Prevent account in use issue along restart.
+            else
             {
-                ClientData _cData = new ClientData
+                try
                 {
-                    ID = client.Account.AccountId,
-                    Client = client,
-                    DNS = client.Socket.RemoteEndPoint.ToString().Split(':')[0],
-                    Registered = DateTime.Now
-                };
-
-                if (ClientManager.Count >= MaxClients) // When server is full.
-                    return new ConnectionProtocol(false, ErrorIDs.SERVER_FULL);
-
-                if (ClientManager.ContainsKey(_cData.ID))
-                {
-                    if (_cData.Client != null)
+                    var _cData = new ClientData
                     {
-                        TryDisconnect(ClientManager[_cData.ID].Client, DisconnectReason.OLD_CLIENT_DISCONNECT); // Old client.
+                        ID = client.Account.AccountId,
+                        Client = client,
+                        DNS = client.Socket.RemoteEndPoint.ToString().Split(':')[0],
+                        Registered = DateTime.Now
+                    };
 
-                        return new ConnectionProtocol(ClientManager.TryAdd(_cData.ID, _cData), ErrorIDs.NORMAL_CONNECTION); // Normal connection with reconnect type.
+                    if (_cData.Client.Account.Banned)
+                        return new ConnectionProtocol(false, ErrorIDs.ACCOUNT_BANNED);
+
+                    if (ClientManager.Count >= MaxClients) // When server is full.
+                        return new ConnectionProtocol(false, ErrorIDs.SERVER_FULL);
+
+                    if (ClientManager.ContainsKey(_cData.ID))
+                    {
+                        if (_cData.Client != null)
+                        {
+                            TryDisconnect(ClientManager[_cData.ID].Client, DisconnectReason.OLD_CLIENT_DISCONNECT); // Old client.
+
+                            return new ConnectionProtocol(ClientManager.TryAdd(_cData.ID, _cData), ErrorIDs.NORMAL_CONNECTION); // Normal connection with reconnect type.
+                        }
+
+                        return new ConnectionProtocol(false, ErrorIDs.LOST_CONNECTION); // User dropped connection while reconnect.
                     }
 
-                    return new ConnectionProtocol(false, ErrorIDs.LOST_CONNECTION); // User dropped connection while reconnect.
+                    return new ConnectionProtocol(ClientManager.TryAdd(_cData.ID, _cData), ErrorIDs.NORMAL_CONNECTION); // Normal connection with reconnect type.
                 }
+                catch (Exception e) { Log.Error($"An error occurred.\n{e}"); }
 
-                return new ConnectionProtocol(ClientManager.TryAdd(_cData.ID, _cData), ErrorIDs.NORMAL_CONNECTION); // Normal connection with reconnect type.
+                return new ConnectionProtocol(false, ErrorIDs.LOST_CONNECTION); // User dropped connection while reconnect.
             }
-            catch (Exception e)
-            {
-                Log.Error($"An error occurred.\n{e}");
-            }
-
-            return new ConnectionProtocol(false, ErrorIDs.LOST_CONNECTION); // User dropped connection while reconnect.
         }
 
         public void TryDisconnect(Client client, DisconnectReason reason = DisconnectReason.UNKNOW_ERROR_INSTANCE)

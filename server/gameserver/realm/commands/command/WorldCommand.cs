@@ -178,23 +178,18 @@ namespace LoESoft.GameServer.realm.commands
                     return false;
                 }
 
-                foreach (KeyValuePair<int, Player> i in player.Owner.Players)
+                foreach (var i in player.Owner.Players)
                 {
                     if (i.Value.Name.ToLower() == args[0].ToLower().Trim())
                     {
-                        player.Teleport(time, new TELEPORT
-                        {
-                            ObjectId = i.Value.Id
-                        });
+                        player.ApplyConditionEffect(ConditionEffectIndex.Invulnerable, 2000);
+                        player.Teleport(time, new TELEPORT { ObjectId = i.Value.Id });
                         return true;
                     }
                 }
                 player.SendInfo(string.Format("Cannot teleport, {0} not found!", args[0].Trim()));
             }
-            catch
-            {
-                player.SendHelp("Usage: /teleport <player name>");
-            }
+            catch { player.SendHelp("Usage: /teleport <player name>"); }
             return false;
         }
     }
