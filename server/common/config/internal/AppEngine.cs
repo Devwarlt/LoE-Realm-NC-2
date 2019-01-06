@@ -64,7 +64,7 @@ namespace LoESoft.Core.config
                     gameserver.Add(new ServerItem()
                     {
                         Name = SERVERS[i].Item1,
-                        DNS = CheckDDNS(SERVERS[i].Item2, i),
+                        DNS = SERVER_MODE == ServerMode.Production ? CheckDDNS(SERVERS[i].Item2, i) : "localhost",
                         Lat = 0,
                         Long = 0,
                         Usage = SERVERS[i].Item3,//SERVER_MODE != ServerMode.Local ? GetUsage(CheckDDNS(SERVERS[i].Item2, i), GAMESERVER.PORT) : SERVERS[i].Item3,
