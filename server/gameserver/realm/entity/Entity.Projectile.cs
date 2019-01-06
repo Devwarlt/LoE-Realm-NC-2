@@ -29,17 +29,6 @@ namespace LoESoft.GameServer.realm.entity
 
         public void Destroy() => Owner.LeaveWorld(this);
 
-        public override void Tick(RealmTime time)
-        {
-            if (time.TotalElapsedMs - BeginTime >= ProjDesc.LifetimeMS * ProjDesc.Speed)
-            {
-                Destroy();
-                return;
-            }
-
-            base.Tick(time);
-        }
-
         public bool IsValidType(Entity entity) =>
             (entity is Enemy
             && !ProjDesc.MultiHit)

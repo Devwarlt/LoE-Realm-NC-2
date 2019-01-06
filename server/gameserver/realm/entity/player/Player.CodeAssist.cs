@@ -415,28 +415,6 @@ namespace LoESoft.GameServer.realm.entity.player
                     _pongTime = time.TotalElapsedMs;
                 }
 
-                if (time.TotalElapsedMs - _pongTime > DcThresold)
-                {
-                    string[] labels = new string[] { "{CLIENT_NAME}" };
-                    string[] arguments = new string[] { (Client?.Account?.Name ?? "_null_") };
-
-                    if (arguments == new string[] { "_null_" })
-                        return false;
-                    else
-                        Client?.SendMessage(new FAILURE
-                        {
-                            ErrorId = (int)FailureIDs.JSON_DIALOG,
-                            ErrorDescription =
-                                JSONErrorIDHandler.
-                                    FormatedJSONError(
-                                        errorID: ErrorIDs.LOST_CONNECTION,
-                                        labels: labels,
-                                        arguments: arguments
-                                    )
-                        });
-                    return false;
-                }
-
                 if (time.TotalElapsedMs - _pingTime < PingPeriod)
                     return true;
 

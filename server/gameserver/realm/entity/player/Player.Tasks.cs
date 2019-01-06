@@ -240,6 +240,111 @@ namespace LoESoft.GameServer.realm.entity.player
                                 player.SendInfo($"- {notifications[i]}");
                         }
                     }
+                },
+                {
+                    "Ghost Buster",
+                    new GameTask()
+                    {
+                        StarsRequirement = 0,
+                        MultipleTimes = false,
+                        MonsterDatas = new List<MonsterData>()
+                        {
+                            new MonsterData() { ObjectId = "Ghost God", Total = 25 }
+                        },
+                        RewardDatas = new List<RewardData>()
+                        {
+                            new RewardData() { ObjectId = "lcp egg t0-100", Total = 1 },
+                            new RewardData() { ObjectId = "lcp egg t1-75", Total = 1 },
+                            new RewardData() { ObjectId = "lcp egg t2-50", Total = 1 }
+                        },
+                        Bonus = (player) =>
+                        {
+                            GameServer.Manager.Database.UpdateFame(player.Client.Account, 100);
+
+                            player.Experience += 1000;
+                            player.CurrentFame = player.Client.Account.Fame += 100;
+                            player.UpdateCount++;
+
+                            var notifications = new List<string>()
+                            {
+                                "1,000 EXP", "100 Fame", "(Vault) 1 x Little Ghost Egg (100%)", "(Vault) 1 x Chilling Fire Egg (75%)",
+                                "(Vault) 1 x Mini Tree Egg (50%)"
+                            };
+
+                            player.SendInfo("You received as bonus reward:");
+
+                            for (int i = 0; i < notifications.Count; i++)
+                                player.SendInfo($"- {notifications[i]}");
+                        }
+                    }
+                },
+                {
+                    "Medusa Buster",
+                    new GameTask()
+                    {
+                        StarsRequirement = 0,
+                        MultipleTimes = false,
+                        MonsterDatas = new List<MonsterData>()
+                        {
+                            new MonsterData() { ObjectId = "Medusa", Total = 50 }
+                        },
+                        RewardDatas = new List<RewardData>()
+                        {
+                            new RewardData() { ObjectId = "lcp egg t1-100", Total = 1 },
+                            new RewardData() { ObjectId = "lcp egg t2-75", Total = 1 },
+                            new RewardData() { ObjectId = "lcp egg t3-50", Total = 1 }
+                        },
+                        Bonus = (player) =>
+                        {
+                            GameServer.Manager.Database.UpdateFame(player.Client.Account, 300);
+
+                            player.Experience += 5000;
+                            player.CurrentFame = player.Client.Account.Fame += 300;
+                            player.UpdateCount++;
+
+                            var notifications = new List<string>()
+                            {
+                                "5,000 EXP", "300 Fame", "(Vault) 1 x Chilling Fire Egg (100%)", "(Vault) 1 x Mini Tree Egg (75%)",
+                                "(Vault) 1 x Mini Icycle Egg (50%)"
+                            };
+
+                            player.SendInfo("You received as bonus reward:");
+
+                            for (int i = 0; i < notifications.Count; i++)
+                                player.SendInfo($"- {notifications[i]}");
+                        }
+                    }
+                },
+                {
+                    "Red Demon Hunter",
+                    new GameTask()
+                    {
+                        StarsRequirement = 0,
+                        MultipleTimes = false,
+                        MonsterDatas = new List<MonsterData>()
+                        {
+                            new MonsterData() { ObjectId = "Red Demon", Total = 5 }
+                        },
+                        RewardDatas = new List<RewardData>() { },
+                        Bonus = (player) =>
+                        {
+                            GameServer.Manager.Database.UpdateFame(player.Client.Account, 500);
+
+                            player.Experience += 10000;
+                            player.CurrentFame = player.Client.Account.Fame += 500;
+                            player.UpdateCount++;
+
+                            var notifications = new List<string>()
+                            {
+                                "10,000 EXP", "500 Fame"
+                            };
+
+                            player.SendInfo("You received as bonus reward:");
+
+                            for (int i = 0; i < notifications.Count; i++)
+                                player.SendInfo($"- {notifications[i]}");
+                        }
+                    }
                 }
             };
 

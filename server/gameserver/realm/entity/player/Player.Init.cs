@@ -186,26 +186,28 @@ namespace LoESoft.GameServer.realm.entity.player
 
             base.Move(x, y);
         }
-		private void AnnounceDeath(string killer)
-		{
-			var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
-			var rip = Name + " died to " + killer + "( " + playerDesc.ObjectId + ", " + Fame + " Fame )";
-			if (Fame >= 2000 && !Client.Account.Admin)
-			{
-				foreach (var w in GameServer.Manager.Worlds.Values)
-					foreach (var p in w.Players.Values)
-						p.SendDeathAnnounce(rip);
-				return;
-			}
-			else
-			{
-				foreach (var i in Owner.Players.Values)
-				{
-					i.SendDeathAnnounce(rip);
-				}
-			}
-		}
-		public void Death(string killer, ObjectDesc desc = null, Entity entity=null)
+
+        private void AnnounceDeath(string killer)
+        {
+            var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
+            var rip = Name + " died to " + killer + "( " + playerDesc.ObjectId + ", " + Fame + " Fame )";
+            if (Fame >= 2000 && !Client.Account.Admin)
+            {
+                foreach (var w in GameServer.Manager.Worlds.Values)
+                    foreach (var p in w.Players.Values)
+                        p.SendDeathAnnounce(rip);
+                return;
+            }
+            else
+            {
+                foreach (var i in Owner.Players.Values)
+                {
+                    i.SendDeathAnnounce(rip);
+                }
+            }
+        }
+
+        public void Death(string killer, ObjectDesc desc = null, Entity entity = null)
         {
             if (dying)
                 return;
@@ -238,15 +240,15 @@ namespace LoESoft.GameServer.realm.entity.player
                 return;
             }
             GenerateGravestone();
-			if ((entity is Player))
-			{
-				AnnounceDeath((entity as Player).Name + " the " + entity.ObjectDesc.ObjectId);
-			}
-			else
-			{
-				AnnounceDeath(killer);
-			}
-			if (desc != null)
+            if ((entity is Player))
+            {
+                AnnounceDeath((entity as Player).Name + " the " + entity.ObjectDesc.ObjectId);
+            }
+            else
+            {
+                AnnounceDeath(killer);
+            }
+            if (desc != null)
                 if (desc.DisplayId != null)
                     killer = desc.DisplayId;
                 else
@@ -345,7 +347,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
             if ((AccountType)AccountType == Core.config.AccountType.DEM_ACCOUNT)
             {
-                ConditionEffect invincible = new ConditionEffect
+                var invincible = new ConditionEffect
                 {
                     Effect = ConditionEffectIndex.Invincible,
                     DurationMS = -1
@@ -353,7 +355,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                 ApplyConditionEffect(invincible);
 
-                ConditionEffect invulnerable = new ConditionEffect
+                var invulnerable = new ConditionEffect
                 {
                     Effect = ConditionEffectIndex.Invulnerable,
                     DurationMS = -1
@@ -582,15 +584,15 @@ namespace LoESoft.GameServer.realm.entity.player
 
                 UpdateCount++;
 
-				var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
-				if (Level == 20)
-				{
-					foreach (var i in Owner.Players.Values)
-						i.SendInfo(Name + " achieved level 20" + " as a " + playerDesc.ObjectId);
-					XpBoosted = false;
-					XpBoostTimeLeft = 0;
-				}
-				Quest = null;
+                var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
+                if (Level == 20)
+                {
+                    foreach (var i in Owner.Players.Values)
+                        i.SendInfo(Name + " achieved level 20" + " as a " + playerDesc.ObjectId);
+                    XpBoosted = false;
+                    XpBoostTimeLeft = 0;
+                }
+                Quest = null;
                 return true;
             }
             CalculateFame();
