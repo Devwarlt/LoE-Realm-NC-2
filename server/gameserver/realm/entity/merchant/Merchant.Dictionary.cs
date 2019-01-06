@@ -116,7 +116,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
             #region "Region 4"
 
             { 0x32a, new Tuple<int, CurrencyType>(5000, CurrencyType.Fame) }, // Char Slot Unlocker
-            { 0x32b, new Tuple<int, CurrencyType>(2500, CurrencyType.Fame) }, // Vault Chest Unlocker
+            //{ 0x32b, new Tuple<int, CurrencyType>(2500, CurrencyType.Fame) }, // Vault Chest Unlocker
             { 0xc6c, new Tuple<int, CurrencyType>(500, CurrencyType.Fame) }, // Backpack
             { 0x575a, new Tuple<int, CurrencyType>(1000, CurrencyType.Fame) } // Public Arena Key
 
