@@ -30,30 +30,25 @@ namespace LoESoft.GameServer.networking
 
         public void Start()
         {
-            try
-            {
-                Socket.Bind(new IPEndPoint(IPAddress.Any, Settings.GAMESERVER.PORT));
-                Socket.Listen(0xFF);
-                Socket.BeginAccept(Listen, null);
-            }
-            catch (Exception ex)
-            { GameServer.ForceShutdown(ex); }
+            Socket.Bind(new IPEndPoint(IPAddress.Any, Settings.GAMESERVER.PORT));
+            Socket.Listen(0xFF);
+            Beginaccept(Socket);
         }
 
-        private void Listen(IAsyncResult ar)
+        private void Beginaccept(Socket skt)
         {
-            Socket skt = null;
+            skt.BeginAccept(OnConnectionRecieved, skt);
+        }
 
-            try
-            { skt = Socket.EndAccept(ar); }
-            catch (ObjectDisposedException) { }
+        private void OnConnectionRecieved(IAsyncResult result)
+        {
+            var socket = (Socket)result.AsyncState;
+            var clientSocket = socket.EndAccept(result);
 
-            try
-            { Socket.BeginAccept(Listen, null); }
-            catch (ObjectDisposedException) { }
+            if (clientSocket != null)
+                new Client(Manager, clientSocket);
 
-            if (skt != null)
-                new Client(Manager, skt);
+            Beginaccept(socket);
         }
 
         public void Stop()
