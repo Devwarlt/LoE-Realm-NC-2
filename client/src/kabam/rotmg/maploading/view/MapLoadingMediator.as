@@ -1,4 +1,7 @@
 ﻿package kabam.rotmg.maploading.view {
+import flash.events.TimerEvent;
+import flash.utils.Timer;
+
 import kabam.rotmg.maploading.commands.CharacterAnimationFactory;
 import kabam.rotmg.maploading.signals.HideMapLoadingSignal;
 import kabam.rotmg.maploading.signals.HideMapLoadingSignalNoFade;
@@ -24,8 +27,11 @@ public class MapLoadingMediator extends Mediator {
     override public function initialize():void {
         this.view.showAnimation(this.characterAnimationFactory.make());
         this.mapLoading.addOnce(this.onMapLoaded);
-        this.hideMapLoading.add(this.onHide);
-        this.hideMapLoadingNoFade.add(this.onHideNoFade);
+        var timer:Timer = new Timer(2000, 1);
+        timer.addEventListener(TimerEvent.TIMER_COMPLETE, this.onHide);
+        timer.start();
+        //this.hideMapLoading.add(this.onHide);
+        //this.hideMapLoadingNoFade.add(this.onHideNoFade);
     }
 
     private function onMapLoaded(_arg1:MapInfo):void {
@@ -36,7 +42,7 @@ public class MapLoadingMediator extends Mediator {
         this.hideMapLoading.remove(this.onHide);
     }
 
-    private function onHide():void {
+    private function onHide(_arg1:TimerEvent):void {
         this.view.disable();
     }
 

@@ -94,11 +94,17 @@ public class SocketServer {
     }
 
     public function queueMessage(msg:Message):void {
-        this.sendInstantMessage(msg);
+        this.tail.next = msg;
+        this.tail = msg;
+
+        (this.socket.connected && this.sendPendingMessages());
     }
 
     public function sendMessage(msg:Message):void {
-        this.sendInstantMessage(msg);
+        this.tail.next = msg;
+        this.tail = msg;
+
+        (this.socket.connected && this.sendPendingMessages());
     }
 
     private var _disconnected:Boolean = false;
