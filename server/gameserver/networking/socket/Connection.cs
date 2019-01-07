@@ -12,9 +12,8 @@ namespace LoESoft.GameServer.networking
     {
         public enum DisconnectReason : byte
         {
-            // Unregistered DisconnectReason '0',
+            RENEW_LOCK_PONG = 0,
             FAILED_TO_LOAD_CHARACTER = 1,
-
             OUTDATED_CLIENT = 2,
             DISABLE_GUEST_ACCOUNT = 3,
             BAD_LOGIN = 4,
@@ -59,14 +58,14 @@ namespace LoESoft.GameServer.networking
             SERVER_MODE_LOCAL_ONLY = 43,
             SERVER_MODE_CLOSED_TEST_ONLY = 44,
             SERVER_MODE_PRODUCTION_ONLY = 45,
+            RENEW_LOCK_TIMEOUT = 46,
+            KEEP_ALIVE_TIMEOUT = 47,
+            SHOOT_ACK_TIMEOUT = 48,
+            UPDATE_ACK_TIMEOUT = 49,
+            GOTO_ACK_TIMEOUT = 50,
+            TOO_MANY_UPDATE_ACKS = 51,
+            TOO_MANY_GOTO_ACKS = 52,
 
-            // Unregistered DisconnectReason '46',
-            // Unregistered DisconnectReason '47',
-            // Unregistered DisconnectReason '48',
-            // Unregistered DisconnectReason '49',
-            // Unregistered DisconnectReason '50',
-            // Unregistered DisconnectReason '51',
-            // Unregistered DisconnectReason '52',
             // Unregistered DisconnectReason '53',
             // Unregistered DisconnectReason '54',
             // Unregistered DisconnectReason '55',

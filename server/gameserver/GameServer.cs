@@ -70,13 +70,12 @@ namespace LoESoft.GameServer
             AutoRestart = Settings.NETWORKING.RESTART.ENABLE_RESTART;
 
             Manager.Initialize();
-            Manager.Run();
+            new Thread(() => Manager.Run()) { IsBackground = true }.Start();
 
             Log._("Message", Message.Messages.Count);
 
-            Server server = new Server(Manager);
-
-            PolicyServer policy = new PolicyServer();
+            var server = new Server(Manager);
+            var policy = new PolicyServer();
 
             Console.CancelKeyPress += (sender, e) => e.Cancel = true;
 
@@ -137,6 +136,43 @@ namespace LoESoft.GameServer
 
             if (ex != null)
                 Log.Error(ex.ToString());
+        }
+
+        public static void SafeRestart()
+        {
+            var message = "Server is now offline.";
+
+            Log.Warn(message);
+
+            try
+            {
+                Manager.ClientManager.Values.Where(j => j.Client != null).Select(k =>
+                {
+                    k.Client.Player?.SendInfo(message);
+                    return k;
+                }).ToList();
+            }
+            catch (Exception ex) { ForceShutdown(ex); }
+
+            Thread.Sleep(5 * 1000);
+
+            try
+            {
+                AccessDenied = true;
+
+                Manager.ClientManager.Values.Where(j => j.Client != null).Select(k =>
+                {
+                    Manager.TryDisconnect(k.Client, DisconnectReason.RESTART);
+                    return k;
+                }).ToList();
+            }
+            catch (Exception ex) { ForceShutdown(ex); }
+
+            Thread.Sleep(1 * 1000);
+
+            Process.Start(Settings.GAMESERVER.FILE);
+
+            Environment.Exit(0);
         }
 
         public static void Restart()

@@ -38,7 +38,15 @@ namespace LoESoft.GameServer.realm.entity.player
             string taskCache = null;
 
             try
-            { taskCache = JsonConvert.DeserializeObject<string>(File.ReadAllText(Path.Combine(GameServer.TaskCachePath, $"tc-char.{AccountId}.{Client.Character.CharId}.json"))); }
+            {
+                var path = Path.Combine(GameServer.TaskCachePath, $"tc-char.{AccountId}.{Client.Character.CharId}.json");
+
+                if (File.Exists(path))
+                {
+                    var content = File.ReadAllText(path);
+                    taskCache = JsonConvert.DeserializeObject<string>(content);
+                }
+            }
             catch { }
 
             return taskCache;

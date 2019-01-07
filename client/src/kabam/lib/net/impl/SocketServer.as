@@ -36,7 +36,6 @@ public class SocketServer {
     public var socket:Socket;
     [Inject]
     public var socketServerModel:SocketServerModel;
-    public var delayTimer:Timer;
     private var head:Message;
     private var tail:Message;
     private var messageLen:int = -1;
@@ -66,12 +65,7 @@ public class SocketServer {
         this.port = port;
         this.addListeners();
         this.messageLen = -1;
-        if (this.socketServerModel.connectDelayMS) {
-            this.connectWithDelay();
-        }
-        else {
-            this.socket.connect(address, port);
-        }
+        this.socket.connect(address, port);
     }
 
     private function addListeners():void {
@@ -82,23 +76,11 @@ public class SocketServer {
         this.socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this.onSecurityError);
     }
 
-    private function connectWithDelay():void {
-        this.delayTimer = new Timer(this.socketServerModel.connectDelayMS, 1);
-        this.delayTimer.addEventListener(TimerEvent.TIMER_COMPLETE, this.onTimerComplete);
-        this.delayTimer.start();
-    }
-
-    private function onTimerComplete(_arg1:TimerEvent):void {
-        this.delayTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, this.onTimerComplete);
-        this.socket.connect(this.server, this.port);
-    }
-
     public function disconnect():void {
-        try {
-            this.socket.close();
-        }
-        catch (error:Error) {
-        }
+        try
+        { this.socket.close(); }
+        catch (error:Error) { }
+
         this.removeListeners();
         this.closed.dispatch();
     }
@@ -112,23 +94,50 @@ public class SocketServer {
     }
 
     public function queueMessage(msg:Message):void {
-        this.tail.next = msg;
-        this.tail = msg;
+        this.sendInstantMessage(msg);
     }
 
     public function sendMessage(msg:Message):void {
-        this.tail.next = msg;
-        this.tail = msg;
+        this.sendInstantMessage(msg);
+    }
 
-        (this.socket.connected && this.sendPendingMessages());
+    private var _disconnected:Boolean = false;
+
+    private function sendInstantMessage(msg:Message):void {
+        if (!this.socket.connected && !this._disconnected) {
+            this._disconnected = true;
+            this.error.dispatch("You have been disconnected from server. Reconnecting...");
+            this.connect(this.server, this.port);
+            return;
+        }
+
+        this.data.position = 0;
+        this.data.length = 0;
+
+        msg.writeToOutput(this.data);
+
+        this.data.position = 0;
+
+        if (this.outgoingCipher != null) {
+            this.outgoingCipher.encrypt(this.data);
+            this.data.position = 0;
+        }
+
+        this.socket.writeInt(this.data.bytesAvailable + 5);
+        this.socket.writeByte(msg.id);
+        this.socket.writeBytes(this.data);
+        this.socket.flush();
     }
 
     private function sendPendingMessages():void {
         var temp:Message = this.head.next;
         var msg:Message = temp;
 
-        if (!this.socket.connected)
+        if (!this.socket.connected && !this._disconnected) {
+            this._disconnected = true;
+            this.error.dispatch("You have been disconnected from server.");
             return;
+        }
 
         var i:int = 0;
 
@@ -183,13 +192,21 @@ public class SocketServer {
         var messageId:uint;
         var message:Message;
         var errorMessage:String;
+
         while (true) {
-            if (this.socket == null || !this.socket.connected) break;
+            if (this.socket == null || (!this.socket.connected && !this._disconnected)) {
+                this._disconnected = true;
+                this.error.dispatch("You have been disconnected from server. Reconnecting...");
+                this.connect(this.server, this.port);
+                break;
+            }
+
             if (this.messageLen == -1) {
-                if (this.socket.bytesAvailable < 4) break;
-                try {
-                    this.messageLen = this.socket.readInt();
-                }
+                if (this.socket.bytesAvailable < 4)
+                    break;
+
+                try
+                { this.messageLen = this.socket.readInt(); }
                 catch (e:Error) {
                     errorMessage = parseString("Socket-Server Data Error: {0}: {1}", [e.name, e.message]);
                     error.dispatch(errorMessage);
@@ -197,32 +214,37 @@ public class SocketServer {
                     return;
                 }
             }
-            if (this.socket.bytesAvailable < this.messageLen - MESSAGE_LENGTH_SIZE_IN_BYTES) break;
+
+            if (this.socket.bytesAvailable < this.messageLen - MESSAGE_LENGTH_SIZE_IN_BYTES)
+                break;
+
             messageId = this.socket.readUnsignedByte();
             message = this.messages.require(messageId);
+
             data.position = 0;
             data.length = 0;
-            if (this.messageLen - 5 > 0) {
+
+            if (this.messageLen - 5 > 0)
                 this.socket.readBytes(data, 0, this.messageLen - 5);
-            }
+
             data.position = 0;
+
             if (this.incomingCipher != null) {
                 this.incomingCipher.decrypt(data);
                 data.position = 0;
             }
+
             this.messageLen = -1;
-            if (message == null) {
-                this.logErrorAndClose("[Protocol Error] Null message with invalid length.");
+
+            if (message == null)
                 return;
-            }
-            try {
-                message.parseFromInput(data);
-            }
-            catch (error:Error) {
-                // logErrorAndClose("[Protocol Error] Error in message ID " + message.id + ":\n", error);
-                return;
-            }
+
+            try
+            { message.parseFromInput(data); }
+            catch (error:Error) { return; }
+
             message.consume();
+
             sendPendingMessages();
         }
     }

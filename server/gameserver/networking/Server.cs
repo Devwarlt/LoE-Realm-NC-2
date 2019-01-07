@@ -42,13 +42,17 @@ namespace LoESoft.GameServer.networking
 
         private void OnConnectionRecieved(IAsyncResult result)
         {
-            var socket = (Socket)result.AsyncState;
-            var clientSocket = socket.EndAccept(result);
+            try
+            {
+                var socket = (Socket)result.AsyncState;
+                var clientSocket = socket.EndAccept(result);
 
-            if (clientSocket != null)
-                new Client(Manager, clientSocket);
+                if (clientSocket != null)
+                    new Client(Manager, clientSocket);
 
-            Beginaccept(socket);
+                Beginaccept(socket);
+            }
+            catch { }
         }
 
         public void Stop()

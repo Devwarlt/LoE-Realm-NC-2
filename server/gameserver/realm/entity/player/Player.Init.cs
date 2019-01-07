@@ -444,6 +444,9 @@ namespace LoESoft.GameServer.realm.entity.player
                 },
                 Color = new ARGB(0xFFFFFFFF)
             }, null);
+
+            foreach (var plr in Owner.Players.Values)
+                plr.AwaitGotoAck(time.TotalElapsedMs);
         }
 
         private int QuestPriority(ObjectDesc enemy)
