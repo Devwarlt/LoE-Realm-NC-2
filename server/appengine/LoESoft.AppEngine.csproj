@@ -156,6 +156,8 @@
     <Compile Include="char\purchaseClassUnlock.cs" />
     <Compile Include="credits\getoffers.cs" />
     <Compile Include="crossdomain.cs" />
+    <Compile Include="dailyLogin\FetchCalendar.cs" />
+    <Compile Include="dailyLogin\MonthCalendar.cs" />
     <Compile Include="fame\list.cs" />
     <Compile Include="gamestore\getOffers.cs" />
     <Compile Include="gamestore\purchaseOffers.cs" />
