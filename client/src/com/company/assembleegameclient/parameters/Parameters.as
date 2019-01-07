@@ -308,8 +308,8 @@ public class Parameters {
         setDefault("preferredServer", null);
         setDefault("needsTutorial", true);
         setDefault("needsRandomRealm", false);
-        setDefault("cameraAngle", 7 * Math.PI / 4);
-        setDefault("defaultCameraAngle", 7 * Math.PI / 4);
+        setDefault("cameraAngle", 0);
+        setDefault("defaultCameraAngle", 0);
         setDefault("showQuestPortraits", true);
         setDefault("fullscreenMode", false);
         setDefault("showProtips", true);
@@ -371,8 +371,8 @@ public class Parameters {
         setDefault("fullscreenMod", true);
         setDefault("mscale", 12);
         setDefault("showTierTag", true);
-        setDefaultKey("reconVault", KeyCodes.P);
-        setDefaultKey("reconRealm", KeyCodes.NUMBER_0);
+        setDefaultKey("reconVault", KeyCodes.F7);
+        setDefaultKey("reconRealm", KeyCodes.F9);
         if (!data_.hasOwnProperty("needsSurvey")) {
             data_.needsSurvey = data_.needsTutorial;
             switch (int((Math.random() * 5))) {
