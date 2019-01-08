@@ -92,6 +92,7 @@ namespace LoESoft.GameServer.realm
             AddWorld((int)WorldID.TEST_ID, new Test());
             AddWorld((int)WorldID.TUT_ID, new Tutorial(true));
             AddWorld((int)WorldID.DAILY_QUEST_ID, new DailyQuestRoom());
+            AddWorld((int)WorldID.DRASTA_CITADEL_ID, new DrastaCitadel());
 
             Monitor = new RealmPortalMonitor(this);
             AddWorld(GameWorld.AutoName(1, true));

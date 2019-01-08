@@ -35,9 +35,6 @@ public class PlayerMenu extends Menu {
         _local5 = new MenuOption(AssetLibrary.getImageFromSet("lofiInterfaceBig", 21), 0xFFFFFF, TextKey.PLAYERMENU_PM);
         _local5.addEventListener(MouseEvent.CLICK, this.onPrivateMessage);
         addOption(_local5);
-        _local5 = new MenuOption(AssetLibrary.getImageFromSet("lotfInterfaceBig", 10), 0xFFFFFF, TextKey.FRIEND_ADD_TITLE);
-        _local5.addEventListener(MouseEvent.CLICK, this.onAddFriend);
-        addOption(_local5);
         if (_arg3) {
             _local5 = new MenuOption(AssetLibrary.getImageFromSet("lofiInterfaceBig", 21), 0xFFFFFF, TextKey.PLAYERMENU_GUILDCHAT);
             _local5.addEventListener(MouseEvent.CLICK, this.onGuildMessage);
@@ -59,20 +56,8 @@ public class PlayerMenu extends Menu {
         this.yOffset = (this.yOffset + 7);
         addChild(this.playerPanel_);
         if (((Player.isAdmin) || (Player.isMod))) {
-            _local3 = new MenuOption(AssetLibrary.getImageFromSet("lofiInterfaceBig", 10), 0xFFFFFF, "Ban MultiBoxer");
-            _local3.addEventListener(MouseEvent.CLICK, this.onKickMultiBox);
-            addOption(_local3);
-            _local3 = new MenuOption(AssetLibrary.getImageFromSet("lofiInterfaceBig", 10), 0xFFFFFF, "Ban RWT");
-            _local3.addEventListener(MouseEvent.CLICK, this.onKickRWT);
-            addOption(_local3);
-            _local3 = new MenuOption(AssetLibrary.getImageFromSet("lofiInterfaceBig", 10), 0xFFFFFF, "Ban Cheat");
-            _local3.addEventListener(MouseEvent.CLICK, this.onKickCheat);
-            addOption(_local3);
-            _local3 = new MenuOption(AssetLibrary.getImageFromSet("lofiInterfaceBig", 4), 0xFFFFFF, TextKey.PLAYERMENU_MUTE);
-            _local3.addEventListener(MouseEvent.CLICK, this.onMute);
-            addOption(_local3);
-            _local3 = new MenuOption(AssetLibrary.getImageFromSet("lofiInterfaceBig", 3), 0xFFFFFF, TextKey.PLAYERMENU_UNMUTE);
-            _local3.addEventListener(MouseEvent.CLICK, this.onUnMute);
+            _local3 = new MenuOption(AssetLibrary.getImageFromSet("lofiInterfaceBig", 10), 0xFFFFFF, "Kick");
+            _local3.addEventListener(MouseEvent.CLICK, this.onKick);
             addOption(_local3);
         }
         if (((this.gs_.map.allowPlayerTeleport()) && (this.player_.isTeleportEligible(this.player_)))) {
@@ -116,45 +101,16 @@ public class PlayerMenu extends Menu {
             _local3.addEventListener(MouseEvent.CLICK, this.onUnignore);
             addOption(_local3);
         }
-        _local3 = new MenuOption(AssetLibrary.getImageFromSet("lofiInterfaceBig", 18), 0xFFFFFF, "Add as Friend");
-        _local3.addEventListener(MouseEvent.CLICK, this.onAddFriend);
-        addOption(_local3);
     }
 
-    private function onKickMultiBox(_arg1:Event):void {
-        this.gs_.gsc_.playerText((("/kick " + this.player_.name_) + " Multiboxing"));
-        remove();
-    }
-
-    private function onKickRWT(_arg1:Event):void {
-        this.gs_.gsc_.playerText((("/kick " + this.player_.name_) + " RWT"));
-        remove();
-    }
-
-    private function onKickCheat(_arg1:Event):void {
-        this.gs_.gsc_.playerText((("/kick " + this.player_.name_) + " Cheating"));
-        remove();
-    }
-
-    private function onMute(_arg1:Event):void {
-        this.gs_.gsc_.playerText(("/mute " + this.player_.name_));
-        remove();
-    }
-
-    private function onUnMute(_arg1:Event):void {
-        this.gs_.gsc_.playerText(("/unmute " + this.player_.name_));
+    private function onKick(_arg1:Event):void {
+        this.gs_.gsc_.playerText((("/kick " + this.player_.name_)));
         remove();
     }
 
     private function onPrivateMessage(_arg1:Event):void {
         var _local2:ShowChatInputSignal = StaticInjectorContext.getInjector().getInstance(ShowChatInputSignal);
         _local2.dispatch(true, (("/tell " + this.playerName_) + " "));
-        remove();
-    }
-
-    private function onAddFriend(_arg1:Event):void {
-        var _local2:FriendActionSignal = StaticInjectorContext.getInjector().getInstance(FriendActionSignal);
-        _local2.dispatch(new FriendRequestVO(FriendConstant.INVITE, this.playerName_));
         remove();
     }
 

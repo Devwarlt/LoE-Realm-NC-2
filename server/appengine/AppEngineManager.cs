@@ -267,13 +267,6 @@ namespace LoESoft.AppEngine
                     return;
                 }
 
-                if (_webcontext.Request.Url.LocalPath.Contains("crossdomain"))
-                {
-                    new crossdomain().HandleRequest(_webcontext);
-                    _webcontext.Response.Close();
-                    return;
-                }
-
                 if (_webcontext.Request.Url.LocalPath.Contains("sfx") || _webcontext.Request.Url.LocalPath.Contains("music"))
                 {
                     new Sfx().HandleRequest(_webcontext);

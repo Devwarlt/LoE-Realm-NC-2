@@ -218,10 +218,12 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
             {
                 if (!command.ToLower().Contains("start ")) // task details
                 {
-                    if (player.Stars >= GameTask.Tasks[task].StarsRequirement)
+                    var starrequirement = GameTask.Tasks[task].StarsRequirement;
+
+                    if (player.Stars >= starrequirement)
                         callback = $"You seems prepared to initialize this task, just say 'start {task}' to begin!";
                     else
-                        callback = $"You are too young at this moment to do '{task}' task. Come back here later...";
+                        callback = $"You are too young at this moment to do '{task}' task. Come back here later when you get {starrequirement} star{(starrequirement > 1 ? "s" : "")}...";
                 }
                 else // task start
                 {

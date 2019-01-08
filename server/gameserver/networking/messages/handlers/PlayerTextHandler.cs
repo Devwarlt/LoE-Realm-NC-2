@@ -21,11 +21,6 @@ namespace LoESoft.GameServer.networking.handlers
                     GameServer.Manager.Commands.Execute(client.Player, t, message.Text);
                 else
                 {
-                    if (client.Player.Muted)
-                    {
-                        client.Player.SendInfo("{\"key\":\"server.muted\"}");
-                        return;
-                    }
                     if (!client.Player.NameChosen)
                     {
                         client.Player.SendInfo("{\"key\":\"server.must_be_named\"}");

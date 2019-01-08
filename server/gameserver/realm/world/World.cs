@@ -32,7 +32,8 @@ namespace LoESoft.GameServer.realm
         WC = -8,
         ARENA = -9,
         MARKET = -11,
-        DAILY_QUEST_ID = -13
+        DAILY_QUEST_ID = -13,
+        DRASTA_CITADEL_ID = -14
     }
 
     public abstract class World : IDisposable

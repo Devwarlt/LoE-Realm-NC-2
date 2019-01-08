@@ -54,10 +54,10 @@ namespace LoESoft.GameServer.logic.behaviors
             this.rotateRadius = rotateRadius;
             this.rotateColor = rotateColor;
             this.shootAngle = shoots == 1 ? 0 : (shootAngle ?? 360.0 / shoots) * Math.PI / 180;
-            this.direction = (float?) (direction * Math.PI / 180);
-            this.angleOffset = (float) (angleOffset * Math.PI / 180);
-            this.defaultAngle = (float?) (defaultAngle * Math.PI / 180);
-            this.rotateAngle = (float?) (rotateAngle * Math.PI / 180);
+            this.direction = (float?)(direction * Math.PI / 180);
+            this.angleOffset = (float)(angleOffset * Math.PI / 180);
+            this.defaultAngle = (float?)(defaultAngle * Math.PI / 180);
+            this.rotateAngle = (float?)(rotateAngle * Math.PI / 180);
         }
 
         protected override void OnStateEntry(Entity host, RealmTime time, ref object state)
@@ -93,7 +93,7 @@ namespace LoESoft.GameServer.logic.behaviors
         {
             try
             {
-                int cool = (int?) state ?? -1;
+                int cool = (int?)state ?? -1;
                 Status = CycleStatus.NotStarted;
 
                 if (cool <= 0)
@@ -128,7 +128,7 @@ namespace LoESoft.GameServer.logic.behaviors
                         {
                             Projectile prj = host.CreateProjectile(
                                 desc, host.ObjectType, dmg, time.TotalElapsedMs,
-                                prjPos, (float) (startAngle + shootAngle * i));
+                                prjPos, (float)(startAngle + shootAngle * i));
                             host.Owner.EnterWorld(prj);
                             if (i == 0)
                                 prjId = prj.ProjectileId;
@@ -139,8 +139,8 @@ namespace LoESoft.GameServer.logic.behaviors
                             if (rotateAngle != null)
                                 target = new Position
                                 {
-                                    X = host.X + (float) (Math.Cos(rotateAngle.Value)),
-                                    Y = host.Y + (float) (Math.Sin(rotateAngle.Value)),
+                                    X = host.X + (float)(Math.Cos(rotateAngle.Value)),
+                                    Y = host.Y + (float)(Math.Sin(rotateAngle.Value)),
                                 };
                             else
                                 target = new Position
@@ -164,11 +164,11 @@ namespace LoESoft.GameServer.logic.behaviors
                             BulletId = prjId,
                             OwnerId = host.Id,
                             Position = prjPos,
-                            Angle = (float) startAngle,
-                            Damage = (short) dmg,
-                            BulletType = (byte) desc.BulletType,
-                            AngleInc = (float) shootAngle,
-                            NumShots = (byte) count,
+                            Angle = (float)startAngle,
+                            Damage = (short)(dmg * (host.HasConditionEffect(ConditionEffectIndex.Weak) ? 0.5d : 1d)),
+                            BulletType = (byte)desc.BulletType,
+                            AngleInc = (float)shootAngle,
+                            NumShots = (byte)count,
                         }, null);
                     }
                     cool = coolDown.Next(Random);
