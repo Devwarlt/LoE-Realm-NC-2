@@ -4,7 +4,7 @@ using LoESoft.Core;
 
 namespace LoESoft.AppEngine.dailyLogin
 {
-    internal class FetchCalendar : RequestHandler
+    internal class fetchCalendar : RequestHandler
     {
         /* Queries:
          *  do_login (bool) - Not Guest (?)
@@ -27,13 +27,19 @@ namespace LoESoft.AppEngine.dailyLogin
                 return;
             }
 
+            if(MonthCalendarUtils.DISABLE_CALENDAR)
+            {
+                WriteLine("<Error>This feature is disabled.</Error>");
+                return;
+            }
+
             DailyCalendar CalendarDb = new DailyCalendar(acc);
 
             if(CalendarDb.IsNull || IsNextMonth(CalendarDb.LastTime))
             {
                 CalendarDb = new DailyCalendar(acc)
                 {
-                    ClaimedDays = new int[] { 1 },
+                    ClaimedDays = new int[] {},
                     ConsecutiveDays = 1,
                     NonConsecutiveDays = 1,
                     UnlockableDays = 1,
