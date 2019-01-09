@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 
 namespace LoESoft.Core.config
 {
@@ -16,6 +17,7 @@ namespace LoESoft.Core.config
         public static readonly bool ENABLE_RESTART_SYSTEM = SERVER_MODE == ServerMode.Production;
         public static readonly int RESTART_APPENGINE_DELAY_MINUTES = 4 * 60;
         public static readonly int RESTART_DELAY_MINUTES = 120;
+        public static readonly DateTimeKind DateTimeKind = DateTimeKind.Utc;
 
         public static readonly List<string> ALLOWED_LOCAL_DNS = new List<string>
         {
