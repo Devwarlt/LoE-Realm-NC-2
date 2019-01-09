@@ -740,6 +740,7 @@
     <EmbeddedResource Include="realm\world\maps\json\loe_chicago_2.1.json" />
     <None Include="realm\world\maps\json\classic.jm" />
     <EmbeddedResource Include="realm\world\maps\json\drasta.json" />
+    <EmbeddedResource Include="realm\world\maps\json\undead lair\udl.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="realm\world\maps\json\dungeons\spider den\" />
