@@ -11,6 +11,7 @@ using LoESoft.GameServer.realm.world;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -19,6 +20,8 @@ using System.Threading;
 
 namespace LoESoft.GameServer.realm
 {
+    using Timer = System.Timers.Timer;
+
     public interface IDungeon { }
 
     public enum WorldID : int
@@ -56,6 +59,7 @@ namespace LoESoft.GameServer.realm
             Timers.Add(new WorldTimer(120 * 1000, (w, t) =>
             {
                 canBeClosed = true;
+
                 if (NeedsPortalKey)
                     PortalKeyExpired = true;
             }));
@@ -75,8 +79,13 @@ namespace LoESoft.GameServer.realm
             }
         }
 
+        private Timer _gameTimer { get; set; } = new Timer(LogicTicker.COOLDOWN_DELAY) { AutoReset = true };
+        private Stopwatch _watch { get; set; } = new Stopwatch();
+
         public virtual void Tick(RealmTime time)
         {
+            var b = _watch.ElapsedMilliseconds;
+
             if (IsLimbo)
                 return;
 
@@ -141,8 +150,23 @@ namespace LoESoft.GameServer.realm
                     return projectile;
                 }).ToList();
 
-            if (Players.Count != 0 || !canBeClosed || !IsDungeon())
+            if (Players.Count == 0 && (!canBeClosed || !IsDungeon()))
+            {
+                _watch.Stop();
+                _hasPlayer = false;
+                _gameTimer.Stop();
                 return;
+            }
+
+            if (Players.Count != 0 || !canBeClosed || !IsDungeon())
+            {
+                var variation = _watch.ElapsedMilliseconds - b;
+
+                if (variation < LogicTicker.COOLDOWN_DELAY)
+                    Thread.Sleep(LogicTicker.COOLDOWN_DELAY); // 200 ms
+
+                return;
+            }
 
             if (this is Vault vault)
                 GameServer.Manager.RemoveVault(vault.AccountId);
@@ -310,6 +334,8 @@ namespace LoESoft.GameServer.realm
             }
         }
 
+        private bool _hasPlayer { get; set; }
+
         public virtual int EnterWorld(Entity entity)
         {
             if (entity is Player player)
@@ -320,7 +346,16 @@ namespace LoESoft.GameServer.realm
                     player.Client.EventNotification = true;
                 }
 
-                TryAdd(player);
+                if (TryAdd(player))
+                {
+                    if (!_hasPlayer)
+                    {
+                        _watch.Start();
+                        _hasPlayer = true;
+                        _gameTimer.Elapsed += delegate { Tick(Manager.Logic.CurrentTime); };
+                        _gameTimer.Start();
+                    }
+                }
             }
             else
             {
@@ -384,16 +419,18 @@ namespace LoESoft.GameServer.realm
             entity = null;
         }
 
-        private void TryAdd(Player player)
+        private bool TryAdd(Player player)
         {
             player.Id = GetNextEntityId();
 
             if (!Players.TryAdd(player.Id, player) || !Entities.TryAdd(player.Id, player))
-                return;
+                return false;
 
             player.Init(this);
 
             PlayersCollision.Insert(player);
+
+            return true;
         }
 
         private void TryRemove(Player player)
