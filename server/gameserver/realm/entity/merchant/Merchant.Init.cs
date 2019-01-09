@@ -1,7 +1,6 @@
 #region
 
 using LoESoft.Core;
-using LoESoft.Core.config;
 using LoESoft.Core.models;
 using LoESoft.GameServer.realm.terrain;
 using System;
@@ -158,24 +157,9 @@ namespace LoESoft.GameServer.realm.entity.merchant
 
                 var s = Random.Next(0, 100);
 
-                if (s < 2 * Settings.EVENT_RATE)
-                    Discount = 50;
-                else if (s < 5 * Settings.EVENT_RATE)
-                    Discount = 25;
-                else if (s < 10 * Settings.EVENT_RATE)
-                    Discount = 15;
-                else if (s < 15 * Settings.EVENT_RATE)
-                    Discount = 10;
-                else
-                    Discount = 0;
-
                 if (prices.TryGetValue(MType, out Tuple<int, CurrencyType> price))
                 {
-                    if (Discount != 0)
-                        Price = (int)(price.Item1 - (price.Item1 * ((double)Discount / 100))) < 1 ?
-                            price.Item1 : (int)(price.Item1 - (price.Item1 * ((double)Discount / 100)));
-                    else
-                        Price = price.Item1;
+                    Price = price.Item1;
                     Currency = price.Item2;
                 }
 

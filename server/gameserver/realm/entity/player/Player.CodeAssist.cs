@@ -406,6 +406,8 @@ namespace LoESoft.GameServer.realm.entity.player
         private readonly ConcurrentQueue<long> _updateAckTimeout = new ConcurrentQueue<long>();
         private readonly ConcurrentQueue<long> _gotoAckTimeout = new ConcurrentQueue<long>();
 
+        private int DcThresholdCounter { get; set; } = 0;
+
         public bool KeepAlive(RealmTime time)
         {
             if (_pingTime == -1)
@@ -416,8 +418,16 @@ namespace LoESoft.GameServer.realm.entity.player
 
             if (time.TotalElapsedMs - _pongTime > DcThreshold)
             {
-                GameServer.Manager.TryDisconnect(Client, DisconnectReason.KEEP_ALIVE_TIMEOUT);
-                return false;
+                if (DcThresholdCounter <= 10)
+                {
+                    Client.SendMessage(new PING() { Serial = (int)time.TotalElapsedMs });
+                    DcThresholdCounter++;
+                }
+                else
+                {
+                    GameServer.Manager.TryDisconnect(Client, DisconnectReason.KEEP_ALIVE_TIMEOUT);
+                    return false;
+                }
             }
 
             if (time.TotalElapsedMs - _pingTime < PingPeriod)
