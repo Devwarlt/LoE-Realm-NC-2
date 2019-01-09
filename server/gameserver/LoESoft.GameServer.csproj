@@ -165,6 +165,8 @@
     <Compile Include="logic\monsters\Dungeons\The Shatters\Regular Enemies\Stone Paladin.cs" />
     <Compile Include="logic\monsters\Dungeons\The Shatters\Regular Enemies\Stone Knight.cs" />
     <Compile Include="logic\monsters\Editions\Edition 1\Bosses.cs" />
+    <Compile Include="logic\monsters\Editions\Edition 1\LoE Elites\Maurth the Succubus Princess.cs" />
+    <Compile Include="logic\monsters\Editions\Edition 1\LoE Elites\Undertaker the Great Juggernaut.cs" />
     <Compile Include="logic\monsters\Editions\Edition 1\MiniBosses.cs" />
     <Compile Include="logic\monsters\Editions\Edition 1\Minions.cs" />
     <Compile Include="logic\monsters\Editions\Edition 1\Frog King\Frog of Filisha.cs" />
@@ -212,6 +214,7 @@
     <Compile Include="logic\monsters\Realm\Shoreline\Shore Plains.cs" />
     <Compile Include="logic\monsters\Realm\Shoreline\Shore Sand.cs" />
     <Compile Include="logic\skills\Aoe.cs" />
+    <Compile Include="logic\skills\WorldQuestNotification.cs" />
     <Compile Include="logic\skills\GroundTransform.cs" />
     <Compile Include="logic\skills\HealGroup.cs" />
     <Compile Include="logic\skills\ManaDrainBomb.cs" />
@@ -424,6 +427,8 @@
     <Compile Include="realm\ChatManager.cs" />
     <Compile Include="realm\entity\player\Player.IO.cs" />
     <Compile Include="realm\entity\player\Player.Tasks.cs" />
+    <Compile Include="realm\mapsetpiece\setpieces\Undertaker.cs" />
+    <Compile Include="realm\mapsetpiece\setpieces\Maurth.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\DreamIsle.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\Frog.cs" />
     <Compile Include="realm\commands\command\TestingCommands.cs" />
@@ -520,6 +525,7 @@
     <Compile Include="realm\TradeManager.cs" />
     <Compile Include="realm\Utils.cs" />
     <Compile Include="realm\world\World.cs" />
+    <Compile Include="realm\world\worlds\DrastaCitadel.cs" />
     <Compile Include="realm\world\worlds\Public Arena.cs" />
     <Compile Include="realm\world\worlds\Arena.cs" />
     <Compile Include="realm\world\worlds\dungeons\Beachzone.cs" />
@@ -733,6 +739,8 @@
     <EmbeddedResource Include="realm\mapsetpiece\maps\dreamisle.jm" />
     <EmbeddedResource Include="realm\world\maps\json\loe_chicago_2.1.json" />
     <None Include="realm\world\maps\json\classic.jm" />
+    <EmbeddedResource Include="realm\world\maps\json\drasta.json" />
+    <EmbeddedResource Include="realm\world\maps\json\undead lair\udl.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="realm\world\maps\json\dungeons\spider den\" />

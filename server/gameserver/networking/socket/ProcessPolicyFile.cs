@@ -1,5 +1,4 @@
 ﻿using LoESoft.Core;
-using LoESoft.Core.config;
 using System;
 using System.Net.Sockets;
 
@@ -16,7 +15,9 @@ namespace LoESoft.GameServer.networking
             {
                 var s = new NetworkStream(socket);
                 var wtr = new NWriter(s);
-                wtr.WriteNullTerminatedString(Settings.NETWORKING.INTERNAL.CROSS_DOMAIN_POLICY);
+                wtr.WriteNullTerminatedString(@"<cross-domain-policy>
+    <allowed-access-from domain=""*"" to-ports=""*"" />
+</cross-domain-policy>");
                 wtr.Write((byte)'\r');
                 wtr.Write((byte)'\n');
             }

@@ -1,0 +1,188 @@
+{
+  "width": 128,
+  "height": 128,
+  "data": "eNrtmu1S4jAYRuOuLmhVvkQQXBR31RWUqnj/12batNk0LSgKP/L2nGcGmDZ2ODQmaRKlAAAAAAAAAAAAAAAAAAAAAAAAADZmT5zRjx0mDP+fO0o4/vs6B+nrNmKuFJp/Mb82TPkKYfk3sm/d/JZ/XocaAfo3PIdNc2g/NYL1P1qbSB3rRB+UCtv/ZE1Os6wrE77/6TcStn/L82+nrx3nSNd+6hW8245/k/svwP9M9bNR3Hn2PlDDLBfeOK+vS0vyT2p5X428jNVllnHpXF/Y/e/pYyP1u5CJ9Z94Z0a6dEdY/Tf+V05cf/e48ffv/7UQ/6m2zfPfP890pb+U+z9RN3rEV52btCZI94/UH/XX5tbmTp9x/bui/M8d/3v1ryL3nr/c+2/8H5zI97/Qvbxp44x/Yj1Tc51Z9gsY/yRjXVqGf2RH/EPb2uf+M/WonnQe01/A+OdlhvaJIAraf2FH8mX/eWqfZF7pb7IQ6B9X+scC/aM1/n79r/aPhLR/A6f9iyvbv9hp/wai+7/Y9n/POnn/F6/o/1qB+3dX+PuJazP+eakc/76K82/V9vlnuZXn346I+t/byvyHjP//z89/mdlxOf71nv+s9/x3m/WPQrqF1a5O4VyvtP5lrtVk/Ssg/ybr35/a/7DQkbz/IcnyCztein8Vqv82g39o+/8OS/V7+WGtX51lUP713v9a5/3PbwoAAAAAAAAAAAAAAAAAAAAAAAAAAGCHvAPilG3y",
+  "dict": [
+    { "ground": "Black Water Frozen" },
+    {
+      "objs": [ { "id": "Patty Clover1" } ],
+      "ground": "Black Water Frozen"
+    },
+    { "objs": [ { "id": "Ocean Wall" } ] },
+    { "ground": "Metal Plates" },
+    { "ground": "OceanFloor" },
+    {
+      "objs": [ { "id": "Earthy Bush Large" } ],
+      "ground": "OceanFloor"
+    },
+    {
+      "regions": [ { "id": "Store 9" } ],
+      "objs": [ { "id": "Merchant" } ],
+      "ground": "OceanFloor"
+    },
+    {
+      "regions": [ { "id": "Store 10" } ],
+      "objs": [ { "id": "Merchant" } ],
+      "ground": "OceanFloor"
+    },
+    {
+      "objs": [ { "id": "Human Skull" } ],
+      "ground": "OceanFloor"
+    },
+    {
+      "objs": [ { "id": "Jungle Grass" } ],
+      "ground": "OceanFloor"
+    },
+    {
+      "objs": [ { "id": "Temple Waterfall Double" } ],
+      "ground": "Brown Closed"
+    },
+    { "ground": "Brown Closed" },
+    {
+      "objs": [ { "id": "Decal Pet" } ],
+      "ground": "Brown Closed"
+    },
+    {
+      "objs": [ { "id": "Bloody Rose" } ],
+      "ground": "Undergrowth"
+    },
+    { "ground": "Undergrowth" },
+    {
+      "objs": [ { "id": "Earthy Red Rock" } ],
+      "ground": "OceanFloor"
+    },
+    {
+      "objs": [ { "id": "Human Skeleton" } ],
+      "ground": "Undergrowth"
+    },
+    {
+      "objs": [ { "id": "Patty Coin1" } ],
+      "ground": "Undergrowth"
+    },
+    {
+      "objs": [ { "id": "Earth Blue Flowers" } ],
+      "ground": "Undergrowth"
+    },
+    {
+      "objs": [ { "id": "Jungle Grass" } ],
+      "ground": "Undergrowth"
+    },
+    {
+      "objs": [ { "id": "Dragon Candelabra" } ],
+      "ground": "Metal Plates"
+    },
+    {
+      "objs": [ { "id": "GhostShip Stool" } ],
+      "ground": "Metal Plates"
+    },
+    {
+      "objs": [ { "id": "Arena Spell Table" } ],
+      "ground": "Metal Plates"
+    },
+    {
+      "objs": [ { "id": "Komainu" } ],
+      "ground": "Metal Plates"
+    },
+    { "ground": "Metal Plate Stripes" },
+    {
+      "objs": [ { "id": "Komainu Agyo" } ],
+      "ground": "Metal Plates"
+    },
+    {
+      "objs": [ { "id": "Onsen Wall Double" } ],
+      "ground": "Cemetery Grass"
+    },
+    {
+      "objs": [ { "id": "Onsen Wall" } ],
+      "ground": "Cemetery Grass"
+    },
+    { "ground": "Brown Lines" },
+    {
+      "objs": [ { "id": "Onsen Waterfall" } ],
+      "ground": "Black Water Light Frozen"
+    },
+    { "ground": "Cemetery Grass" },
+    { "ground": "Black Water Light Frozen" },
+    {
+      "objs": [ { "id": "Earthy Red Rock Lighter" } ],
+      "ground": "OceanFloor"
+    },
+    {
+      "objs": [ { "id": "Jungle Tree Big" } ],
+      "ground": "Cemetery Grass"
+    },
+    {
+      "objs": [ { "id": "Arena Statue" } ],
+      "ground": "Brown Closed"
+    },
+    {
+      "objs": [ { "id": "Arena Rug 1" } ],
+      "ground": "Castle Cobble"
+    },
+    {
+      "objs": [ { "id": "Arena Rug 4" } ],
+      "ground": "Castle Cobble"
+    },
+    {
+      "objs": [ { "id": "Arena Rug 5" } ],
+      "ground": "Castle Cobble"
+    },
+    {
+      "objs": [ { "id": "Arena Rug 3" } ],
+      "ground": "Castle Cobble"
+    },
+    {
+      "objs": [ { "id": "Arena Rug 2" } ],
+      "ground": "Castle Cobble"
+    },
+    {
+      "regions": [ { "id": "Spawn" } ],
+      "ground": "Castle Cobble"
+    },
+    { "ground": "Castle Cobble" },
+    {
+      "objs": [ { "id": "Wooden Wall" } ],
+      "ground": "Castle Cobble"
+    },
+    {
+      "objs": [ { "id": "Wood Panel Window" } ],
+      "ground": "Castle Cobble"
+    },
+    {
+      "objs": [ { "id": "Wooden Wall Torch Tutorial" } ],
+      "ground": "Castle Cobble"
+    },
+    {
+      "objs": [ { "id": "atst Wall" } ],
+      "ground": "Castle Cobble"
+    },
+    {
+      "objs": [ { "id": "Decal Special" } ],
+      "ground": "Brown Closed"
+    },
+    {
+      "objs": [ { "id": "Arena Rug 7" } ],
+      "ground": "Castle Cobble"
+    },
+    {
+      "objs": [ { "id": "Katana Stand" } ],
+      "ground": "Castle Cobble"
+    },
+    {
+      "objs": [ { "id": "Arena Rug 6" } ],
+      "ground": "Castle Cobble"
+    },
+    {
+      "objs": [ { "id": "Arena Rug 8" } ],
+      "ground": "Castle Cobble"
+    },
+    {
+      "objs": [ { "id": "Earthy Bush Small" } ],
+      "ground": "OceanFloor"
+    },
+    {
+      "objs": [ { "id": "GhostShip Stairs" } ],
+      "ground": "Black Water Frozen"
+    }
+  ]
+}

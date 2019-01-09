@@ -18,11 +18,6 @@ public class DomainModel {
     public var client:PlatformModel;
     private var localDomain:String;
 
-
-    public function applyDomainSecurity():void {
-        Security.allowDomain("*");
-    }
-
     public function isLocalDomainValid():Boolean {
         return (((this.client.isDesktop()) || (this.isLocalDomainInWhiteList())));
     }

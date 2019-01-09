@@ -162,10 +162,14 @@ public class ChatMediator extends Mediator {
                         this.triggerOrPromptRegistration("/g ");
                     }
                     else {
-                        if (_arg1 == this.shortcuts.getTellShortcut()) {
-                            var _local1:String = this.tellModel.getNext();
-                            var _local2:String = ("/tell{FORMATINPUT}").replace("{FORMATINPUT}", (_local1 == null || _local1 == "") ? " " : " " + this.tellModel.getNext() + " ");
-                            this.triggerOrPromptRegistration(_local2);
+                        if (_arg1 == this.shortcuts.getGlobalChatShortcut()) {
+                            this.triggerOrPromptRegistration("/gchat ");
+                        } else {
+                            if (_arg1 == this.shortcuts.getTellShortcut()) {
+                                var _local1:String = this.tellModel.getNext();
+                                var _local2:String = ("/tell{FORMATINPUT}").replace("{FORMATINPUT}", (_local1 == null || _local1 == "") ? " " : " " + this.tellModel.getNext() + " ");
+                                this.triggerOrPromptRegistration(_local2);
+                            }
                         }
                     }
                 }

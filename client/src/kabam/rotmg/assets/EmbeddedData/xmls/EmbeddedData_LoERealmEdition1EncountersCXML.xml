@@ -324,4 +324,81 @@
 			<PassesCover />
 		</Projectile>
 	</Object>
+	<Object type="0x6716" id="Maurth the Succubus Princess">
+		<Group>Edition1</Group>
+		<Enemy />
+		<Class>Character</Class>
+		<AnimatedTexture>
+			<File>chars16x16dMountains1</File>
+			<Index>0x0a</Index>
+		</AnimatedTexture>
+		<HitSound>monster/dragons_hit</HitSound>
+		<DeathSound>monster/djinn_hit</DeathSound>
+		<MaxHitPoints>250000</MaxHitPoints>
+		<Level>20</Level>
+		<Defense>90</Defense>
+		<Experience>5000</Experience>
+		<Quest />
+		<StasisImmune />
+		<StunImmune />
+		<Projectile id="0">
+			<ObjectId>Fire Bullet</ObjectId>
+			<Damage>35</Damage>
+			<Speed>30</Speed>
+			<LifetimeMS>8500</LifetimeMS>
+			<ConditionEffect duration="5">Bleeding</ConditionEffect>
+			<PassesCover />
+		</Projectile>
+		<Projectile id="1">
+			<ObjectId>Dragon Attack Blue Fireball</ObjectId>
+			<Damage>155</Damage>
+			<Speed>100</Speed>
+			<LifetimeMS>8500</LifetimeMS>
+			<MultiHit />
+			<PassesCover />
+		</Projectile>
+		<Projectile id="2">
+			<ObjectId>Black Missile</ObjectId>
+			<Damage>700</Damage>
+			<Speed>85</Speed>
+			<LifetimeMS>24000</LifetimeMS>
+			<ConditionEffect duration="5">Blind</ConditionEffect>
+			<MultiHit />
+			<PassesCover />
+			<Boomerang />
+		</Projectile>
+	</Object>
+	<Object type="0x6717" id="Undertaker the Great Juggernaut">
+		<Group>Edition1</Group>
+		<Enemy />
+		<Class>Character</Class>
+		<AnimatedTexture>
+			<File>chars16x16dMountains1</File>
+			<Index>0x09</Index>
+		</AnimatedTexture>
+		<HitSound>monster/oryx_hit</HitSound>
+		<DeathSound>monster/djinn_hit</DeathSound>
+		<MaxHitPoints>750000</MaxHitPoints>
+		<Level>20</Level>
+		<Defense>140</Defense>
+		<Experience>10000</Experience>
+		<Quest />
+		<StasisImmune />
+		<StunImmune />
+		<Projectile id="0">
+			<ObjectId>White Orb</ObjectId>
+			<Damage>185</Damage>
+			<Speed>115</Speed>
+			<LifetimeMS>8500</LifetimeMS>
+			<PassesCover />
+		</Projectile>
+		<Projectile id="1">
+			<ObjectId>Stone Slash</ObjectId>
+			<Damage>255</Damage>
+			<Speed>200</Speed>
+			<LifetimeMS>8500</LifetimeMS>
+			<MultiHit />
+			<PassesCover />
+		</Projectile>
+	</Object>
 </Objects>

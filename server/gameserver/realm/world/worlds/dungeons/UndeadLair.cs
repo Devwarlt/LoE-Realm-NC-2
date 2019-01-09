@@ -10,6 +10,6 @@
             AllowTeleport = true;
         }
 
-        protected override void Init() => LoadMap("UDL1", MapType.Wmap);
+        protected override void Init() => LoadMap("udl", MapType.Json);
     }
 }

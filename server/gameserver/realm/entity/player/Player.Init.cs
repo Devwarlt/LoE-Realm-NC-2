@@ -110,7 +110,6 @@ namespace LoESoft.GameServer.realm.entity.player
                 {
                     Locked = client.Account.Database.GetLockeds(client.Account);
                     Ignored = client.Account.Database.GetIgnoreds(client.Account);
-                    Muted = client.Account.Muted;
                 }
                 catch (Exception) { }
 
@@ -309,18 +308,27 @@ namespace LoESoft.GameServer.realm.entity.player
             MaxHackEntries = 0;
             visibleTiles = new Dictionary<IntPoint, bool>();
             WorldInstance = owner;
-            Random rand = new Random();
+
+            var rand = new Random();
+
             int x, y;
+
             do
             {
                 x = rand.Next(0, owner.Map.Width);
                 y = rand.Next(0, owner.Map.Height);
             } while (owner.Map[x, y].Region != TileRegion.Spawn);
+
             Move(x + 0.5f, y + 0.5f);
+
             tiles = new byte[owner.Map.Width, owner.Map.Height];
+
             SetNewbiePeriod();
+
             base.Init(owner);
-            List<int> gifts = Client.Account.Gifts.ToList();
+
+            var gifts = Client.Account.Gifts.ToList();
+
             if (owner.Id == (int)WorldID.NEXUS_ID || owner.Name == "Vault")
             {
                 Client.SendMessage(new GLOBAL_NOTIFICATION
@@ -329,6 +337,7 @@ namespace LoESoft.GameServer.realm.entity.player
                     Text = gifts.Count > 0 ? "giftChestOccupied" : "giftChestEmpty"
                 });
             }
+
             if (Client.Character.Pet != 0)
             {
                 HatchlingPet = false;
@@ -345,24 +354,25 @@ namespace LoESoft.GameServer.realm.entity.player
 
             CheckSetTypeSkin();
 
-            if ((AccountType)AccountType == Core.config.AccountType.DEM_ACCOUNT)
-            {
-                var invincible = new ConditionEffect
+            if (Settings.SERVER_MODE == Settings.ServerMode.Local)
+                if ((AccountType)AccountType == Core.config.AccountType.DEM_ACCOUNT)
                 {
-                    Effect = ConditionEffectIndex.Invincible,
-                    DurationMS = -1
-                };
+                    var invincible = new ConditionEffect
+                    {
+                        Effect = ConditionEffectIndex.Invincible,
+                        DurationMS = -1
+                    };
 
-                ApplyConditionEffect(invincible);
+                    ApplyConditionEffect(invincible);
 
-                var invulnerable = new ConditionEffect
-                {
-                    Effect = ConditionEffectIndex.Invulnerable,
-                    DurationMS = -1
-                };
+                    var invulnerable = new ConditionEffect
+                    {
+                        Effect = ConditionEffectIndex.Invulnerable,
+                        DurationMS = -1
+                    };
 
-                ApplyConditionEffect(invulnerable);
-            }
+                    ApplyConditionEffect(invulnerable);
+                }
 
             ApplyConditionEffect(AccountPerks.SetAccountTypeIcon());
 
@@ -471,8 +481,11 @@ namespace LoESoft.GameServer.realm.entity.player
             if (enemy.Quest)
                 score += 250;
 
-            if (enemy.ObjectId == "Eyeguard of Surrender")
-                score += 10000;
+            if (enemy.ObjectId.ToLower().Contains("maurth"))
+                score += 100000;
+
+            if (enemy.ObjectId.ToLower().Contains("undertaker"))
+                score += 500000;
 
             score += enemy.MaxHitPoints;
             score += enemy.Defense * enemy.Level;

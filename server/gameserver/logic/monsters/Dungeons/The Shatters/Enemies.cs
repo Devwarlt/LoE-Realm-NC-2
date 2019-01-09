@@ -740,7 +740,7 @@ namespace LoESoft.GameServer.logic
                         new TimedTransition(2000, "Explode")
                         ),
                     new State("Explode",
-                        new AddCond(ConditionEffectIndex.Invincible),
+                        new RemCond(ConditionEffectIndex.Invincible),
                         new Shoot(100, index: 0, shoots: 8),
                         new Suicide()
                         )
@@ -768,6 +768,7 @@ namespace LoESoft.GameServer.logic
                         new PlayerWithinTransition(5, "fire")
                             ),
                     new State("fire",
+                        new RemCond(ConditionEffectIndex.Invulnerable),
                         new Chase(0.5, range: 1),
                         new Shoot(10, 2, 10, index: 1, coolDown: 200),
                         new TimedTransition(10000, "invulnerable")

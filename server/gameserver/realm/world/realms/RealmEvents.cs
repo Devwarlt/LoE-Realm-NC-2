@@ -7,7 +7,7 @@ namespace LoESoft.GameServer.realm
 {
     internal partial class Realm
     {
-        public readonly double RealmEventProbability = 0.45; // 45%
+        public readonly double RealmEventProbability = 0.75; // 75%
 
         public readonly List<RealmEvent> RealmEventCache = new List<RealmEvent>
         {
@@ -15,7 +15,9 @@ namespace LoESoft.GameServer.realm
             new RealmEvent("Pentaract",  new Pentaract(), "Behold my Pentaract, and despair!"),
             new RealmEvent("Grand Sphinx",  new Sphinx(), "At last, a Grand Sphinx will teach you to respect!"),
             new RealmEvent("Cube God",  new CubeGod(), "Your meager abillities cannot possibly challenge a Cube God!"),
-            new RealmEvent("Dream Island Horde",  new DreamIsle(), "Fools! your futile efforts are no match for a Dream Island Horde!")
+            new RealmEvent("Dream Island Horde",  new DreamIsle(), "Fools! your futile efforts are no match for a Dream Island Horde!"),
+            new RealmEvent("Maurth the Succubus Princess", new Maurth(), "Haha!! My Maurth the Succubus Princess will SUCC the Life out of you!"),
+            new RealmEvent("Undertaker the Great Juggernaut", new Undertaker(), "You Humans are fools! My Undertaker the Great Juggernaut will take care to crush your spines!")
         };
 
         public void HandleRealmEvent(Enemy enemy, Player killer)

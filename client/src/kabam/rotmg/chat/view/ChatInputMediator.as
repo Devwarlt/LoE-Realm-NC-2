@@ -103,8 +103,13 @@ public class ChatInputMediator extends Mediator {
                     this.view.activate("/g ", true);
                 }
                 else {
-                    if (_local2 == this.chatShortcutModel.getTellShortcut()) {
-                        this.handleTell();
+                    if (_local2 == this.chatShortcutModel.getGlobalChatShortcut()) {
+                        this.view.activate("/gchat ", true);
+                    }
+                    else {
+                        if (_local2 == this.chatShortcutModel.getTellShortcut()) {
+                            this.handleTell();
+                        }
                     }
                 }
             }

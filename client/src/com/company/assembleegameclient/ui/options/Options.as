@@ -45,6 +45,7 @@ public class Options extends Sprite {
     public static const CHAT:String = "chat";
     public static const TELL:String = "tell";
     public static const GUILD_CHAT:String = "guildChat";
+    public static const GLOBAL_CHAT:String = "globalChat";
     public static const SCROLL_CHAT_UP:String = "scrollChatUp";
     public static const SCROLL_CHAT_DOWN:String = "scrollChatDown";
 
@@ -438,6 +439,7 @@ public class Options extends Sprite {
         this.addOptionAndPosition(new KeyMapper(CHAT_COMMAND, TextKey.OPTIONS_START_CHAT, TextKey.OPTIONS_START_CHAT_DESC));
         this.addOptionAndPosition(new KeyMapper(TELL, TextKey.OPTIONS_BEGIN_TELL, TextKey.OPTIONS_BEGIN_TELL_DESC));
         this.addOptionAndPosition(new KeyMapper(GUILD_CHAT, TextKey.OPTIONS_BEGIN_GUILD_CHAT, TextKey.OPTIONS_BEGIN_GUILD_CHAT_DESC));
+        this.addOptionAndPosition(new KeyMapper(GLOBAL_CHAT, "Begin Global Chat", "This key will bring up a global chat in the chat input box"));
         this.addOptionAndPosition(new ChoiceOption("filterLanguage", makeOnOffLabels(), [true, false], TextKey.OPTIONS_FILTER_OFFENSIVE_LANGUAGE, TextKey.OPTIONS_FILTER_OFFENSIVE_LANGUAGE_DESC, null));
         this.addOptionAndPosition(new KeyMapper(SCROLL_CHAT_UP, TextKey.OPTIONS_SCROLL_CHAT_UP, TextKey.OPTIONS_SCROLL_CHAT_UP_DESC));
         this.addOptionAndPosition(new KeyMapper(SCROLL_CHAT_DOWN, TextKey.OPTIONS_SCROLL_CHAT_DOWN, TextKey.OPTIONS_SCROLL_CHAT_DOWN_DESC));
