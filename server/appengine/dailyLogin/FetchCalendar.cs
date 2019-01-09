@@ -1,9 +1,32 @@
 ﻿using System;
 using System.Xml.Linq;
 using LoESoft.Core;
+using LoESoft.Core.config;
+using System.Collections.Generic;
 
 namespace LoESoft.AppEngine.dailyLogin
 {
+    public class MonthCalendarUtils
+    {
+        public static DateTime MonthDate = new DateTime(2019, 1, 1, 0, 0, 0, Settings.DateTimeKind);
+        public static bool DISABLE_CALENDAR = true;
+        public static List<FetchCalendarDay> MonthCalendarList = new List<FetchCalendarDay>(1)
+        {
+            new FetchCalendarDay
+            {
+                Item = 0x575a, //Public Arena Key
+                Quantity = 1
+            }
+        };
+    }
+
+    public class FetchCalendarDay
+    {
+        public int Item = -1;
+        public int Gold = 0;
+        public int Quantity = 0;
+    }
+
     internal class fetchCalendar : RequestHandler
     {
         /* Queries:
@@ -62,7 +85,7 @@ namespace LoESoft.AppEngine.dailyLogin
         internal string GetXML(DailyCalendar calendar)
         {
             var LoginRewards = new XElement("LoginRewards");
-            LoginRewards.Add(new XAttribute("serverTime", 0)); //Get Server Time
+            LoginRewards.Add(new XAttribute("serverTime", new DateTime(0, Settings.DateTimeKind))); //Get Server Time
             LoginRewards.Add(new XAttribute("conCurDay", calendar.ConsecutiveDays));
             LoginRewards.Add(new XAttribute("nonconCurDay", calendar.NonConsecutiveDays));
 
@@ -89,7 +112,7 @@ namespace LoESoft.AppEngine.dailyLogin
                 }
                 else if (calendar.UnlockableDays >= day)
                 {
-                    Login.Add(new XElement("key", day - 1));
+                    Login.Add(new XElement("key", day));
                 }
                 nonConsecutive.Add(Login);
             }
@@ -109,12 +132,5 @@ namespace LoESoft.AppEngine.dailyLogin
 
         internal bool IsNextDay(DateTime dateTime) => dateTime != DateTime.Today;
         internal bool IsNextMonth(DateTime dateTime) => (dateTime.Year == MonthCalendarUtils.MonthDate.Year && dateTime.Month != MonthCalendarUtils.MonthDate.Month) || dateTime.Year != MonthCalendarUtils.MonthDate.Year;
-
-        internal class FetchCalendarDay
-        {
-            public int Item = -1;
-            public int Gold = 0;
-            public int Quantity = 0;
-        }
     }
 }
