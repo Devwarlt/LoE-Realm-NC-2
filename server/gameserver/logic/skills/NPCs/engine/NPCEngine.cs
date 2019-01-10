@@ -1,6 +1,5 @@
 #region
 
-using LoESoft.Core.models;
 using LoESoft.GameServer.realm;
 using LoESoft.GameServer.realm.entity.npc;
 using LoESoft.GameServer.realm.entity.player;
@@ -61,7 +60,6 @@ namespace LoESoft.GameServer.logic.behaviors
             ref object state
             )
         {
-            Log.Info($"NPC Engine for {npc.Name} has been initialized!");
             _NPC = NPCs.Database.ContainsKey(npc.Name) ? NPCs.Database[npc.Name] : null;
             _NPC.Config(npc, _NPCLeaveMessages, _randomNPCLeaveMessages);
             _NPC.UpdateNPCStars(_NPCStars);

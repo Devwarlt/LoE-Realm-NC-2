@@ -319,7 +319,12 @@ namespace LoESoft.GameServer.realm.entity.player
                 y = rand.Next(0, owner.Map.Height);
             } while (owner.Map[x, y].Region != TileRegion.Spawn);
 
-            Move(x + 0.5f, y + 0.5f);
+            var newposition = owner.RemovePositionFromReconnect(AccountId);
+
+            if (newposition != null)
+                Move((int)newposition.Item1, (int)newposition.Item2);
+            else
+                Move(x + 0.5f, y + 0.5f);
 
             tiles = new byte[owner.Map.Width, owner.Map.Height];
 

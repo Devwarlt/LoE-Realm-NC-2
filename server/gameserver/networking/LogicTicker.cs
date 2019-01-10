@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 
 #endregion
@@ -78,17 +79,35 @@ namespace LoESoft.GameServer.realm
                             catch { }
                         }
 
-                    foreach (var request in TradeManager.CurrentRequests)
-                        if (request.Key.Owner == null || request.Value.Owner == null)
-                            continue;
-                        else
-                            TradeManager.CurrentRequests.Remove(request);
+                    try
+                    {
+                        foreach (var world in _manager.Worlds.Values.Distinct())
+                            if (world == null)
+                                continue;
+                            else
+                                world.Tick(t);
+                    }
+                    catch { }
 
-                    foreach (var trading in TradeManager.TradingPlayers)
-                        if (trading.Owner == null)
-                            continue;
-                        else
-                            TradeManager.TradingPlayers.Remove(trading);
+                    try
+                    {
+                        foreach (var request in TradeManager.CurrentRequests)
+                            if (request.Key.Owner == null || request.Value.Owner == null)
+                                continue;
+                            else
+                                TradeManager.CurrentRequests.Remove(request);
+                    }
+                    catch { }
+
+                    try
+                    {
+                        foreach (var trading in TradeManager.TradingPlayers)
+                            if (trading.Owner == null)
+                                continue;
+                            else
+                                TradeManager.TradingPlayers.Remove(trading);
+                    }
+                    catch { }
 
                     Thread.Sleep(mspt);
 

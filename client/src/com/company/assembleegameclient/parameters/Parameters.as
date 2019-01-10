@@ -21,7 +21,7 @@ public class Parameters {
     public static const ENVIRONMENT_DNS:String = !IS_DEVELOPER_MODE ? "loe-nc.servegame.com" : "localhost";
     public static const ENVIRONMENT_PORT:String = "5555";
     public static const BUILD_VERSION:String = "3";
-    public static const MINOR_VERSION:String = "0";
+    public static const MINOR_VERSION:String = "0.1";
     public static const FULL_BUILD:String = "v" + BUILD_VERSION + "." + MINOR_VERSION;
     public static const ENABLE_ENCRYPTION:Boolean = true;
     public static const PORT:int = 2050;
@@ -106,7 +106,7 @@ public class Parameters {
     public static var root:DisplayObject;
     public static var data_:Object = null;
     public static var GPURenderError:Boolean = false;
-    public static var blendType_:int = 0; //1 active borders
+    public static var blendType_:int = 1; //1 active borders (was 0)
     public static var projColorType_:int = 6;//0 disable projectile outline
     public static var drawProj_:Boolean = true;
     public static var screenShotMode_:Boolean = false;

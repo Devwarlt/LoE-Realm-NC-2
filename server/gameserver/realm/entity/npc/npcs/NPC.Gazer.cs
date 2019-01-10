@@ -192,6 +192,26 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                         callback = "You can ask me about 'uptime', 'online' and 'tasks' for more details.";
                         break;
                     #endregion
+                    #region "Access Dream Island"
+                    case "dream island":
+                        callback = "Do you want to access Dream Island? If you want then say 'access dream island' to proceed.";
+                        break;
+
+                    case "access dream island":
+                        RemovePlayer(player);
+                        Callback(player, command, false); // player only (self)
+                        Leave(player, true);
+
+                        player.Client.Reconnect(new networking.outgoing.RECONNECT()
+                        {
+                            Host = "",
+                            Port = Settings.GAMESERVER.PORT,
+                            GameId = (int)WorldID.DREAM_ISLAND,
+                            Name = "Dream Island",
+                            Key = Empty<byte>.Array,
+                        });
+                        return;
+                    #endregion
                     case "hi":
                     case "hello":
                     case "hey":
@@ -203,8 +223,8 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                         return;
 
                     case "bye":
-                    case "goodbye":
-                    case "goodnight":
+                    case "good bye":
+                    case "good night":
                         RemovePlayer(player);
                         Callback(player, command, false); // player only (self)
                         Leave(player, true);

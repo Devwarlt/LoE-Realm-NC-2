@@ -1,325 +1,385 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Objects>
-	<Object type="0x6700" id="Muzzlereaper">
-		<Group>DreamIslandMinions</Group>
-		<Enemy />
-		<Class>Character</Class>
-		<AnimatedTexture>
-			<File>LRDIE16x16</File>
-			<Index>0</Index>
-		</AnimatedTexture>
-		<HitSound>monster/flaming_skulls_hit</HitSound>
-		<DeathSound>monster/flaming_skulls_death</DeathSound>
-		<Size>100</Size>
-		<MaxHitPoints>20500</MaxHitPoints>
-		<Experience>3400</Experience>
-		<Defense>50</Defense>
-		<God />
-		<Projectile id="0">
-			<ObjectId>Muscle Ball</ObjectId>
-			<MinDamage>90</MinDamage>
-			<MaxDamage>135</MaxDamage>
-			<Speed>75</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-		</Projectile>
-		<Projectile id="1">
-			<ObjectId>Muscle Shuriken</ObjectId>
-			<Damage>85</Damage>
-			<Speed>90</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ConditionEffect duration="6">Slowed</ConditionEffect>
-		</Projectile>
-		<Projectile id="2">
-			<ObjectId>Nightmare Blasterball</ObjectId>
-			<Damage>215</Damage>
-			<Speed>45</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ConditionEffect duration="2">Dazed</ConditionEffect>
-		</Projectile>
-	</Object>
-	<Object type="0x6701" id="Guzzlereaper">
-		<Group>DreamIslandMinions</Group>
-		<Enemy />
-		<Class>Character</Class>
-		<AnimatedTexture>
-			<File>LRDIE16x16</File>
-			<Index>1</Index>
-		</AnimatedTexture>
-		<HitSound>monster/flaming_skulls_hit</HitSound>
-		<DeathSound>monster/flaming_skulls_death</DeathSound>
-		<Size>100</Size>
-		<MaxHitPoints>32000</MaxHitPoints>
-		<Experience>5500</Experience>
-		<Defense>75</Defense>
-		<God />
-		<Projectile id="0">
-			<ObjectId>Muscle Ball</ObjectId>
-			<MinDamage>135</MinDamage>
-			<MaxDamage>190</MaxDamage>
-			<Speed>75</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-		</Projectile>
-		<Projectile id="1">
-			<ObjectId>Muscle Shuriken</ObjectId>
-			<Damage>115</Damage>
-			<Speed>90</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ConditionEffect duration="6">Slowed</ConditionEffect>
-		</Projectile>
-		<Projectile id="2">
-			<ObjectId>Nightmare Blasterball</ObjectId>
-			<Damage>215</Damage>
-			<Speed>45</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ArmorPiercing />
-			<ConditionEffect duration="2">Dazed</ConditionEffect>
-		</Projectile>
-		<Projectile id="3">
-			<ObjectId>Heavy Nightmare Blasterball</ObjectId>
-			<Damage>260</Damage>
-			<Speed>30</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ArmorPiercing />
-			<ConditionEffect duration="2">Dazed</ConditionEffect>
-			<ConditionEffect duration="1.5">Armor Broken</ConditionEffect>
-		</Projectile>
-	</Object>
-	<Object type="0x6702" id="Silencer">
-		<Group>DreamIslandMinions</Group>
-		<Enemy />
-		<Class>Character</Class>
-		<AnimatedTexture>
-			<File>LRDIE16x16</File>
-			<Index>2</Index>
-		</AnimatedTexture>
-		<HitSound>monster/goblins_hit</HitSound>
-		<DeathSound>monster/goblins_death</DeathSound>
-		<Size>100</Size>
-		<MaxHitPoints>22000</MaxHitPoints>
-		<Experience>5100</Experience>
-		<Defense>30</Defense>
-		<God />
-		<Projectile id="0">
-			<ObjectId>Silencer Roar</ObjectId>
-			<Damage>75</Damage>
-			<Speed>45</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ConditionEffect duration="3">Quiet</ConditionEffect>
-		</Projectile>
-		<Projectile id="1">
-			<ObjectId>Silencer Slash</ObjectId>
-			<Damage>150</Damage>
-			<Speed>75</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ConditionEffect duration="3">Slowed</ConditionEffect>
-		</Projectile>
-		<Projectile id="2">
-			<ObjectId>Nightmare Spin</ObjectId>
-			<MinDamage>125</MinDamage>
-			<MaxDamage>150</MaxDamage>
-			<Speed>90</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ConditionEffect duration="5">Slowed</ConditionEffect>
-			<ConditionEffect duration="4">Weak</ConditionEffect>
-		</Projectile>
-		<Projectile id="3">
-			<ObjectId>Nightmare Blasterball</ObjectId>
-			<Damage>215</Damage>
-			<Speed>45</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ArmorPiercing />
-			<ConditionEffect duration="2">Dazed</ConditionEffect>
-		</Projectile>
-		<Projectile id="4">
-			<ObjectId>Heavy Nightmare Blasterball</ObjectId>
-			<Damage>260</Damage>
-			<Speed>30</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ArmorPiercing />
-			<ConditionEffect duration="2">Dazed</ConditionEffect>
-			<ConditionEffect duration="1.5">Armor Broken</ConditionEffect>
-		</Projectile>
-	</Object>
-	<Object type="0x6703" id="Nightmare">
-		<Group>DreamIslandMinions</Group>
-		<Enemy />
-		<Class>Character</Class>
-		<AnimatedTexture>
-			<File>LRDIE16x16</File>
-			<Index>3</Index>
-		</AnimatedTexture>
-		<HitSound>monster/greater_demons_hit</HitSound>
-		<DeathSound>monster/greater_demons_death</DeathSound>
-		<Size>100</Size>
-		<MaxHitPoints>13500</MaxHitPoints>
-		<Experience>2150</Experience>
-		<Defense>100</Defense>
-		<God />
-		<Projectile id="0">
-			<ObjectId>Critical Slash</ObjectId>
-			<MinDamage>150</MinDamage>
-			<MaxDamage>215</MaxDamage>
-			<Speed>75</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ConditionEffect duration="3">Bleeding</ConditionEffect>
-		</Projectile>
-		<Projectile id="1">
-			<ObjectId>Acid</ObjectId>
-			<Damage>100</Damage>
-			<Speed>90</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ArmorPiercing />
-			<ConditionEffect duration="3">Sick</ConditionEffect>
-		</Projectile>
-		<Projectile id="2">
-			<ObjectId>Nightmare Blasterball</ObjectId>
-			<Damage>215</Damage>
-			<Speed>45</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ArmorPiercing />
-			<ConditionEffect duration="2">Dazed</ConditionEffect>
-		</Projectile>
-		<Projectile id="3">
-			<ObjectId>Heavy Nightmare Blasterball</ObjectId>
-			<Damage>260</Damage>
-			<Speed>30</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ArmorPiercing />
-			<ConditionEffect duration="2">Dazed</ConditionEffect>
-			<ConditionEffect duration="1.5">Armor Broken</ConditionEffect>
-		</Projectile>
-	</Object>
-	<Object type="0x6704" id="Lost Prisoner Soul">
-		<Group>DreamIslandMinions</Group>
-		<Enemy />
-		<Class>Character</Class>
-		<AnimatedTexture>
-			<File>LRDIE16x16</File>
-			<Index>4</Index>
-		</AnimatedTexture>
-		<HitSound>monster/skeletons_hit</HitSound>
-		<DeathSound>monster/skeletons_death</DeathSound>
-		<Size>100</Size>
-		<MaxHitPoints>29000</MaxHitPoints>
-		<Experience>4000</Experience>
-		<Defense>150</Defense>
-		<God />
-		<Projectile id="0">
-			<ObjectId>Critical Slash</ObjectId>
-			<MinDamage>150</MinDamage>
-			<MaxDamage>215</MaxDamage>
-			<Speed>75</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ConditionEffect duration="3">Bleeding</ConditionEffect>
-		</Projectile>
-		<Projectile id="1">
-			<ObjectId>Acid</ObjectId>
-			<Damage>100</Damage>
-			<Speed>90</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ArmorPiercing />
-			<ConditionEffect duration="3">Sick</ConditionEffect>
-		</Projectile>
-		<Projectile id="2">
-			<ObjectId>Bloody Punch</ObjectId>
-			<Damage>250</Damage>
-			<Speed>45</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ConditionEffect duration="4">Slowed</ConditionEffect>
-			<ConditionEffect duration="2">Bleeding</ConditionEffect>
-		</Projectile>
-		<Projectile id="3">
-			<ObjectId>Heavy Rock</ObjectId>
-			<Damage>300</Damage>
-			<Speed>30</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ArmorPiercing />
-			<ConditionEffect duration="4">Slowed</ConditionEffect>
-			<ConditionEffect duration="2">Armor Broken</ConditionEffect>
-			<ConditionEffect duration="4">Bleeding</ConditionEffect>
-		</Projectile>
-	</Object>
-	<Object type="0x6705" id="Eyeguard of Surrender">
-		<Group>DreamIslandMinions</Group>
-		<Enemy />
-		<Class>Character</Class>
-		<AnimatedTexture>
-			<File>LRDIE16x16</File>
-			<Index>5</Index>
-		</AnimatedTexture>
-		<HitSound>monster/stone_walls_hit</HitSound>
-		<DeathSound>monster/stone_walls_death</DeathSound>
-		<Size>100</Size>
-		<MaxHitPoints>140000</MaxHitPoints>
-		<Experience>17000</Experience>
-		<Defense>250</Defense>
-		<God />
-		<Projectile id="0">
-			<ObjectId>Eyeguard Slash</ObjectId>
-			<MinDamage>185</MinDamage>
-			<MaxDamage>235</MaxDamage>
-			<Speed>75</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ConditionEffect duration="3">Bleeding</ConditionEffect>
-		</Projectile>
-		<Projectile id="1">
-			<ObjectId>Eyeguard Megapunch</ObjectId>
-			<Damage>600</Damage>
-			<Speed>30</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ArmorPiercing />
-			<ConditionEffect duration="3">Armor Broken</ConditionEffect>
-		</Projectile>
-		<Projectile id="2">
-			<ObjectId>Enchanted Spear of the Wrath</ObjectId>
-			<Damage>850</Damage>
-			<Speed>40</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ConditionEffect duration="6">Armor Broken</ConditionEffect>
-			<ConditionEffect duration="6">Slowed</ConditionEffect>
-			<ConditionEffect duration="3">Dazed</ConditionEffect>
-		</Projectile>
-		<Projectile id="3">
-			<ObjectId>Nightmare Blasterball</ObjectId>
-			<Damage>215</Damage>
-			<Speed>45</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ArmorPiercing />
-			<ConditionEffect duration="2">Dazed</ConditionEffect>
-		</Projectile>
-		<Projectile id="4">
-			<ObjectId>Heavy Nightmare Blasterball</ObjectId>
-			<Damage>260</Damage>
-			<Speed>30</Speed>
-			<LifetimeMS>2400</LifetimeMS>
-			<Size>100</Size>
-			<ArmorPiercing />
-			<ConditionEffect duration="2">Dazed</ConditionEffect>
-			<ConditionEffect duration="1.5">Armor Broken</ConditionEffect>
-		</Projectile>
-	</Object>
+  <Object type="0x6700" id="Muzzlereaper">
+    <Group>DreamIslandMinions</Group>
+    <Enemy />
+    <Class>Character</Class>
+    <AnimatedTexture>
+      <File>LRDIE16x16</File>
+      <Index>0</Index>
+    </AnimatedTexture>
+    <HitSound>monster/flaming_skulls_hit</HitSound>
+    <DeathSound>monster/flaming_skulls_death</DeathSound>
+    <Size>100</Size>
+    <MaxHitPoints>20500</MaxHitPoints>
+    <Experience>3400</Experience>
+    <Defense>50</Defense>
+    <God />
+    <Projectile id="0">
+      <ObjectId>Muscle Ball</ObjectId>
+      <MinDamage>90</MinDamage>
+      <MaxDamage>135</MaxDamage>
+      <Speed>75</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+    </Projectile>
+    <Projectile id="1">
+      <ObjectId>Muscle Shuriken</ObjectId>
+      <Damage>85</Damage>
+      <Speed>90</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ConditionEffect duration="6">Slowed</ConditionEffect>
+    </Projectile>
+    <Projectile id="2">
+      <ObjectId>Nightmare Blasterball</ObjectId>
+      <Damage>215</Damage>
+      <Speed>45</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ConditionEffect duration="2">Dazed</ConditionEffect>
+    </Projectile>
+  </Object>
+  <Object type="0x6701" id="Guzzlereaper">
+    <Group>DreamIslandMinions</Group>
+    <Enemy />
+    <Class>Character</Class>
+    <AnimatedTexture>
+      <File>LRDIE16x16</File>
+      <Index>1</Index>
+    </AnimatedTexture>
+    <HitSound>monster/flaming_skulls_hit</HitSound>
+    <DeathSound>monster/flaming_skulls_death</DeathSound>
+    <Size>100</Size>
+    <MaxHitPoints>32000</MaxHitPoints>
+    <Experience>5500</Experience>
+    <Defense>75</Defense>
+    <God />
+    <Projectile id="0">
+      <ObjectId>Muscle Ball</ObjectId>
+      <MinDamage>135</MinDamage>
+      <MaxDamage>190</MaxDamage>
+      <Speed>75</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+    </Projectile>
+    <Projectile id="1">
+      <ObjectId>Muscle Shuriken</ObjectId>
+      <Damage>115</Damage>
+      <Speed>90</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ConditionEffect duration="6">Slowed</ConditionEffect>
+    </Projectile>
+    <Projectile id="2">
+      <ObjectId>Nightmare Blasterball</ObjectId>
+      <Damage>215</Damage>
+      <Speed>45</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ArmorPiercing />
+      <ConditionEffect duration="2">Dazed</ConditionEffect>
+    </Projectile>
+    <Projectile id="3">
+      <ObjectId>Heavy Nightmare Blasterball</ObjectId>
+      <Damage>260</Damage>
+      <Speed>30</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ArmorPiercing />
+      <ConditionEffect duration="2">Dazed</ConditionEffect>
+      <ConditionEffect duration="1.5">Armor Broken</ConditionEffect>
+    </Projectile>
+  </Object>
+  <Object type="0x6702" id="Silencer">
+    <Group>DreamIslandMinions</Group>
+    <Enemy />
+    <Class>Character</Class>
+    <AnimatedTexture>
+      <File>LRDIE16x16</File>
+      <Index>2</Index>
+    </AnimatedTexture>
+    <HitSound>monster/goblins_hit</HitSound>
+    <DeathSound>monster/goblins_death</DeathSound>
+    <Size>100</Size>
+    <MaxHitPoints>22000</MaxHitPoints>
+    <Experience>5100</Experience>
+    <Defense>30</Defense>
+    <God />
+    <Projectile id="0">
+      <ObjectId>Silencer Roar</ObjectId>
+      <Damage>75</Damage>
+      <Speed>45</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ConditionEffect duration="3">Quiet</ConditionEffect>
+    </Projectile>
+    <Projectile id="1">
+      <ObjectId>Silencer Slash</ObjectId>
+      <Damage>150</Damage>
+      <Speed>75</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ConditionEffect duration="3">Slowed</ConditionEffect>
+    </Projectile>
+    <Projectile id="2">
+      <ObjectId>Nightmare Spin</ObjectId>
+      <MinDamage>125</MinDamage>
+      <MaxDamage>150</MaxDamage>
+      <Speed>90</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ConditionEffect duration="5">Slowed</ConditionEffect>
+      <ConditionEffect duration="4">Weak</ConditionEffect>
+    </Projectile>
+    <Projectile id="3">
+      <ObjectId>Nightmare Blasterball</ObjectId>
+      <Damage>215</Damage>
+      <Speed>45</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ArmorPiercing />
+      <ConditionEffect duration="2">Dazed</ConditionEffect>
+    </Projectile>
+    <Projectile id="4">
+      <ObjectId>Heavy Nightmare Blasterball</ObjectId>
+      <Damage>260</Damage>
+      <Speed>30</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ArmorPiercing />
+      <ConditionEffect duration="2">Dazed</ConditionEffect>
+      <ConditionEffect duration="1.5">Armor Broken</ConditionEffect>
+    </Projectile>
+  </Object>
+  <Object type="0x6703" id="Nightmare">
+    <Group>DreamIslandMinions</Group>
+    <Enemy />
+    <Class>Character</Class>
+    <AnimatedTexture>
+      <File>LRDIE16x16</File>
+      <Index>3</Index>
+    </AnimatedTexture>
+    <HitSound>monster/greater_demons_hit</HitSound>
+    <DeathSound>monster/greater_demons_death</DeathSound>
+    <Size>100</Size>
+    <MaxHitPoints>13500</MaxHitPoints>
+    <Experience>2150</Experience>
+    <Defense>100</Defense>
+    <God />
+    <Projectile id="0">
+      <ObjectId>Critical Slash</ObjectId>
+      <MinDamage>150</MinDamage>
+      <MaxDamage>215</MaxDamage>
+      <Speed>75</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ConditionEffect duration="3">Bleeding</ConditionEffect>
+    </Projectile>
+    <Projectile id="1">
+      <ObjectId>Acid</ObjectId>
+      <Damage>100</Damage>
+      <Speed>90</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ArmorPiercing />
+      <ConditionEffect duration="3">Sick</ConditionEffect>
+    </Projectile>
+    <Projectile id="2">
+      <ObjectId>Nightmare Blasterball</ObjectId>
+      <Damage>215</Damage>
+      <Speed>45</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ArmorPiercing />
+      <ConditionEffect duration="2">Dazed</ConditionEffect>
+    </Projectile>
+    <Projectile id="3">
+      <ObjectId>Heavy Nightmare Blasterball</ObjectId>
+      <Damage>260</Damage>
+      <Speed>30</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ArmorPiercing />
+      <ConditionEffect duration="2">Dazed</ConditionEffect>
+      <ConditionEffect duration="1.5">Armor Broken</ConditionEffect>
+    </Projectile>
+  </Object>
+  <Object type="0x6704" id="Lost Prisoner Soul">
+    <Group>DreamIslandMinions</Group>
+    <Enemy />
+    <Class>Character</Class>
+    <AnimatedTexture>
+      <File>LRDIE16x16</File>
+      <Index>4</Index>
+    </AnimatedTexture>
+    <HitSound>monster/skeletons_hit</HitSound>
+    <DeathSound>monster/skeletons_death</DeathSound>
+    <Size>100</Size>
+    <MaxHitPoints>29000</MaxHitPoints>
+    <Experience>4000</Experience>
+    <Defense>150</Defense>
+    <God />
+    <Projectile id="0">
+      <ObjectId>Critical Slash</ObjectId>
+      <MinDamage>150</MinDamage>
+      <MaxDamage>215</MaxDamage>
+      <Speed>75</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ConditionEffect duration="3">Bleeding</ConditionEffect>
+    </Projectile>
+    <Projectile id="1">
+      <ObjectId>Acid</ObjectId>
+      <Damage>100</Damage>
+      <Speed>90</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ArmorPiercing />
+      <ConditionEffect duration="3">Sick</ConditionEffect>
+    </Projectile>
+    <Projectile id="2">
+      <ObjectId>Bloody Punch</ObjectId>
+      <Damage>250</Damage>
+      <Speed>45</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ConditionEffect duration="4">Slowed</ConditionEffect>
+      <ConditionEffect duration="2">Bleeding</ConditionEffect>
+    </Projectile>
+    <Projectile id="3">
+      <ObjectId>Heavy Rock</ObjectId>
+      <Damage>300</Damage>
+      <Speed>30</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ArmorPiercing />
+      <ConditionEffect duration="4">Slowed</ConditionEffect>
+      <ConditionEffect duration="2">Armor Broken</ConditionEffect>
+      <ConditionEffect duration="4">Bleeding</ConditionEffect>
+    </Projectile>
+  </Object>
+  <Object type="0x6705" id="Eyeguard of Surrender">
+    <Group>DreamIslandMinions</Group>
+    <Enemy />
+    <Class>Character</Class>
+    <AnimatedTexture>
+      <File>LRDIE16x16</File>
+      <Index>5</Index>
+    </AnimatedTexture>
+    <HitSound>monster/stone_walls_hit</HitSound>
+    <DeathSound>monster/stone_walls_death</DeathSound>
+    <Size>100</Size>
+    <MaxHitPoints>140000</MaxHitPoints>
+    <Experience>17000</Experience>
+    <Defense>250</Defense>
+    <God />
+    <Projectile id="0">
+      <ObjectId>Eyeguard Slash</ObjectId>
+      <MinDamage>185</MinDamage>
+      <MaxDamage>235</MaxDamage>
+      <Speed>75</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ConditionEffect duration="3">Bleeding</ConditionEffect>
+    </Projectile>
+    <Projectile id="1">
+      <ObjectId>Eyeguard Megapunch</ObjectId>
+      <Damage>600</Damage>
+      <Speed>30</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ArmorPiercing />
+      <ConditionEffect duration="3">Armor Broken</ConditionEffect>
+    </Projectile>
+    <Projectile id="2">
+      <ObjectId>Enchanted Spear of the Wrath</ObjectId>
+      <Damage>850</Damage>
+      <Speed>40</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ConditionEffect duration="6">Armor Broken</ConditionEffect>
+      <ConditionEffect duration="6">Slowed</ConditionEffect>
+      <ConditionEffect duration="3">Dazed</ConditionEffect>
+    </Projectile>
+    <Projectile id="3">
+      <ObjectId>Nightmare Blasterball</ObjectId>
+      <Damage>215</Damage>
+      <Speed>45</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ArmorPiercing />
+      <ConditionEffect duration="2">Dazed</ConditionEffect>
+    </Projectile>
+    <Projectile id="4">
+      <ObjectId>Heavy Nightmare Blasterball</ObjectId>
+      <Damage>260</Damage>
+      <Speed>30</Speed>
+      <LifetimeMS>2400</LifetimeMS>
+      <Size>100</Size>
+      <ArmorPiercing />
+      <ConditionEffect duration="2">Dazed</ConditionEffect>
+      <ConditionEffect duration="1.5">Armor Broken</ConditionEffect>
+    </Projectile>
+  </Object>
+  <Object type="0x6718" id="Muzzlereaper Spawner">
+    <Class>Character</Class>
+    <Texture>
+      <File>invisible</File>
+      <Index>0</Index>
+    </Texture>
+    <NoMiniMap />
+    <Size>0</Size>
+    <StasisImmune />
+  </Object>
+  <Object type="0x6719" id="Guzzlereaper Spawner">
+    <Class>Character</Class>
+    <Texture>
+      <File>invisible</File>
+      <Index>0</Index>
+    </Texture>
+    <NoMiniMap />
+    <Size>0</Size>
+    <StasisImmune />
+  </Object>
+  <Object type="0x671a" id="Silencer Spawner">
+    <Class>Character</Class>
+    <Texture>
+      <File>invisible</File>
+      <Index>0</Index>
+    </Texture>
+    <NoMiniMap />
+    <Size>0</Size>
+    <StasisImmune />
+  </Object>
+  <Object type="0x671b" id="Nightmare Spawner">
+    <Class>Character</Class>
+    <Texture>
+      <File>invisible</File>
+      <Index>0</Index>
+    </Texture>
+    <NoMiniMap />
+    <Size>0</Size>
+    <StasisImmune />
+  </Object>
+  <Object type="0x671c" id="Lost Prisoner Soul Spawner">
+    <Class>Character</Class>
+    <Texture>
+      <File>invisible</File>
+      <Index>0</Index>
+    </Texture>
+    <NoMiniMap />
+    <Size>0</Size>
+    <StasisImmune />
+  </Object>
+  <Object type="0x671d" id="Eyeguard of Surrender Spawner">
+    <Class>Character</Class>
+    <Texture>
+      <File>invisible</File>
+      <Index>0</Index>
+    </Texture>
+    <NoMiniMap />
+    <Size>0</Size>
+    <StasisImmune />
+  </Object>
 </Objects>

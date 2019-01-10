@@ -9,8 +9,8 @@ namespace LoESoft.Core.config
             public static readonly byte[] INCOMING_CIPHER = ProcessToken("3DC1C444F578C1EC7BF40A4DCA9493A2");
             public static readonly byte[] OUTGOING_CIPHER = ProcessToken("789A632F43A2F55CB0A4C3999C324DA0");
             public static readonly string APPENGINE_URL = "https://loesoft-games.github.io"; //"http://appengine.loesoft.org";
-            public static readonly int CPU_HANDLER = 4096;
-            public static readonly int MAX_CONNECTIONS = 100;
+            public static readonly int CPU_HANDLER = 4096 * 2;
+            public static readonly int MAX_CONNECTIONS = 150;
             public static readonly bool DISABLE_NAGLES_ALGORITHM = SERVER_MODE != ServerMode.Local;
 
             public static class RESTART

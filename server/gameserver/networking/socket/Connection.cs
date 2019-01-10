@@ -1,9 +1,7 @@
 ﻿using BookSleeve;
 using LoESoft.Core.models;
-using LoESoft.GameServer.networking.error;
 using LoESoft.GameServer.networking.outgoing;
 using System;
-using FAILURE = LoESoft.GameServer.networking.outgoing.FAILURE;
 
 namespace LoESoft.GameServer.networking
 {
@@ -273,28 +271,6 @@ namespace LoESoft.GameServer.networking
 
         public bool Reconnect(RECONNECT msg)
         {
-            if (Account == null)
-            {
-                string[] labels = new string[] { "{CLIENT_NAME}" };
-                string[] arguments = new string[] { Account.Name };
-
-                SendMessage(new FAILURE
-                {
-                    ErrorId = (int)FailureIDs.JSON_DIALOG,
-                    ErrorDescription =
-                        JSONErrorIDHandler.
-                            FormatedJSONError(
-                                errorID: ErrorIDs.LOST_CONNECTION,
-                                labels: labels,
-                                arguments: arguments
-                            )
-                });
-
-                Manager.TryDisconnect(this, DisconnectReason.LOST_CONNECTION);
-
-                return false;
-            }
-
             Log.Info($"[({(int)DisconnectReason.RECONNECT}) {DisconnectReason.RECONNECT.ToString()}] Reconnect player '{Account.Name} (Account ID: {Account.AccountId})' to {msg.Name}.");
 
             Save();

@@ -406,6 +406,7 @@ namespace LoESoft.GameServer.realm.entity.player
         private readonly ConcurrentQueue<long> _updateAckTimeout = new ConcurrentQueue<long>();
         private readonly ConcurrentQueue<long> _gotoAckTimeout = new ConcurrentQueue<long>();
 
+        private bool once { get; set; }
         private int DcThresholdCounter { get; set; } = 0;
 
         public bool KeepAlive(RealmTime time)
@@ -425,7 +426,23 @@ namespace LoESoft.GameServer.realm.entity.player
                 }
                 else
                 {
-                    GameServer.Manager.TryDisconnect(Client, DisconnectReason.KEEP_ALIVE_TIMEOUT);
+                    if (!once)
+                    {
+                        once = true;
+
+                        SendHelp("You dropped your connection with the server! Reconnecting...");
+
+                        Owner.AddReconnectToPlayer(AccountId, Tuple.Create(X, Y));
+                        Owner.Timers.Add(new WorldTimer(3000, (w, t) => Client?.Reconnect(new RECONNECT()
+                        {
+                            Host = "",
+                            Port = Settings.GAMESERVER.PORT,
+                            GameId = Owner.Id,
+                            Name = Owner.Name,
+                            Key = Owner.PortalKey,
+                        })));
+                    }
+
                     return false;
                 }
             }

@@ -5,8 +5,7 @@
 			<File>LREEO8x8</File>
 			<Index>0</Index>
 		</Texture>
-		<Sink />
 		<BlendPriority>2</BlendPriority>
-		<Speed>0.7</Speed>
+		<Speed>1</Speed>
 	</Ground>
 </GroundTypes>

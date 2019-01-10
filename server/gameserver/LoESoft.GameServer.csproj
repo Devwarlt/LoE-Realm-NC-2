@@ -525,6 +525,7 @@
     <Compile Include="realm\TradeManager.cs" />
     <Compile Include="realm\Utils.cs" />
     <Compile Include="realm\world\World.cs" />
+    <Compile Include="realm\world\worlds\DreamIsland.cs" />
     <Compile Include="realm\world\worlds\DrastaCitadel.cs" />
     <Compile Include="realm\world\worlds\Public Arena.cs" />
     <Compile Include="realm\world\worlds\Arena.cs" />
@@ -741,6 +742,7 @@
     <None Include="realm\world\maps\json\classic.jm" />
     <EmbeddedResource Include="realm\world\maps\json\drasta.json" />
     <EmbeddedResource Include="realm\world\maps\json\undead lair\udl.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dream-island-expansion1.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="realm\world\maps\json\dungeons\spider den\" />

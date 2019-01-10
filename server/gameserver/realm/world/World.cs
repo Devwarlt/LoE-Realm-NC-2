@@ -11,7 +11,6 @@ using LoESoft.GameServer.realm.world;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -20,8 +19,6 @@ using System.Threading;
 
 namespace LoESoft.GameServer.realm
 {
-    using Timer = System.Timers.Timer;
-
     public interface IDungeon { }
 
     public enum WorldID : int
@@ -36,7 +33,8 @@ namespace LoESoft.GameServer.realm
         ARENA = -9,
         MARKET = -11,
         DAILY_QUEST_ID = -13,
-        DRASTA_CITADEL_ID = -14
+        DRASTA_CITADEL_ID = -14,
+        DREAM_ISLAND = -15
     }
 
     public abstract class World : IDisposable
@@ -65,6 +63,21 @@ namespace LoESoft.GameServer.realm
             }));
         }
 
+        public void AddReconnectToPlayer(string id, Tuple<float, float> position) => ReconnectRequests.TryAdd(id, position);
+
+        public Tuple<float, float> RemovePositionFromReconnect(string id)
+        {
+            if (ReconnectRequests.ContainsKey(id))
+            {
+                ReconnectRequests.TryRemove(id, out Tuple<float, float> position);
+                return position;
+            }
+
+            return null;
+        }
+
+        private ConcurrentDictionary<string, Tuple<float, float>> ReconnectRequests { get; set; } = new ConcurrentDictionary<string, Tuple<float, float>>();
+
         public RealmManager Manager
         {
             get { return manager; }
@@ -79,13 +92,8 @@ namespace LoESoft.GameServer.realm
             }
         }
 
-        private Timer _gameTimer { get; set; } = new Timer(LogicTicker.COOLDOWN_DELAY) { AutoReset = true };
-        private Stopwatch _watch { get; set; } = new Stopwatch();
-
         public virtual void Tick(RealmTime time)
         {
-            var b = _watch.ElapsedMilliseconds;
-
             if (IsLimbo)
                 return;
 
@@ -150,23 +158,8 @@ namespace LoESoft.GameServer.realm
                     return projectile;
                 }).ToList();
 
-            if (Players.Count == 0 && (!canBeClosed || !IsDungeon()))
-            {
-                _watch.Stop();
-                _hasPlayer = false;
-                _gameTimer.Stop();
-                return;
-            }
-
             if (Players.Count != 0 || !canBeClosed || !IsDungeon())
-            {
-                var variation = _watch.ElapsedMilliseconds - b;
-
-                if (variation < LogicTicker.COOLDOWN_DELAY)
-                    Thread.Sleep(LogicTicker.COOLDOWN_DELAY); // 200 ms
-
                 return;
-            }
 
             if (this is Vault vault)
                 GameServer.Manager.RemoveVault(vault.AccountId);
@@ -334,8 +327,6 @@ namespace LoESoft.GameServer.realm
             }
         }
 
-        private bool _hasPlayer { get; set; }
-
         public virtual int EnterWorld(Entity entity)
         {
             if (entity is Player player)
@@ -346,16 +337,7 @@ namespace LoESoft.GameServer.realm
                     player.Client.EventNotification = true;
                 }
 
-                if (TryAdd(player))
-                {
-                    if (!_hasPlayer)
-                    {
-                        _watch.Start();
-                        _hasPlayer = true;
-                        _gameTimer.Elapsed += delegate { Tick(Manager.Logic.CurrentTime); };
-                        _gameTimer.Start();
-                    }
-                }
+                TryAdd(player);
             }
             else
             {
@@ -419,18 +401,16 @@ namespace LoESoft.GameServer.realm
             entity = null;
         }
 
-        private bool TryAdd(Player player)
+        private void TryAdd(Player player)
         {
             player.Id = GetNextEntityId();
 
             if (!Players.TryAdd(player.Id, player) || !Entities.TryAdd(player.Id, player))
-                return false;
+                return;
 
             player.Init(this);
 
             PlayersCollision.Insert(player);
-
-            return true;
         }
 
         private void TryRemove(Player player)

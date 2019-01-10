@@ -87,9 +87,17 @@ namespace LoESoft.GameServer.logic
         }
 
         private _ DreamIslandEnemies = () => Behav()
+            .Init("Muzzlereaper Spawner",
+                new State(
+                    new AddCond(ConditionEffectIndex.Invincible),
+                    new Reproduce("Muzzlereaper", 3, 1, 24, 30000)
+                    )
+            )
+
             .Init("Muzzlereaper",
                 new State(
                     new State("idle",
+                        new ReturnToSpawn(false, 4, 24),
                         new AddCond(effect: ConditionEffectIndex.Invulnerable), // ok
                         new Heal(range: 0, amount: 750, coolDown: 1000),
                         new PlayerWithinTransition(targetState: "begin fight", range: 12)
@@ -131,10 +139,17 @@ namespace LoESoft.GameServer.logic
                     )
             )
 
+            .Init("Guzzlereaper Spawner",
+                new State(
+                    new AddCond(ConditionEffectIndex.Invincible),
+                    new Reproduce("Guzzlereaper", 3, 1, 24, 45000)
+                    )
+            )
+
             .Init("Guzzlereaper",
                 new State(
                     new State("idle",
-                        new ReturnToSpawn(),
+                        new ReturnToSpawn(false, 4, 24),
                         new AddCond(effect: ConditionEffectIndex.Invulnerable), // ok
                         new Heal(range: 0, amount: 1500, coolDown: 1000),
                         new Reproduce(name: "Muzzlereaper", range: 8, max: 3, coolDown: 100),
@@ -186,10 +201,17 @@ namespace LoESoft.GameServer.logic
                     )
             )
 
+            .Init("Silencer Spawner",
+                new State(
+                    new AddCond(ConditionEffectIndex.Invincible),
+                    new Reproduce("Silencer", 3, 1, 24, 60000)
+                    )
+            )
+
             .Init("Silencer",
                 new State(
                     new State("idle",
-                        new ReturnToSpawn(),
+                        new ReturnToSpawn(false, 4, 24),
                         new AddCond(effect: ConditionEffectIndex.Invulnerable), // ok
                         new Heal(range: 0, amount: 1000, coolDown: 1000),
                         new PlayerWithinTransition(targetState: "begin fight", range: 12)
@@ -246,10 +268,17 @@ namespace LoESoft.GameServer.logic
                     )
             )
 
+            .Init("Eyegyard of Surrender Spawner",
+                new State(
+                    new AddCond(ConditionEffectIndex.Invincible),
+                    new Reproduce("Eyeguard of Surrender", 3, 1, 24, 120000)
+                    )
+            )
+
             .Init("Eyeguard of Surrender",
                 new State(
                     new State("idle",
-                        new ReturnToSpawn(),
+                        new ReturnToSpawn(false, 4, 24),
                         new AddCond(effect: ConditionEffectIndex.Invulnerable), // ok
                         new Heal(range: 0, amount: 3500, coolDown: 1000),
                         new PlayerWithinTransition(targetState: "begin fight", range: 12)
@@ -310,10 +339,17 @@ namespace LoESoft.GameServer.logic
                     )
             )
 
+            .Init("Lost Prisoner Soul Spawner",
+                new State(
+                    new AddCond(ConditionEffectIndex.Invincible),
+                    new Reproduce("Lost Prisoner Soul", 3, 1, 24, 90000)
+                    )
+            )
+
             .Init("Lost Prisoner Soul",
                 new State(
                     new State("idle",
-                        new ReturnToSpawn(),
+                        new ReturnToSpawn(false, 4, 24),
                         new AddCond(effect: ConditionEffectIndex.Invulnerable), // ok
                         new Heal(range: 0, amount: 1250, coolDown: 1000),
                         new PlayerWithinTransition(targetState: "begin fight", range: 12)
@@ -371,10 +407,17 @@ namespace LoESoft.GameServer.logic
                     )
             )
 
+            .Init("Nightmare Spawner",
+                new State(
+                    new AddCond(ConditionEffectIndex.Invincible),
+                    new Reproduce("Nightmare", 3, 1, 24, 60000)
+                    )
+            )
+
             .Init("Nightmare",
                 new State(
                     new State("idle",
-                        new ReturnToSpawn(),
+                        new ReturnToSpawn(false, 4, 24),
                         new AddCond(effect: ConditionEffectIndex.Invulnerable), // ok
                         new Heal(range: 0, amount: 1250, coolDown: 1000),
                         new PlayerWithinTransition(targetState: "begin fight", range: 12)

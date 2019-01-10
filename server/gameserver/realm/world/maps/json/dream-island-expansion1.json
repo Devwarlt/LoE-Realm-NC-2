@@ -1,0 +1,269 @@
+{
+  "height": 512,
+  "dict": [
+    { "ground": "Arena Shadow Ground" },
+    { "ground": "Space" },
+    {
+      "objs": [ { "id": "DS Wall 2" } ],
+      "ground": "Space"
+    },
+    {
+      "objs": [ { "id": "DS Wall" } ],
+      "ground": "Space"
+    },
+    {
+      "objs": [ { "id": "DS Wall 2" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    {
+      "objs": [ { "id": "DS Wall Gate Right" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    {
+      "objs": [ { "id": "DS Wall Gate Middle" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    {
+      "objs": [ { "id": "DS Wall Gate Left" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    {
+      "objs": [ { "id": "DS Wall 2" } ],
+      "ground": "Red Earth Water Deep"
+    },
+    { "ground": "Red Earth Water Deep" },
+    {
+      "objs": [ { "id": "Jungle Temple Walls" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    {
+      "objs": [ { "id": "Treasure Chests" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    {
+      "objs": [ { "id": "Treasure Pile" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    {
+      "objs": [ { "id": "Magic Blue Flame" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    { "ground": "Dark Shadow Earth" },
+    {
+      "objs": [ { "id": "Eyeguard of Surrender Spawner" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    {
+      "objs": [ { "id": "Jungle Grass" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    {
+      "objs": [ { "id": "Silencer Spawner" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    {
+      "objs": [ { "id": "Human Skull" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    { "ground": "Liquid Evil" },
+    {
+      "objs": [ { "id": "Bloody Tree" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Pool of Blood" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    { "ground": "Rock" },
+    {
+      "objs": [ { "id": "Human Skeleton" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Iron Deathspike" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Nightmare Spawner" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    {
+      "objs": [ { "id": "Pool of Blood" } ],
+      "ground": "Rock"
+    },
+    {
+      "objs": [ { "id": "Earth Blue Flowers" } ],
+      "ground": "Rock"
+    },
+    {
+      "objs": [ { "id": "Iron Deathspike" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    {
+      "objs": [ { "id": "Saguaro Cactus 1" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Jungle Temple Walls" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Human Skeleton" } ],
+      "ground": "Rock"
+    },
+    {
+      "objs": [ { "id": "Prickly Pear Cactus 1" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Nightmare Spawner" } ],
+      "ground": "Rock"
+    },
+    {
+      "objs": [ { "id": "Bloody Rose" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Earthy Bush Large" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Guzzlereaper Spawner" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Silencer Spawner" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Nightmare Spawner" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Small Saguaro Cactus 2" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Earth Blue Flowers" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Earthy Bush Small" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Prickly Pear Cactus 2" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Saguaro Cactus 3" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Muzzlereaper Spawner" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Small Saguaro Cactus 1" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Saguaro Cactus 2" } ],
+      "ground": "Arena Shadow Ground"
+    },
+    {
+      "objs": [ { "id": "Muzzlereaper Spawner" } ],
+      "ground": "Rock"
+    },
+    {
+      "objs": [ { "id": "Bloody Rose" } ],
+      "ground": "Rock"
+    },
+    { "ground": "Pure Evil" },
+    {
+      "objs": [ { "id": "Guzzlereaper Spawner" } ],
+      "ground": "Rock"
+    },
+    {
+      "objs": [ { "id": "Jungle Temple Walls" } ],
+      "ground": "Liquid Evil"
+    },
+    {
+      "objs": [ { "id": "Human Skull" } ],
+      "ground": "Rock"
+    },
+    {
+      "objs": [ { "id": "DS Wall" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    {
+      "objs": [ { "id": "DS Wall" } ],
+      "ground": "Red Earth Water Deep"
+    },
+    {
+      "objs": [ { "id": "DS Wall" } ],
+      "ground": "Red Open"
+    },
+    { "ground": "Red Small Checks" },
+    {
+      "objs": [ { "id": "Temple Corrupted Candle Stand Static" } ],
+      "ground": "Red Open"
+    },
+    { "ground": "Red Earth Water" },
+    { "ground": "Red Open" },
+    {
+      "objs": [ { "id": "Temple Candle Stand NoFire" } ],
+      "ground": "Red Open"
+    },
+    {
+      "objs": [ { "id": "Temple Candle Stand" } ],
+      "ground": "Red Open"
+    },
+    {
+      "objs": [ { "id": "DS Wall 2" } ],
+      "ground": "Red Earth Water"
+    },
+    {
+      "objs": [ { "id": "DS Wall 2" } ],
+      "ground": "Red Closed"
+    },
+    { "ground": "Metal Plate Stripes" },
+    { "ground": "Metal Plates" },
+    { "ground": "Tutorial Floor" },
+    {
+      "objs": [ { "id": "Jungle Temple Walls" } ],
+      "ground": "Red Closed"
+    },
+    {
+      "objs": [ { "id": "Guzzlereaper Spawner" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    { "ground": "Undergrowth" },
+    { "ground": "Light Cobblestone" },
+    {
+      "objs": [ { "id": "Lost Prisoner Soul Spawner" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    {
+      "objs": [ { "id": "Muzzlereaper Spawner" } ],
+      "ground": "Dark Shadow Earth"
+    },
+    { "ground": "shtrs Bridge" },
+    {
+      "objs": [ { "id": "Wooden Bench" } ],
+      "ground": "shtrs Shattered Floor"
+    },
+    { "ground": "shtrs Pure Evil" },
+    {
+      "objs": [ { "id": "Halloween Fountain" } ],
+      "ground": "shtrs Pure Evil"
+    },
+    { "ground": "Urushi Landmark A" },
+    {
+      "regions": [ { "id": "Spawn" } ],
+      "ground": "Urushi Landmark A"
+    }
+  ],
+  "width": 512,
+  "data": "eNrt3Qt73MZ1gGH0kqZw0u2apEnaVmLVV0pRnTBNnZSxmyiyFbuN+/9/TkUud3GbGQyWoBZYvN95IlMmucv44TfnzJkLigIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAODI+DshJhngv+A/+C/4D/4L/oP/gv/gv+A/+C/4D/4L/oP/gv/gv+A/+C/4D/4L/oP/gv/gv+A//4XgP/+F4D//heA//4XgP/+F4D//heA//4XgP/+F4D//heA//4XgP/+F4D//heA//4XgP/+F4D//heA//4XgP/+F4D//heA//4XgP/8F/8F/wX/wX/Af/Bf8B/8F/8F/wX/wX/Af/Bf8B/8F/8F/wX/wX/Af/Bf8B/8F//kvBP/5LwT/+S8E//kvBP/5LwT/+S8E//kvBP/5LwT/+S8E//kvBP/5LwT/+S8E//kvBP/5LwT/+S8E//kvBP8Pzd8X/3D3v9s/N+E3T/B/Kfxj8ZPin3bx0+Kfi1KIu+D/8fNO8bM38fO7P3/md17wf2H+/8sb+39+/6ffecH/Zfm/qoXfecF//gvB/+X5bwQQ/F+e///Kf8F/+d9vveA//4Xg/wL9NwII/i/N/zX/Bf/lf/4L/vNfCP7zX/Cf//r/gv/8X4T/xgDB/+XW//wX/F+y/0YAwf8l+28EEPxfsv9GAMH/Zfm/5r/gv/xvJUDwf+H+qwL4z/9jp+zx3wjAf/4fs/9l7xhQ/UYYD/jP/6X5v+p8FTf4z//j8b/s2L79+N1aN9CsgP/8P07/y4DX7dUA3QH+8/9Y/S+j7ucGY/jP//n6v3pwcIb//D9+/9f85z//j67+z3E8PRKwhv/8n+/8P5bVzQL4z/8l9P/61v75z3/+H3P/P57980cC9vCf//P3P3cfwLsZdUPoXcI7DwT/cbj1/9je/+54cMtqxGAd//l/yPW/1G7A+ufW9/6fjDoCsI7//D/c/t88B9sVQLHnfgH+85//U/N/2AhQIf/zn//z9D/Pwm4PoMkq8u+HjA+84z//p+V/dx2w7vnpXcQ5afxt87XNmYObR/nP/2n6H1r7y/P/rPbxezX7T3urAu7xH4fwfz1w31/T6fP7P8+D73Vaiw0X5gD85//k8n947T/uf7HzfhvN7N4cAy57ewLc4z8O7f+q91xgUTO/iNof6wd27X+f//zn/1v3P+/m33D2b2f+jf8Xya9vu6//x3/+H8r/nNW4lP8b5z9oZX97APjP/+n7vxp8+3fT/ovEvD91Yoj//Of/fPwvs6r/bu7nP//5Pxf/b/vzq8xbgOr2f9hY8xt6d9DwEwiC/3g477T6b6eNESB1bueylf/Dnb2+7mKqy8hA/uNt+F9l9NPdPp2cnT8h+4vM7kH/yUIjAP/x9vzf7s0/zRgBcu3PdTh2XpiF/Mfj+180dvKlRoAm/f6vBpmvF8h//h/K/4rTXTVQd7oI2N/mySCHrQfwn/+H9v8y6P/mz5OI/7+o+X9x9+f7A58MYmcQ//k/Bf+7GT18Rrdofa6v8l/1PFXY/kD+8//Q/sfm8xdBr4vIaf+3Zb8RgP94DP+7u3grsyt3q/P7ZyPav+Y///l/AP+79oeq+rK1Q+i01/3wbP99+Z///J8Mvwz6f767r6vo7OMrevxfJ+zP21FUDPDfaMB/jOX/Rzv/LzrVfxm48Sd/xb+/2s/tJqSfUiL4j338Lzp3eFy2/C+zTR2+1t/ksvXKa/MB/uPR/D8L+l9E/F9lZeohI0AfOgL8x2Pn/1s+jJzl7/r/NCv/598i9DD/jQH8x8P9r+qAfys+TvofMjPme9z+MJ8YAfiPA/lfBM7z1w1eR7xMVfs5/p+MUAMYA/iP8f1fRTqAuT3/tP+fRt55vxFg+24M5j9y/H+anIeH/P+s+Dzi/2qv/H+R6EBWKwLNd9ynAyn4j27+rxv1RWIEiPf/6/6vgnf5pJ4gElqBPM/4+S+KwlyA/xjF/1WkF9f0v78+yLv3M+1+2/6zwLv2zwpYzH88xP96D3CV8H+V1e/v2n8Zsf/qTWx5OqgLsOY//5Ht/7Mi/KS+p0n/rxJGDvG/bv9Hu+cI5ff/yt47hgX/kZf/+5/VmWPmMP8/zJz3x6xuvqIxgP/Yx/92fX+W5f8vimLQMwO7r9Pnfs5tAkVvNSL4j7D/3Z5dLP/mrMwPPe+Tsn81yP6Txves2c9/9PrfrtqfJPx/r+Fsvv/r5PziPOPesf7M318xCP4jlf/LaJe/a2yfb/knfPoyfznwVfnPfwzv/5W9c4Bm9n9W+951NPvncJ5YVYydH26uIG55ZgTgPwb4/zwwB0i721/9h1/hVz17esJ7itL2hysIHUD+Iz//F5Hs3e7QXWRW//ER5KrnJ+reOtTnfhG5tcQYwH/k+X8anb+3HXuR4X/b1H9P/ATPerJ/2/wvE/afJ3YK8Zn/GO7/KujZr2tmx/2PmZ2mvZs4/vUXGfZ7ljD/kfK/+bTfMloBhJ8QkmN/d3de3tw9r3N4G7/pqf75z3/E8n9sBIjv1fs46n8964Z7cXn+b7kO/NRngYqk33+jAP8R8v8iWgGsI7v1ih7/6zm8+xWp16tzfReh/mDoxGD9WcT85z+GzP83/r8b7QGedIxtm9a/5797g8DF7tWuIvZfB/cKtDN+el7Cf/4jvf63eaZXfw8gvvpfFrnP7Al17+s9vXD2j98Q8t6gEcAYwH9U/p/vRoCidxWwiKz/ryOehUaTvrX7rv3nxW8j7l9ER6ZLNQD/McD/0D6gdg/wi5pnn0cybVEUiTuBi2RGrwxuV/6pU8IvelcTrQTyH/v4XwZu6k1V2kXC/1jt/0HmvZ99X3HWMwLwn//o+r/16SRRAYRnAKeNWUPoVu62/89q9Xk372/++dnuVZ4WzR2CufcCP6+tHZoB8B85/ofNDftf9QyaO3Yue/xvjyK/zjQ63X0MrR1Uewf4z3/k+n/Lk84I0H0q3+l99i8SzwXOq//bfbz+EWBbQ4RPBV231g51AfmPIf7n3AjS9D/9Ct3XeTGgmi8i1UfRWneM7R1YRdYoOM5//ofX31eBCqDrf7rvXiZv6i0St30WnXlF37t0v64v//Of//xvr+d/HuwDhCwc7n/odV4kO/V5t5KHR5e+GQDD+c//5jw83gdsOxiz/3ly/X/zOieZ63TNur1/BCiDs4Dwq/Ob/0j5XyT8r+y/yrBy+wqxmURf7s+57bdvFsB//qPP//eCT/3IvRU4Vf3HLD4bYH9sHOgbAUIjDL/5j192VuLic4CtV8+z7N//xv7YaYLUa+TcPsR//iPtf98TeCouW1+3yeNfNrJ/96lCqVvB9sn/VwNWLHUA+Y/Y+l97BHgeMacYkP1Tc4cv9vJ/3TsLGPL5dm9C8H/J8//zjGdvt3nRW2f3r+DvGzk/52XmO/Gd/8ut/4us52+ve/L/xQH9v8ysS7jPf7T9P2v1AF5EDWpy+7UfZHj2GPb3zUbOEu+2Zj//UfxHy+bz2n3aYV+bfbfUvqHq4yafZNfjD/O/O27J/vxH3P9wJ+As8f1t/y+z3zlvNp4/AsTuEW3fS+IUEP9R+X8acfo863Tevif4imRnv4yeHEpVAM3TxC8i/UD28x91/08T9o/j/6+K7q6hfbtxqRlA+F6ykv/8R8L/KoaOAptewcOz/zAf+58D/qKzD6H+ZGHu8x+3vBPxP3XbfuhrhvXhHr4WF68BnrVyfxl4FiH7+Y+N/6ua+/GZQJG0PzZSXGVk/PWeGTnWC3hWe8fQ3sO36/+cxxn+L8P/Vc/svun/RdL+D3tPEIy3Cy+9GtjN/k9HrP+HzVT4z/85+r/xfMuXGdm/eJD9Y/vfvpP4du/BeP73vcbcZxr8X4r/Q/fTFMFVt+LB9o/j/0lR9J4UfpiZ8Z/+mHYY8385/r/fypWp+7jPBqwCDjvXX46W/8Org9vPPGz37z77lPnP/+n6v35A/m9ylZ3914G9vvt7WN0RWL/ta8vt84E/Cj6zePVA+9dHPArwf3n1f3MEeBr5rqetXuBDa//xqvDuc0PbOwP2nQP0/794MnqFw38c0v9uJt2Qs8s/d2Y87hy8evLXdW2ucr7z/yI6Mj1G1R9+L/7zf7r+r6IWD+OQ/l+3qoBNf+K3ycpkbP+3XM92BOD/Mv2PZ64hY0L+ad7H8T/Vobwe9HM87ATyde3d1rMaAfi/DP/XgVlrEf1t779jLz7DrvfN1iOuwXf9L3r8vx4wFj3s7oHwu/Gf/1PO/8M63N01t/zT/OWoI8DWuFC3YjMCXO7GiPwdyKGvTHdELlr+X/Of/7P0/yGxDtyzO3YmTO8B+LT29892FUDVI+ivAnJzf3wf1LYi4T//p+z/eoRKYKhP5Wj+ryPdi3hGvk6sUg6t/DcnH8I7obv+6//xfxqEf8vff1C2zx8ByhH9j3cpwvm4bwTo7/hd7FYYm+b/tjECNO1f85//E/O/fLS6Pz4CjHvCdthNwdUOgevBO5VW0br/Nj4I5P/uKGP9n//T8r8ceP9uucec4DFP2O/rbmgEWO/pfvgMZKjG4D//p+Z/7MT68LnxVPxfJw0+id5aPrTfd966d7S5ItAdX+z/5f+U/S8zO/bT8H/4c4OvGquB+5HO+Z818j//+T8v/3NvsxjWAzx07R+/LTyP92ofV73+32W+Av/5P2//y4y1/Led/8fz/6y1i2czb7/IqAGKbP/Xzv/xf8b+D62+38Zu9339T91Z1txBHN/rG7b/SevdLhprf/zn//H4Xx6495c3C6l/Vdv+3wRGgq79zc5B5f+WTyIdxParuP+D/8flf3lg+/t/irLj/2VPD6/tf5l14if0jnOe/fOf/0Ps+8+7+Mmbj356//Hb/W3P9z81g78omqeHVpGnCNR7BfFdjvp//F+C/7fx1b3z27Hgq7f++5q3VyE0i988K/RFNKu3R4DrwNpe9ye55dmMRwD+83+I/18Vvy/+cBe/v/tbOYERoO9pYTEudu52Owih0wNh++e9Ash//g8bAf7rzv6bN//86iC/sd01iL4zws0OXpGsAMrgDUPtMz3bd3g++xGA//wf5v8f7/P/Hw/kfzlgr+Kmn/9ex9GU/5tXCp0dTOX+K/7zfxH+f/0m99/6//XE/C979gK9aBla3RrytDYD2NYX4eo//Bwi+Z//S8r/NwfO/+Ve/rdX70M1QPUq4f0Bff0F9//yfwn5/+ag+T9+v0jY08tOnX+b49s7fJrfF/e/u7Kg/8f/Zc3/bw6c/+uup+8JC2XnsrVLOP35dM6v+/+p9X/+LyD//+GuAvh6Ev739QZC+3zKzi7hbn3Q9b+5gvBxcG8R//m/jP7/zcHzf15v8Dq4g6d7SqA5RoTPArTzfuhsEP/5v4z+/zcT9D/Uqat38bu7dttnA1LV/kXnu7b/5oz//F9Q/38K8//c0wFh/z9p1f8nLYOHZ377//lv/X869q9r/l8n838u8fsE5vsEcP7z/1jm//H8f53o/hXBTl/Y+t9FvW8+X5H//D9W/7+59//rWcz/N1wXqVO+8Z1B19Ga/yq6M8j5f/4f//r/dPv/6+Dzgpu3fBQ99fv2a64DuwSKhPnu/+H/Utb/v5nF+l9sJT/t8pPkc8ar73nCf/7L/7OYA7Q7+2dB+9etuqHu/6dFMYl70PiPw8//v5mN/80RIKf2b/YOr+9PEPSbz3/+6/9P1/9ikP3NPcTHk/P5z/+Hzf+nnP/LQDWf637qjtHjc5///D++/N93F9h5NJun9xHwn//8v53/T3f/f3oEON/t+Ok3+bit5z//53z/z/ARoNrFU2T5H55HHJf7/Of/fv3/m8nn//BtfefJmf/Q+8bqn+c//5c0/59+/g+NAPv6X0b6BPF7SPjP/2P0/7+LPxV/vos/vfm4nF0FkF/999842Pf9K/7z/6j8v7nz/2Xxlzf/m5v/mxHgqmg+qXsf/9Nrhen7yfjP/7n6f7vr99Wb2Pj/6s3fyllWAKvi246p+58vjtUR/Of/Mflf2V/5P88R4CGd/FXivED4K/nP/7n7f9Ow/7s38fLubzczGAPG9b8ckPv5z/9j8H/rfmX/d3cfvdqNAXMZAerz/3FGgHd7ewL85//c/d+6v7H/9W4EeDmLEaCq04tRKoBjOiPAf/7nVP5V5n99F80q4GY2+b8oxrmn91hGAP7zv3/W/2qX+etRjQDz9L8cvAIwZARY85//s/X/pjXrf9mxvxoB5uL/hndH8r+M+v7XGVUA/Od/2/qQ+98F/X89K/8/iVT/460GrorvE5UA//k/Vf+b1ue5Pw//07P/1Qi7AapX/XZ2XQD+L9n/br7fWp/jft3/m5n2/laj7Aaqv3Jxf1tg0akF+M//Kfkfzvdb6/vdr/yf7giQ7v09NEdvv+uy8988dGcg//k/Df9vWjv62ua/zo6prwGugjm6//TO8Pz/8b33140njk29A8j/pfnfrfaH5PvXM1sDjPk/zgy9/ZSxyv2T1rvp//N/Kv53q/1c239oxPTXACv/Pr37L3E26jr9atf1a7ofGmn4z/8p+F/t5tun2v+h+J9d/DCDHmC1Gt/e+fv9CIa2nxW4sf/S/j/+T9T/as6/X7V/6///3kXX/+lVAKFneY65Qy/0lOHqPez/4//0/K/m/EPr/Mr/vwX8n2IFUPfzZNeT++toa/N1xzezi4393zr/w/8J+t88yTO8zo/n/ylWAKtAd67Kzt+PYmjqKcPO//J/av7HTvLk1fnxcWF6awD1Gr/emw9Z+jj7i/jP/+n5X6/9Y1V+rM6Pf8fU1gC6936GuvPj7Muvv0/3BJD7//g/Lf+/q/kfzubx/P96JucAQv63HR0vR8/5OWH8X4r/Nzv/+y2PjwzzOQdUWfjxI9/QMeenBPJ/Of6/Cvr/t6D/sZlBahfgVP1//Bt65vuMUP4vyf+Xmfn/GPYA53s/hq3tNf+S//yfaP7/bu8qP+z+FM8AtXfghJ/btf37+KMN//k/zfl/NQIMrfLTuX9a+3/6fBzb0Xnaz/8lrv+/3GPnb87536lW/2/jSZzztJ//y9v/92rgmb+cvt+U9/4e7zvyH0P8b84BxnB/+jv/D/Gu/Of/NP0PrQI2fQ5H+OteTvbun/l5yH+8Hf9vOv43fe5GezSoPjPVJwCyn/8I+V92/K8b/SoQoRGh+uwN+/nP/xn638znTZ9DTwFpjgrVV3CI//yfm/9/rsXLhtHxu0KbIwN3+M//uc7/f9xFXwef8/zn/zGt/7X9n/4TvAX/MYb/29n8j8X/3cWPE39+l+A/xvT/5X32b/rPBP7zfxn+/8h/wf+F5//6/F/9z3/+L2n+/5L/gv8L7f+/6vjPBP7zfxnr/ze1GuAl//nP/wXt/2s/AdjqP//5vyz/tzXAVM/vCf7jsfyv1wD29fKf/0v0355+wf+l+i8E//kv+M9//gv+8/8o+X8pIHKb"
+}
