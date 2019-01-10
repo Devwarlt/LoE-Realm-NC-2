@@ -1,4 +1,10 @@
-﻿namespace LoESoft.GameServer.realm.world
+﻿#region
+
+using System;
+
+#endregion
+
+namespace LoESoft.GameServer.realm.world
 {
     public class PirateCave : World
     {
@@ -10,6 +16,6 @@
             AllowTeleport = true;
         }
 
-        protected override void Init() => LoadMap("pcave", MapType.Wmap);
+        protected override void Init() => LoadMap($"dungeons.pirate_cave.pirate_cave_{new Random((int)Seed).Next(1, 10).ToString()}", MapType.Json);
     }
 }
