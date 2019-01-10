@@ -32,14 +32,14 @@ namespace LoESoft.GameServer.logic.loot
 
     public class LootEggRate
     {
-        public const double TIER_0 = 1 / 10;        // 10%
-        public const double TIER_1 = TIER_0 / 2;    // 5%
-        public const double TIER_2 = TIER_1 / 2;    // 2.5%
-        public const double TIER_3 = TIER_2 / 2;    // 1.25%
-        public const double TIER_4 = TIER_3 / 2;    // 0.625%
-        public const double TIER_5 = TIER_4 / 2;    // 0.3125%
-        public const double TIER_6 = TIER_5 / 2;    // 0.15625%
-        public const double TIER_7 = TIER_6 / 2;    // 0.078125%
+        public const double TIER_0 = 1 / 5;         // 20%
+        public const double TIER_1 = TIER_0 / 2;    // 10%
+        public const double TIER_2 = TIER_1 / 2;    // 5%
+        public const double TIER_3 = TIER_2 / 2;    // 2.5%
+        public const double TIER_4 = TIER_3 / 2;    // 1.25%
+        public const double TIER_5 = TIER_4 / 2;    // 0.625%
+        public const double TIER_6 = TIER_5 / 2;    // 0.3125%
+        public const double TIER_7 = TIER_6 / 2;    // 0.15625%
     }
 
     public enum BagType
@@ -109,7 +109,7 @@ namespace LoESoft.GameServer.logic.loot
             _rnd = rnd;
             _lootState = lootState;
             _lootDefs = lootDefs;
-            
+
             var players = _enemy.DamageCounter.GetPlayerData().ToList();
 
             PlayersData = players.Where(player => player.Item1 != null).Select(player => player.Item1).ToList();
