@@ -14,6 +14,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using static LoESoft.GameServer.networking.Client;
 
 #endregion
@@ -109,7 +110,10 @@ namespace LoESoft.GameServer.realm
         public void Run()
         {
             Logic = new LogicTicker(this);
-            Logic.Handle();
+
+            var logic = new Task(() => Logic.TickLoop(), TaskCreationOptions.LongRunning);
+            logic.ContinueWith(GameServer.Restart, TaskContinuationOptions.OnlyOnFaulted);
+            logic.Start();
         }
 
         public void Stop()
@@ -126,7 +130,6 @@ namespace LoESoft.GameServer.realm
             }
 
             GameData.Dispose();
-            Logic.Dispose();
         }
 
         #endregion
@@ -337,7 +340,7 @@ namespace LoESoft.GameServer.realm
         Creation,
     }
 
-    public struct RealmTime
+    public class RealmTime
     {
         public long TickCount { get; set; }
         public long TotalElapsedMs { get; set; }
