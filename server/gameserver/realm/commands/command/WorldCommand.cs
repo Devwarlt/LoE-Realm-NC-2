@@ -14,7 +14,7 @@ namespace LoESoft.GameServer.realm.commands
 {
     internal class GuildCommand : Command
     {
-        public GuildCommand() : base("g", (int)AccountType.FREE_ACCOUNT)
+        public GuildCommand() : base("g", (int)AccountType.REGULAR)
         {
         }
 
@@ -39,7 +39,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class TutorialCommand : Command
     {
-        public TutorialCommand() : base("tutorial", (int)AccountType.FREE_ACCOUNT)
+        public TutorialCommand() : base("tutorial", (int)AccountType.REGULAR)
         {
         }
 
@@ -59,7 +59,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class DrastaCitadelCommand : Command
     {
-        public DrastaCitadelCommand() : base("drasta", (int)AccountType.VIP_ACCOUNT)
+        public DrastaCitadelCommand() : base("drasta", (int)AccountType.VIP)
         {
         }
 
@@ -79,7 +79,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class TradeCommand : Command
     {
-        public TradeCommand() : base("trade", (int)AccountType.FREE_ACCOUNT)
+        public TradeCommand() : base("trade", (int)AccountType.REGULAR)
         {
         }
 
@@ -100,7 +100,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class PauseCommand : Command
     {
-        public PauseCommand() : base("pause", (int)AccountType.FREE_ACCOUNT)
+        public PauseCommand() : base("pause", (int)AccountType.REGULAR)
         {
         }
 
@@ -150,7 +150,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class TeleportCommand : Command
     {
-        public TeleportCommand() : base("teleport", (int)AccountType.FREE_ACCOUNT)
+        public TeleportCommand() : base("teleport", (int)AccountType.REGULAR)
         {
         }
 
@@ -182,7 +182,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class TellCommand : Command
     {
-        public TellCommand() : base("tell", (int)AccountType.FREE_ACCOUNT)
+        public TellCommand() : base("tell", (int)AccountType.REGULAR)
         {
         }
 

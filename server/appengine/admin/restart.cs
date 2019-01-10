@@ -22,7 +22,7 @@ namespace LoESoft.AppEngine.account
 
                 if (status == LoginStatus.OK)
                 {
-                    if (acc.AccountType >= (int)AccountType.CM_ACCOUNT)
+                    if (acc.AccountType >= (int)AccountType.DEVELOPER)
                     {
                         var result = Settings.APPENGINE.SafeRestart(
                             Settings.SERVER_MODE == Settings.ServerMode.Production ?

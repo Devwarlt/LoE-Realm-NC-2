@@ -50,7 +50,7 @@ namespace LoESoft.GameServer.realm.entity.player
 			{
 				BubbleTime = 0,
 				Stars = Stars,
-				Name = "Loot Notifer",
+				Name = "Gazer",
 				Text = text,
 				NameColor = 0xFFB6C1,
 				TextColor = 0xFFB6C1
@@ -62,7 +62,7 @@ namespace LoESoft.GameServer.realm.entity.player
 			{
 				BubbleTime = 5,
 				Stars = Stars,
-				Name = "Death Notifer",
+				Name = "Gazer",
 				Text = text,
 				NameColor = 0xADD8E6,
 				TextColor = 0xADD8E6

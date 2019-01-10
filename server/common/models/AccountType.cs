@@ -2,11 +2,12 @@
 {
     public enum AccountType : int
     {
-        FREE_ACCOUNT = 0,
-        VIP_ACCOUNT = 1,
-        GM_ACCOUNT = 2,
-        CM_ACCOUNT = 3,
-        DEM_ACCOUNT = 4
+        REGULAR = 0,
+        VIP = 1,
+		DESIGNER=2,
+        MOD = 3,
+        DEVELOPER = 4,
+        NORGA = 5
     }
 
     public class AccountTypePerks
@@ -20,15 +21,15 @@
         public AccountTypePerks(int accountType)
         {
             _accountType = (AccountType)accountType;
-            _accessToDrastaCitadel = _accountType >= AccountType.VIP_ACCOUNT;
-            _byPassKeysRequirements = _accountType >= AccountType.VIP_ACCOUNT;
-            _byPassEggsRequirements = _accountType >= AccountType.VIP_ACCOUNT;
-            _priorityToLogin = _accountType >= AccountType.VIP_ACCOUNT;
+            _accessToDrastaCitadel = _accountType >= AccountType.VIP;
+            _byPassKeysRequirements = _accountType >= AccountType.VIP;
+            _byPassEggsRequirements = _accountType >= AccountType.VIP;
+            _priorityToLogin = _accountType >= AccountType.VIP;
         }
 
         public int Experience(int level, int experience)
         {
-            if (_accountType == AccountType.VIP_ACCOUNT)
+            if (_accountType == AccountType.VIP)
                 return level < 20 ? (int)(experience * 1.5) : (int)(experience * 1.05);
 
             return experience;
@@ -48,30 +49,32 @@
 
             switch (_accountType)
             {
-                case AccountType.FREE_ACCOUNT:
-                    icon.Effect = ConditionEffectIndex.FreeAccount;
+                case AccountType.REGULAR:
+                    icon.Effect = ConditionEffectIndex.RegularAccount;
                     break;
 
-                case AccountType.VIP_ACCOUNT:
+                case AccountType.VIP:
                     icon.Effect = ConditionEffectIndex.VipAccount;
                     break;
-
-                case AccountType.GM_ACCOUNT:
-                    icon.Effect = ConditionEffectIndex.GmAccount;
+				case AccountType.DESIGNER:
+					icon.Effect = ConditionEffectIndex.DesignerAccount;
+					break;
+				case AccountType.MOD:
+                    icon.Effect = ConditionEffectIndex.ModAccount;
                     break;
 
-                case AccountType.CM_ACCOUNT:
-                    icon.Effect = ConditionEffectIndex.CmAccount;
+                case AccountType.DEVELOPER:
+                    icon.Effect = ConditionEffectIndex.DeveloperAccount;
                     break;
 
-                case AccountType.DEM_ACCOUNT:
-                    icon.Effect = ConditionEffectIndex.DemAccount;
+                case AccountType.NORGA:
+                    icon.Effect = ConditionEffectIndex.NorgaAccount;
                     break;
             }
 
             return icon;
         }
 
-        public double MerchantDiscount() => _accountType == AccountType.VIP_ACCOUNT ? 0.9 : 1;
+        public double MerchantDiscount() => _accountType == AccountType.VIP ? 0.9 : 1;
     }
 }

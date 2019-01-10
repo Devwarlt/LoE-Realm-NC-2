@@ -1280,13 +1280,13 @@ namespace LoESoft.GameServer.realm.entity.player
                                 return true;
                             }
 
-                            if (AccountType == (int)Core.config.AccountType.VIP_ACCOUNT)
+                            if (AccountType == (int)Core.config.AccountType.VIP)
                             {
                                 SendInfo($"You can only use {item.DisplayId} when your VIP account lifetime over.");
                                 return true;
                             }
 
-                            if (AccountType >= (int)Core.config.AccountType.GM_ACCOUNT)
+                            if (AccountType >= (int)Core.config.AccountType.MOD)
                             {
                                 SendInfo($"Only VIP account type can use {item.DisplayId}.");
                                 return true;
@@ -1321,7 +1321,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                             acc.AccountLifetime = DateTime.Now;
                             acc.AccountLifetime = acc.AccountLifetime.AddDays(days);
-                            acc.AccountType = (int)Core.config.AccountType.VIP_ACCOUNT;
+                            acc.AccountType = (int)Core.config.AccountType.VIP;
                             acc.Flush();
                             acc.Reload();
 
@@ -1592,7 +1592,7 @@ namespace LoESoft.GameServer.realm.entity.player
         private bool CheatEngineDetect(Item item, USEITEM pkt)
         {
             foreach (Player player in Owner?.Players.Values)
-                if (player?.Client.Account.AccountType >= (int)Core.config.AccountType.CM_ACCOUNT)
+                if (player?.Client.Account.AccountType >= (int)Core.config.AccountType.DEVELOPER)
                     player.SendInfo(string.Format("Cheat engine detected for player {0},\nItem should be {1}, but its {2}.",
                 Name, Inventory[pkt.SlotObject.SlotId].ObjectId, item.ObjectId));
             GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHEAT_ENGINE_DETECTED);

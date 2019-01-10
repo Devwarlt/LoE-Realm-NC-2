@@ -160,12 +160,13 @@ public enum ConditionEffectIndex
     WisBoost = 46,
     Hidden = 47,
     Muted = 48,
-    FreeAccount = 50,
+    RegularAccount = 50,
     NPCType = 51,
     VipAccount = 52,
-    CmAccount = 53,
-    GmAccount = 54,
-    DemAccount = 55
+    ModAccount = 53,
+    DeveloperAccount = 54,
+    NorgaAccount = 55,
+	DesignerAccount =56
 }
 
 public enum XMLBehaviorsType //TODO: Not implemented yet, only few of them

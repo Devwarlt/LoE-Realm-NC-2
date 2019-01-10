@@ -8,7 +8,7 @@ namespace LoESoft.GameServer.realm.commands
 {
     public class TestingCommands : Command
     {
-        public TestingCommands() : base("test", (int)AccountType.DEM_ACCOUNT)
+        public TestingCommands() : base("test", (int)AccountType.DEVELOPER)
         {
         }
 
@@ -16,11 +16,11 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
-            {
-                player.SendInfo("You cannot use this feature along Production mode.");
-                return false;
-            }
+     //       if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+      //      {
+       //         player.SendInfo("You cannot use this feature along Production mode.");
+       //         return false;
+      //      }
 
             if (!AllowTestingCommands)
             {

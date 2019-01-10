@@ -23,7 +23,7 @@ namespace LoESoft.GameServer.networking.messages.handlers.hack
         }
 
         private bool ByPass
-        { get { return Player.AccountType == (int) AccountType.DEM_ACCOUNT; } }
+        { get { return Player.AccountType == (int) AccountType.DEVELOPER; } }
 
         CheatID ICheatHandler.ID
         { get { return CheatID.DEXTERITY; } }
