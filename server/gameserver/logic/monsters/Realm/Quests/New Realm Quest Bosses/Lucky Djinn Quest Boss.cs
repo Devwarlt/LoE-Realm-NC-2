@@ -8,7 +8,7 @@ namespace LoESoft.GameServer.logic
         private _ NewRealmQuestBossesLuckyDjinnQuestBoss = () => Behav()
             .Init("Lucky Djinn",
                 new State(
-                    new DropPortalOnDeath("The Crawling Depths", 1),
+                    new TransformOnDeath("The Crawling Depths",probability: 1),
                     new State("Idle",
                         new Prioritize(
                             new StayAbove(10, 200),

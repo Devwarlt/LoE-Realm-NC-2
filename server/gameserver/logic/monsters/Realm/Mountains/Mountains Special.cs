@@ -42,7 +42,7 @@ namespace LoESoft.GameServer.logic
                         new Shoot(15, 3, shootAngle: 25, index: 0, coolDown: 1000),
                         new Shoot(15, index: 1, coolDown: 1000)
                         ),
-                    new DropPortalOnDeath("Haunted Cemetery Portal", .4)
+                    new TransformOnDeath("Haunted Cemetery Portal", probability: .4)
                     )
             )
 
@@ -116,7 +116,7 @@ namespace LoESoft.GameServer.logic
 
             .Init("Crystal Prisoner",
                 new State(
-                    new DropPortalOnDeath("Deadwater Docks", 1),
+                    new TransformOnDeath("Deadwater Docks", probability:1),
                     new Spawn("Crystal Prisoner Steed", maxChildren: 3, initialSpawn: 0, coolDown: 200),
                     new State("pause",
                         new AddCond(ConditionEffectIndex.Invulnerable), // ok
