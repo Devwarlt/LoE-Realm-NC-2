@@ -426,6 +426,9 @@ namespace LoESoft.GameServer.realm.entity.player
                 }
                 else
                 {
+                    if (Owner == null)
+                        return false;
+
                     if (!once)
                     {
                         once = true;

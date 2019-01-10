@@ -268,7 +268,7 @@ namespace LoESoft.GameServer.logic
                     )
             )
 
-            .Init("Eyegyard of Surrender Spawner",
+            .Init("Eyeguard of Surrender Spawner",
                 new State(
                     new AddCond(ConditionEffectIndex.Invincible),
                     new Reproduce("Eyeguard of Surrender", 3, 1, 24, 120000)

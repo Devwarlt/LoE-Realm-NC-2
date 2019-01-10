@@ -1,8 +1,8 @@
-﻿using System;
-using System.Xml.Linq;
-using LoESoft.Core;
+﻿using LoESoft.Core;
 using LoESoft.Core.config;
+using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace LoESoft.AppEngine.dailyLogin
 {
@@ -10,6 +10,7 @@ namespace LoESoft.AppEngine.dailyLogin
     {
         public static DateTime MonthDate = new DateTime(2019, 1, 1, 0, 0, 0, Settings.DateTimeKind);
         public static bool DISABLE_CALENDAR = true;
+
         public static List<FetchCalendarDay> MonthCalendarList = new List<FetchCalendarDay>(1)
         {
             new FetchCalendarDay
@@ -39,10 +40,12 @@ namespace LoESoft.AppEngine.dailyLogin
          *  password (string) - Account Password
          *  gameClientVersion (string) - Client Version
         */
+
         protected override void HandleRequest()
         {
             DbAccount acc;
-            LoginStatus status = Database.Verify(Query["guid"], Query["password"], out acc);
+
+            var status = Database.Verify(Query["guid"], Query["password"], out acc);
 
             if (!(status == LoginStatus.OK))
             {
@@ -50,19 +53,19 @@ namespace LoESoft.AppEngine.dailyLogin
                 return;
             }
 
-            if(MonthCalendarUtils.DISABLE_CALENDAR)
+            if (MonthCalendarUtils.DISABLE_CALENDAR)
             {
                 WriteLine("<Error>This feature is disabled.</Error>");
                 return;
             }
 
-            DailyCalendar CalendarDb = new DailyCalendar(acc);
+            var CalendarDb = new DailyCalendar(acc);
 
-            if(CalendarDb.IsNull || IsNextMonth(CalendarDb.LastTime))
+            if (CalendarDb.IsNull || IsNextMonth(CalendarDb.LastTime))
             {
                 CalendarDb = new DailyCalendar(acc)
                 {
-                    ClaimedDays = new int[] {},
+                    ClaimedDays = new int[] { },
                     ConsecutiveDays = 1,
                     NonConsecutiveDays = 1,
                     UnlockableDays = 1,
@@ -70,7 +73,7 @@ namespace LoESoft.AppEngine.dailyLogin
                 };
             }
 
-            if(IsNextDay(CalendarDb.LastTime))
+            if (IsNextDay(CalendarDb.LastTime))
             {
                 CalendarDb.NonConsecutiveDays++;
                 CalendarDb.UnlockableDays++;
@@ -131,6 +134,7 @@ namespace LoESoft.AppEngine.dailyLogin
         }
 
         internal bool IsNextDay(DateTime dateTime) => dateTime != DateTime.Today;
+
         internal bool IsNextMonth(DateTime dateTime) => (dateTime.Year == MonthCalendarUtils.MonthDate.Year && dateTime.Month != MonthCalendarUtils.MonthDate.Month) || dateTime.Year != MonthCalendarUtils.MonthDate.Year;
     }
 }
