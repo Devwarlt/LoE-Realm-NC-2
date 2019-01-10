@@ -231,14 +231,14 @@ namespace LoESoft.GameServer.logic.loot
                     break;
             }
 
-            foreach (var owner in owners)
+            if (owners == null)
             {
                 var container = new Container(bag, bagType == 6 ? 5 * 60 * 1000 : 30 * 1000, true);
 
                 for (int j = 0; j < 8; j++)
                     container.Inventory[j] = items[j];
 
-                container.BagOwners = new string[] { owner };
+                container.BagOwners = null;
                 container.Move(
                     enemy.X + (float)((rand.NextDouble() * 2 - 1) * 0.5),
                     enemy.Y + (float)((rand.NextDouble() * 2 - 1) * 0.5));
@@ -246,6 +246,22 @@ namespace LoESoft.GameServer.logic.loot
 
                 enemy.Owner.EnterWorld(container);
             }
+            else
+                foreach (var owner in owners)
+                {
+                    var container = new Container(bag, bagType == 6 ? 5 * 60 * 1000 : 30 * 1000, true);
+
+                    for (int j = 0; j < 8; j++)
+                        container.Inventory[j] = items[j];
+
+                    container.BagOwners = new string[] { owner };
+                    container.Move(
+                        enemy.X + (float)((rand.NextDouble() * 2 - 1) * 0.5),
+                        enemy.Y + (float)((rand.NextDouble() * 2 - 1) * 0.5));
+                    container.Size = 80;
+
+                    enemy.Owner.EnterWorld(container);
+                }
         }
     }
 }
