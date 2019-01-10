@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using static LoESoft.GameServer.networking.Client;
+using LoESoft.GameServer.realm.world;
 
 #endregion
 
@@ -1415,9 +1416,9 @@ namespace LoESoft.GameServer.realm.entity.player
                     case ActivateEffects.PetSkin:
                     case ActivateEffects.Unlock:
                         {
-                            if (Owner.Id == (int)WorldID.VAULT_ID)
+                            if (Owner.Id != (int)WorldID.VAULT_ID)
                             {
-                                SendInfo("You cannot use this item in Vault!");
+                                SendInfo("You can only use this item in the Vault!");
                                 return true;
                             }
 
@@ -1436,11 +1437,11 @@ namespace LoESoft.GameServer.realm.entity.player
                                     GameServer.Manager.Database.AddChar(Client.Account);
                                     break;
 
-                                //broken
-                                //case "vault":
-                                //    message = "Vault Chest";
-                                //    GameServer.Manager.Database.AddChest(Client.Account);
-                                //    break;
+                                case "vault":
+                                    message = "Vault Chest";
+                                    //GameServer.Manager.Database.AddChest(Client.Account);
+                                    (Owner as Vault).AddChest(this);
+                                    break;
 
                                 default:
                                     SendInfo($"There is no unlock action to slot '{eff.Slot}' in game actions.");
@@ -1452,9 +1453,6 @@ namespace LoESoft.GameServer.realm.entity.player
                             SaveToCharacter();
                             return false;
                         }
-                    case ActivateEffects.MysteryDyes:
-                    default:
-                        return true;
                 }
             }
             UpdateCount++;

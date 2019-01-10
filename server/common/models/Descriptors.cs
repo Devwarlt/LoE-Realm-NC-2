@@ -861,7 +861,7 @@ public class Item : IFeedable
             ActivateEffects = elem.Elements("Activate").Select(i => new ActivateEffect(i)).ToArray();
             Projectiles = elem.Elements("Projectile").Select(i => new ProjectileDesc(i)).ToArray();
             MpEndCost = (n = elem.Element("MpEndCost")) != null ? int.Parse(elem.Element("MpEndCost").Value) : null as int?;
-            Timer = (n = elem.Element("Timer")) != null ? float.Parse(elem.Element("Timer").Value) : null as float?;
+            Timer = (n = elem.Element("Timer")) != null ? float.Parse(elem.Element("Timer").Value, NumberStyles.Any, ci) : null as float?;
             XpBooster = elem.Element("XpBoost") != null;
             LootDropBooster = elem.Element("LDBoosted") != null;
             LootTierBooster = elem.Element("LTBoosted") != null;

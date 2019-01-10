@@ -545,6 +545,7 @@ namespace LoESoft.GameServer.realm
         {
             if (embeddedResource == null)
                 return;
+
             string mapType = type == MapType.Json ? "json" : "wmap";
             string resource = embeddedResource.Replace($".{mapType}", "");
             var stream = typeof(RealmManager).Assembly.GetManifestResourceStream($"LoESoft.GameServer.realm.world.maps.{mapType}.{resource}.{mapType}");
