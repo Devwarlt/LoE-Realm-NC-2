@@ -1,26 +1,26 @@
 #region
 
 using LoESoft.Core.config;
+using LoESoft.Core.models;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 #endregion
 
 namespace LoESoft.GameServer.realm
 {
-    //using Timer = System.Timers.Timer;
-
-    public class LogicTicker : IDisposable
+    public class LogicTicker
     {
         private RealmManager _manager { get; set; }
         private ConcurrentQueue<Action<RealmTime>>[] _pendings { get; set; }
-        private Thread _logic { get; set; }
+        private ManualResetEvent _mre { get; set; }
+        private Task _logic { get; set; }
 
-        public static int COOLDOWN_DELAY => 1000 / Settings.GAMESERVER.TICKETS_PER_SECOND;
+        public static int COOLDOWN_DELAY => 666 / Settings.GAMESERVER.TICKETS_PER_SECOND;
 
         public RealmTime CurrentTime { get; private set; }
 
@@ -31,104 +31,103 @@ namespace LoESoft.GameServer.realm
 
             for (var i = 0; i < 5; i++)
                 _pendings[i] = new ConcurrentQueue<Action<RealmTime>>();
+
+            _mre = new ManualResetEvent(false);
+
+            CurrentTime = new RealmTime();
         }
 
-        public void Handle()
+        public void TickLoop()
         {
-            _logic = new Thread(() =>
+            var looptime = 0;
+            var t = new RealmTime();
+            var watch = Stopwatch.StartNew();
+
+            do
             {
-                var watch = new Stopwatch();
-                var t = new RealmTime();
-                var mspt = COOLDOWN_DELAY;
+                t.TotalElapsedMs = watch.ElapsedMilliseconds;
 
-                long dt = 0;
-                long count = 0;
-                long xa = 0;
+                _mre.WaitOne(Math.Max(0, COOLDOWN_DELAY - (int)(watch.ElapsedMilliseconds - t.TotalElapsedMs)));
 
-                watch.Start();
+                t.TickDelta = looptime / COOLDOWN_DELAY;
+                t.TickCount += t.TickDelta;
+                t.ElapsedMsDelta = t.TickDelta * COOLDOWN_DELAY;
 
-                do
-                {
-                    if (_manager.Terminating)
-                        break;
+                if (_manager.Terminating)
+                    break;
 
-                    var times = dt / mspt;
+                TickActions(t);
 
-                    dt -= times * mspt;
-
-                    times++;
-
-                    var b = watch.ElapsedMilliseconds;
-
-                    count += times;
-
-                    t.TotalElapsedMs = b;
-                    t.TickCount = count;
-                    t.TickDelta = (int)count;
-                    t.ElapsedMsDelta = (int)(times * mspt);
-
-                    xa += t.ElapsedMsDelta;
-
-                    foreach (var pending in _pendings)
-                        while (pending.TryDequeue(out Action<RealmTime> action))
-                        {
-                            if (_manager.Terminating)
-                                break;
-
-                            try { action(t); }
-                            catch { }
-                        }
-
-                    try
-                    {
-                        foreach (var world in _manager.Worlds.Values.Distinct())
-                            if (world == null)
-                                continue;
-                            else
-                                world.Tick(t);
-                    }
-                    catch { }
-
-                    try
-                    {
-                        foreach (var request in TradeManager.CurrentRequests)
-                            if (request.Key.Owner == null || request.Value.Owner == null)
-                                continue;
-                            else
-                                TradeManager.CurrentRequests.Remove(request);
-                    }
-                    catch { }
-
-                    try
-                    {
-                        foreach (var trading in TradeManager.TradingPlayers)
-                            if (trading.Owner == null)
-                                continue;
-                            else
-                                TradeManager.TradingPlayers.Remove(trading);
-                    }
-                    catch { }
-
-                    Thread.Sleep(mspt);
-
-                    dt += Math.Max(0, watch.ElapsedMilliseconds - b - mspt);
-                }
-                while (true);
-            })
-            {
-                Name = "Logic Ticker Thread",
-                CurrentCulture = CultureInfo.InvariantCulture,
-                Priority = ThreadPriority.Highest
-            };
-            _logic.Start();
+                looptime += (int)(watch.ElapsedMilliseconds - t.TotalElapsedMs) - t.ElapsedMsDelta;
+            }
+            while (true);
         }
 
-        public void Dispose() => _logic.Abort();
+        private void TickActions(RealmTime t)
+        {
+            var clients = _manager.ClientManager.Values.Select(client => client.Client).ToList();
 
-        public void AddPendingAction(Action<RealmTime> callback)
-            => AddPendingAction(callback, PendingPriority.Normal);
+            foreach (var pending in _pendings)
+                while (pending.TryDequeue(out Action<RealmTime> action))
+                    try
+                    { action(t); }
+                    catch { };
 
-        public void AddPendingAction(Action<RealmTime> callback, PendingPriority priority)
+            _manager.InterServer.Tick(t);
+
+            TickTrade(t);
+
+            foreach (var client in clients)
+                if (client.Player?.Owner != null)
+                    client.Player.Flush();
+        }
+
+        private void TickWorlds(RealmTime t)
+        {
+            CurrentTime.TickDelta += t.TickDelta;
+
+            if (_logic == null || _logic.IsCompleted)
+            {
+                t.TickDelta = CurrentTime.TickDelta;
+                t.ElapsedMsDelta = t.TickDelta * COOLDOWN_DELAY;
+
+                if (t.ElapsedMsDelta < COOLDOWN_DELAY)
+                    return;
+
+                CurrentTime.TickDelta = 0;
+
+                _logic = Task.Factory.StartNew(() =>
+                {
+                    foreach (var world in _manager.Worlds.Values.Distinct())
+                        world.Tick(t);
+                }).ContinueWith(task =>
+                Log.Error(task.Exception.InnerException.ToString()),
+                TaskContinuationOptions.OnlyOnFaulted);
+            }
+        }
+
+        private void TickTrade(RealmTime t)
+        {
+            try
+            {
+                if (TradeManager.TradingPlayers.Count != 0)
+                    TradeManager.TradingPlayers.Where(_ => _.Owner == null)
+                    .Select(i => TradeManager.TradingPlayers.Remove(i)).ToArray();
+            }
+            catch { }
+
+            try
+            {
+                if (TradeManager.CurrentRequests.Count != 0)
+                    TradeManager.CurrentRequests.Where(_ => _.Key.Owner == null || _.Value.Owner == null)
+                    .Select(i => TradeManager.CurrentRequests.Remove(i)).ToArray();
+            }
+            catch { }
+
+            TickWorlds(t);
+        }
+
+        public void AddPendingAction(Action<RealmTime> callback, PendingPriority priority = PendingPriority.Normal)
             => _pendings[(int)priority].Enqueue(callback);
     }
 }
