@@ -91,27 +91,27 @@ namespace LoESoft.GameServer.realm
 
                     try
                     {
-                        foreach (var request in TradeManager.CurrentRequests)
-                            if (request.Key.Owner == null || request.Value.Owner == null)
-                                continue;
-                            else
-                                TradeManager.CurrentRequests.Remove(request);
+                        if (TradeManager.TradingPlayers.Count != 0)
+                            TradeManager.TradingPlayers.Where(_ => _.Owner == null)
+                            .Select(i => TradeManager.TradingPlayers.Remove(i)).ToArray();
                     }
                     catch { }
 
                     try
                     {
-                        foreach (var trading in TradeManager.TradingPlayers)
-                            if (trading.Owner == null)
-                                continue;
-                            else
-                                TradeManager.TradingPlayers.Remove(trading);
+                        if (TradeManager.CurrentRequests.Count != 0)
+                            TradeManager.CurrentRequests.Where(_ => _.Key.Owner == null || _.Value.Owner == null)
+                            .Select(i => TradeManager.CurrentRequests.Remove(i)).ToArray();
                     }
                     catch { }
 
                     Thread.Sleep(mspt);
 
                     dt += Math.Max(0, watch.ElapsedMilliseconds - b - mspt);
+
+                    _manager.InterServer.Tick(t);
+
+                    CurrentTime = t;
                 }
                 while (true);
             })

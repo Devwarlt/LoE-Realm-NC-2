@@ -436,14 +436,15 @@ namespace LoESoft.GameServer.realm.entity.player
                         SendHelp("You dropped your connection with the server! Reconnecting...");
 
                         Owner.AddReconnectToPlayer(AccountId, Tuple.Create(X, Y));
-                        Owner.Timers.Add(new WorldTimer(3000, (w, t) => Client?.Reconnect(new RECONNECT()
+
+                        Client.Reconnect(new RECONNECT()
                         {
                             Host = "",
                             Port = Settings.GAMESERVER.PORT,
                             GameId = Owner.Id,
                             Name = Owner.Name,
                             Key = Owner.PortalKey,
-                        })));
+                        });
                     }
 
                     return false;
