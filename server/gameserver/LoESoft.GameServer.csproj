@@ -307,6 +307,7 @@
     <Compile Include="logic\transitions\PlayerWithinTransition.cs" />
     <Compile Include="logic\transitions\HpLessTransition.cs" />
     <Compile Include="logic\transitions\TimedTransition.cs" />
+    <Compile Include="networking\messages\handlers\ClaimDailyReward.cs" />
     <Compile Include="networking\messages\handlers\hack\ICheatHandler.cs" />
     <Compile Include="networking\messages\handlers\hack\DexterityCheatHandler.cs" />
     <Compile Include="networking\messages\incoming\ACCEPTTRADE.cs" />
@@ -318,6 +319,7 @@
     <Compile Include="networking\messages\incoming\CHECKCREDITS.cs" />
     <Compile Include="networking\messages\incoming\CHOOSENAME.cs" />
     <Compile Include="networking\messages\IncomingMessage.cs" />
+    <Compile Include="networking\messages\incoming\CLAIM_LOGIN_REWARD_MSG.cs" />
     <Compile Include="networking\messages\incoming\CREATEGUILD.cs" />
     <Compile Include="networking\messages\incoming\CREATE.cs" />
     <Compile Include="networking\messages\incoming\EDITACCOUNTLIST.cs" />
@@ -395,6 +397,7 @@
     <Compile Include="networking\error\ErrorIDs.cs" />
     <Compile Include="networking\messages\MessageHandler.cs" />
     <Compile Include="networking\messages\MessageHandlers.cs" />
+    <Compile Include="networking\messages\outgoing\LOGIN_REWARD_MSG.cs" />
     <Compile Include="networking\socket\Connection.cs" />
     <Compile Include="networking\socket\message\OutgoingMessage.cs" />
     <Compile Include="networking\socket\NetworkHandler.cs" />
