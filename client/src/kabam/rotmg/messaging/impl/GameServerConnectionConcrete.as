@@ -1146,7 +1146,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
     private function onConnected():void {
         var account:Account = StaticInjectorContext.getInjector().getInstance(Account);
 
-        this.addTextLine.dispatch(ChatMessage.make(Parameters.CLIENT_CHAT_NAME, TextKey.CHAT_CONNECTED));
+        this.addTextLine.dispatch(ChatMessage.make(Parameters.CLIENT_CHAT_NAME, "You have been connected to the server!"));
 
         this.encryptConnection();
 
@@ -2216,19 +2216,14 @@ public class GameServerConnectionConcrete extends GameServerConnection {
     }
 
     private function onClosed():void {
-        var _local1:HideMapLoadingSignal;
         if (this.playerId_ != -1) {
             gs_.closed.dispatch();
         }
         else {
             if (this.retryConnection_) {
-                if (this.delayBeforeReconnect < 10) {
-                    if (this.delayBeforeReconnect == 6) {
-                        _local1 = StaticInjectorContext.getInjector().getInstance(HideMapLoadingSignal);
-                        _local1.dispatch();
-                    }
-                    this.retry(this.delayBeforeReconnect++);
-                    this.addTextLine.dispatch(ChatMessage.make(Parameters.ERROR_CHAT_NAME, "Connection failed!  Retrying..."));
+                if (this.delayBeforeReconnect <= 100) {
+                    this.retry();
+                    this.addTextLine.dispatch(ChatMessage.make(Parameters.ERROR_CHAT_NAME, "[" + this.delayBeforeReconnect + "/100 Attempts] Connection failed!  Retrying..."));
                 }
                 else {
                     gs_.closed.dispatch();
@@ -2237,13 +2232,13 @@ public class GameServerConnectionConcrete extends GameServerConnection {
         }
     }
 
-    private function retry(_arg1:int):void {
-        this.retryTimer_ = new Timer((_arg1 * (Parameters.IS_DEVELOPER_MODE ? 250 : 3000)), 1);
-        this.retryTimer_.addEventListener(TimerEvent.TIMER_COMPLETE, this.onRetryTimer);
-        this.retryTimer_.start();
+    private function retry():void {
+        var timer:Timer = new Timer(1000);
+        timer.addEventListener(TimerEvent.TIMER_COMPLETE, this.SocketReconnect);
+        timer.start();
     }
 
-    private function onRetryTimer(_arg1:TimerEvent):void {
+    private function SocketReconnect(_arg1:TimerEvent):void {
         serverConnection.connect(server_.address, server_.port);
     }
 

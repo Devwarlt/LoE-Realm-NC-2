@@ -5,18 +5,16 @@ import kabam.rotmg.application.api.ApplicationSetup;
 
 public class ProductionSetup implements ApplicationSetup {
 
-    private const SERVER:String = "realmofthemadgodhrd.appspot.com";
-    private const UNENCRYPTED:String = ("http://" + SERVER);
-    private const ENCRYPTED:String = ("https://" + SERVER);
-    private const BUILD_LABEL:String = "RotMG #{VERSION}.{MINOR}";
+    private const SERVER:String = Parameters.ENVIRONMENT_DNS + ":" + Parameters.ENVIRONMENT_PORT;
+    private const PROTOCOL:String = "{PROTOCOL}://" + SERVER;
+    private const BUILD_LABEL:String = "<font color='#FFFF00'><b>Official</b> {CLIENT_NAME}</font> #{VERSION}.{MINOR}";
 
-
-    public function getAppEngineUrl(_arg1:Boolean = false):String {
-        return (((_arg1) ? this.UNENCRYPTED : this.ENCRYPTED));
+    public function getAppEngineUrl(_arg1:Boolean = true):String {
+        return this.PROTOCOL.replace("{PROTOCOL}", Parameters.CONNECTION_SECURITY_PROTOCOL);
     }
 
     public function getBuildLabel():String {
-        return (this.BUILD_LABEL.replace("{VERSION}", Parameters.BUILD_VERSION).replace("{MINOR}", Parameters.MINOR_VERSION));
+        return this.BUILD_LABEL.replace("{VERSION}", Parameters.BUILD_VERSION).replace("{MINOR}", Parameters.MINOR_VERSION).replace("{CLIENT_NAME}", Parameters.CLIENT_NAME);
     }
 
     public function useLocalTextures():Boolean {

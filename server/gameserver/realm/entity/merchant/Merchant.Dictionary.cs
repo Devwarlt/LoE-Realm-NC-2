@@ -63,23 +63,24 @@ namespace LoESoft.GameServer.realm.entity.merchant
         {
             #region "Region 1 & 2"
 
-            { 0x236E, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // glife
-            { 0x236F, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // gmana
-            { 0x2368, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // gatt
-            { 0x2369, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // gdef
-            { 0x236A, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // gspd
-            { 0x236D, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // gdex
-            { 0x236B, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // gvit
-            { 0x236C, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // gwis
+            // 200 / 100
+            { 0x236E, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // glife
+            { 0x236F, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // gmana
+            { 0x2368, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // gatt
+            { 0x2369, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // gdef
+            { 0x236A, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // gspd
+            { 0x236D, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // gdex
+            { 0x236B, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // gvit
+            { 0x236C, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // gwis
 
-            { 0xae9, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, //life
-            { 0xaea, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, //mana
-            { 0xa1f, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, //att
-            { 0xa20, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, //def
-            { 0xa21, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, //spd
-            { 0xa4c, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, //dex
-            { 0xa34, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, //vit
-            { 0xa35, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, //wis
+            { 0xae9, new Tuple<int, CurrencyType>(25, CurrencyType.Fame) }, //life
+            { 0xaea, new Tuple<int, CurrencyType>(25, CurrencyType.Fame) }, //mana
+            { 0xa1f, new Tuple<int, CurrencyType>(25, CurrencyType.Fame) }, //att
+            { 0xa20, new Tuple<int, CurrencyType>(25, CurrencyType.Fame) }, //def
+            { 0xa21, new Tuple<int, CurrencyType>(25, CurrencyType.Fame) }, //spd
+            { 0xa4c, new Tuple<int, CurrencyType>(25, CurrencyType.Fame) }, //dex
+            { 0xa34, new Tuple<int, CurrencyType>(25, CurrencyType.Fame) }, //vit
+            { 0xa35, new Tuple<int, CurrencyType>(25, CurrencyType.Fame) }, //wis
 
             //{ 1793, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, // Undead Lair Key
             //{ 308, new Tuple<int, CurrencyType>(250, CurrencyType.Fame) }, // Halloween Cemetery Key
@@ -116,9 +117,9 @@ namespace LoESoft.GameServer.realm.entity.merchant
             #region "Region 4"
 
             { 0x32a, new Tuple<int, CurrencyType>(5000, CurrencyType.Fame) }, // Char Slot Unlocker
-            { 0x32b, new Tuple<int, CurrencyType>(2500, CurrencyType.Fame) }, // Vault Chest Unlocker
+            //{ 0x32b, new Tuple<int, CurrencyType>(2500, CurrencyType.Fame) }, // Vault Chest Unlocker
             { 0xc6c, new Tuple<int, CurrencyType>(500, CurrencyType.Fame) }, // Backpack
-            { 0x575a, new Tuple<int, CurrencyType>(1000, CurrencyType.Fame) } // Public Arena Key
+            { 0x575a, new Tuple<int, CurrencyType>(1000, CurrencyType.Fame) }, // Public Arena Key
 
             //{ 3273, new Tuple<int, CurrencyType>(20, CurrencyType.Fame) }, // Soft Drink
             //{ 3275, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Fries
@@ -136,6 +137,19 @@ namespace LoESoft.GameServer.realm.entity.merchant
             //{ 3286, new Tuple<int, CurrencyType>(300, CurrencyType.Fame) } // Thanksgiving Turkey
 
             #endregion "Region 4"
+
+            #region "Region 9"
+
+            { 0x4000, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, // t0 egg
+            { 0x4003, new Tuple<int, CurrencyType>(200, CurrencyType.Fame) }, // t1 egg
+            { 0x4006, new Tuple<int, CurrencyType>(350, CurrencyType.Fame) }, // t2 egg
+            { 0x4009, new Tuple<int, CurrencyType>(500, CurrencyType.Fame) }, // t3 egg
+            { 0x400c, new Tuple<int, CurrencyType>(700, CurrencyType.Fame) }, // t4 egg
+            { 0x400f, new Tuple<int, CurrencyType>(500, CurrencyType.Gold) }, // t5 egg
+            { 0x4012, new Tuple<int, CurrencyType>(700, CurrencyType.Gold) }, // t6 egg
+            { 0x4015, new Tuple<int, CurrencyType>(1000, CurrencyType.Gold) } // t7 egg
+
+            #endregion "Region 9"
         };
     }
 }

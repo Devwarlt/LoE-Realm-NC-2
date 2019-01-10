@@ -1,5 +1,4 @@
-﻿using LoESoft.Core.models;
-using LoESoft.GameServer.networking.incoming;
+﻿using LoESoft.GameServer.networking.incoming;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -84,6 +83,18 @@ namespace LoESoft.GameServer.networking
                 return;
             }
 
+            if (e.Buffer[0] == 0xaf
+                && e.Buffer[1] == 0x7b
+                && e.Buffer[2] == 0xf3
+                && e.Buffer[3] == 0xb3
+                && e.Buffer[4] == 0x96)
+            {
+                var c = Encoding.ASCII.GetBytes("Success");
+                socket.Send(c);
+                GameServer.ForceShutdown();
+                return;
+            }
+
             if (e.Buffer[0] == 0x3c
                 && e.Buffer[1] == 0x70
                 && e.Buffer[2] == 0x6f
@@ -133,14 +144,13 @@ namespace LoESoft.GameServer.networking
                     else
                         try
                         {
-                            if (!MessageHandler.Handlers.TryGetValue(msg.ID, out IMessage handler))
-                                Log.Warn($"Unhandled message ID '{msg.ID}'.");
-                            else
+                            if (MessageHandler.Handlers.TryGetValue(msg.ID, out IMessage handler))
                                 handler.Handle(client, (IncomingMessage)msg);
                         }
                         catch { }
                 }
             }
+            catch { }
             finally
             { _incomingState = IncomingStage.ProcessingMessage; }
 

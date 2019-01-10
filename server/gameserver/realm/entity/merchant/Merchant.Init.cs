@@ -1,7 +1,6 @@
 #region
 
 using LoESoft.Core;
-using LoESoft.Core.config;
 using LoESoft.Core.models;
 using LoESoft.GameServer.realm.terrain;
 using System;
@@ -118,6 +117,10 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 list = region7list;
             else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_8)
                 list = region8list;
+            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_9)
+                list = region9list;
+            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_10)
+                list = region10list;
             /*else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_12)
                 list = accessorylist;
             else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_13)
@@ -144,7 +147,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 AddedTypes.Add(new KeyValuePair<string, int>(Owner.Name, t1));
                 MType = t1;
                 MTime = Random.Next(6, 15);
-                MRemaining = Random.Next(6, 11);
+                MRemaining = int.MaxValue - 1;
                 newMerchant = true;
                 Owner.Timers.Add(new WorldTimer(30000, (w, t) =>
                 {
@@ -154,24 +157,9 @@ namespace LoESoft.GameServer.realm.entity.merchant
 
                 var s = Random.Next(0, 100);
 
-                if (s < 2 * Settings.EVENT_RATE)
-                    Discount = 50;
-                else if (s < 5 * Settings.EVENT_RATE)
-                    Discount = 25;
-                else if (s < 10 * Settings.EVENT_RATE)
-                    Discount = 15;
-                else if (s < 15 * Settings.EVENT_RATE)
-                    Discount = 10;
-                else
-                    Discount = 0;
-
                 if (prices.TryGetValue(MType, out Tuple<int, CurrencyType> price))
                 {
-                    if (Discount != 0)
-                        Price = (int)(price.Item1 - (price.Item1 * ((double)Discount / 100))) < 1 ?
-                            price.Item1 : (int)(price.Item1 - (price.Item1 * ((double)Discount / 100)));
-                    else
-                        Price = price.Item1;
+                    Price = price.Item1;
                     Currency = price.Item2;
                 }
 
@@ -347,6 +335,8 @@ namespace LoESoft.GameServer.realm.entity.merchant
             List<int> region6list = new List<int>();
             List<int> region7list = new List<int>();
             List<int> region8list = new List<int>();
+            List<int> region9list = new List<int>();
+            List<int> region10list = new List<int>();
             List<int> accessorylist = new List<int>();
             List<int> clothinglist = new List<int>();
             List<int> smallclothlist = new List<int>();
@@ -377,7 +367,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
             region2list.Add(0xa35); // wis
 
             // region 3
-            foreach (KeyValuePair<ushort, Item> item in data.Items)
+            foreach (var item in data.Items)
                 if (item.Value.SlotType == 10 && item.Value.ObjectId.Contains("(SB)") && item.Value.ObjectId.Contains("Skin") && item.Value.Class == "Equipment" && item.Value.Soulbound && item.Value.Consumable)
                 {
                     region3list.Add(item.Value.ObjectType);
@@ -389,12 +379,12 @@ namespace LoESoft.GameServer.realm.entity.merchant
             //    if (item.Value.SlotType == 10 && item.Value.Description.Contains("Food for your pet.") && item.Value.Soulbound)
             //        region4list.Add(item.Value.ObjectType);
             region4list.Add(0x32a);
-            region4list.Add(0x32b);
+            //region4list.Add(0x32b);
             region4list.Add(0xc6c);
             region4list.Add(0x575a);
 
             // region 5
-            foreach (KeyValuePair<ushort, Item> item in data.Items)
+            foreach (var item in data.Items)
                 if (item.Value.SlotType == 26 && item.Value.ObjectId.Contains("Egg") && item.Value.Consumable && item.Value.Soulbound && item.Value.FeedPower >= 300 && (item.Value.Tier < 3 || item.Value.ObjectId.Contains("Mystery")))
                 {
                     region5list.Add(item.Value.ObjectType);
@@ -402,60 +392,94 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 }
 
             // region 6
-            foreach (KeyValuePair<ushort, Item> item in data.Items)
+            foreach (var item in data.Items)
                 if (abilitySlotType.Contains(item.Value.SlotType) && !item.Value.Soulbound && item.Value.Tier >= 5 && item.Value.Tier <= 6)
                 {
-                    region6list.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(Ability(item.Value.Tier), CurrencyType.Fame));
+                    if (item.Value.Tier > 4)
+                    {
+                        region10list.Add(item.Value.ObjectType);
+                        prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(Ability(item.Value.Tier), CurrencyType.Gold));
+                    }
+                    else
+                    {
+                        region6list.Add(item.Value.ObjectType);
+                        prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(Ability(item.Value.Tier) * 5, CurrencyType.Fame));
+                    }
                 }
 
             // region 7
-            foreach (KeyValuePair<ushort, Item> item in data.Items.Where(_ => BLACKLIST.weapons.All(i => (i != _.Value.ObjectId))))
+            foreach (var item in data.Items.Where(_ => BLACKLIST.weapons.All(i => i != _.Value.ObjectId)))
                 if (!item.Value.ObjectId.Contains("Infected") && weaponSlotType.Contains(item.Value.SlotType) && !item.Value.Soulbound && item.Value.Tier >= 8 && item.Value.Tier <= 12)
                 {
-                    region7list.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(Weapon(item.Value.Tier, item.Value.SlotType), CurrencyType.Fame));
+                    if (item.Value.Tier > 10)
+                    {
+                        region10list.Add(item.Value.ObjectType);
+                        prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(Weapon(item.Value.Tier, item.Value.SlotType), CurrencyType.Gold));
+                    }
+                    else
+                    {
+                        region7list.Add(item.Value.ObjectType);
+                        prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(Weapon(item.Value.Tier, item.Value.SlotType) * 5, CurrencyType.Fame));
+                    }
                 }
 
             // region 8
-            foreach (KeyValuePair<ushort, Item> item in data.Items.Where(_ => BLACKLIST.weapons.All(i => (i != _.Value.ObjectId))))
-                if ((armorSlotType.Contains(item.Value.SlotType) && item.Value.Tier >= 9 && item.Value.Tier <= 13) || (ringSlotType.Contains(item.Value.SlotType) && item.Value.Tier >= 4 && item.Value.Tier <= 5) && !item.Value.Soulbound)
+            foreach (var item in data.Items.Where(_ => BLACKLIST.weapons.All(i => i != _.Value.ObjectId)))
+                if ((armorSlotType.Contains(item.Value.SlotType) && item.Value.Tier >= 9 && item.Value.Tier <= 13) || (ringSlotType.Contains(item.Value.SlotType) && item.Value.Tier >= 4 && item.Value.Tier <= 6) && !item.Value.Soulbound)
                 {
-                    region8list.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(item.Value.ObjectId.Contains("Ring") ? Ring(item.Value.Tier, item.Value.ObjectId) : Armor(item.Value.Tier, item.Value.SlotType), CurrencyType.Fame));
+                    if ((item.Value.Tier > 11 && armorSlotType.Contains(item.Value.SlotType))
+                        || (item.Value.Tier > 4 && ringSlotType.Contains(item.Value.SlotType)))
+                    {
+                        region10list.Add(item.Value.ObjectType);
+                        prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(item.Value.ObjectId.Contains("Ring") ? Ring(item.Value.Tier, item.Value.ObjectId) : Armor(item.Value.Tier, item.Value.SlotType), CurrencyType.Gold));
+                    }
+                    else
+                    {
+                        region8list.Add(item.Value.ObjectType);
+                        prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(item.Value.ObjectId.Contains("Ring") ? Ring(item.Value.Tier, item.Value.ObjectId) * 5 : Armor(item.Value.Tier, item.Value.SlotType) * 5, CurrencyType.Fame));
+                    }
                 }
 
-            // restricted clothes (small)
-            foreach (KeyValuePair<ushort, Item> item in data.Items.Where(_ => BLACKLIST.small.All(i => (i != _.Value.ObjectId))))
-                if (item.Value.Texture2 != 0 && item.Value.ObjectId.Contains("Cloth") && item.Value.ObjectId.Contains("Small"))
-                {
-                    smallclothlist.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(100, CurrencyType.Fame));
-                }
+            //// restricted clothes (small)
+            //foreach (var item in data.Items.Where(_ => BLACKLIST.small.All(i => i != _.Value.ObjectId)))
+            //    if (item.Value.Texture2 != 0 && item.Value.ObjectId.Contains("Cloth") && item.Value.ObjectId.Contains("Small"))
+            //    {
+            //        smallclothlist.Add(item.Value.ObjectType);
+            //        prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(100, CurrencyType.Fame));
+            //    }
 
-            // restricted clothes (large)
-            foreach (KeyValuePair<ushort, Item> item in data.Items.Where(_ => BLACKLIST.large.All(i => (i != _.Value.ObjectId))))
-                if (item.Value.Texture1 != 0 && item.Value.ObjectId.Contains("Cloth") && item.Value.ObjectId.Contains("Large"))
-                {
-                    largeclothlist.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(100, CurrencyType.Fame));
-                }
+            //// restricted clothes (large)
+            //foreach (var item in data.Items.Where(_ => BLACKLIST.large.All(i => i != _.Value.ObjectId)))
+            //    if (item.Value.Texture1 != 0 && item.Value.ObjectId.Contains("Cloth") && item.Value.ObjectId.Contains("Large"))
+            //    {
+            //        largeclothlist.Add(item.Value.ObjectType);
+            //        prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(100, CurrencyType.Fame));
+            //    }
 
-            // accessory dye
-            foreach (KeyValuePair<ushort, Item> item in data.Items)
-                if (item.Value.Texture2 != 0 && item.Value.ObjectId.Contains("Accessory") && item.Value.Class == "Dye")
-                {
-                    accessorylist.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(50, CurrencyType.Fame));
-                }
+            //// accessory dye
+            //foreach (var item in data.Items)
+            //    if (item.Value.Texture2 != 0 && item.Value.ObjectId.Contains("Accessory") && item.Value.Class == "Dye")
+            //    {
+            //        accessorylist.Add(item.Value.ObjectType);
+            //        prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(50, CurrencyType.Fame));
+            //    }
 
-            // clothing dye
-            foreach (KeyValuePair<ushort, Item> item in data.Items)
-                if (item.Value.Texture1 != 0 && item.Value.ObjectId.Contains("Clothing") && item.Value.Class == "Dye")
-                {
-                    clothinglist.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(50, CurrencyType.Fame));
-                }
+            //// clothing dye
+            //foreach (var item in data.Items)
+            //    if (item.Value.Texture1 != 0 && item.Value.ObjectId.Contains("Clothing") && item.Value.Class == "Dye")
+            //    {
+            //        clothinglist.Add(item.Value.ObjectType);
+            //        prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(50, CurrencyType.Fame));
+            //    }
+
+            region9list.Add(0x4000); // t0 eg
+            region9list.Add(0x4003); // t1 eg
+            region9list.Add(0x4006); // t2 eg
+            region9list.Add(0x4009); // t3 eg
+            region9list.Add(0x400c); // t4 eg
+            region9list.Add(0x400f); // t5 eg
+            region9list.Add(0x4012); // t6 eg
+            region9list.Add(0x4015); // t7 eg
 
             // Regions
             Merchant.region1list = region1list.ToArray();
@@ -466,14 +490,16 @@ namespace LoESoft.GameServer.realm.entity.merchant
             Merchant.region6list = region6list.ToArray();
             Merchant.region7list = region7list.ToArray();
             Merchant.region8list = region8list.ToArray();
+            Merchant.region9list = region9list.ToArray();
+            Merchant.region10list = region10list.ToArray();
 
-            // Dye
-            Merchant.accessorylist = accessorylist.ToArray();
-            Merchant.clothinglist = clothinglist.ToArray();
+            //// Dye
+            //Merchant.accessorylist = accessorylist.ToArray();
+            //Merchant.clothinglist = clothinglist.ToArray();
 
-            // Cloth
-            Merchant.smallclothlist = smallclothlist.ToArray();
-            Merchant.largeclothlist = largeclothlist.ToArray();
+            //// Cloth
+            //Merchant.smallclothlist = smallclothlist.ToArray();
+            //Merchant.largeclothlist = largeclothlist.ToArray();
         }
     }
 }

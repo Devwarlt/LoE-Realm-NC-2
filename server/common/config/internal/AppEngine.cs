@@ -64,7 +64,7 @@ namespace LoESoft.Core.config
                     gameserver.Add(new ServerItem()
                     {
                         Name = SERVERS[i].Item1,
-                        DNS = CheckDDNS(SERVERS[i].Item2, i),
+                        DNS = SERVER_MODE == ServerMode.Production ? CheckDDNS(SERVERS[i].Item2, i) : "localhost",
                         Lat = 0,
                         Long = 0,
                         Usage = SERVERS[i].Item3,//SERVER_MODE != ServerMode.Local ? GetUsage(CheckDDNS(SERVERS[i].Item2, i), GAMESERVER.PORT) : SERVERS[i].Item3,
@@ -119,6 +119,40 @@ namespace LoESoft.Core.config
                     catch (ObjectDisposedException) { return -1; }
                 else
                     return -1;
+            }
+
+            public static string SafeRestart(string dns, int port)
+            {
+                var IPs = Dns.GetHostAddresses(dns);
+
+                if (IsListening(dns, port))
+                    try
+                    {
+                        using (var tcp = new TcpClient(dns, port))
+                        {
+                            tcp.NoDelay = false;
+
+                            var stream = tcp.GetStream();
+
+                            string data = null;
+
+                            byte[] response = new byte[tcp.ReceiveBufferSize];
+                            byte[] usage = new byte[5] { 0xaf, 0x7b, 0xf3, 0xb3, 0x96 };
+
+                            stream.Write(usage, 0, 5);
+
+                            Array.Resize(ref response, tcp.Client.Receive(response));
+
+                            data = Encoding.ASCII.GetString(response);
+
+                            tcp.Close();
+
+                            return data;
+                        }
+                    }
+                    catch (Exception e) { return "An error occurred with server: " + e; }
+
+                return null;
             }
 
             public static bool IsListening(string dns, int port)

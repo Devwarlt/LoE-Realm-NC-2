@@ -4,7 +4,6 @@ using LoESoft.Core.config;
 using LoESoft.GameServer.networking;
 using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.entity.player;
-using LoESoft.GameServer.realm.mapsetpiece;
 using LoESoft.GameServer.realm.world;
 using System;
 using System.Collections.Generic;
@@ -17,68 +16,115 @@ using static LoESoft.GameServer.networking.Client;
 
 namespace LoESoft.GameServer.realm.commands
 {
-	internal class RealmCommand : Command
-	{
-		public RealmCommand()
-			: base("realm", (int)AccountType.VIP_ACCOUNT)
-		{
-		}
-
-		protected override bool Process(Player player, RealmTime time, string[] args)
-		{
-			World world = player.Client.Manager.Monitor.GetRandomRealm();
-
-			player.Client.Reconnect(new RECONNECT
-			{
-				Host = "",
-				Port = Settings.GAMESERVER.PORT,
-				GameId = world.Id,
-				Name = world.Name,
-				Key = world.PortalKey,
-			});
-			return true;
-		}
-	}
-	internal class AutoTradeCommand : Command
-	{
-		public AutoTradeCommand() : base("autotrade", (int)AccountType.DEM_ACCOUNT)
-		{ }
-		protected override bool Process(Player player, RealmTime time, string[] args)
-		{
-			Player plr = GameServer.Manager.FindPlayer(args[0]);
-			if (plr != null && plr.Owner == player.Owner)
-			{
-				player.RequestTrade(time, new networking.incoming.REQUESTTRADE { Name = plr.Name });
-				plr.RequestTrade(time, new networking.incoming.REQUESTTRADE { Name = player.Name });
-				return true;
-			}
-			return true;
-		}
-	}
-	internal class VaultCommand : Command
-	{
-		public VaultCommand() : base("vault", (int)AccountType.VIP_ACCOUNT)
-		{ }
-		protected override bool Process(Player player, RealmTime time, string[] args)
-		{
-			if (player.Owner is Vault)
-			{
-				player.SendHelp("You are already in Vault...");
-			}
-			player.Client.Reconnect(new RECONNECT()
-			{
-				Host = "",
-				Port = Settings.GAMESERVER.PORT,
-				GameId = GameServer.Manager.PlayerVault(player.Client).Id,
-				Name = GameServer.Manager.PlayerVault(player.Client).Name,
-				Key = GameServer.Manager.PlayerVault(player.Client).PortalKey
-			});
-			return true;
-		}
-	}
-	internal class VisitCommand : Command
+    internal class GlobalChat : Command
     {
-        public VisitCommand() : base("visit", (int)AccountType.CM_ACCOUNT)
+        public GlobalChat() : base("gchat", (int)AccountType.VIP_ACCOUNT)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            if (args.Length == 0)
+            {
+                player.SendHelp("Usage: /gchat <saytext>");
+                return false;
+            }
+
+            var saytext = string.Join(" ", args);
+
+            if (player.Stars >= 10 || player.AccountType != (int)AccountType.FREE_ACCOUNT)
+                foreach (var cData in GameServer.Manager.ClientManager.Values)
+                    cData.Client?.SendMessage(new TEXT()
+                    {
+                        BubbleTime = 10,
+                        Stars = -1,
+                        Name = "Global> <" + player.Name,
+                        Text = " " + saytext,
+                        NameColor = 0x123456,
+                        TextColor = 0x123456
+                    });
+            else
+            {
+                player.SendHelp("You need at least 10 stars to unlock the global chat feature, try again later.");
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    internal class RealmCommand : Command
+    {
+        public RealmCommand()
+            : base("realm", (int)AccountType.FREE_ACCOUNT)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            var world = player.Client.Manager.Monitor.GetRandomRealm();
+
+            if (player.Owner is IRealm)
+            {
+                player.SendInfo("You already at realm.");
+                return false;
+            }
+
+            if (player.Stars >= 10 || player.AccountType != (int)AccountType.FREE_ACCOUNT)
+                player.Client.Reconnect(new RECONNECT()
+                {
+                    Host = "",
+                    Port = Settings.GAMESERVER.PORT,
+                    GameId = world.Id,
+                    Name = world.Name,
+                    Key = world.PortalKey,
+                });
+            else
+            {
+                player.SendHelp("You need at least 10 stars to unlock the realm instant access feature, try again later.");
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    internal class VaultCommand : Command
+    {
+        public VaultCommand() : base("vault", (int)AccountType.FREE_ACCOUNT)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            if (player.Owner is Vault)
+            {
+                player.SendInfo("You are already at vault.");
+                return false;
+            }
+
+            if (player.Stars >= 10 || player.AccountType != (int)AccountType.FREE_ACCOUNT)
+                player.Client.Reconnect(new RECONNECT()
+                {
+                    Host = "",
+                    Port = Settings.GAMESERVER.PORT,
+                    GameId = GameServer.Manager.PlayerVault(player.Client).Id,
+                    Name = GameServer.Manager.PlayerVault(player.Client).Name,
+                    Key = GameServer.Manager.PlayerVault(player.Client).PortalKey
+                });
+            else
+            {
+                player.SendHelp("You need at least 10 stars to unlock the vault instant access feature, try again later.");
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    internal class VisitCommand : Command
+    {
+        public VisitCommand() : base("visit", (int)AccountType.DEM_ACCOUNT)
         {
         }
 
@@ -90,9 +136,9 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            foreach (ClientData i in GameServer.Manager.ClientManager.Values)
+            foreach (var i in GameServer.Manager.ClientManager.Values)
             {
-                Player target = i.Client.Player;
+                var target = i.Client.Player;
 
                 if (target.Owner is Vault)
                 {
@@ -141,17 +187,25 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            player.Move(1000f, 1000f);
-            player.Owner.BroadcastMessage(new GOTO
+            if (player.Stars >= 10 || player.AccountType != (int)AccountType.FREE_ACCOUNT)
             {
-                ObjectId = player.Id,
-                Position = new Position
+                player.Move(1000f, 1000f);
+                player.Owner.BroadcastMessage(new GOTO
                 {
-                    X = player.X,
-                    Y = player.Y
-                }
-            }, null);
-            player.UpdateCount++;
+                    ObjectId = player.Id,
+                    Position = new Position
+                    {
+                        X = player.X,
+                        Y = player.Y
+                    }
+                }, null);
+                player.UpdateCount++;
+            }
+            else
+            {
+                player.SendHelp("You need at least 10 stars to unlock the god lands instant access feature, try again later.");
+                return false;
+            }
 
             return true;
         }
@@ -172,9 +226,9 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            foreach (ClientData i in GameServer.Manager.ClientManager.Values)
+            foreach (var i in GameServer.Manager.ClientManager.Values)
             {
-                Player target = i.Client.Player;
+                var target = i.Client.Player;
 
                 if (target.Name.EqualsIgnoreCase(args[0]))
                 {
@@ -234,19 +288,6 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
-    internal class AddRealmCommand : Command
-    {
-        public AddRealmCommand() : base("addrealm", (int)AccountType.DEM_ACCOUNT)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            GameServer.Manager.AddWorld(GameWorld.AutoName(1, true));
-            return true;
-        }
-    }
-
     internal class SpawnCommand : Command
     {
         public SpawnCommand() : base("spawn", (int)AccountType.DEM_ACCOUNT)
@@ -255,120 +296,63 @@ namespace LoESoft.GameServer.realm.commands
 
         private List<string> Whitelist = new List<string>()
         {
-            "1", "21"
+            "1"
         };
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            //if (!Whitelist.Contains(player.AccountId))
-            //{
-            //    player.SendInfo($"Unknown command: /spawn.");
-            //    return false;
-            //}
+            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            {
+                player.SendInfo("You cannot use this feature along Production mode.");
+                return false;
+            }
+
+            if (!Whitelist.Contains(player.AccountId))
+            {
+                player.SendInfo($"Unknown command: /spawn.");
+                return false;
+            }
 
             if (args.Length > 0 && int.TryParse(args[0], out int num)) //multi
             {
-                string name = string.Join(" ", args.Skip(1).ToArray());
-                //creates a new case insensitive dictionary based on the XmlDatas
-                Dictionary<string, ushort> icdatas = new Dictionary<string, ushort>(
-                    GameServer.Manager.GameData.IdToObjectType,
-                    StringComparer.OrdinalIgnoreCase);
+                var name = string.Join(" ", args.Skip(1).ToArray());
+                var icdatas = new Dictionary<string, ushort>(GameServer.Manager.GameData.IdToObjectType, StringComparer.OrdinalIgnoreCase);
+
                 if (!icdatas.TryGetValue(name, out ushort objType) ||
                     !GameServer.Manager.GameData.ObjectDescs.ContainsKey(objType))
                 {
                     player.SendInfo("Unknown entity!");
                     return false;
                 }
-                int c = int.Parse(args[0]);
-                for (int i = 0; i < num; i++)
+
+                var c = int.Parse(args[0]);
+
+                for (var i = 0; i < num; i++)
                 {
-                    Entity entity = Entity.Resolve(objType);
+                    var entity = Entity.Resolve(objType);
                     entity.Move(player.X, player.Y);
                     player.Owner.EnterWorld(entity);
                 }
+
                 player.SendInfo("Success!");
             }
             else
             {
-                string name = string.Join(" ", args);
-                //creates a new case insensitive dictionary based on the XmlDatas
-                Dictionary<string, ushort> icdatas = new Dictionary<string, ushort>(
-                    GameServer.Manager.GameData.IdToObjectType,
-                    StringComparer.OrdinalIgnoreCase);
+                var name = string.Join(" ", args);
+                var icdatas = new Dictionary<string, ushort>(GameServer.Manager.GameData.IdToObjectType, StringComparer.OrdinalIgnoreCase);
+
                 if (!icdatas.TryGetValue(name, out ushort objType) ||
                     !GameServer.Manager.GameData.ObjectDescs.ContainsKey(objType))
                 {
                     player.SendHelp("Usage: /spawn <entityname>");
                     return false;
                 }
-                Entity entity = Entity.Resolve(objType);
+
+                var entity = Entity.Resolve(objType);
                 entity.Move(player.X, player.Y);
                 player.Owner.EnterWorld(entity);
             }
-            return true;
-        }
-    }
 
-    internal class AddEffCommand : Command
-    {
-        public AddEffCommand() : base("addeff", (int)AccountType.DEM_ACCOUNT)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (args.Length == 0)
-            {
-                player.SendHelp("Usage: /addeff <Effectname or Effectnumber>");
-                return false;
-            }
-            try
-            {
-                player.ApplyConditionEffect(new ConditionEffect
-                {
-                    Effect = (ConditionEffectIndex)Enum.Parse(typeof(ConditionEffectIndex), args[0].Trim(), true),
-                    DurationMS = -1
-                });
-                {
-                    player.SendInfo("Success!");
-                }
-            }
-            catch
-            {
-                player.SendError("Invalid effect!");
-                return false;
-            }
-            return true;
-        }
-    }
-
-    internal class RemoveEffCommand : Command
-    {
-        public RemoveEffCommand() : base("remeff", (int)AccountType.DEM_ACCOUNT)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (args.Length == 0)
-            {
-                player.SendHelp("Usage: /remeff <Effectname or Effectnumber>");
-                return false;
-            }
-            try
-            {
-                player.ApplyConditionEffect(new ConditionEffect
-                {
-                    Effect = (ConditionEffectIndex)Enum.Parse(typeof(ConditionEffectIndex), args[0].Trim(), true),
-                    DurationMS = 0
-                });
-                player.SendInfo("Success!");
-            }
-            catch
-            {
-                player.SendError("Invalid effect!");
-                return false;
-            }
             return true;
         }
     }
@@ -387,16 +371,22 @@ namespace LoESoft.GameServer.realm.commands
 
         private List<string> Whitelist = new List<string>()
         {
-            "1", "21"
+            "1"
         };
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            //if (!Whitelist.Contains(player.AccountId))
-            //{
-            //    player.SendInfo($"Unknown command: /give.");
-            //    return false;
-            //}
+            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            {
+                player.SendInfo("You cannot use this feature along Production mode.");
+                return false;
+            }
+
+            if (!Whitelist.Contains(player.AccountId))
+            {
+                player.SendInfo($"Unknown command: /give.");
+                return false;
+            }
 
             if (args.Length == 0)
             {
@@ -404,10 +394,9 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            string name = string.Join(" ", args.ToArray()).Trim();
+            var name = string.Join(" ", args.ToArray()).Trim();
 
-            if (Blacklist.Contains(name.ToLower()) && player.AccountType != (int)AccountType.DEM_ACCOUNT
-                && !Whitelist.Contains(player.AccountId))
+            if (Blacklist.Contains(name.ToLower()) && player.AccountType != (int)AccountType.DEM_ACCOUNT)
             {
                 player.SendHelp($"You cannot give '{name}', access denied.");
                 return false;
@@ -451,81 +440,9 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
-    internal class TpCommand : Command
-    {
-        public TpCommand() : base("tp", (int)AccountType.DEM_ACCOUNT)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (args.Length == 0 || args.Length == 1)
-            {
-                player.SendHelp("Usage: /tp <X coordinate> <Y coordinate>");
-            }
-            else
-            {
-                int x, y;
-                try
-                {
-                    x = int.Parse(args[0]);
-                    y = int.Parse(args[1]);
-                }
-                catch
-                {
-                    player.SendError("Invalid coordinates!");
-                    return false;
-                }
-                player.Move(x + 0.5f, y + 0.5f);
-                player.UpdateCount++;
-                player.Owner.BroadcastMessage(new GOTO
-                {
-                    ObjectId = player.Id,
-                    Position = new Position
-                    {
-                        X = player.X,
-                        Y = player.Y
-                    }
-                }, null);
-            }
-            return true;
-        }
-    }
-
-    internal class KillAll : Command
-    {
-        public KillAll() : base("killAll", (int)AccountType.DEM_ACCOUNT)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            var iterations = 0;
-            var lastKilled = -1;
-            var killed = 0;
-
-            var mobName = args.Aggregate((s, a) => string.Concat(s, " ", a));
-            while (killed != lastKilled)
-            {
-                lastKilled = killed;
-                foreach (var i in player.Owner.Enemies.Values
-                    .Where(e => e.ObjectDesc.ObjectId != null && e.ObjectDesc.ObjectId.ContainsIgnoreCase(mobName) && !e.IsPet && e.ObjectDesc.Enemy))
-                {
-                    i.CheckDeath = true;
-                    killed++;
-                }
-                if (++iterations >= 5)
-                    break;
-            }
-
-            player.SendInfo($"{killed / 5} enemy killed!");
-            return true;
-        }
-    }
-
     internal class Kick : Command
     {
-        public Kick() : base("kick", (int)AccountType.CM_ACCOUNT)
+        public Kick() : base("kick", (int)AccountType.GM_ACCOUNT)
         {
         }
 
@@ -571,6 +488,12 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
+            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            {
+                player.SendInfo("You cannot use this feature along Production mode.");
+                return false;
+            }
+
             try
             {
                 var target = args[0];
@@ -654,61 +577,53 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
-    internal class OryxSay : Command
-    {
-        public OryxSay() : base("osay", (int)AccountType.DEM_ACCOUNT)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (args.Length == 0)
-            {
-                player.SendHelp("Usage: /oryxsay <saytext>");
-                return false;
-            }
-            string saytext = string.Join(" ", args);
-            player.SendEnemy("Oryx the Mad God", saytext);
-            return true;
-        }
-    }
-
     internal class OnlineCommand : Command
     {
-        public OnlineCommand() : base("online", (int)AccountType.DEM_ACCOUNT)
+        public OnlineCommand() : base("online", (int)AccountType.FREE_ACCOUNT)
         {
         }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            StringBuilder sb = new StringBuilder("Online at this moment: ");
+            var sb = new StringBuilder("Online at this moment: ");
+            var playersonline = 0;
 
-            foreach (KeyValuePair<int, World> w in GameServer.Manager.Worlds)
+            foreach (var w in GameServer.Manager.Worlds)
             {
-                World world = w.Value;
+                var world = w.Value;
+
                 if (w.Key != 0)
                 {
-                    Player[] copy = world.Players.Values.ToArray();
+                    var copy = world.Players.Values.ToArray();
+
                     if (copy.Length != 0)
                     {
                         for (int i = 0; i < copy.Length; i++)
                         {
                             sb.Append(copy[i].Name);
                             sb.Append(", ");
+                            playersonline++;
                         }
                     }
                 }
             }
-            string fixedString = sb.ToString().TrimEnd(',', ' '); //clean up trailing ", "s
 
-            player.SendInfo(fixedString + ".");
+            if (player.AccountType >= (int)AccountType.GM_ACCOUNT)
+            {
+                string fixedString = sb.ToString().TrimEnd(',', ' ');
+
+                player.SendInfo(fixedString + ".");
+            }
+
+            player.SendInfo($"There {(playersonline > 1 ? "are" : "is")} {playersonline} player{(playersonline > 1 ? "s" : "")} online.");
+
             return true;
         }
     }
 
     internal class Announcement : Command
     {
-        public Announcement() : base("announce", (int)AccountType.CM_ACCOUNT)
+        public Announcement() : base("announce", (int)AccountType.GM_ACCOUNT)
         {
         }
 
@@ -719,16 +634,26 @@ namespace LoESoft.GameServer.realm.commands
                 player.SendHelp("Usage: /announce <saytext>");
                 return false;
             }
-            string saytext = string.Join(" ", args);
 
-            foreach (ClientData cData in GameServer.Manager.ClientManager.Values)
+            var saytext = string.Join(" ", args);
+            var rank = "";
+
+            switch ((AccountType)player.AccountType)
+            {
+                case AccountType.GM_ACCOUNT: rank = "GM"; break;
+                case AccountType.CM_ACCOUNT: rank = "CM"; break;
+                case AccountType.DEM_ACCOUNT: rank = "D&M"; break;
+                default: break;
+            }
+
+            foreach (var cData in GameServer.Manager.ClientManager.Values)
             {
                 cData.Client.SendMessage(new TEXT
                 {
                     BubbleTime = 0,
                     Stars = -1,
                     Name = "@ANNOUNCEMENT",
-                    Text = " " + saytext,
+                    Text = $" <{rank} {player.Name}> " + saytext,
                     NameColor = 0x123456,
                     TextColor = 0x123456
                 });
@@ -737,337 +662,66 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
-    internal class KillPlayerCommand : Command
-    {
-        public KillPlayerCommand() : base("kill", (int)AccountType.DEM_ACCOUNT)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            var found = false;
-
-            foreach (ClientData cData in GameServer.Manager.ClientManager.Values)
-                if (cData.Client.Account.Name.EqualsIgnoreCase(args[0]))
-                {
-                    cData.Client.Player.HP = 0;
-                    cData.Client.Player.Death(player.Name);
-
-                    player.SendInfo($"Player {cData.Client.Account.Name} has been killed!");
-
-                    found = true;
-                    break;
-                }
-
-            if (!found)
-            {
-                player.SendInfo(string.Format("Player '{0}' could not be found!", args));
-                return false;
-            }
-            else
-                return true;
-        }
-    }
-
     internal class RestartCommand : Command
     {
-        public RestartCommand() : base("restart", (int)AccountType.DEM_ACCOUNT)
+        public RestartCommand() : base("restart", (int)AccountType.CM_ACCOUNT)
         {
         }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            foreach (KeyValuePair<int, World> w in GameServer.Manager.Worlds)
+            foreach (var w in GameServer.Manager.Worlds)
             {
-                World world = w.Value;
+                var world = w.Value;
+
                 if (w.Key != 0)
                     world.BroadcastMessage(new TEXT
                     {
                         Name = "@ANNOUNCEMENT",
                         Stars = -1,
                         BubbleTime = 0,
-                        Text = "Server restarting soon. Please be ready to disconnect.",
+                        Text = $"Server restarting soon by {(player.AccountType == (int)AccountType.CM_ACCOUNT ? "CM" : "D&M")} {player.Name}. Please be ready to disconnect.",
                         NameColor = 0x123456,
                         TextColor = 0x123456
                     }, null);
             }
 
-            Thread.Sleep(4000);
+            Thread.Sleep(4 * 1000);
 
-            GameServer.ForceShutdown();
+            GameServer.SafeRestart();
 
             return true;
-        }
-    }
-
-    internal class TqCommand : Command
-    {
-        public TqCommand() : base("tq", (int)AccountType.DEM_ACCOUNT)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (player.Quest == null)
-            {
-                player.SendInfo("There is no quest to teleport!");
-                return false;
-            }
-            player.Move(player.Quest.X + 0.5f, player.Quest.Y + 0.5f);
-            player.UpdateCount++;
-            player.Owner.BroadcastMessage(new GOTO
-            {
-                ObjectId = player.Id,
-                Position = new Position
-                {
-                    X = player.Quest.X,
-                    Y = player.Quest.Y
-                }
-            }, null);
-            player.SendInfo("Success!");
-            return true;
-        }
-    }
-
-    internal class LevelCommand : Command
-    {
-        public LevelCommand() : base("level", (int)AccountType.DEM_ACCOUNT)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            try
-            {
-                if (args.Length == 0)
-                {
-                    player.SendHelp("Usage: /level <ammount>");
-                    return false;
-                }
-
-                if (args.Length == 1)
-                {
-                    player.Client.Character.Level = (int.Parse(args[0]) >= 1 && int.Parse(args[0]) <= 20) ? int.Parse(args[0]) : player.Client.Character.Level;
-                    player.Client.Player.Level = (int.Parse(args[0]) >= 1 && int.Parse(args[0]) <= 20) ? int.Parse(args[0]) : player.Client.Player.Level;
-                    player.SendInfo(string.Format("Success! Level changed from level {0} to level {1}!",
-                        player.Client.Player.Level, (int.Parse(args[0]) >= 1 && int.Parse(args[0]) <= 20) ? int.Parse(args[0]) : player.Client.Player.Level));
-                    player.UpdateCount++;
-                }
-            }
-            catch
-            {
-                player.SendError("Error!");
-                return false;
-            }
-            return true;
-        }
-    }
-
-    internal class SetCommand : Command
-    {
-        public SetCommand() : base("setStat", (int)AccountType.DEM_ACCOUNT)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (args.Length == 2)
-            {
-                try
-                {
-                    string stat = args[0].ToLower();
-                    int amount = int.Parse(args[1]);
-                    switch (stat)
-                    {
-                        case "health":
-                        case "hp":
-                            player.Stats[0] = amount;
-                            break;
-
-                        case "mana":
-                        case "mp":
-                            player.Stats[1] = amount;
-                            break;
-
-                        case "att":
-                        case "atk":
-                        case "attack":
-                            player.Stats[2] = amount;
-                            break;
-
-                        case "def":
-                        case "defence":
-                            player.Stats[3] = amount;
-                            break;
-
-                        case "spd":
-                        case "speed":
-                            player.Stats[4] = amount;
-                            break;
-
-                        case "vit":
-                        case "vitality":
-                            player.Stats[5] = amount;
-                            break;
-
-                        case "wis":
-                        case "wisdom":
-                            player.Stats[6] = amount;
-                            break;
-
-                        case "dex":
-                        case "dexterity":
-                            player.Stats[7] = amount;
-                            break;
-
-                        default:
-                            player.SendError("Invalid Stat");
-                            player.SendHelp("Stats: Health, Mana, Attack, Defence, Speed, Vitality, Wisdom, Dexterity");
-                            player.SendHelp("Shortcuts: Hp, Mp, Atk, Def, Spd, Vit, Wis, Dex");
-                            return false;
-                    }
-                    player.SaveToCharacter();
-                    player.UpdateCount++;
-                    player.SendInfo("Success");
-                }
-                catch
-                {
-                    player.SendError("Error while setting stat");
-                    return false;
-                }
-                return true;
-            }
-            else if (args.Length == 3)
-            {
-                foreach (ClientData cData in GameServer.Manager.ClientManager.Values)
-                {
-                    if (cData.Client.Account.Name.EqualsIgnoreCase(args[0]))
-                    {
-                        try
-                        {
-                            string stat = args[1].ToLower();
-                            int amount = int.Parse(args[2]);
-                            switch (stat)
-                            {
-                                case "health":
-                                case "hp":
-                                    cData.Client.Player.Stats[0] = amount;
-                                    break;
-
-                                case "mana":
-                                case "mp":
-                                    cData.Client.Player.Stats[1] = amount;
-                                    break;
-
-                                case "att":
-                                case "atk":
-                                case "attack":
-                                    cData.Client.Player.Stats[2] = amount;
-                                    break;
-
-                                case "def":
-                                case "defence":
-                                    cData.Client.Player.Stats[3] = amount;
-                                    break;
-
-                                case "spd":
-                                case "speed":
-                                    cData.Client.Player.Stats[4] = amount;
-                                    break;
-
-                                case "vit":
-                                case "vitality":
-                                    cData.Client.Player.Stats[5] = amount;
-                                    break;
-
-                                case "wis":
-                                case "wisdom":
-                                    cData.Client.Player.Stats[6] = amount;
-                                    break;
-
-                                case "dex":
-                                case "dexterity":
-                                    cData.Client.Player.Stats[7] = amount;
-                                    break;
-
-                                default:
-                                    player.SendError("Invalid Stat");
-                                    player.SendHelp("Stats: Health, Mana, Attack, Defence, Speed, Vitality, Wisdom, Dexterity");
-                                    player.SendHelp("Shortcuts: Hp, Mp, Atk, Def, Spd, Vit, Wis, Dex");
-                                    return false;
-                            }
-                            cData.Client.Player.SaveToCharacter();
-                            cData.Client.Player.UpdateCount++;
-                            player.SendInfo("Success");
-                        }
-                        catch
-                        {
-                            player.SendError("Error while setting stat");
-                            return false;
-                        }
-                        return true;
-                    }
-                }
-                player.SendError(string.Format("Player '{0}' could not be found!", args));
-                return false;
-            }
-            else
-            {
-                player.SendHelp("Usage: /setStat <stat> <amount>");
-                player.SendHelp("or");
-                player.SendHelp("Usage: /setStat <player> <stat> <amount>");
-                player.SendHelp("Shortcuts: Hp, Mp, Atk, Def, Spd, Vit, Wis, Dex");
-                return false;
-            }
-        }
-    }
-
-    internal class SetpieceCommand : Command
-    {
-        public SetpieceCommand() : base("setpiece", (int)AccountType.DEM_ACCOUNT)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            try
-            {
-                MapSetPiece piece = (MapSetPiece)Activator.CreateInstance(System.Type.GetType(
-                    "LoESoft.GameServer.realm.mapsetpiece." + args[0], true, true));
-                piece.RenderSetPiece(player.Owner, new IntPoint((int)player.X + 1, (int)player.Y + 1));
-                return true;
-            }
-            catch
-            {
-                player.SendError("Invalid SetPiece.");
-                return false;
-            }
         }
     }
 
     internal class ListCommands : Command
     {
-        public ListCommands() : base("commands", (int)AccountType.DEM_ACCOUNT)
+        public ListCommands() : base("commands", (int)AccountType.FREE_ACCOUNT)
         {
         }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            Dictionary<string, Command> cmds = new Dictionary<string, Command>();
-            System.Type t = typeof(Command);
-            foreach (System.Type i in t.Assembly.GetTypes())
+            var cmds = new Dictionary<string, Command>();
+            var t = typeof(Command);
+
+            foreach (var i in t.Assembly.GetTypes())
                 if (t.IsAssignableFrom(i) && i != t)
                 {
-                    Command instance = (Command)Activator.CreateInstance(i);
+                    var instance = (Command)Activator.CreateInstance(i);
                     cmds.Add(instance.CommandName, instance);
                 }
-            StringBuilder sb = new StringBuilder("");
-            Command[] copy = cmds.Values.ToArray();
-            for (int i = 0; i < copy.Length; i++)
+
+            var sb = new StringBuilder("");
+            var copy = cmds.Values.ToArray();
+
+            for (var i = 0; i < copy.Length; i++)
             {
                 if (i != 0)
                     sb.Append(", ");
-                sb.Append(copy[i].CommandName);
+
+                if (player.AccountType >= copy[i].PermissionLevel)
+                    sb.Append(copy[i].CommandName);
             }
 
             player.SendInfo(sb.ToString());
@@ -1075,67 +729,9 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
-    internal class Mute : Command
-    {
-        public Mute() : base("mute", (int)AccountType.DEM_ACCOUNT)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            try
-            {
-                foreach (KeyValuePair<int, Player> i in player.Owner.Players)
-                {
-                    if (i.Value.Name.ToLower() == args[0].ToLower().Trim())
-                    {
-                        i.Value.Muted = true;
-                        i.Value.Client.Manager.Database.MuteAccount(i.Value.Client.Account);
-                        player.SendInfo("Player Muted.");
-                    }
-                }
-            }
-            catch
-            {
-                player.SendError("Cannot mute!");
-                return false;
-            }
-            return true;
-        }
-    }
-
-    internal class Unmute : Command
-    {
-        public Unmute() : base("unmute", (int)AccountType.DEM_ACCOUNT)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            try
-            {
-                foreach (KeyValuePair<int, Player> i in player.Owner.Players)
-                {
-                    if (i.Value.Name.ToLower() == args[0].ToLower().Trim())
-                    {
-                        i.Value.Muted = false;
-                        i.Value.Client.Manager.Database.UnmuteAccount(i.Value.Client.Account);
-                        player.SendInfo("Player Unmuted.");
-                    }
-                }
-            }
-            catch
-            {
-                player.SendError("Cannot unmute!");
-                return false;
-            }
-            return true;
-        }
-    }
-
     internal class BanCommand : Command
     {
-        public BanCommand() : base("ban", (int)AccountType.CM_ACCOUNT)
+        public BanCommand() : base("ban", (int)AccountType.GM_ACCOUNT)
         {
         }
 
@@ -1163,7 +759,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class UnBanCommand : Command
     {
-        public UnBanCommand() : base("unban", (int)AccountType.CM_ACCOUNT)
+        public UnBanCommand() : base("unban", (int)AccountType.GM_ACCOUNT)
         {
         }
 

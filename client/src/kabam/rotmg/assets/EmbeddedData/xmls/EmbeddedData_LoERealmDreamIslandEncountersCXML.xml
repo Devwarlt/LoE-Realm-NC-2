@@ -322,4 +322,64 @@
 			<ConditionEffect duration="1.5">Armor Broken</ConditionEffect>
 		</Projectile>
 	</Object>
+	<Object type="0x6718" id="Muzzlereaper Spawner">
+		<Class>Character</Class>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap />
+		<Size>0</Size>
+		<StasisImmune />
+	</Object>
+	<Object type="0x6719" id="Guzzlereaper Spawner">
+		<Class>Character</Class>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap />
+		<Size>0</Size>
+		<StasisImmune />
+	</Object>
+	<Object type="0x671a" id="Silencer Spawner">
+		<Class>Character</Class>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap />
+		<Size>0</Size>
+		<StasisImmune />
+	</Object>
+	<Object type="0x671b" id="Nightmare Spawner">
+		<Class>Character</Class>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap />
+		<Size>0</Size>
+		<StasisImmune />
+	</Object>
+	<Object type="0x671c" id="Lost Prisoner Soul Spawner">
+		<Class>Character</Class>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap />
+		<Size>0</Size>
+		<StasisImmune />
+	</Object>
+	<Object type="0x671d" id="Eyeguard of Surrender Spawner">
+		<Class>Character</Class>
+		<Texture>
+			<File>invisible</File>
+			<Index>0</Index>
+		</Texture>
+		<NoMiniMap />
+		<Size>0</Size>
+		<StasisImmune />
+	</Object>
 </Objects>

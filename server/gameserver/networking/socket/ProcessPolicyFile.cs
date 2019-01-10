@@ -15,12 +15,11 @@ namespace LoESoft.GameServer.networking
             {
                 var s = new NetworkStream(socket);
                 var wtr = new NWriter(s);
-                wtr.WriteNullTerminatedString(
-                    @"<cross-domain-policy>" +
-                    @"<allow-access-from domain=""*"" to-ports=""*"" />" +
-                    @"</cross-domain-policy>");
-                wtr.Write((byte) '\r');
-                wtr.Write((byte) '\n');
+                wtr.WriteNullTerminatedString(@"<cross-domain-policy>
+    <allowed-access-from domain=""*"" to-ports=""*"" />
+</cross-domain-policy>");
+                wtr.Write((byte)'\r');
+                wtr.Write((byte)'\n');
             }
             catch (Exception e)
             {

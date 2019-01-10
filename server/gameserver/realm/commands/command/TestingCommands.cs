@@ -8,7 +8,7 @@ namespace LoESoft.GameServer.realm.commands
 {
     public class TestingCommands : Command
     {
-        public TestingCommands() : base("test", (int) AccountType.DEM_ACCOUNT)
+        public TestingCommands() : base("test", (int)AccountType.DEM_ACCOUNT)
         {
         }
 
@@ -16,12 +16,20 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
+            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            {
+                player.SendInfo("You cannot use this feature along Production mode.");
+                return false;
+            }
+
             if (!AllowTestingCommands)
             {
                 player.SendInfo("Testing commands disabled.");
                 return false;
             }
-            string cmd = string.Join(" ", args, 1, args.Length - 1);
+
+            var cmd = string.Join(" ", args, 1, args.Length - 1);
+
             switch (args[0].Trim())
             {
                 case "chatdata":

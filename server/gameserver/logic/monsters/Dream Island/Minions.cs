@@ -87,9 +87,17 @@ namespace LoESoft.GameServer.logic
         }
 
         private _ DreamIslandEnemies = () => Behav()
+            .Init("Muzzlereaper Spawner",
+                new State(
+                    new AddCond(ConditionEffectIndex.Invincible),
+                    new Reproduce("Muzzlereaper", 3, 1, 24, 30000)
+                    )
+            )
+
             .Init("Muzzlereaper",
                 new State(
                     new State("idle",
+                        new ReturnToSpawn(false, 4, 24),
                         new AddCond(effect: ConditionEffectIndex.Invulnerable), // ok
                         new Heal(range: 0, amount: 750, coolDown: 1000),
                         new PlayerWithinTransition(targetState: "begin fight", range: 12)
@@ -98,14 +106,14 @@ namespace LoESoft.GameServer.logic
                         new RemCond(effect: ConditionEffectIndex.Invulnerable), // ok
                         new Prioritize(
                             new Protect(speed: 8, target: "Guzzlereaper", protectRange: 2),
-                            new Chase(speed: 3),
+                            new Chase(speed: 5),
                             new Circle(target: "Guzzlereaper"),
                             new Wander(speed: 2)
                         ),
                         new Heal(range: 0, amount: 250, coolDown: 7500),
                         new Shoot(range: 6, index: Muzzlereaper.muscle_ball, coolDown: 1000),
                         new Shoot(range: 4, shoots: 3, shootAngle: 10, index: Muzzlereaper.muscle_shuriken, coolDown: 2350),
-                        new Shoot(range: 6, shoots: 8, shootAngle: 360 / 8, index: Muzzlereaper.nightmare_blasterball, coolDown: 4750),
+                        new Shoot(range: 6, shoots: 3, shootAngle: 360 / 3, index: Muzzlereaper.nightmare_blasterball, coolDown: 8750),
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
                     )
                 ),
@@ -131,10 +139,17 @@ namespace LoESoft.GameServer.logic
                     )
             )
 
+            .Init("Guzzlereaper Spawner",
+                new State(
+                    new AddCond(ConditionEffectIndex.Invincible),
+                    new Reproduce("Guzzlereaper", 3, 1, 24, 45000)
+                    )
+            )
+
             .Init("Guzzlereaper",
                 new State(
                     new State("idle",
-                        new ReturnToSpawn(),
+                        new ReturnToSpawn(false, 4, 24),
                         new AddCond(effect: ConditionEffectIndex.Invulnerable), // ok
                         new Heal(range: 0, amount: 1500, coolDown: 1000),
                         new Reproduce(name: "Muzzlereaper", range: 8, max: 3, coolDown: 100),
@@ -150,7 +165,7 @@ namespace LoESoft.GameServer.logic
                         new Shoot(range: 8, shoots: 2, shootAngle: 10, index: Guzzlereaper.muscle_ball, coolDown: 1200),
                         new Shoot(range: 6, shoots: 4, shootAngle: 12, index: Guzzlereaper.muscle_shuriken, coolDown: 2550),
                         new Shoot(range: 8, shoots: 12, shootAngle: 360 / 12, index: Guzzlereaper.nightmare_blasterball, coolDown: 4750),
-                        new Shoot(range: 8, shoots: 8, shootAngle: 360 / 8, index: Guzzlereaper.heavy_nightmare_blasterball, coolDown: 4750, coolDownOffset: 200),
+                        new Shoot(range: 8, shoots: 3, shootAngle: 360 / 3, index: Guzzlereaper.heavy_nightmare_blasterball, coolDown: 6750, coolDownOffset: 200),
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
                     )
                 ),
@@ -186,10 +201,17 @@ namespace LoESoft.GameServer.logic
                     )
             )
 
+            .Init("Silencer Spawner",
+                new State(
+                    new AddCond(ConditionEffectIndex.Invincible),
+                    new Reproduce("Silencer", 3, 1, 24, 60000)
+                    )
+            )
+
             .Init("Silencer",
                 new State(
                     new State("idle",
-                        new ReturnToSpawn(),
+                        new ReturnToSpawn(false, 4, 24),
                         new AddCond(effect: ConditionEffectIndex.Invulnerable), // ok
                         new Heal(range: 0, amount: 1000, coolDown: 1000),
                         new PlayerWithinTransition(targetState: "begin fight", range: 12)
@@ -197,11 +219,11 @@ namespace LoESoft.GameServer.logic
                     new State("begin fight",
                         new RemCond(effect: ConditionEffectIndex.Invulnerable), // ok
                         new Prioritize(
-                            new Chase(speed: 4),
+                            new Chase(speed: 8),
                             new Wander(speed: 1)
                         ),
                         new Heal(range: 0, amount: 500, coolDown: 7500),
-                        new ManaDrainBomb(radius: 2, damage: 75, range: 6, coolDown: 4000, effect: ConditionEffectIndex.Blind, effectDuration: 3000),
+                        new ManaDrainBomb(radius: 2, damage: 135, range: 6, coolDown: 4000, effect: ConditionEffectIndex.Blind, effectDuration: 3000),
                         new Shoot(range: 8, shoots: 6, shootAngle: 30, index: Silencer.silencer_roar, coolDown: 1200),
                         new Shoot(range: 12, index: Silencer.nightmare_spin, coolDown: 2000),
                         new Shoot(range: 4, index: Silencer.silencer_slash, coolDown: 6000),
@@ -209,8 +231,8 @@ namespace LoESoft.GameServer.logic
                         new Shoot(range: 3, shoots: 3, shootAngle: 22.5, index: Silencer.silencer_slash, coolDown: 6000, coolDownOffset: 400),
                         new Shoot(range: 4, shoots: 4, shootAngle: 22.5, index: Silencer.silencer_slash, coolDown: 6000, coolDownOffset: 600),
                         new Shoot(range: 5, shoots: 5, shootAngle: 22.5, index: Silencer.silencer_slash, coolDown: 6000, coolDownOffset: 800),
-                        new Shoot(range: 8, shoots: 12, shootAngle: 360 / 12, index: Silencer.nightmare_blasterball, coolDown: 4750),
-                        new Shoot(range: 8, shoots: 8, shootAngle: 360 / 8, index: Silencer.heavy_nightmare_blasterball, coolDown: 4750, coolDownOffset: 200),
+                        new Shoot(range: 8, shoots: 1, index: Silencer.nightmare_blasterball, coolDown: 4750),
+                        new Shoot(range: 8, shoots: 3, shootAngle: 360 / 3, index: Silencer.heavy_nightmare_blasterball, coolDown: 6750, coolDownOffset: 200),
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
                     )
                 ),
@@ -246,10 +268,17 @@ namespace LoESoft.GameServer.logic
                     )
             )
 
+            .Init("Eyeguard of Surrender Spawner",
+                new State(
+                    new AddCond(ConditionEffectIndex.Invincible),
+                    new Reproduce("Eyeguard of Surrender", 3, 1, 24, 120000)
+                    )
+            )
+
             .Init("Eyeguard of Surrender",
                 new State(
                     new State("idle",
-                        new ReturnToSpawn(),
+                        new ReturnToSpawn(false, 4, 24),
                         new AddCond(effect: ConditionEffectIndex.Invulnerable), // ok
                         new Heal(range: 0, amount: 3500, coolDown: 1000),
                         new PlayerWithinTransition(targetState: "begin fight", range: 12)
@@ -261,15 +290,14 @@ namespace LoESoft.GameServer.logic
                             new Wander(speed: 1)
                         ),
                         new Heal(range: 0, amount: 1750, coolDown: 7500),
-                        new ManaDrainBomb(radius: 2, damage: 150, range: 8, coolDown: 6000, effect: ConditionEffectIndex.Blind, effectDuration: 4000),
                         new Grenade(radius: 3, damage: 225, range: 8, coolDown: 5000, effect: ConditionEffectIndex.Dazed, effectDuration: 2000, color: 0xFFFF00),
                         new Shoot(range: 4, index: Eyeguard_of_Surrender.eyeguard_slash, coolDown: 6000),
                         new Shoot(range: 2, shoots: 2, shootAngle: 22.5, index: Eyeguard_of_Surrender.eyeguard_slash, coolDown: 6000, coolDownOffset: 200),
                         new Shoot(range: 3, shoots: 3, shootAngle: 22.5, index: Eyeguard_of_Surrender.eyeguard_slash, coolDown: 6000, coolDownOffset: 400),
                         new Shoot(range: 4, shoots: 4, shootAngle: 22.5, index: Eyeguard_of_Surrender.eyeguard_slash, coolDown: 6000, coolDownOffset: 600),
                         new Shoot(range: 5, shoots: 5, shootAngle: 22.5, index: Eyeguard_of_Surrender.eyeguard_slash, coolDown: 6000, coolDownOffset: 800),
-                        new Shoot(range: 8, shoots: 12, shootAngle: 360 / 12, index: Eyeguard_of_Surrender.nightmare_blasterball, coolDown: 4750),
-                        new Shoot(range: 8, shoots: 8, shootAngle: 360 / 8, index: Eyeguard_of_Surrender.heavy_nightmare_blasterball, coolDown: 4750, coolDownOffset: 200),
+                        new Shoot(range: 8, shoots: 3, shootAngle: 360 / 3, index: Eyeguard_of_Surrender.nightmare_blasterball, coolDown: 6750),
+                        new Shoot(range: 8, shoots: 4, shootAngle: 360 / 4, index: Eyeguard_of_Surrender.heavy_nightmare_blasterball, coolDown: 8750, coolDownOffset: 200),
                         new Shoot(index: Eyeguard_of_Surrender.eyeguard_megapunch, coolDown: 7500),
                         new Shoot(index: Eyeguard_of_Surrender.enchanted_spear_of_the_wrath, coolDown: 10000),
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
@@ -311,10 +339,17 @@ namespace LoESoft.GameServer.logic
                     )
             )
 
+            .Init("Lost Prisoner Soul Spawner",
+                new State(
+                    new AddCond(ConditionEffectIndex.Invincible),
+                    new Reproduce("Lost Prisoner Soul", 3, 1, 24, 90000)
+                    )
+            )
+
             .Init("Lost Prisoner Soul",
                 new State(
                     new State("idle",
-                        new ReturnToSpawn(),
+                        new ReturnToSpawn(false, 4, 24),
                         new AddCond(effect: ConditionEffectIndex.Invulnerable), // ok
                         new Heal(range: 0, amount: 1250, coolDown: 1000),
                         new PlayerWithinTransition(targetState: "begin fight", range: 12)
@@ -372,10 +407,17 @@ namespace LoESoft.GameServer.logic
                     )
             )
 
+            .Init("Nightmare Spawner",
+                new State(
+                    new AddCond(ConditionEffectIndex.Invincible),
+                    new Reproduce("Nightmare", 3, 1, 24, 60000)
+                    )
+            )
+
             .Init("Nightmare",
                 new State(
                     new State("idle",
-                        new ReturnToSpawn(),
+                        new ReturnToSpawn(false, 4, 24),
                         new AddCond(effect: ConditionEffectIndex.Invulnerable), // ok
                         new Heal(range: 0, amount: 1250, coolDown: 1000),
                         new PlayerWithinTransition(targetState: "begin fight", range: 12)
@@ -383,7 +425,7 @@ namespace LoESoft.GameServer.logic
                     new State("begin fight",
                         new RemCond(effect: ConditionEffectIndex.Invulnerable), // ok
                         new Prioritize(
-                            new Chase(speed: 4),
+                            new Chase(speed: 6),
                             new Wander(speed: 1)
                         ),
                         new Heal(range: 0, amount: 625, coolDown: 7500),
@@ -394,8 +436,8 @@ namespace LoESoft.GameServer.logic
                         new Shoot(range: 5, shoots: 5, shootAngle: 22.5, index: Nightmare.critical_slash, coolDown: 6000, coolDownOffset: 800),
                         new Shoot(range: 4, index: Nightmare.acid, coolDown: 3000),
                         new Shoot(range: 4, shoots: 2, shootAngle: 10, index: Nightmare.acid, coolDown: 3000, coolDownOffset: 200),
-                        new Shoot(range: 8, shoots: 12, shootAngle: 360 / 12, index: Nightmare.nightmare_blasterball, coolDown: 4750),
-                        new Shoot(range: 8, shoots: 8, shootAngle: 360 / 8, index: Nightmare.heavy_nightmare_blasterball, coolDown: 4750, coolDownOffset: 200),
+                        new Shoot(range: 8, shoots: 1, index: Nightmare.nightmare_blasterball, coolDown: 4750),
+                        new Shoot(range: 8, shoots: 1, index: Nightmare.heavy_nightmare_blasterball, coolDown: 6750, coolDownOffset: 200),
                         new NoPlayerWithinTransition(targetState: "idle", range: 12)
                     )
                 ),

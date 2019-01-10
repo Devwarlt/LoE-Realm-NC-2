@@ -33,6 +33,8 @@ namespace LoESoft.GameServer.realm.entity.merchant
         public static int[] region6list;
         public static int[] region7list;
         public static int[] region8list;
+        public static int[] region9list;
+        public static int[] region10list;
         public static int[] smallclothlist;
         public static int[] accessorylist;
         public static int[] largeclothlist;

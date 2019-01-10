@@ -3,14 +3,14 @@
 using LoESoft.Core;
 using LoESoft.Core.config;
 using LoESoft.GameServer.networking;
-using LoESoft.GameServer.networking.error;
 using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.world;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using FAILURE = LoESoft.GameServer.networking.incoming.FAILURE;
+using static LoESoft.GameServer.networking.Client;
 
 #endregion
 
@@ -402,93 +402,103 @@ namespace LoESoft.GameServer.realm.entity.player
 
         public bool HasSlot(int slot) => Inventory[slot] != null;
 
+        private readonly ConcurrentQueue<long> _shootAckTimeout = new ConcurrentQueue<long>();
+        private readonly ConcurrentQueue<long> _updateAckTimeout = new ConcurrentQueue<long>();
+        private readonly ConcurrentQueue<long> _gotoAckTimeout = new ConcurrentQueue<long>();
+
+        private bool once { get; set; }
+        private int DcThresholdCounter { get; set; } = 0;
+
         public bool KeepAlive(RealmTime time)
         {
-            try
+            if (_pingTime == -1)
             {
-                if (Client == null)
-                    return false;
+                _pingTime = time.TotalElapsedMs - PingPeriod;
+                _pongTime = time.TotalElapsedMs;
+            }
 
-                if (_pingTime == -1)
+            if (time.TotalElapsedMs - _pongTime > DcThreshold)
+            {
+                if (DcThresholdCounter <= 10)
                 {
-                    _pingTime = time.TotalElapsedMs - PingPeriod;
-                    _pongTime = time.TotalElapsedMs;
+                    Client.SendMessage(new PING() { Serial = (int)time.TotalElapsedMs });
+                    DcThresholdCounter++;
                 }
-
-                if (time.TotalElapsedMs - _pongTime > DcThresold)
+                else
                 {
-                    string[] labels = new string[] { "{CLIENT_NAME}" };
-                    string[] arguments = new string[] { (Client?.Account?.Name ?? "_null_") };
-
-                    if (arguments == new string[] { "_null_" })
+                    if (Owner == null)
                         return false;
-                    else
-                        Client?.SendMessage(new FAILURE
+
+                    if (!once)
+                    {
+                        once = true;
+
+                        SendHelp("You dropped your connection with the server! Reconnecting...");
+
+                        Owner.AddReconnectToPlayer(AccountId, Tuple.Create(X, Y));
+                        Owner.Timers.Add(new WorldTimer(3000, (w, t) => Client?.Reconnect(new RECONNECT()
                         {
-                            ErrorId = (int)FailureIDs.JSON_DIALOG,
-                            ErrorDescription =
-                                JSONErrorIDHandler.
-                                    FormatedJSONError(
-                                        errorID: ErrorIDs.LOST_CONNECTION,
-                                        labels: labels,
-                                        arguments: arguments
-                                    )
-                        });
+                            Host = "",
+                            Port = Settings.GAMESERVER.PORT,
+                            GameId = Owner.Id,
+                            Name = Owner.Name,
+                            Key = Owner.PortalKey,
+                        })));
+                    }
+
                     return false;
                 }
-
-                if (time.TotalElapsedMs - _pingTime < PingPeriod)
-                    return true;
-
-                _pingTime = time.TotalElapsedMs;
-
-                Client.SendMessage(new PING()
-                {
-                    Serial = (int)time.TotalElapsedMs
-                });
-
-                return UpdateOnPing();
             }
-            catch (Exception e)
-            {
-                log4net.Info(e);
-                return false;
-            }
+
+            if (time.TotalElapsedMs - _pingTime < PingPeriod)
+                return true;
+
+            _pingTime = time.TotalElapsedMs;
+
+            Client.SendMessage(new PING() { Serial = (int)time.TotalElapsedMs });
+
+            return UpdateOnPing();
         }
 
         private bool UpdateOnPing()
         {
             try
             {
-                if (!(Owner is Test))
-                    SaveToCharacter();
-                return true;
+                if (!GameServer.Manager.Database.RenewLock(Client.Account))
+                    GameServer.Manager.TryDisconnect(Client, DisconnectReason.RENEW_LOCK_PONG);
             }
             catch
             {
-                Client?.Save();
+                GameServer.Manager.TryDisconnect(Client, DisconnectReason.RENEW_LOCK_TIMEOUT);
                 return false;
             }
+
+            if (!(Owner is Test))
+                SaveToCharacter();
+
+            return true;
         }
 
-        public void Pong(RealmTime time, PONG pkt)
+        public void Pong(RealmTime time, PONG pong)
         {
             try
             {
-                updateLastSeen++;
-
                 _cnt++;
 
-                _sum += time.TotalElapsedMs - pkt.Time;
+                _sum += time.TotalElapsedMs - pong.Time;
                 TimeMap = _sum / _cnt;
 
-                _latSum += (time.TotalElapsedMs - pkt.Serial) / 2;
+                _latSum += (time.TotalElapsedMs - pong.Serial) / 2;
                 Latency = (int)_latSum / _cnt;
 
                 _pongTime = time.TotalElapsedMs;
             }
             catch (Exception) { }
         }
+
+        public void AwaitUpdateAck(long serverTime) => _updateAckTimeout.Enqueue(serverTime + DcThreshold);
+
+        public void AwaitGotoAck(long serverTime) => _gotoAckTimeout.Enqueue(serverTime + DcThreshold);
 
         private static int GetExpGoal(int level) => 50 + (level - 1) * 100;
 

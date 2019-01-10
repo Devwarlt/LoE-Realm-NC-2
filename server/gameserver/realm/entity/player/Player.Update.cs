@@ -201,12 +201,15 @@ namespace LoESoft.GameServer.realm.entity.player
                 }).ToList();
 
             if (sendEntities.Count > 0 || tilesUpdate.Count > 0 || dropEntities.Length > 0 || newStatics.ToArray().Length > 0 || removedIds.Count > 0)
+            {
                 Client.SendMessage(new UPDATE()
                 {
                     Tiles = tilesUpdate.ToArray(),
                     NewObjects = sendEntities.Select(_ => _.ToDefinition()).Concat(newStatics.ToArray()).ToArray(),
                     RemovedObjectIds = dropEntities.Concat(removedIds).ToArray()
                 });
+                AwaitUpdateAck(time.TotalElapsedMs);
+            }
         }
 
         private void HandleNewTick(RealmTime time)

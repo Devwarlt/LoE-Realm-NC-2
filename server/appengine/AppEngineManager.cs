@@ -1,5 +1,6 @@
 ﻿#region
 
+using LoESoft.AppEngine.account;
 using LoESoft.AppEngine.sfx;
 using LoESoft.Core.config;
 using LoESoft.Core.models;
@@ -259,9 +260,9 @@ namespace LoESoft.AppEngine
             {
                 string _path;
 
-                if (_webcontext.Request.Url.LocalPath.Contains("crossdomain"))
+                if (_webcontext.Request.Url.LocalPath.Contains("admin/restart"))
                 {
-                    new crossdomain().HandleRequest(_webcontext);
+                    new restart().HandleRequest(_webcontext);
                     _webcontext.Response.Close();
                     return;
                 }

@@ -7,7 +7,6 @@ using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.entity.player;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 #endregion
 
@@ -24,12 +23,6 @@ namespace LoESoft.GameServer.realm.commands
             if (!player.NameChosen)
             {
                 player.SendError("Choose a name!");
-                return false;
-            }
-
-            if (player.Muted)
-            {
-                player.SendError("Muted. You can not guild chat at this time.");
                 return false;
             }
 
@@ -64,6 +57,26 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
+    internal class DrastaCitadelCommand : Command
+    {
+        public DrastaCitadelCommand() : base("drasta", (int)AccountType.VIP_ACCOUNT)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            player.Client.Reconnect(new RECONNECT
+            {
+                Host = "",
+                Port = Settings.GAMESERVER.PORT,
+                GameId = (int)WorldID.DRASTA_CITADEL_ID,
+                Name = "Drasta Citadel",
+                Key = Empty<byte>.Array,
+            });
+            return true;
+        }
+    }
+
     internal class TradeCommand : Command
     {
         public TradeCommand() : base("trade", (int)AccountType.FREE_ACCOUNT)
@@ -85,41 +98,6 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
-    internal class WhoCommand : Command
-    {
-        public WhoCommand() : base("who")
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            StringBuilder sb = new StringBuilder("Players online: ");
-            Player[] copy = player.Owner.Players.Values.ToArray();
-            for (int i = 0; i < copy.Length; i++)
-            {
-                if (i != 0)
-                    sb.Append(", ");
-                sb.Append(copy[i].Name);
-            }
-
-            player.SendInfo(sb.ToString());
-            return true;
-        }
-    }
-
-    internal class ServerCommand : Command
-    {
-        public ServerCommand() : base("server", (int)AccountType.FREE_ACCOUNT)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            player.SendInfo(player.Owner.Name);
-            return true;
-        }
-    }
-
     internal class PauseCommand : Command
     {
         public PauseCommand() : base("pause", (int)AccountType.FREE_ACCOUNT)
@@ -128,6 +106,14 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
+            var whitelist = new List<string> { "nexus", "vault" };
+
+            if (!whitelist.Contains(player.Owner.Name.ToLower()))
+            {
+                player.SendInfo("You cannot pause here.");
+                return false;
+            }
+
             if (player.HasConditionEffect(ConditionEffectIndex.Paused))
             {
                 player.ApplyConditionEffect(new ConditionEffect

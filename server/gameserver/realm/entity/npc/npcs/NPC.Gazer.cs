@@ -174,6 +174,8 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                                 player.Client.Account.Gifts = gifts.ToArray();
                                 player.Client.Account.Flush();
                                 player.Client.Account.Reload();
+                                player.ActualTask = null;
+                                player.SaveToCharacter();
 
                                 currentTask.Bonus?.Invoke(player);
                                 currentTask.GetAchievement(player.ActualTask, player);
@@ -190,6 +192,26 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                         callback = "You can ask me about 'uptime', 'online' and 'tasks' for more details.";
                         break;
                     #endregion
+                    #region "Access Dream Island"
+                    case "dream island":
+                        callback = "Do you want to access Dream Island? If you want then say 'access dream island' to proceed.";
+                        break;
+
+                    case "access dream island":
+                        RemovePlayer(player);
+                        Callback(player, command, false); // player only (self)
+                        Leave(player, true);
+
+                        player.Client.Reconnect(new networking.outgoing.RECONNECT()
+                        {
+                            Host = "",
+                            Port = Settings.GAMESERVER.PORT,
+                            GameId = (int)WorldID.DREAM_ISLAND,
+                            Name = "Dream Island",
+                            Key = Empty<byte>.Array,
+                        });
+                        return;
+                    #endregion
                     case "hi":
                     case "hello":
                     case "hey":
@@ -201,8 +223,8 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                         return;
 
                     case "bye":
-                    case "goodbye":
-                    case "goodnight":
+                    case "good bye":
+                    case "good night":
                         RemovePlayer(player);
                         Callback(player, command, false); // player only (self)
                         Leave(player, true);
@@ -216,10 +238,12 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
             {
                 if (!command.ToLower().Contains("start ")) // task details
                 {
-                    if (player.Stars >= GameTask.Tasks[task].StarsRequirement)
+                    var starrequirement = GameTask.Tasks[task].StarsRequirement;
+
+                    if (player.Stars >= starrequirement)
                         callback = $"You seems prepared to initialize this task, just say 'start {task}' to begin!";
                     else
-                        callback = $"You are too young at this moment to do '{task}' task. Come back here later...";
+                        callback = $"You are too young at this moment to do '{task}' task. Come back here later when you get {starrequirement} star{(starrequirement > 1 ? "s" : "")}...";
                 }
                 else // task start
                 {

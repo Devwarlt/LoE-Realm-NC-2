@@ -147,6 +147,7 @@
     <Compile Include="account\setName.cs" />
     <Compile Include="account\validateEmail.cs" />
     <Compile Include="account\verifyage.cs" />
+    <Compile Include="admin\restart.cs" />
     <Compile Include="AppEngineManager.cs" />
     <Compile Include="app\inGameNews\getNews.cs" />
     <Compile Include="char\delete.cs" />
@@ -154,7 +155,7 @@
     <Compile Include="char\list.cs" />
     <Compile Include="char\purchaseClassUnlock.cs" />
     <Compile Include="credits\getoffers.cs" />
-    <Compile Include="crossdomain.cs" />
+    <Compile Include="dailyLogin\fetchCalendar.cs" />
     <Compile Include="fame\list.cs" />
     <Compile Include="gamestore\getOffers.cs" />
     <Compile Include="gamestore\purchaseOffers.cs" />

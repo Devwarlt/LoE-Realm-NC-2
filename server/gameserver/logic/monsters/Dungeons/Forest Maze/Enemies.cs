@@ -3,7 +3,7 @@ using LoESoft.GameServer.logic.transitions;
 
 namespace LoESoft.GameServer.logic
 {
-    partial class BehaviorDb             //might not be EXACT, but close enough anyway, made by hydranoid800
+    partial class BehaviorDb          
     {
         private _ ForestMaze = () => Behav()
         .Init("Mama Megamoth",

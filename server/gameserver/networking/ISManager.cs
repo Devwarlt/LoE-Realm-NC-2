@@ -1,6 +1,7 @@
 ﻿#region
 
 using LoESoft.Core;
+using LoESoft.Core.config;
 using System;
 using System.Collections.Concurrent;
 
@@ -71,7 +72,7 @@ namespace LoESoft.GameServer.realm
 
         private void HandleNetwork(object sender, InterServerEventArgs<NetworkMsg> e)
         {
-            if (e.InstanceId == null)
+            if (Settings.SERVER_MODE == Settings.ServerMode.Local && e.InstanceId == null)
             {
                 Publish(NETWORK, new NetworkMsg()   //for the new instances
                 {

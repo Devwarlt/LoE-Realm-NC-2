@@ -28,6 +28,10 @@ public class ChatShortcutModel {
         return (Parameters.data_[Options.GUILD_CHAT]);
     }
 
+    public function getGlobalChatShortcut():int {
+        return (Parameters.data_[Options.GLOBAL_CHAT]);
+    }
+
     public function getScrollUp():uint {
         return (Parameters.data_[Options.SCROLL_CHAT_UP]);
     }

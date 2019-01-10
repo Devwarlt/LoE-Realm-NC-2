@@ -110,7 +110,6 @@ namespace LoESoft.GameServer.realm.entity.player
                 {
                     Locked = client.Account.Database.GetLockeds(client.Account);
                     Ignored = client.Account.Database.GetIgnoreds(client.Account);
-                    Muted = client.Account.Muted;
                 }
                 catch (Exception) { }
 
@@ -186,26 +185,28 @@ namespace LoESoft.GameServer.realm.entity.player
 
             base.Move(x, y);
         }
-		private void AnnounceDeath(string killer)
-		{
-			var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
-			var rip = Name + " died to " + killer + "( " + playerDesc.ObjectId + ", " + Fame + " Fame )";
-			if (Fame >= 2000 && !Client.Account.Admin)
-			{
-				foreach (var w in GameServer.Manager.Worlds.Values)
-					foreach (var p in w.Players.Values)
-						p.SendDeathAnnounce(rip);
-				return;
-			}
-			else
-			{
-				foreach (var i in Owner.Players.Values)
-				{
-					i.SendDeathAnnounce(rip);
-				}
-			}
-		}
-		public void Death(string killer, ObjectDesc desc = null, Entity entity=null)
+
+        private void AnnounceDeath(string killer)
+        {
+            var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
+            var rip = Name + " died to " + killer + "( " + playerDesc.ObjectId + ", " + Fame + " Fame )";
+            if (Fame >= 2000 && !Client.Account.Admin)
+            {
+                foreach (var w in GameServer.Manager.Worlds.Values)
+                    foreach (var p in w.Players.Values)
+                        p.SendDeathAnnounce(rip);
+                return;
+            }
+            else
+            {
+                foreach (var i in Owner.Players.Values)
+                {
+                    i.SendDeathAnnounce(rip);
+                }
+            }
+        }
+
+        public void Death(string killer, ObjectDesc desc = null, Entity entity = null)
         {
             if (dying)
                 return;
@@ -238,15 +239,15 @@ namespace LoESoft.GameServer.realm.entity.player
                 return;
             }
             GenerateGravestone();
-			if ((entity is Player))
-			{
-				AnnounceDeath((entity as Player).Name + " the " + entity.ObjectDesc.ObjectId);
-			}
-			else
-			{
-				AnnounceDeath(killer);
-			}
-			if (desc != null)
+            if ((entity is Player))
+            {
+                AnnounceDeath((entity as Player).Name + " the " + entity.ObjectDesc.ObjectId);
+            }
+            else
+            {
+                AnnounceDeath(killer);
+            }
+            if (desc != null)
                 if (desc.DisplayId != null)
                     killer = desc.DisplayId;
                 else
@@ -307,18 +308,32 @@ namespace LoESoft.GameServer.realm.entity.player
             MaxHackEntries = 0;
             visibleTiles = new Dictionary<IntPoint, bool>();
             WorldInstance = owner;
-            Random rand = new Random();
+
+            var rand = new Random();
+
             int x, y;
+
             do
             {
                 x = rand.Next(0, owner.Map.Width);
                 y = rand.Next(0, owner.Map.Height);
             } while (owner.Map[x, y].Region != TileRegion.Spawn);
-            Move(x + 0.5f, y + 0.5f);
+
+            var newposition = owner.RemovePositionFromReconnect(AccountId);
+
+            if (newposition != null)
+                Move((int)newposition.Item1, (int)newposition.Item2);
+            else
+                Move(x + 0.5f, y + 0.5f);
+
             tiles = new byte[owner.Map.Width, owner.Map.Height];
+
             SetNewbiePeriod();
+
             base.Init(owner);
-            List<int> gifts = Client.Account.Gifts.ToList();
+
+            var gifts = Client.Account.Gifts.ToList();
+
             if (owner.Id == (int)WorldID.NEXUS_ID || owner.Name == "Vault")
             {
                 Client.SendMessage(new GLOBAL_NOTIFICATION
@@ -327,6 +342,7 @@ namespace LoESoft.GameServer.realm.entity.player
                     Text = gifts.Count > 0 ? "giftChestOccupied" : "giftChestEmpty"
                 });
             }
+
             if (Client.Character.Pet != 0)
             {
                 HatchlingPet = false;
@@ -343,24 +359,25 @@ namespace LoESoft.GameServer.realm.entity.player
 
             CheckSetTypeSkin();
 
-            if ((AccountType)AccountType == Core.config.AccountType.DEM_ACCOUNT)
-            {
-                ConditionEffect invincible = new ConditionEffect
+            if (Settings.SERVER_MODE == Settings.ServerMode.Local)
+                if ((AccountType)AccountType == Core.config.AccountType.DEM_ACCOUNT)
                 {
-                    Effect = ConditionEffectIndex.Invincible,
-                    DurationMS = -1
-                };
+                    var invincible = new ConditionEffect
+                    {
+                        Effect = ConditionEffectIndex.Invincible,
+                        DurationMS = -1
+                    };
 
-                ApplyConditionEffect(invincible);
+                    ApplyConditionEffect(invincible);
 
-                ConditionEffect invulnerable = new ConditionEffect
-                {
-                    Effect = ConditionEffectIndex.Invulnerable,
-                    DurationMS = -1
-                };
+                    var invulnerable = new ConditionEffect
+                    {
+                        Effect = ConditionEffectIndex.Invulnerable,
+                        DurationMS = -1
+                    };
 
-                ApplyConditionEffect(invulnerable);
-            }
+                    ApplyConditionEffect(invulnerable);
+                }
 
             ApplyConditionEffect(AccountPerks.SetAccountTypeIcon());
 
@@ -442,6 +459,9 @@ namespace LoESoft.GameServer.realm.entity.player
                 },
                 Color = new ARGB(0xFFFFFFFF)
             }, null);
+
+            foreach (var plr in Owner.Players.Values)
+                plr.AwaitGotoAck(time.TotalElapsedMs);
         }
 
         private int QuestPriority(ObjectDesc enemy)
@@ -466,8 +486,11 @@ namespace LoESoft.GameServer.realm.entity.player
             if (enemy.Quest)
                 score += 250;
 
-            if (enemy.ObjectId == "Eyeguard of Surrender")
-                score += 10000;
+            if (enemy.ObjectId.ToLower().Contains("maurth"))
+                score += 100000;
+
+            if (enemy.ObjectId.ToLower().Contains("undertaker"))
+                score += 500000;
 
             score += enemy.MaxHitPoints;
             score += enemy.Defense * enemy.Level;
@@ -582,15 +605,15 @@ namespace LoESoft.GameServer.realm.entity.player
 
                 UpdateCount++;
 
-				var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
-				if (Level == 20)
-				{
-					foreach (var i in Owner.Players.Values)
-						i.SendInfo(Name + " achieved level 20" + " as a " + playerDesc.ObjectId);
-					XpBoosted = false;
-					XpBoostTimeLeft = 0;
-				}
-				Quest = null;
+                var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
+                if (Level == 20)
+                {
+                    foreach (var i in Owner.Players.Values)
+                        i.SendInfo(Name + " achieved level 20" + " as a " + playerDesc.ObjectId);
+                    XpBoosted = false;
+                    XpBoostTimeLeft = 0;
+                }
+                Quest = null;
                 return true;
             }
             CalculateFame();

@@ -1,327 +1,404 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Objects>
-	<Object type="0x6706" id="Fiery Succubus">
-		<Group>Edition1</Group>
-		<Enemy />
-		<Class>Character</Class>
-		<AnimatedTexture>
-			<File>LREE16x16</File>
-			<Index>0</Index>
-		</AnimatedTexture>
-		<HitSound>monster/dragons_hit</HitSound>
-		<DeathSound>monster/djinn_hit</DeathSound>
-		<MaxHitPoints>5000</MaxHitPoints>
-		<Defense>50</Defense>
-		<Experience>650</Experience>
-		<Projectile id="0">
-			<ObjectId>Fire Shard</ObjectId>
-			<Damage>80</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>2000</LifetimeMS>
-		</Projectile>
-		<Projectile id="1">
-			<ObjectId>Fire Enchanted Bullet</ObjectId>
-			<Damage>150</Damage>
-			<Speed>45</Speed>
-			<LifetimeMS>4500</LifetimeMS>
-		</Projectile>
-	</Object>
-	<Object type="0x670b" id="Fiery Twin Succubus">
-		<Group>Edition1</Group>
-		<Enemy />
-		<Class>Character</Class>
-		<AnimatedTexture>
-			<File>LREE16x16</File>
-			<Index>2</Index>
-		</AnimatedTexture>
-		<HitSound>monster/dragons_hit</HitSound>
-		<DeathSound>monster/djinn_hit</DeathSound>
-		<MaxHitPoints>8000</MaxHitPoints>
-		<Defense>75</Defense>
-		<Experience>850</Experience>
-		<Projectile id="0">
-			<ObjectId>Fire Shard</ObjectId>
-			<Damage>80</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>2000</LifetimeMS>
-		</Projectile>
-		<Projectile id="1">
-			<ObjectId>Fire Enchanted Bullet</ObjectId>
-			<Damage>150</Damage>
-			<Speed>45</Speed>
-			<LifetimeMS>4500</LifetimeMS>
-		</Projectile>
-		<Projectile id="2">
-			<ObjectId>Vulcanum</ObjectId>
-			<Speed>50</Speed>
-			<Damage>110</Damage>
-			<LifetimeMS>5000</LifetimeMS>
-			<Amplitude>1</Amplitude>
-			<Frequency>3</Frequency>
-		</Projectile>
-	</Object>
-	<Object type="0x670c" id="Icy Succubus">
-		<Group>Edition1</Group>
-		<Enemy />
-		<Class>Character</Class>
-		<AnimatedTexture>
-			<File>LREE16x16</File>
-			<Index>1</Index>
-		</AnimatedTexture>
-		<HitSound>monster/dragons_hit</HitSound>
-		<DeathSound>monster/djinn_hit</DeathSound>
-		<MaxHitPoints>5000</MaxHitPoints>
-		<Defense>50</Defense>
-		<Experience>650</Experience>
-		<Projectile id="0">
-			<ObjectId>Ice Shard</ObjectId>
-			<Damage>80</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>2000</LifetimeMS>
-		</Projectile>
-		<Projectile id="1">
-			<ObjectId>Ice Enchanted Bullet</ObjectId>
-			<Damage>150</Damage>
-			<Speed>45</Speed>
-			<LifetimeMS>4500</LifetimeMS>
-		</Projectile>
-	</Object>
-	<Object type="0x670d" id="Icy Twin Succubus">
-		<Group>Edition1</Group>
-		<Enemy />
-		<Class>Character</Class>
-		<AnimatedTexture>
-			<File>LREE16x16</File>
-			<Index>3</Index>
-		</AnimatedTexture>
-		<HitSound>monster/dragons_hit</HitSound>
-		<DeathSound>monster/djinn_hit</DeathSound>
-		<MaxHitPoints>8000</MaxHitPoints>
-		<Defense>75</Defense>
-		<Experience>850</Experience>
-		<Projectile id="0">
-			<ObjectId>Ice Shard</ObjectId>
-			<Damage>80</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>2000</LifetimeMS>
-		</Projectile>
-		<Projectile id="1">
-			<ObjectId>Ice Enchanted Bullet</ObjectId>
-			<Damage>150</Damage>
-			<Speed>45</Speed>
-			<LifetimeMS>4500</LifetimeMS>
-		</Projectile>
-		<Projectile id="2">
-			<ObjectId>Nevasca</ObjectId>
-			<Speed>50</Speed>
-			<Damage>110</Damage>
-			<LifetimeMS>5000</LifetimeMS>
-			<Amplitude>1</Amplitude>
-			<Frequency>3</Frequency>
-		</Projectile>
-	</Object>
-	<Object type="0x670e" id="Ayrin">
-		<Group>Edition1</Group>
-		<Enemy />
-		<Class>Character</Class>
-		<AnimatedTexture>
-			<File>LREE16x16</File>
-			<Index>4</Index>
-		</AnimatedTexture>
-		<HitSound>monster/dragons_hit</HitSound>
-		<DeathSound>monster/djinn_hit</DeathSound>
-		<MaxHitPoints>35000</MaxHitPoints>
-		<Defense>150</Defense>
-		<Experience>2750</Experience>
-		<Projectile id="0">
-			<ObjectId>Ice Shard</ObjectId>
-			<Damage>80</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>00</LifetimeMS>
-		</Projectile>
-		<Projectile id="1">
-			<ObjectId>Ice Enchanted Bullet</ObjectId>
-			<Damage>150</Damage>
-			<Speed>45</Speed>
-			<LifetimeMS>4500</LifetimeMS>
-		</Projectile>
-		<Projectile id="2">
-			<ObjectId>Nevasca</ObjectId>
-			<Speed>50</Speed>
-			<Damage>110</Damage>
-			<LifetimeMS>5000</LifetimeMS>
-			<Amplitude>1</Amplitude>
-			<Frequency>3</Frequency>
-		</Projectile>
-		<Projectile id="3">
-			<ObjectId>Blizzard</ObjectId>
-			<Speed>50</Speed>
-			<Damage>150</Damage>
-			<LifetimeMS>5000</LifetimeMS>
-			<ArmorPiercing />
-		</Projectile>
-		<Projectile id="4">
-			<ObjectId>Icicle</ObjectId>
-			<Damage>160</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>2000</LifetimeMS>
-		</Projectile>
-		<Projectile id="5">
-			<ObjectId>Frozen Kiss</ObjectId>
-			<Damage>210</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>2000</LifetimeMS>
-			<ArmorPiercing />
-			<PassesCover />
-		</Projectile>
-		<Projectile id="6">
-			<ObjectId>Ice Temptation</ObjectId>
-			<Damage>285</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>2000</LifetimeMS>
-			<Amplitude>1</Amplitude>
-			<Frequency>3</Frequency>
-			<ArmorPiercing />
-			<PassesCover />
-		</Projectile>
-	</Object>
-	<Object type="0x670f" id="Tamir">
-		<Group>Edition1</Group>
-		<Enemy />
-		<Class>Character</Class>
-		<AnimatedTexture>
-			<File>LREE16x16</File>
-			<Index>5</Index>
-		</AnimatedTexture>
-		<HitSound>monster/dragons_hit</HitSound>
-		<DeathSound>monster/djinn_hit</DeathSound>
-		<MaxHitPoints>35000</MaxHitPoints>
-		<Defense>150</Defense>
-		<Experience>2750</Experience>
-		<Projectile id="0">
-			<ObjectId>Ice Shard</ObjectId>
-			<Damage>80</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>00</LifetimeMS>
-		</Projectile>
-		<Projectile id="1">
-			<ObjectId>Ice Enchanted Bullet</ObjectId>
-			<Damage>150</Damage>
-			<Speed>45</Speed>
-			<LifetimeMS>4500</LifetimeMS>
-		</Projectile>
-		<Projectile id="2">
-			<ObjectId>Nevasca</ObjectId>
-			<Speed>50</Speed>
-			<Damage>110</Damage>
-			<LifetimeMS>5000</LifetimeMS>
-			<Amplitude>1</Amplitude>
-			<Frequency>3</Frequency>
-		</Projectile>
-		<Projectile id="3">
-			<ObjectId>Infernum</ObjectId>
-			<Speed>50</Speed>
-			<Damage>150</Damage>
-			<LifetimeMS>5000</LifetimeMS>
-			<ArmorPiercing />
-		</Projectile>
-		<Projectile id="4">
-			<ObjectId>Fire Spark</ObjectId>
-			<Damage>160</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>2000</LifetimeMS>
-		</Projectile>
-		<Projectile id="5">
-			<ObjectId>Hot Kiss</ObjectId>
-			<Damage>210</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>2000</LifetimeMS>
-			<ArmorPiercing />
-			<PassesCover />
-		</Projectile>
-		<Projectile id="6">
-			<ObjectId>Fire Temptation</ObjectId>
-			<Damage>285</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>2000</LifetimeMS>
-			<Amplitude>1</Amplitude>
-			<Frequency>3</Frequency>
-			<ArmorPiercing />
-			<PassesCover />
-		</Projectile>
-	</Object>
-	<Object type="0x6710" id="Wingus the Succubus Queen">
-		<Group>Edition1</Group>
-		<Enemy />
-		<Class>Character</Class>
-		<AnimatedTexture>
-			<File>LREE16x16</File>
-			<Index>6</Index>
-		</AnimatedTexture>
-		<HitSound>monster/dragons_hit</HitSound>
-		<DeathSound>monster/djinn_hit</DeathSound>
-		<MaxHitPoints>100000</MaxHitPoints>
-		<Defense>210</Defense>
-		<Experience>5000</Experience>
-		<Projectile id="0">
-			<ObjectId>Death Kiss</ObjectId>
-			<Damage>150</Damage>
-			<Speed>45</Speed>
-			<LifetimeMS>4500</LifetimeMS>
-			<Amplitude>1</Amplitude>
-			<Frequency>3</Frequency>
-			<PassesCover />
-		</Projectile>
-		<Projectile id="1">
-			<ObjectId>Whirlwind Deadly Spark</ObjectId>
-			<Damage>160</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>2000</LifetimeMS>
-		</Projectile>
-		<Projectile id="2">
-			<ObjectId>Eternal Mayhem</ObjectId>
-			<Damage>285</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>2000</LifetimeMS>
-			<Amplitude>1</Amplitude>
-			<Frequency>3</Frequency>
-			<ArmorPiercing />
-			<MultiHit />
-			<PassesCover />
-		</Projectile>
-		<Projectile id="3">
-			<ObjectId>Critical Slash</ObjectId>
-			<Speed>50</Speed>
-			<Damage>150</Damage>
-			<LifetimeMS>5000</LifetimeMS>
-			<ArmorPiercing />
-		</Projectile>
-		<Projectile id="4">
-			<ObjectId>Poison Kiss</ObjectId>
-			<Damage>235</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>2000</LifetimeMS>
-			<ArmorPiercing />
-			<PassesCover />
-		</Projectile>
-		<Projectile id="5">
-			<ObjectId>Bloody Kiss</ObjectId>
-			<Damage>265</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>2000</LifetimeMS>
-			<ArmorPiercing />
-			<PassesCover />
-		</Projectile>
-		<Projectile id="6">
-			<ObjectId>The Final Pleasure</ObjectId>
-			<Damage>345</Damage>
-			<Speed>50</Speed>
-			<LifetimeMS>2000</LifetimeMS>
-			<Amplitude>1</Amplitude>
-			<Frequency>3</Frequency>
-			<ArmorPiercing />
-			<MultiHit />
-			<PassesCover />
-		</Projectile>
-	</Object>
+  <Object type="0x6706" id="Fiery Succubus">
+    <Group>Edition1</Group>
+    <Enemy />
+    <Class>Character</Class>
+    <AnimatedTexture>
+      <File>LREE16x16</File>
+      <Index>0</Index>
+    </AnimatedTexture>
+    <HitSound>monster/dragons_hit</HitSound>
+    <DeathSound>monster/djinn_hit</DeathSound>
+    <MaxHitPoints>5000</MaxHitPoints>
+    <Defense>50</Defense>
+    <Experience>650</Experience>
+    <Projectile id="0">
+      <ObjectId>Fire Shard</ObjectId>
+      <Damage>80</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>2000</LifetimeMS>
+    </Projectile>
+    <Projectile id="1">
+      <ObjectId>Fire Enchanted Bullet</ObjectId>
+      <Damage>150</Damage>
+      <Speed>45</Speed>
+      <LifetimeMS>4500</LifetimeMS>
+    </Projectile>
+  </Object>
+  <Object type="0x670b" id="Fiery Twin Succubus">
+    <Group>Edition1</Group>
+    <Enemy />
+    <Class>Character</Class>
+    <AnimatedTexture>
+      <File>LREE16x16</File>
+      <Index>2</Index>
+    </AnimatedTexture>
+    <HitSound>monster/dragons_hit</HitSound>
+    <DeathSound>monster/djinn_hit</DeathSound>
+    <MaxHitPoints>8000</MaxHitPoints>
+    <Defense>75</Defense>
+    <Experience>850</Experience>
+    <Projectile id="0">
+      <ObjectId>Fire Shard</ObjectId>
+      <Damage>80</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>2000</LifetimeMS>
+    </Projectile>
+    <Projectile id="1">
+      <ObjectId>Fire Enchanted Bullet</ObjectId>
+      <Damage>150</Damage>
+      <Speed>45</Speed>
+      <LifetimeMS>4500</LifetimeMS>
+    </Projectile>
+    <Projectile id="2">
+      <ObjectId>Vulcanum</ObjectId>
+      <Speed>50</Speed>
+      <Damage>110</Damage>
+      <LifetimeMS>5000</LifetimeMS>
+      <Amplitude>1</Amplitude>
+      <Frequency>3</Frequency>
+    </Projectile>
+  </Object>
+  <Object type="0x670c" id="Icy Succubus">
+    <Group>Edition1</Group>
+    <Enemy />
+    <Class>Character</Class>
+    <AnimatedTexture>
+      <File>LREE16x16</File>
+      <Index>1</Index>
+    </AnimatedTexture>
+    <HitSound>monster/dragons_hit</HitSound>
+    <DeathSound>monster/djinn_hit</DeathSound>
+    <MaxHitPoints>5000</MaxHitPoints>
+    <Defense>50</Defense>
+    <Experience>650</Experience>
+    <Projectile id="0">
+      <ObjectId>Ice Shard</ObjectId>
+      <Damage>80</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>2000</LifetimeMS>
+    </Projectile>
+    <Projectile id="1">
+      <ObjectId>Ice Enchanted Bullet</ObjectId>
+      <Damage>150</Damage>
+      <Speed>45</Speed>
+      <LifetimeMS>4500</LifetimeMS>
+    </Projectile>
+  </Object>
+  <Object type="0x670d" id="Icy Twin Succubus">
+    <Group>Edition1</Group>
+    <Enemy />
+    <Class>Character</Class>
+    <AnimatedTexture>
+      <File>LREE16x16</File>
+      <Index>3</Index>
+    </AnimatedTexture>
+    <HitSound>monster/dragons_hit</HitSound>
+    <DeathSound>monster/djinn_hit</DeathSound>
+    <MaxHitPoints>8000</MaxHitPoints>
+    <Defense>75</Defense>
+    <Experience>850</Experience>
+    <Projectile id="0">
+      <ObjectId>Ice Shard</ObjectId>
+      <Damage>80</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>2000</LifetimeMS>
+    </Projectile>
+    <Projectile id="1">
+      <ObjectId>Ice Enchanted Bullet</ObjectId>
+      <Damage>150</Damage>
+      <Speed>45</Speed>
+      <LifetimeMS>4500</LifetimeMS>
+    </Projectile>
+    <Projectile id="2">
+      <ObjectId>Nevasca</ObjectId>
+      <Speed>50</Speed>
+      <Damage>110</Damage>
+      <LifetimeMS>5000</LifetimeMS>
+      <Amplitude>1</Amplitude>
+      <Frequency>3</Frequency>
+    </Projectile>
+  </Object>
+  <Object type="0x670e" id="Ayrin">
+    <Group>Edition1</Group>
+    <Enemy />
+    <Class>Character</Class>
+    <AnimatedTexture>
+      <File>LREE16x16</File>
+      <Index>4</Index>
+    </AnimatedTexture>
+    <HitSound>monster/dragons_hit</HitSound>
+    <DeathSound>monster/djinn_hit</DeathSound>
+    <MaxHitPoints>35000</MaxHitPoints>
+    <Defense>150</Defense>
+    <Experience>2750</Experience>
+    <Projectile id="0">
+      <ObjectId>Ice Shard</ObjectId>
+      <Damage>80</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>00</LifetimeMS>
+    </Projectile>
+    <Projectile id="1">
+      <ObjectId>Ice Enchanted Bullet</ObjectId>
+      <Damage>150</Damage>
+      <Speed>45</Speed>
+      <LifetimeMS>4500</LifetimeMS>
+    </Projectile>
+    <Projectile id="2">
+      <ObjectId>Nevasca</ObjectId>
+      <Speed>50</Speed>
+      <Damage>110</Damage>
+      <LifetimeMS>5000</LifetimeMS>
+      <Amplitude>1</Amplitude>
+      <Frequency>3</Frequency>
+    </Projectile>
+    <Projectile id="3">
+      <ObjectId>Blizzard</ObjectId>
+      <Speed>50</Speed>
+      <Damage>150</Damage>
+      <LifetimeMS>5000</LifetimeMS>
+      <ArmorPiercing />
+    </Projectile>
+    <Projectile id="4">
+      <ObjectId>Icicle</ObjectId>
+      <Damage>160</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>2000</LifetimeMS>
+    </Projectile>
+    <Projectile id="5">
+      <ObjectId>Frozen Kiss</ObjectId>
+      <Damage>210</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>2000</LifetimeMS>
+      <ArmorPiercing />
+      <PassesCover />
+    </Projectile>
+    <Projectile id="6">
+      <ObjectId>Ice Temptation</ObjectId>
+      <Damage>285</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>2000</LifetimeMS>
+      <Amplitude>1</Amplitude>
+      <Frequency>3</Frequency>
+      <ArmorPiercing />
+      <PassesCover />
+    </Projectile>
+  </Object>
+  <Object type="0x670f" id="Tamir">
+    <Group>Edition1</Group>
+    <Enemy />
+    <Class>Character</Class>
+    <AnimatedTexture>
+      <File>LREE16x16</File>
+      <Index>5</Index>
+    </AnimatedTexture>
+    <HitSound>monster/dragons_hit</HitSound>
+    <DeathSound>monster/djinn_hit</DeathSound>
+    <MaxHitPoints>35000</MaxHitPoints>
+    <Defense>150</Defense>
+    <Experience>2750</Experience>
+    <Projectile id="0">
+      <ObjectId>Ice Shard</ObjectId>
+      <Damage>80</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>00</LifetimeMS>
+    </Projectile>
+    <Projectile id="1">
+      <ObjectId>Ice Enchanted Bullet</ObjectId>
+      <Damage>150</Damage>
+      <Speed>45</Speed>
+      <LifetimeMS>4500</LifetimeMS>
+    </Projectile>
+    <Projectile id="2">
+      <ObjectId>Nevasca</ObjectId>
+      <Speed>50</Speed>
+      <Damage>110</Damage>
+      <LifetimeMS>5000</LifetimeMS>
+      <Amplitude>1</Amplitude>
+      <Frequency>3</Frequency>
+    </Projectile>
+    <Projectile id="3">
+      <ObjectId>Infernum</ObjectId>
+      <Speed>50</Speed>
+      <Damage>150</Damage>
+      <LifetimeMS>5000</LifetimeMS>
+      <ArmorPiercing />
+    </Projectile>
+    <Projectile id="4">
+      <ObjectId>Fire Spark</ObjectId>
+      <Damage>160</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>2000</LifetimeMS>
+    </Projectile>
+    <Projectile id="5">
+      <ObjectId>Hot Kiss</ObjectId>
+      <Damage>210</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>2000</LifetimeMS>
+      <ArmorPiercing />
+      <PassesCover />
+    </Projectile>
+    <Projectile id="6">
+      <ObjectId>Fire Temptation</ObjectId>
+      <Damage>285</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>2000</LifetimeMS>
+      <Amplitude>1</Amplitude>
+      <Frequency>3</Frequency>
+      <ArmorPiercing />
+      <PassesCover />
+    </Projectile>
+  </Object>
+  <Object type="0x6710" id="Wingus the Succubus Queen">
+    <Group>Edition1</Group>
+    <Enemy />
+    <Class>Character</Class>
+    <AnimatedTexture>
+      <File>LREE16x16</File>
+      <Index>6</Index>
+    </AnimatedTexture>
+    <HitSound>monster/dragons_hit</HitSound>
+    <DeathSound>monster/djinn_hit</DeathSound>
+    <MaxHitPoints>100000</MaxHitPoints>
+    <Defense>210</Defense>
+    <Experience>5000</Experience>
+    <Projectile id="0">
+      <ObjectId>Death Kiss</ObjectId>
+      <Damage>150</Damage>
+      <Speed>45</Speed>
+      <LifetimeMS>4500</LifetimeMS>
+      <Amplitude>1</Amplitude>
+      <Frequency>3</Frequency>
+      <PassesCover />
+    </Projectile>
+    <Projectile id="1">
+      <ObjectId>Whirlwind Deadly Spark</ObjectId>
+      <Damage>160</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>2000</LifetimeMS>
+    </Projectile>
+    <Projectile id="2">
+      <ObjectId>Eternal Mayhem</ObjectId>
+      <Damage>285</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>2000</LifetimeMS>
+      <Amplitude>1</Amplitude>
+      <Frequency>3</Frequency>
+      <ArmorPiercing />
+      <MultiHit />
+      <PassesCover />
+    </Projectile>
+    <Projectile id="3">
+      <ObjectId>Critical Slash</ObjectId>
+      <Speed>50</Speed>
+      <Damage>150</Damage>
+      <LifetimeMS>5000</LifetimeMS>
+      <ArmorPiercing />
+    </Projectile>
+    <Projectile id="4">
+      <ObjectId>Poison Kiss</ObjectId>
+      <Damage>235</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>2000</LifetimeMS>
+      <ArmorPiercing />
+      <PassesCover />
+    </Projectile>
+    <Projectile id="5">
+      <ObjectId>Bloody Kiss</ObjectId>
+      <Damage>265</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>2000</LifetimeMS>
+      <ArmorPiercing />
+      <PassesCover />
+    </Projectile>
+    <Projectile id="6">
+      <ObjectId>The Final Pleasure</ObjectId>
+      <Damage>345</Damage>
+      <Speed>50</Speed>
+      <LifetimeMS>2000</LifetimeMS>
+      <Amplitude>1</Amplitude>
+      <Frequency>3</Frequency>
+      <ArmorPiercing />
+      <MultiHit />
+      <PassesCover />
+    </Projectile>
+  </Object>
+  <Object type="0x6716" id="Maurth the Succubus Princess">
+    <Group>Edition1</Group>
+    <Enemy />
+    <Class>Character</Class>
+    <AnimatedTexture>
+      <File>chars16x16dMountains1</File>
+      <Index>0x0a</Index>
+    </AnimatedTexture>
+    <HitSound>monster/dragons_hit</HitSound>
+    <DeathSound>monster/djinn_hit</DeathSound>
+    <MaxHitPoints>250000</MaxHitPoints>
+    <Level>20</Level>
+    <Defense>90</Defense>
+    <Experience>5000</Experience>
+    <Quest />
+    <StasisImmune />
+    <StunImmune />
+    <Projectile id="0">
+      <ObjectId>Fire Bullet</ObjectId>
+      <Damage>35</Damage>
+      <Speed>30</Speed>
+      <LifetimeMS>8500</LifetimeMS>
+      <ConditionEffect duration="5">Bleeding</ConditionEffect>
+      <PassesCover />
+    </Projectile>
+    <Projectile id="1">
+      <ObjectId>Dragon Attack Blue Fireball</ObjectId>
+      <Damage>155</Damage>
+      <Speed>100</Speed>
+      <LifetimeMS>8500</LifetimeMS>
+      <MultiHit />
+      <PassesCover />
+    </Projectile>
+    <Projectile id="2">
+      <ObjectId>Black Missile</ObjectId>
+      <Damage>700</Damage>
+      <Speed>85</Speed>
+      <LifetimeMS>24000</LifetimeMS>
+      <ConditionEffect duration="5">Blind</ConditionEffect>
+      <MultiHit />
+      <PassesCover />
+      <Boomerang />
+    </Projectile>
+  </Object>
+  <Object type="0x6717" id="Undertaker the Great Juggernaut">
+    <Group>Edition1</Group>
+    <Enemy />
+    <Class>Character</Class>
+    <AnimatedTexture>
+      <File>chars16x16dMountains1</File>
+      <Index>0x09</Index>
+    </AnimatedTexture>
+    <HitSound>monster/oryx_hit</HitSound>
+    <DeathSound>monster/djinn_hit</DeathSound>
+    <MaxHitPoints>750000</MaxHitPoints>
+    <Level>20</Level>
+    <Defense>140</Defense>
+    <Experience>10000</Experience>
+    <Quest />
+    <StasisImmune />
+    <StunImmune />
+    <Projectile id="0">
+      <ObjectId>White Orb</ObjectId>
+      <Damage>185</Damage>
+      <Speed>115</Speed>
+      <LifetimeMS>8500</LifetimeMS>
+      <PassesCover />
+    </Projectile>
+    <Projectile id="1">
+      <ObjectId>Stone Slash</ObjectId>
+      <Damage>255</Damage>
+      <Speed>200</Speed>
+      <LifetimeMS>8500</LifetimeMS>
+      <MultiHit />
+      <PassesCover />
+    </Projectile>
+  </Object>
 </Objects>

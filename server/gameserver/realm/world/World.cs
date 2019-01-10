@@ -19,8 +19,6 @@ using System.Threading;
 
 namespace LoESoft.GameServer.realm
 {
-    using Timer = System.Timers.Timer;
-
     public interface IDungeon { }
 
     public enum WorldID : int
@@ -34,7 +32,9 @@ namespace LoESoft.GameServer.realm
         WC = -8,
         ARENA = -9,
         MARKET = -11,
-        DAILY_QUEST_ID = -13
+        DAILY_QUEST_ID = -13,
+        DRASTA_CITADEL_ID = -14,
+        DREAM_ISLAND = -15
     }
 
     public abstract class World : IDisposable
@@ -57,95 +57,26 @@ namespace LoESoft.GameServer.realm
             Timers.Add(new WorldTimer(120 * 1000, (w, t) =>
             {
                 canBeClosed = true;
+
                 if (NeedsPortalKey)
                     PortalKeyExpired = true;
             }));
-
-            _timers = new Timer[5];
-
-            for (var i = 0; i < 5; i++)
-                _timers[i] = new Timer(LogicTicker.COOLDOWN_DELAY) { AutoReset = true };
-
-            _timers[0].Elapsed += delegate // timers thread (world timer)
-            {
-                if (Timers.Count != 0)
-                    for (var i = 0; i < Timers.Count; i++)
-                        try
-                        {
-                            if (Timers[i] == null)
-                                continue;
-
-                            if (!Timers[i].Tick(this, _time))
-                                continue;
-
-                            Timers.RemoveAt(i);
-
-                            i--;
-                        }
-                        catch { }
-            };
-            _timers[1].Elapsed += delegate // players
-            {
-                if (Players.Count != 0)
-                    Players.Values.Select(player => { player.Tick(_time); return player; }).ToList();
-            };
-            _timers[2].Elapsed += delegate // enemies
-            {
-                if (EnemiesCollision != null)
-                {
-                    var collisions = EnemiesCollision.GetActiveChunks(PlayersCollision).ToList();
-
-                    if (collisions.Count != 0)
-                        collisions.Select(enemy =>
-                        {
-                            enemy.Tick(_time);
-                            return enemy;
-                        }).ToList();
-
-                    if (GameObjects.Count != 0)
-                        GameObjects.Where(x => x.Value is Decoy).Select(objects =>
-                        {
-                            objects.Value.Tick(_time);
-                            return objects;
-                        }).ToList();
-                }
-                else
-                {
-                    if (Enemies.Count != 0)
-                        Enemies.Values.Where(enemy => enemy != null).Select(enemy =>
-                        {
-                            enemy.Tick(_time);
-                            return enemy;
-                        }).ToList();
-
-                    if (GameObjects.Count != 0)
-                        GameObjects.Values.Where(objects => objects != null).Select(objects =>
-                        {
-                            objects.Tick(_time);
-                            return objects;
-                        }).ToList();
-                }
-            };
-            _timers[3].Elapsed += delegate // projectiles
-            {
-                if (Projectiles.Count != 0)
-                    Projectiles.Values.Where(projectile => projectile != null).Select(projectile =>
-                    {
-                        projectile.Tick(_time);
-                        return projectile;
-                    }).ToList();
-            };
-            _timers[4].Elapsed += delegate
-            {
-                if (Players.Count != 0 || !canBeClosed || !IsDungeon())
-                    return;
-
-                if (this is Vault vault)
-                    GameServer.Manager.RemoveVault(vault.AccountId);
-
-                GameServer.Manager.RemoveWorld(this);
-            };
         }
+
+        public void AddReconnectToPlayer(string id, Tuple<float, float> position) => ReconnectRequests.TryAdd(id, position);
+
+        public Tuple<float, float> RemovePositionFromReconnect(string id)
+        {
+            if (ReconnectRequests.ContainsKey(id))
+            {
+                ReconnectRequests.TryRemove(id, out Tuple<float, float> position);
+                return position;
+            }
+
+            return null;
+        }
+
+        private ConcurrentDictionary<string, Tuple<float, float>> ReconnectRequests { get; set; } = new ConcurrentDictionary<string, Tuple<float, float>>();
 
         public RealmManager Manager
         {
@@ -161,27 +92,79 @@ namespace LoESoft.GameServer.realm
             }
         }
 
-        private RealmTime _time;
-
-        private Timer[] _timers { get; set; }
-        private bool _initialized { get; set; }
-
         public virtual void Tick(RealmTime time)
         {
             if (IsLimbo)
                 return;
 
-            _time = time;
+            if (Timers.Count != 0)
+                for (var i = 0; i < Timers.Count; i++)
+                    try
+                    {
+                        if (Timers[i] == null)
+                            continue;
 
-            if (!_initialized)
+                        if (!Timers[i].Tick(this, time))
+                            continue;
+
+                        Timers.RemoveAt(i);
+
+                        i--;
+                    }
+                    catch { }
+
+            if (Players.Count != 0)
+                Players.Values.Select(player => { player.Tick(time); return player; }).ToList();
+
+            if (EnemiesCollision != null)
             {
-                _initialized = true;
-                _timers.Select(timer =>
-                {
-                    timer.Start();
-                    return timer;
-                }).ToArray();
+                var collisions = EnemiesCollision.GetActiveChunks(PlayersCollision).ToList();
+
+                if (collisions.Count != 0)
+                    collisions.Select(enemy =>
+                    {
+                        enemy.Tick(time);
+                        return enemy;
+                    }).ToList();
+
+                if (GameObjects.Count != 0)
+                    GameObjects.Where(x => x.Value is Decoy).Select(objects =>
+                    {
+                        objects.Value.Tick(time);
+                        return objects;
+                    }).ToList();
             }
+            else
+            {
+                if (Enemies.Count != 0)
+                    Enemies.Values.Where(enemy => enemy != null).Select(enemy =>
+                    {
+                        enemy.Tick(time);
+                        return enemy;
+                    }).ToList();
+
+                if (GameObjects.Count != 0)
+                    GameObjects.Values.Where(objects => objects != null).Select(objects =>
+                    {
+                        objects.Tick(time);
+                        return objects;
+                    }).ToList();
+            }
+
+            if (Projectiles.Count != 0)
+                Projectiles.Values.Where(projectile => projectile != null).Select(projectile =>
+                {
+                    projectile.Tick(time);
+                    return projectile;
+                }).ToList();
+
+            if (Players.Count != 0 || !canBeClosed || !IsDungeon())
+                return;
+
+            if (this is Vault vault)
+                GameServer.Manager.RemoveVault(vault.AccountId);
+
+            GameServer.Manager.RemoveWorld(this);
         }
 
         private int entityInc;

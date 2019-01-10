@@ -16,12 +16,12 @@ public class Parameters {
     public static const DISCORD_PERMANENTLY_INVITE:String = "https://discord.gg/htpVTFq";
     public static const CONNECTION_SECURITY_PROTOCOL:String = "http";
     public static const CLIENT_NAME:String = "(New Chicago 2) LoE Realm";
-    public static const ENABLE_CROSSDOMAIN:Boolean = true;
-    public static const ENVIRONMENT_VARIABLE:String = IS_DEVELOPER_MODE ? BuildEnvironments.LOESOFTTESTING : BuildEnvironments.LOESOFTPRODUCTION;
+    public static const ENABLE_CROSSDOMAIN:Boolean = false;
+    public static const ENVIRONMENT_VARIABLE:String = IS_DEVELOPER_MODE ? BuildEnvironments.LOESOFTTESTING : BuildEnvironments.PRODUCTION;
     public static const ENVIRONMENT_DNS:String = !IS_DEVELOPER_MODE ? "loe-nc.servegame.com" : "localhost";
     public static const ENVIRONMENT_PORT:String = "5555";
-    public static const BUILD_VERSION:String = "2";
-    public static const MINOR_VERSION:String = "5";
+    public static const BUILD_VERSION:String = "3";
+    public static const MINOR_VERSION:String = "0.1";
     public static const FULL_BUILD:String = "v" + BUILD_VERSION + "." + MINOR_VERSION;
     public static const ENABLE_ENCRYPTION:Boolean = true;
     public static const PORT:int = 2050;
@@ -106,7 +106,7 @@ public class Parameters {
     public static var root:DisplayObject;
     public static var data_:Object = null;
     public static var GPURenderError:Boolean = false;
-    public static var blendType_:int = 0; //1 active borders
+    public static var blendType_:int = 1; //1 active borders (was 0)
     public static var projColorType_:int = 6;//0 disable projectile outline
     public static var drawProj_:Boolean = true;
     public static var screenShotMode_:Boolean = false;
@@ -291,6 +291,7 @@ public class Parameters {
         setDefaultKey("chatCommand", KeyCodes.SLASH);
         setDefaultKey("tell", KeyCodes.TAB);
         setDefaultKey("guildChat", KeyCodes.G);
+        setDefaultKey("globalChat", KeyCodes.Y);
         setDefaultKey("testOne", KeyCodes.PERIOD);
         setDefaultKey("toggleFullscreen", KeyCodes.UNSET);
         setDefaultKey("useHealthPotion", KeyCodes.F);
@@ -308,8 +309,8 @@ public class Parameters {
         setDefault("preferredServer", null);
         setDefault("needsTutorial", true);
         setDefault("needsRandomRealm", false);
-        setDefault("cameraAngle", 7 * Math.PI / 4);
-        setDefault("defaultCameraAngle", 7 * Math.PI / 4);
+        setDefault("cameraAngle", 0);
+        setDefault("defaultCameraAngle", 0);
         setDefault("showQuestPortraits", true);
         setDefault("fullscreenMode", false);
         setDefault("showProtips", true);
@@ -371,8 +372,8 @@ public class Parameters {
         setDefault("fullscreenMod", true);
         setDefault("mscale", 12);
         setDefault("showTierTag", true);
-        setDefaultKey("reconVault", KeyCodes.P);
-        setDefaultKey("reconRealm", KeyCodes.NUMBER_0);
+        setDefaultKey("reconVault", KeyCodes.F7);
+        setDefaultKey("reconRealm", KeyCodes.F9);
         if (!data_.hasOwnProperty("needsSurvey")) {
             data_.needsSurvey = data_.needsTutorial;
             switch (int((Math.random() * 5))) {

@@ -19,10 +19,11 @@ namespace LoESoft.GameServer.networking
 
         static Message()
         {
-            foreach (Type i in typeof(Message).Assembly.GetTypes())
+            foreach (var i in typeof(Message).Assembly.GetTypes())
                 if (typeof(Message).IsAssignableFrom(i) && !i.IsAbstract)
                 {
-                    Message pkt = (Message) Activator.CreateInstance(i);
+                    var pkt = (Message)Activator.CreateInstance(i);
+
                     if (!(pkt is OutgoingMessage))
                         Messages.Add(pkt.ID, pkt);
                 }
@@ -45,17 +46,17 @@ namespace LoESoft.GameServer.networking
             MemoryStream s = new MemoryStream(buff, offset + 5, buff.Length - offset - 5);
             Write(new NWriter(s));
 
-            int len = (int) s.Position;
+            int len = (int)s.Position;
             Crypt(client, buff, offset + 5, len);
             Buffer.BlockCopy(BitConverter.GetBytes(IPAddress.HostToNetworkOrder(len + 5)), 0, buff, offset, 4);
-            buff[offset + 4] = (byte) ID;
+            buff[offset + 4] = (byte)ID;
             return len + 5;
         }
 
         public int EWrite(Client client, byte[] buff, int offset)
         {
             var s = new MemoryStream();
-            var bodyLength = (int) s.Position;
+            var bodyLength = (int)s.Position;
             var messageLength = bodyLength + 5;
 
             if (messageLength > buff.Length - offset)
@@ -67,7 +68,7 @@ namespace LoESoft.GameServer.networking
 
             Buffer.BlockCopy(BitConverter.GetBytes(IPAddress.HostToNetworkOrder(messageLength)), 0, buff, offset, 4);
 
-            buff[offset + 4] = (byte) ID;
+            buff[offset + 4] = (byte)ID;
 
             return messageLength;
         }
