@@ -228,8 +228,16 @@ namespace LoESoft.GameServer.realm
         }
 
         public int GetNextEntityId() => Interlocked.Increment(ref entityInc);
-
-        public bool Delete()
+		public string SBName { get; set; }
+		public string GetDisplayName()
+		{
+			if (!string.IsNullOrEmpty(SBName))
+			{
+				return SBName[0] == '{' ? Name : SBName;
+			}
+			return Name;
+		}
+		public bool Delete()
         {
             lock (this)
             {

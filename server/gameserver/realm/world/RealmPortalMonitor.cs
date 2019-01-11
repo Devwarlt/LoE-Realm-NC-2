@@ -43,8 +43,18 @@ namespace LoESoft.GameServer.realm
                 nexus.Map[x, y].Region != TileRegion.Realm_Portals);
             return new Position { X = x, Y = y };
         }
+		private readonly RealmManager manager_;
+		public bool AddPortal(int worldId,World world, Portal portal = null, Position? position = null, bool announce = true)
+		{
+			if (announce)
+				foreach (var w in manager_.Worlds.Values)
+					foreach (var p in w.Players.Values)
+						p.SendInfo(
+							$"A portal to {(w == world ? "this land" : world.GetDisplayName())} has opened up{(w is Nexus ? "" : " in Nexus")}.");
+			return true;
+		}
 
-        public void WorldAdded(World world)
+		public void WorldAdded(World world)
         {
             lock (worldLock)
             {
@@ -58,7 +68,8 @@ namespace LoESoft.GameServer.realm
                 portal.Move(pos.X + 0.5f, pos.Y + 0.5f);
                 nexus.EnterWorld(portal);
                 portals.Add(world, portal);
-            }
+				
+			}
         }
 
         public void WorldRemoved(World world)
