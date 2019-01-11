@@ -165,7 +165,7 @@ public enum ConditionEffectIndex
     VipAccount = 52,
     ModAccount = 53,
     DeveloperAccount = 54,
-    NorgaAccount = 55,
+    AdminAccount = 55,
 	DesignerAccount =56
 }
 

@@ -3,6 +3,8 @@ import com.company.assembleegameclient.util.redrawers.GlowRedrawer;
 import com.company.util.AssetLibrary;
 import com.company.util.PointUtil;
 
+import flash.concurrent.Condition;
+
 import flash.display.BitmapData;
 import flash.filters.BitmapFilterQuality;
 import flash.filters.GlowFilter;
@@ -62,12 +64,13 @@ public class ConditionEffect {
     public static const WIS_BOOST:uint = 47;
     public static const HIDDEN:uint = 48;
     public static const MUTED:int = 49;
-    public static const FREE_ACCOUNT:int = 50;
+    public static const REGULAR_ACCOUNT:int = 50;
     public static const NPC_TYPE:int = 51;
     public static const VIP_ACCOUNT:int = 52;
-    public static const TUTOR_ACCOUNT:int = 53;
-    public static const LEGENDS_OF_LOE_ACCOUNT:int = 54;
-    public static const LOESOFT_ACCOUNT:int = 55;
+    public static const MOD_ACCOUNT:int = 53;
+    public static const DEVELOPER_ACCOUNT:int = 54;
+    public static const ADMIN_ACCOUNT:int = 55;
+    public static const DESIGNER_ACCOUNT:int = 56;
     public static const GROUND_DAMAGE:uint = 99;
     public static const DEAD_BIT:uint = (1 << (DEAD - 1));
     public static const QUIET_BIT:uint = (1 << (QUIET - 1));
@@ -118,12 +121,13 @@ public class ConditionEffect {
     public static const DEX_BOOST_BIT:uint = (1 << (DEX_BOOST - NEW_CON_THREASHOLD));
     public static const HIDDEN_BIT:uint = (1 << (HIDDEN - NEW_CON_THREASHOLD));
     public static const MUTED_BIT:uint = (1 << (MUTED - NEW_CON_THREASHOLD));
-    public static const FREE_ACCOUNT_BIT:uint = (1 << (FREE_ACCOUNT - NEW_CON_THREASHOLD_2));
+    public static const FREE_ACCOUNT_BIT:uint = (1 << (REGULAR_ACCOUNT - NEW_CON_THREASHOLD_2));
     public static const NPC_TYPE_BIT:uint = (1 << (NPC_TYPE - NEW_CON_THREASHOLD_2));
     public static const VIP_ACCOUNT_BIT:uint = (1 << (VIP_ACCOUNT - NEW_CON_THREASHOLD_2));
-    public static const TUTOR_ACCOUNT_BIT:uint = (1 << (TUTOR_ACCOUNT - NEW_CON_THREASHOLD_2));
-    public static const LEGENDS_OF_LOE_ACCOUNT_BIT:uint = (1 << (LEGENDS_OF_LOE_ACCOUNT - NEW_CON_THREASHOLD_2));
-    public static const LOESOFT_ACCOUNT_BIT:uint = (1 << (LOESOFT_ACCOUNT - NEW_CON_THREASHOLD_2));
+    public static const MOD_ACCOUNT_BIT:uint = (1 << (MOD_ACCOUNT - NEW_CON_THREASHOLD_2));
+    public static const DEVELOPER_ACCOUNT_BIT:uint = (1 << (DEVELOPER_ACCOUNT - NEW_CON_THREASHOLD_2));
+    public static const ADMIN_ACCOUNT_BIT:uint = (1 << (ADMIN_ACCOUNT - NEW_CON_THREASHOLD_2));
+    public static const DESIGNER_ACCOUNT_BIT:uint = (1 << (DESIGNER_ACCOUNT - NEW_CON_THREASHOLD_2));
     public static const MAP_FILTER_BITMASK:uint = DRUNK_BIT | BLIND_BIT | PAUSED_BIT;
     public static const PROJ_NOHIT_BITMASK:uint = INVINCIBLE_BIT | STASIS_BIT | PAUSED_BIT;
     public static const CE_FIRST_BATCH:uint = 0;
@@ -188,9 +192,10 @@ public class ConditionEffect {
                 new ConditionEffect("Free Account", FREE_ACCOUNT_BIT, [18], "Free Account"),
                 new ConditionEffect("NPC Type", NPC_TYPE_BIT, [37], "NPC Type", true),
                 new ConditionEffect("Vip Account", VIP_ACCOUNT_BIT, [19], "Vip Account"),
-                new ConditionEffect("Tutor Account", TUTOR_ACCOUNT_BIT, [20], "Tutor Account"),
-                new ConditionEffect("Legends of LoE Account", LEGENDS_OF_LOE_ACCOUNT_BIT, [21], "Legends of LoE Account"),
-                new ConditionEffect("LoESoft Account", LOESOFT_ACCOUNT_BIT, [22], "LoESoft Account")
+                new ConditionEffect("Mod Account", MOD_ACCOUNT_BIT, [20], "Mod Account"),
+                new ConditionEffect("Developer Account", DEVELOPER_ACCOUNT_BIT, [21], "Developer Account"),
+                new ConditionEffect("Admin Account", ADMIN_ACCOUNT_BIT, [22], "Admin Account"),
+                new ConditionEffect("Designer Account", DESIGNER_ACCOUNT_BIT, [37], "Designer Account", true)
             ];
 
     private static var conditionEffectFromName_:Object = null;

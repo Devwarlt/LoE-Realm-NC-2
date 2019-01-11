@@ -47,7 +47,8 @@ namespace LoESoft.Core.config
             new GameVersion(Version: "2.5.1", Allowed: false),
             new GameVersion(Version: "2.5.2", Allowed: false),
             new GameVersion(Version: "3.0", Allowed: false),
-            new GameVersion(Version: "3.0.1", Allowed: true)
+            new GameVersion(Version: "3.0.1", Allowed: false),
+            new GameVersion(Version: "3.1", Allowed: true)
         };
     }
 }

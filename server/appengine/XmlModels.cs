@@ -278,7 +278,7 @@ namespace LoESoft.AppEngine
                 Name = acc.Name,
                 NameChosen = acc.NameChosen,
                 Converted = acc.Converted,
-                Admin = acc.AccountType == (int)Core.config.AccountType.NORGA,
+                Admin = acc.AccountType == (int)Core.config.AccountType.ADMIN,
                 MapEditor = acc.AccountType == (int)Core.config.AccountType.DESIGNER,
                 VerifiedEmail = acc.Verified,
                 Credits = acc.Credits,

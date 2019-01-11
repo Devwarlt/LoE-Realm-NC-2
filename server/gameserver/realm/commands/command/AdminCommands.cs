@@ -38,7 +38,7 @@ namespace LoESoft.GameServer.realm.commands
                     {
                         BubbleTime = 10,
                         Stars = player.Stars,
-                        Name =  player.Name,
+                        Name = player.Name,
                         Text = " " + saytext,
                         NameColor = 0x123456,
                         TextColor = 0x123456
@@ -376,11 +376,11 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-          //  if (Settings.SERVER_MODE == Settings.ServerMode.Production)
-          //  {
-          //      player.SendInfo("You cannot use this feature along Production mode.");
-          //      return false;
-          //  }
+            //  if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            //  {
+            //      player.SendInfo("You cannot use this feature along Production mode.");
+            //      return false;
+            //  }
 
             if (!Whitelist.Contains(player.AccountId))
             {
@@ -488,11 +488,11 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-       //     if (Settings.SERVER_MODE == Settings.ServerMode.Production)
-       //     {
-       //         player.SendInfo("You cannot use this feature along Production mode.");
-       //         return false;
-       //     }
+            //     if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            //     {
+            //         player.SendInfo("You cannot use this feature along Production mode.");
+            //         return false;
+            //     }
 
             try
             {
@@ -500,7 +500,7 @@ namespace LoESoft.GameServer.realm.commands
 
                 if (!string.IsNullOrEmpty(target) && player.AccountType >= (int)AccountType.DEVELOPER)
                 {
-                    if (target == "all" && player.AccountType == (int)AccountType.NORGA)
+                    if (target == "all" && player.AccountType == (int)AccountType.ADMIN)
                     {
                         var count = 0;
 
@@ -642,7 +642,7 @@ namespace LoESoft.GameServer.realm.commands
             {
                 case AccountType.MOD: rank = "MOD"; break;
                 case AccountType.DEVELOPER: rank = "DEV"; break;
-                case AccountType.NORGA: rank = "EMPEROR"; break;
+                case AccountType.ADMIN: rank = "EMPEROR"; break;
                 default: break;
             }
 

@@ -4,10 +4,10 @@
     {
         REGULAR = 0,
         VIP = 1,
-		DESIGNER=2,
+        DESIGNER = 2,
         MOD = 3,
         DEVELOPER = 4,
-        NORGA = 5
+        ADMIN = 5
     }
 
     public class AccountTypePerks
@@ -56,10 +56,12 @@
                 case AccountType.VIP:
                     icon.Effect = ConditionEffectIndex.VipAccount;
                     break;
-				case AccountType.DESIGNER:
-					icon.Effect = ConditionEffectIndex.DesignerAccount;
-					break;
-				case AccountType.MOD:
+
+                case AccountType.DESIGNER:
+                    icon.Effect = ConditionEffectIndex.DesignerAccount;
+                    break;
+
+                case AccountType.MOD:
                     icon.Effect = ConditionEffectIndex.ModAccount;
                     break;
 
@@ -67,8 +69,8 @@
                     icon.Effect = ConditionEffectIndex.DeveloperAccount;
                     break;
 
-                case AccountType.NORGA:
-                    icon.Effect = ConditionEffectIndex.NorgaAccount;
+                case AccountType.ADMIN:
+                    icon.Effect = ConditionEffectIndex.AdminAccount;
                     break;
             }
 
