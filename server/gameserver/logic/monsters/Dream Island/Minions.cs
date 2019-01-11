@@ -12,6 +12,7 @@ namespace LoESoft.GameServer.logic
         /// index 2: Nightmare Blasterball (dmg: 215)
         private class Muzzlereaper
         {
+            public static int respawn = 60 * 1000;
             public static int muscle_ball = 0;
             public static int muscle_shuriken = 1;
             public static int nightmare_blasterball = 2;
@@ -24,6 +25,7 @@ namespace LoESoft.GameServer.logic
         /// index 3: Heavy Nightmare Blasterball (dmg: 260)
         private class Guzzlereaper
         {
+            public static int respawn = 120 * 1000;
             public static int muscle_ball = 0;
             public static int muscle_shuriken = 1;
             public static int nightmare_blasterball = 2;
@@ -38,6 +40,7 @@ namespace LoESoft.GameServer.logic
         /// index 4: Heavy Nightmare Blasterball (dmg: 260)
         private class Silencer
         {
+            public static int respawn = 90 * 1000;
             public static int silencer_roar = 0;
             public static int silencer_slash = 1;
             public static int nightmare_spin = 2;
@@ -53,6 +56,7 @@ namespace LoESoft.GameServer.logic
         /// index 4: Heavy Nightmare Blasterball (dmg: 260)
         private class Eyeguard_of_Surrender
         {
+            public static int respawn = 240 * 1000;
             public static int eyeguard_slash = 0;
             public static int eyeguard_megapunch = 1;
             public static int enchanted_spear_of_the_wrath = 2;
@@ -67,6 +71,7 @@ namespace LoESoft.GameServer.logic
         /// index 3: Heavy Rock (dmg: 300)
         private class Lost_Prisoner_Soul
         {
+            public static int respawn = 150 * 1000;
             public static int critical_slash = 0;
             public static int acid = 1;
             public static int bloody_punch = 2;
@@ -80,6 +85,7 @@ namespace LoESoft.GameServer.logic
         /// index 3: Heavy Nightmare Blasterball (dmg: 260)
         private class Nightmare
         {
+            public static int respawn = 120 * 1000;
             public static int critical_slash = 0;
             public static int acid = 1;
             public static int nightmare_blasterball = 2;
@@ -89,8 +95,14 @@ namespace LoESoft.GameServer.logic
         private _ DreamIslandEnemies = () => Behav()
             .Init("Muzzlereaper Spawner",
                 new State(
-                    new AddCond(ConditionEffectIndex.Invincible),
-                    new Reproduce("Muzzlereaper", 3, 1, 24, 30000)
+                    new State("start",
+                        new AddCond(ConditionEffectIndex.Invincible),
+                        new Spawn(children: "Muzzlereaper", maxChildren: 1, initialSpawn: 1, coolDown: 5000),
+                        new TimedTransition(coolDown: 6000, targetState: "spawn")
+                        ),
+                    new State("spawn",
+                        new Reproduce(name: "Muzzlereaper", range: 24, max: 1, radius: 0, coolDown: Muzzlereaper.respawn)
+                        )
                     )
             )
 
@@ -141,8 +153,14 @@ namespace LoESoft.GameServer.logic
 
             .Init("Guzzlereaper Spawner",
                 new State(
-                    new AddCond(ConditionEffectIndex.Invincible),
-                    new Reproduce("Guzzlereaper", 3, 1, 24, 45000)
+                    new State("start",
+                        new AddCond(ConditionEffectIndex.Invincible),
+                        new Spawn(children: "Guzzlereaper", maxChildren: 1, initialSpawn: 1, coolDown: 5000),
+                        new TimedTransition(coolDown: 6000, targetState: "spawn")
+                        ),
+                    new State("spawn",
+                        new Reproduce(name: "Guzzlereaper", range: 24, max: 1, radius: 0, coolDown: Guzzlereaper.respawn)
+                        )
                     )
             )
 
@@ -152,7 +170,7 @@ namespace LoESoft.GameServer.logic
                         new ReturnToSpawn(false, 4, 24),
                         new AddCond(effect: ConditionEffectIndex.Invulnerable), // ok
                         new Heal(range: 0, amount: 1500, coolDown: 1000),
-                        new Reproduce(name: "Muzzlereaper", range: 8, max: 3, coolDown: 100),
+                        new Reproduce(name: "Muzzlereaper", range: 32, max: 3, coolDown: 5000),
                         new PlayerWithinTransition(targetState: "begin fight", range: 12)
                     ),
                     new State("begin fight",
@@ -203,8 +221,14 @@ namespace LoESoft.GameServer.logic
 
             .Init("Silencer Spawner",
                 new State(
-                    new AddCond(ConditionEffectIndex.Invincible),
-                    new Reproduce("Silencer", 3, 1, 24, 60000)
+                    new State("start",
+                        new AddCond(ConditionEffectIndex.Invincible),
+                        new Spawn(children: "Silencer", maxChildren: 1, initialSpawn: 1, coolDown: 5000),
+                        new TimedTransition(coolDown: 6000, targetState: "spawn")
+                        ),
+                    new State("spawn",
+                        new Reproduce(name: "Silencer", range: 24, max: 1, radius: 0, coolDown: Silencer.respawn)
+                        )
                     )
             )
 
@@ -270,8 +294,14 @@ namespace LoESoft.GameServer.logic
 
             .Init("Eyeguard of Surrender Spawner",
                 new State(
-                    new AddCond(ConditionEffectIndex.Invincible),
-                    new Reproduce("Eyeguard of Surrender", 3, 1, 24, 120000)
+                    new State("start",
+                        new AddCond(ConditionEffectIndex.Invincible),
+                        new Spawn(children: "Eyeguard of Surrender", maxChildren: 1, initialSpawn: 1, coolDown: 5000),
+                        new TimedTransition(coolDown: 6000, targetState: "spawn")
+                        ),
+                    new State("spawn",
+                        new Reproduce(name: "Eyeguard of Surrender", range: 24, max: 1, radius: 0, coolDown: Eyeguard_of_Surrender.respawn)
+                        )
                     )
             )
 
@@ -341,8 +371,14 @@ namespace LoESoft.GameServer.logic
 
             .Init("Lost Prisoner Soul Spawner",
                 new State(
-                    new AddCond(ConditionEffectIndex.Invincible),
-                    new Reproduce("Lost Prisoner Soul", 3, 1, 24, 90000)
+                    new State("start",
+                        new AddCond(ConditionEffectIndex.Invincible),
+                        new Spawn(children: "Lost Prisoner Soul", maxChildren: 1, initialSpawn: 1, coolDown: 5000),
+                        new TimedTransition(coolDown: 6000, targetState: "spawn")
+                        ),
+                    new State("spawn",
+                        new Reproduce(name: "Lost Prisoner Soul", range: 24, max: 1, radius: 0, coolDown: Lost_Prisoner_Soul.respawn)
+                        )
                     )
             )
 
@@ -409,8 +445,14 @@ namespace LoESoft.GameServer.logic
 
             .Init("Nightmare Spawner",
                 new State(
-                    new AddCond(ConditionEffectIndex.Invincible),
-                    new Reproduce("Nightmare", 3, 1, 24, 60000)
+                    new State("start",
+                        new AddCond(ConditionEffectIndex.Invincible),
+                        new Spawn(children: "Nightmare", maxChildren: 1, initialSpawn: 1, coolDown: 5000),
+                        new TimedTransition(coolDown: 6000, targetState: "spawn")
+                        ),
+                    new State("spawn",
+                        new Reproduce(name: "Nightmare", range: 24, max: 1, radius: 0, coolDown: Nightmare.respawn)
+                        )
                     )
             )
 

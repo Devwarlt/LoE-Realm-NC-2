@@ -224,7 +224,7 @@ namespace LoESoft.GameServer.networking.handlers
                     log4net.FatalFormat("Cheat engine detected for player {0},\nInvalid InvSwap. {1} instead of {2}",
                             client.Player.Name, Manager.GameData.Items[packet.SlotObject1.ObjectType].ObjectId, item1.ObjectId);
                     foreach (Player player in client.Player.Owner.Players.Values)
-                        if (player.Client.Account.AccountType >= (int) LoESoft.Core.config.AccountType.CM_ACCOUNT)
+                        if (player.Client.Account.AccountType >= (int) LoESoft.Core.config.AccountType.DEVELOPER)
                             player.SendInfo(string.Format("Cheat engine detected for player {0},\nInvalid InvSwap. {1} instead of {2}",
                                 client.Player.Name, Manager.GameData.Items[packet.SlotObject1.ObjectType].ObjectId, item1.ObjectId));
                 }
@@ -238,7 +238,7 @@ namespace LoESoft.GameServer.networking.handlers
                     log4net.FatalFormat("Cheat engine detected for player {0},\nInvalid InvSwap. {1} instead of {2}",
                             client.Player.Name, item1.ObjectId, Manager.GameData.Items[packet.SlotObject2.ObjectType].ObjectId);
                     foreach (Player player in client.Player.Owner.Players.Values)
-                        if (player.Client.Account.AccountType >= (int) LoESoft.Core.config.AccountType.CM_ACCOUNT)
+                        if (player.Client.Account.AccountType >= (int) LoESoft.Core.config.AccountType.DEVELOPER)
                             player.SendInfo(string.Format("Cheat engine detected for player {0},\nInvalid InvSwap. {1} instead of {2}",
                                 client.Player.Name, item1.ObjectId, Manager.GameData.Items[packet.SlotObject2.ObjectType].ObjectId));
                 }

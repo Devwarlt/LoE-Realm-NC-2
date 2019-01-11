@@ -723,32 +723,32 @@
     </EmbeddedResource>
     <EmbeddedResource Include="realm\world\maps\json\nexus_summer.json" />
     <EmbeddedResource Include="realm\world\maps\json\nexus_winter.json" />
-    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate cave\pirate_cave_1.jm" />
-    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate cave\pirate_cave_10.jm" />
-    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate cave\pirate_cave_2.jm" />
-    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate cave\pirate_cave_3.jm" />
-    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate cave\pirate_cave_4.jm" />
-    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate cave\pirate_cave_5.jm" />
-    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate cave\pirate_cave_6.jm" />
-    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate cave\pirate_cave_7.jm" />
-    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate cave\pirate_cave_8.jm" />
-    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate cave\pirate_cave_9.jm" />
-    <EmbeddedResource Include="realm\world\maps\json\dungeons\sprite world\Sprite_World_2.json" />
-    <EmbeddedResource Include="realm\world\maps\json\dungeons\sprite world\Sprite_World_3.json" />
-    <EmbeddedResource Include="realm\world\maps\json\dungeons\sprite world\Sprite_World_4.json" />
-    <EmbeddedResource Include="realm\world\maps\json\dungeons\sprite world\Sprite_World_5.json" />
-    <EmbeddedResource Include="realm\world\maps\json\dungeons\sprite world\Sprite_World_1.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate_cave\pirate_cave_1.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate_cave\pirate_cave_10.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate_cave\pirate_cave_2.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate_cave\pirate_cave_3.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate_cave\pirate_cave_4.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate_cave\pirate_cave_5.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate_cave\pirate_cave_6.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate_cave\pirate_cave_7.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate_cave\pirate_cave_8.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\pirate_cave\pirate_cave_9.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\sprite_world\Sprite_World_2.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\sprite_world\Sprite_World_3.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\sprite_world\Sprite_World_4.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\sprite_world\Sprite_World_5.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\sprite_world\Sprite_World_1.json" />
     <EmbeddedResource Include="realm\mapsetpiece\maps\succubus.jm" />
     <EmbeddedResource Include="realm\world\maps\json\Beach.jm" />
     <EmbeddedResource Include="realm\mapsetpiece\maps\dreamisle.jm" />
     <EmbeddedResource Include="realm\world\maps\json\loe_chicago_2.1.json" />
     <None Include="realm\world\maps\json\classic.jm" />
     <EmbeddedResource Include="realm\world\maps\json\drasta.json" />
-    <EmbeddedResource Include="realm\world\maps\json\undead lair\udl.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\undead_lair\udl.json" />
     <EmbeddedResource Include="realm\world\maps\json\dream-island-expansion1.json" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="realm\world\maps\json\dungeons\spider den\" />
+    <Folder Include="realm\world\maps\json\dungeons\spider_den\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="loesoft.ico" />

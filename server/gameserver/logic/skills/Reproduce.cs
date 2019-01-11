@@ -24,7 +24,7 @@ namespace LoESoft.GameServer.logic.behaviors
             Cooldown coolDown = new Cooldown()
             )
         {
-            this.name = name == null ? null : (ushort?) BehaviorDb.InitGameData.IdToObjectType[name];
+            this.name = name == null ? null : (ushort?)BehaviorDb.InitGameData.IdToObjectType[name];
             this.range = range;
             this.max = max;
             this.coolDown = coolDown.Normalize(60000);
@@ -34,14 +34,16 @@ namespace LoESoft.GameServer.logic.behaviors
         protected override void TickCore(Entity host, RealmTime time, ref object state)
         {
             int cool;
+
             if (state == null)
                 cool = coolDown.Next(Random);
             else
-                cool = (int) state;
+                cool = (int)state;
 
             if (cool <= 0)
             {
                 int count = host.CountEntity(range, name ?? host.ObjectType);
+
                 if (count < max)
                 {
                     Entity entity = Entity.Resolve(name ?? host.ObjectType);
@@ -59,11 +61,11 @@ namespace LoESoft.GameServer.logic.behaviors
                     } while (targetX < host.Owner.Map.Width &&
                              targetY < host.Owner.Map.Height &&
                              targetX > 0 && targetY > 0 &&
-                             host.Owner.Map[(int) targetX, (int) targetY].Terrain !=
-                             host.Owner.Map[(int) host.X, (int) host.Y].Terrain &&
+                             host.Owner.Map[(int)targetX, (int)targetY].Terrain !=
+                             host.Owner.Map[(int)host.X, (int)host.Y].Terrain &&
                              i < 10);
 
-                    entity.Move((float) targetX, (float) targetY);
+                    entity.Move((float)targetX, (float)targetY);
                     (entity as Enemy).Terrain = (host as Enemy).Terrain;
                     host.Owner.EnterWorld(entity);
                 }

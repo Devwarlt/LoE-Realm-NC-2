@@ -7,7 +7,7 @@ namespace LoESoft.GameServer.logic
         private _ NewRealmQuestBossesLuckyEntGodQuestBoss = () => Behav()
             .Init("Lucky Ent God",
                 new State(
-                    new DropPortalOnDeath("Woodland Labyrinth", 1),
+                    new TransformOnDeath("Woodland Labyrinth", probability: 1),
                     new Prioritize(
                         new StayAbove(10, 200),
                         new Chase(10, range: 7),

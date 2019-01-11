@@ -196,14 +196,14 @@ namespace LoESoft.GameServer.networking.handlers
             {
                 var world = Manager.GetWorld(message.GameId);
 
-                if (acc.AccountType == (int)AccountType.VIP_ACCOUNT)
+                if (acc.AccountType == (int)AccountType.VIP)
                 {
                     var _currentTime = DateTime.Now;
                     var _vipRegistration = acc.AccountLifetime;
 
                     if (_vipRegistration <= _currentTime)
                     {
-                        acc.AccountType = (int)AccountType.FREE_ACCOUNT;
+                        acc.AccountType = (int)AccountType.REGULAR;
                         acc.Flush();
                         acc.Reload();
 

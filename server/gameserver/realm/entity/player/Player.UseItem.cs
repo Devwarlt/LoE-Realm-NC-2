@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using static LoESoft.GameServer.networking.Client;
+using LoESoft.GameServer.realm.world;
 
 #endregion
 
@@ -1279,13 +1280,13 @@ namespace LoESoft.GameServer.realm.entity.player
                                 return true;
                             }
 
-                            if (AccountType == (int)Core.config.AccountType.VIP_ACCOUNT)
+                            if (AccountType == (int)Core.config.AccountType.VIP)
                             {
                                 SendInfo($"You can only use {item.DisplayId} when your VIP account lifetime over.");
                                 return true;
                             }
 
-                            if (AccountType >= (int)Core.config.AccountType.GM_ACCOUNT)
+                            if (AccountType >= (int)Core.config.AccountType.MOD)
                             {
                                 SendInfo($"Only VIP account type can use {item.DisplayId}.");
                                 return true;
@@ -1320,7 +1321,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                             acc.AccountLifetime = DateTime.Now;
                             acc.AccountLifetime = acc.AccountLifetime.AddDays(days);
-                            acc.AccountType = (int)Core.config.AccountType.VIP_ACCOUNT;
+                            acc.AccountType = (int)Core.config.AccountType.VIP;
                             acc.Flush();
                             acc.Reload();
 
@@ -1415,9 +1416,9 @@ namespace LoESoft.GameServer.realm.entity.player
                     case ActivateEffects.PetSkin:
                     case ActivateEffects.Unlock:
                         {
-                            if (Owner.Id == (int)WorldID.VAULT_ID)
+                            if (Owner.Id != (int)WorldID.VAULT_ID)
                             {
-                                SendInfo("You cannot use this item in Vault!");
+                                SendInfo("You can only use this item in the Vault!");
                                 return true;
                             }
 
@@ -1436,11 +1437,11 @@ namespace LoESoft.GameServer.realm.entity.player
                                     GameServer.Manager.Database.AddChar(Client.Account);
                                     break;
 
-                                //broken
-                                //case "vault":
-                                //    message = "Vault Chest";
-                                //    GameServer.Manager.Database.AddChest(Client.Account);
-                                //    break;
+                                case "vault":
+                                    message = "Vault Chest";
+                                    //GameServer.Manager.Database.AddChest(Client.Account);
+                                    (Owner as Vault).AddChest(this);
+                                    break;
 
                                 default:
                                     SendInfo($"There is no unlock action to slot '{eff.Slot}' in game actions.");
@@ -1452,9 +1453,6 @@ namespace LoESoft.GameServer.realm.entity.player
                             SaveToCharacter();
                             return false;
                         }
-                    case ActivateEffects.MysteryDyes:
-                    default:
-                        return true;
                 }
             }
             UpdateCount++;
@@ -1594,7 +1592,7 @@ namespace LoESoft.GameServer.realm.entity.player
         private bool CheatEngineDetect(Item item, USEITEM pkt)
         {
             foreach (Player player in Owner?.Players.Values)
-                if (player?.Client.Account.AccountType >= (int)Core.config.AccountType.CM_ACCOUNT)
+                if (player?.Client.Account.AccountType >= (int)Core.config.AccountType.DEVELOPER)
                     player.SendInfo(string.Format("Cheat engine detected for player {0},\nItem should be {1}, but its {2}.",
                 Name, Inventory[pkt.SlotObject.SlotId].ObjectId, item.ObjectId));
             GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHEAT_ENGINE_DETECTED);

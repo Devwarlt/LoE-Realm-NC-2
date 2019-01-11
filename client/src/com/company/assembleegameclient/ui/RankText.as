@@ -58,30 +58,34 @@ public class RankText extends Sprite {
         return (_local2);
     }
 
-    internal static const FREE_ACCOUNT:int = 0;
-    internal static const VIP_ACCOUNT:int = 1;
-    internal static const GM_ACCOUNT:int = 2;
-    internal static const CM_ACCOUNT:int = 3;
-    internal static const DEM_ACCOUNT:int = 4;
+    internal static const REGULAR:int = 0;
+    internal static const VIP:int = 1;
+    internal static const DESIGNER:int = 2;
+    internal static const MOD:int = 3;
+    internal static const DEVELOPER:int = 4;
+    internal static const NORGA:int = 5;
 
     private static function GetAccountType(accountType:int, full:Boolean = false):String {
         var label:String = null;
         switch (accountType) {
-            case VIP_ACCOUNT:
+            case VIP:
                 label = "VIP";
                 break;
-            case GM_ACCOUNT:
-                label = "GM";
+            case DESIGNER:
+                label = "DESIGNER";
                 break;
-            case CM_ACCOUNT:
-                label = "CM";
+            case MOD:
+                label = "MOD";
                 break;
-            case DEM_ACCOUNT:
-                label = "D&M";
+            case DEVELOPER:
+                label = "DEVELOPER";
                 break;
-            case FREE_ACCOUNT:
+            case NORGA:
+                label = "NORGA";
+                break;
+            case REGULAR:
             default:
-                label = "Free";
+                label = "REGULAR";
                 break;
         }
         return full ? label.concat(" Account") : label;
@@ -89,15 +93,17 @@ public class RankText extends Sprite {
 
     private static function GetAccountTypeColor(accountType:int):uint {
         switch (accountType) {
-            case VIP_ACCOUNT:
+            case VIP:
                 return 0xFFFF00;
-            case GM_ACCOUNT:
+            case DESIGNER:
+                return 0xFFB6C1;
+            case MOD:
                 return 0x1E90FF;
-            case CM_ACCOUNT:
+            case DEVELOPER:
                 return 0xB8860B;
-            case DEM_ACCOUNT:
+            case NORGA:
                 return 0xB03060;
-            case FREE_ACCOUNT:
+            case REGULAR:
             default:
                 return 0xB3B3B3;
         }

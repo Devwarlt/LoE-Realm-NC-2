@@ -148,7 +148,7 @@ namespace LoESoft.GameServer.realm.entity.player
             NULL
         }
 
-        private Tuple<bool, AccType> GetAccountType() => (AccountType >= (int)Core.config.AccountType.VIP_ACCOUNT && AccountType <= (int)Core.config.AccountType.GM_ACCOUNT) ? Tuple.Create(true, AccountType == (int)Core.config.AccountType.VIP_ACCOUNT ? AccType.VIP_ACCOUNT : AccType.LEGENDS_OF_LOE_ACCOUNT) : Tuple.Create(false, AccType.NULL);
+        private Tuple<bool, AccType> GetAccountType() => (AccountType >= (int)Core.config.AccountType.VIP && AccountType <= (int)Core.config.AccountType.MOD) ? Tuple.Create(true, AccountType == (int)Core.config.AccountType.VIP ? AccType.VIP_ACCOUNT : AccType.LEGENDS_OF_LOE_ACCOUNT) : Tuple.Create(false, AccType.NULL);
 
         public void CalculateBoost()
         {
@@ -436,14 +436,15 @@ namespace LoESoft.GameServer.realm.entity.player
                         SendHelp("You dropped your connection with the server! Reconnecting...");
 
                         Owner.AddReconnectToPlayer(AccountId, Tuple.Create(X, Y));
-                        Owner.Timers.Add(new WorldTimer(3000, (w, t) => Client?.Reconnect(new RECONNECT()
+
+                        Client.Reconnect(new RECONNECT()
                         {
                             Host = "",
                             Port = Settings.GAMESERVER.PORT,
                             GameId = Owner.Id,
                             Name = Owner.Name,
                             Key = Owner.PortalKey,
-                        })));
+                        });
                     }
 
                     return false;

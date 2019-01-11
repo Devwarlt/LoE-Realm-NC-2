@@ -122,6 +122,8 @@ namespace LoESoft.GameServer
 
         private static int ToMiliseconds(int minutes) => minutes * 60 * 1000;
 
+        public static void Restart(Task task = null) => ForceShutdown();
+
         public async static void ForceShutdown(Exception ex = null)
         {
             Task task = Task.Delay(1000);

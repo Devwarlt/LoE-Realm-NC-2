@@ -214,7 +214,7 @@ namespace LoESoft.Core
 
         public int AccountType
         {
-            get { return GetValue("accountType", (int)config.AccountType.FREE_ACCOUNT); }
+            get { return GetValue("accountType", (int)config.AccountType.REGULAR); }
             set { SetValue("accountType", value); }
         }
 

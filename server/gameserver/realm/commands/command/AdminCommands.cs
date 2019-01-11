@@ -18,7 +18,7 @@ namespace LoESoft.GameServer.realm.commands
 {
     internal class GlobalChat : Command
     {
-        public GlobalChat() : base("gchat", (int)AccountType.VIP_ACCOUNT)
+        public GlobalChat() : base("gchat", (int)AccountType.VIP)
         {
         }
 
@@ -32,20 +32,20 @@ namespace LoESoft.GameServer.realm.commands
 
             var saytext = string.Join(" ", args);
 
-            if (player.Stars >= 10 || player.AccountType != (int)AccountType.FREE_ACCOUNT)
+            if (player.Stars >= 20 || player.AccountType != (int)AccountType.REGULAR)
                 foreach (var cData in GameServer.Manager.ClientManager.Values)
                     cData.Client?.SendMessage(new TEXT()
                     {
                         BubbleTime = 10,
-                        Stars = -1,
-                        Name = "Global> <" + player.Name,
+                        Stars = player.Stars,
+                        Name = player.Name,
                         Text = " " + saytext,
                         NameColor = 0x123456,
                         TextColor = 0x123456
                     });
             else
             {
-                player.SendHelp("You need at least 10 stars to unlock the global chat feature, try again later.");
+                player.SendHelp("You need at least 20 stars to unlock the global chat feature, try again later.");
                 return false;
             }
 
@@ -56,7 +56,7 @@ namespace LoESoft.GameServer.realm.commands
     internal class RealmCommand : Command
     {
         public RealmCommand()
-            : base("realm", (int)AccountType.FREE_ACCOUNT)
+            : base("realm", (int)AccountType.REGULAR)
         {
         }
 
@@ -70,7 +70,7 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            if (player.Stars >= 10 || player.AccountType != (int)AccountType.FREE_ACCOUNT)
+            if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
                 player.Client.Reconnect(new RECONNECT()
                 {
                     Host = "",
@@ -91,7 +91,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class VaultCommand : Command
     {
-        public VaultCommand() : base("vault", (int)AccountType.FREE_ACCOUNT)
+        public VaultCommand() : base("vault", (int)AccountType.REGULAR)
         {
         }
 
@@ -103,7 +103,7 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            if (player.Stars >= 10 || player.AccountType != (int)AccountType.FREE_ACCOUNT)
+            if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
                 player.Client.Reconnect(new RECONNECT()
                 {
                     Host = "",
@@ -124,7 +124,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class VisitCommand : Command
     {
-        public VisitCommand() : base("visit", (int)AccountType.DEM_ACCOUNT)
+        public VisitCommand() : base("visit", (int)AccountType.MOD)
         {
         }
 
@@ -175,7 +175,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class GlandCommand : Command
     {
-        public GlandCommand() : base("glands", (int)AccountType.FREE_ACCOUNT)
+        public GlandCommand() : base("glands", (int)AccountType.REGULAR)
         {
         }
 
@@ -187,7 +187,7 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            if (player.Stars >= 10 || player.AccountType != (int)AccountType.FREE_ACCOUNT)
+            if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
             {
                 player.Move(1000f, 1000f);
                 player.Owner.BroadcastMessage(new GOTO
@@ -214,7 +214,7 @@ namespace LoESoft.GameServer.realm.commands
     internal class Summon : Command
     {
         public Summon()
-            : base("summon", (int)AccountType.CM_ACCOUNT)
+            : base("summon", (int)AccountType.MOD)
         {
         }
 
@@ -277,7 +277,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class PosCmd : Command
     {
-        public PosCmd() : base("p", (int)AccountType.DEM_ACCOUNT)
+        public PosCmd() : base("p", (int)AccountType.DEVELOPER)
         {
         }
 
@@ -290,7 +290,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class SpawnCommand : Command
     {
-        public SpawnCommand() : base("spawn", (int)AccountType.DEM_ACCOUNT)
+        public SpawnCommand() : base("spawn", (int)AccountType.DEVELOPER)
         {
         }
 
@@ -359,7 +359,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class GiveCommand : Command
     {
-        public GiveCommand() : base("give", (int)AccountType.DEM_ACCOUNT)
+        public GiveCommand() : base("give", (int)AccountType.DEVELOPER)
         {
         }
 
@@ -376,11 +376,11 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
-            {
-                player.SendInfo("You cannot use this feature along Production mode.");
-                return false;
-            }
+            //  if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            //  {
+            //      player.SendInfo("You cannot use this feature along Production mode.");
+            //      return false;
+            //  }
 
             if (!Whitelist.Contains(player.AccountId))
             {
@@ -396,7 +396,7 @@ namespace LoESoft.GameServer.realm.commands
 
             var name = string.Join(" ", args.ToArray()).Trim();
 
-            if (Blacklist.Contains(name.ToLower()) && player.AccountType != (int)AccountType.DEM_ACCOUNT)
+            if (Blacklist.Contains(name.ToLower()) && player.AccountType != (int)AccountType.DEVELOPER)
             {
                 player.SendHelp($"You cannot give '{name}', access denied.");
                 return false;
@@ -442,7 +442,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class Kick : Command
     {
-        public Kick() : base("kick", (int)AccountType.GM_ACCOUNT)
+        public Kick() : base("kick", (int)AccountType.MOD)
         {
         }
 
@@ -482,25 +482,25 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class Max : Command
     {
-        public Max() : base("max", (int)AccountType.GM_ACCOUNT)
+        public Max() : base("max", (int)AccountType.DEVELOPER)
         {
         }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
-            {
-                player.SendInfo("You cannot use this feature along Production mode.");
-                return false;
-            }
+            //     if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            //     {
+            //         player.SendInfo("You cannot use this feature along Production mode.");
+            //         return false;
+            //     }
 
             try
             {
                 var target = args[0];
 
-                if (!string.IsNullOrEmpty(target) && player.AccountType >= (int)AccountType.CM_ACCOUNT)
+                if (!string.IsNullOrEmpty(target) && player.AccountType >= (int)AccountType.DEVELOPER)
                 {
-                    if (target == "all" && player.AccountType == (int)AccountType.DEM_ACCOUNT)
+                    if (target == "all" && player.AccountType == (int)AccountType.ADMIN)
                     {
                         var count = 0;
 
@@ -579,7 +579,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class OnlineCommand : Command
     {
-        public OnlineCommand() : base("online", (int)AccountType.FREE_ACCOUNT)
+        public OnlineCommand() : base("online", (int)AccountType.REGULAR)
         {
         }
 
@@ -608,7 +608,7 @@ namespace LoESoft.GameServer.realm.commands
                 }
             }
 
-            if (player.AccountType >= (int)AccountType.GM_ACCOUNT)
+            if (player.AccountType >= (int)AccountType.MOD)
             {
                 string fixedString = sb.ToString().TrimEnd(',', ' ');
 
@@ -623,7 +623,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class Announcement : Command
     {
-        public Announcement() : base("announce", (int)AccountType.GM_ACCOUNT)
+        public Announcement() : base("announce", (int)AccountType.MOD)
         {
         }
 
@@ -640,9 +640,9 @@ namespace LoESoft.GameServer.realm.commands
 
             switch ((AccountType)player.AccountType)
             {
-                case AccountType.GM_ACCOUNT: rank = "GM"; break;
-                case AccountType.CM_ACCOUNT: rank = "CM"; break;
-                case AccountType.DEM_ACCOUNT: rank = "D&M"; break;
+                case AccountType.MOD: rank = "MOD"; break;
+                case AccountType.DEVELOPER: rank = "DEV"; break;
+                case AccountType.ADMIN: rank = "EMPEROR"; break;
                 default: break;
             }
 
@@ -664,7 +664,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class RestartCommand : Command
     {
-        public RestartCommand() : base("restart", (int)AccountType.CM_ACCOUNT)
+        public RestartCommand() : base("restart", (int)AccountType.DEVELOPER)
         {
         }
 
@@ -680,7 +680,7 @@ namespace LoESoft.GameServer.realm.commands
                         Name = "@ANNOUNCEMENT",
                         Stars = -1,
                         BubbleTime = 0,
-                        Text = $"Server restarting soon by {(player.AccountType == (int)AccountType.CM_ACCOUNT ? "CM" : "D&M")} {player.Name}. Please be ready to disconnect.",
+                        Text = $"Server restarting soon by {(player.AccountType == (int)AccountType.DEVELOPER ? "DEV" : "Emperor")} {player.Name}. Please be ready to disconnect.",
                         NameColor = 0x123456,
                         TextColor = 0x123456
                     }, null);
@@ -696,7 +696,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class ListCommands : Command
     {
-        public ListCommands() : base("commands", (int)AccountType.FREE_ACCOUNT)
+        public ListCommands() : base("commands", (int)AccountType.REGULAR)
         {
         }
 
@@ -731,7 +731,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class BanCommand : Command
     {
-        public BanCommand() : base("ban", (int)AccountType.GM_ACCOUNT)
+        public BanCommand() : base("ban", (int)AccountType.MOD)
         {
         }
 
@@ -759,7 +759,7 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class UnBanCommand : Command
     {
-        public UnBanCommand() : base("unban", (int)AccountType.GM_ACCOUNT)
+        public UnBanCommand() : base("unban", (int)AccountType.MOD)
         {
         }
 

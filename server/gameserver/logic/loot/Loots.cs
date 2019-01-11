@@ -39,12 +39,14 @@ namespace LoESoft.GameServer.logic.loot
 
         public IEnumerable<Item> GetLoots(int min, int max) //For independent loots(e.g. chests)
         {
-            List<LootDef> consideration = new List<LootDef>();
-            foreach (ILootDef i in this)
+            var consideration = new List<LootDef>();
+
+            foreach (var i in this)
                 i.Populate(null, null, rand, "", consideration);
 
-            int retCount = rand.Next(min, max);
-            foreach (LootDef i in consideration)
+            var retCount = rand.Next(min, max);
+
+            foreach (var i in consideration)
             {
                 if (rand.NextDouble() < i.Probabilty)
                 {
@@ -64,12 +66,6 @@ namespace LoESoft.GameServer.logic.loot
                     return;
 
                 if (enemy.Owner == null)
-                    return;
-
-                if (enemy.Owner.Name == null)
-                    return;
-
-                if (enemy.Owner.Name == "Arena")
                     return;
 
                 var consideration = new List<LootDef>();
@@ -162,6 +158,7 @@ namespace LoESoft.GameServer.logic.loot
                 else
                     pub.Add(i.Key);
             }
+
             if (pub.Count > 0 && shared.Count > 0)
                 ShowBags(enemy, shared, null);
         }
@@ -180,10 +177,8 @@ namespace LoESoft.GameServer.logic.loot
 
                 items[idx] = i;
                 idx++;
-				if (LegendaryItems.Contains(i.ObjectId))
-					foreach (var p in enemy.Owner.Players.Values)
-						p.SendLootAnnounce(owners[0].Name + " has obtained LEGENDARY LOOT! : " + i.ObjectId);
-				if (idx == 8)
+
+                if (idx == 8)
                 {
                     ShowBag(enemy, ownerIds, bagType, items);
 
@@ -196,13 +191,11 @@ namespace LoESoft.GameServer.logic.loot
             if (idx > 0)
                 ShowBag(enemy, ownerIds, bagType, items);
         }
-		private static readonly string[] LegendaryItems = {
-			"Sword of Illumination",
-			"Doom Bow"
-		};
-		private static void ShowBag(Enemy enemy, string[] owners, int bagType, Item[] items)
+
+        private static void ShowBag(Enemy enemy, string[] owners, int bagType, Item[] items)
         {
             ushort bag = 0x500;
+
             switch (bagType)
             {
                 case 0:
@@ -238,15 +231,37 @@ namespace LoESoft.GameServer.logic.loot
                     break;
             }
 
-            Container container = new Container(bag, 1000 * 30, true);
-            for (int j = 0; j < 8; j++)
-                container.Inventory[j] = items[j];
-            container.BagOwners = owners;
-            container.Move(
-                enemy.X + (float)((rand.NextDouble() * 2 - 1) * 0.5),
-                enemy.Y + (float)((rand.NextDouble() * 2 - 1) * 0.5));
-            container.Size = 80;
-            enemy.Owner.EnterWorld(container);
+            if (owners == null)
+            {
+                var container = new Container(bag, bagType == 6 ? 5 * 60 * 1000 : 30 * 1000, true);
+
+                for (int j = 0; j < 8; j++)
+                    container.Inventory[j] = items[j];
+
+                container.BagOwners = null;
+                container.Move(
+                    enemy.X + (float)((rand.NextDouble() * 2 - 1) * 0.5),
+                    enemy.Y + (float)((rand.NextDouble() * 2 - 1) * 0.5));
+                container.Size = 80;
+
+                enemy.Owner.EnterWorld(container);
+            }
+            else
+                foreach (var owner in owners)
+                {
+                    var container = new Container(bag, bagType == 6 ? 5 * 60 * 1000 : 30 * 1000, true);
+
+                    for (int j = 0; j < 8; j++)
+                        container.Inventory[j] = items[j];
+
+                    container.BagOwners = new string[] { owner };
+                    container.Move(
+                        enemy.X + (float)((rand.NextDouble() * 2 - 1) * 0.5),
+                        enemy.Y + (float)((rand.NextDouble() * 2 - 1) * 0.5));
+                    container.Size = 80;
+
+                    enemy.Owner.EnterWorld(container);
+                }
         }
     }
 }

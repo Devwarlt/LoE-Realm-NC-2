@@ -15,7 +15,7 @@ namespace LoESoft.GameServer.logic
         private _ MountainsGods = () => Behav()
             .Init("White Demon",
                 new State(
-                    new DropPortalOnDeath("Abyss of Demons Portal", percent:.17),
+                    new TransformOnDeath("Abyss of Demons Portal", probability:.17),
                     new Prioritize(
                         new StayAbove(10, 200),
                         new Chase(10, range: 7),
@@ -72,13 +72,13 @@ namespace LoESoft.GameServer.logic
                         new Protect(4, "Sprite God", protectRange: 1),
                         new Wander()
                         ),
-                    new DropPortalOnDeath("Glowing Portal", percent: .11)
+                    new TransformOnDeath("Glowing Portal", probability: .11)
                     )
             )
 
             .Init("Medusa",
                 new State(
-                    new DropPortalOnDeath("Snake Pit Portal", percent: .17),
+                    new TransformOnDeath("Snake Pit Portal", probability: .17),
                     new Prioritize(
                         new StayAbove(10, 200),
                         new Chase(10, range: 7),
@@ -213,7 +213,7 @@ namespace LoESoft.GameServer.logic
                         ),
                     new Shoot(12, shoots: 7, shootAngle: 25, aim: 0.5, coolDown: 900),
                     new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE),
-                    new DropPortalOnDeath("Undead Lair Portal", percent: 0.17)
+                    new TransformOnDeath("Undead Lair Portal", probability: 0.17)
                     ),
                 new Threshold(.01,
                     new TierLoot(6, ItemType.Weapon, 0.04),
@@ -396,7 +396,7 @@ namespace LoESoft.GameServer.logic
 
             .Init("Leviathan",
                 new State(
-                    new DropPortalOnDeath("Ice Cave Portal", percent: .01),
+                    new TransformOnDeath("Ice Cave Portal", probability: .01),
                     new State("Wander",
                         new Swirl(10),
                         new Shoot(10, 2, 10, 1, coolDown: 500),

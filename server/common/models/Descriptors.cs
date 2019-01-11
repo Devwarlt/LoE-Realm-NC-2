@@ -160,12 +160,13 @@ public enum ConditionEffectIndex
     WisBoost = 46,
     Hidden = 47,
     Muted = 48,
-    FreeAccount = 50,
+    RegularAccount = 50,
     NPCType = 51,
     VipAccount = 52,
-    CmAccount = 53,
-    GmAccount = 54,
-    DemAccount = 55
+    ModAccount = 53,
+    DeveloperAccount = 54,
+    AdminAccount = 55,
+	DesignerAccount =56
 }
 
 public enum XMLBehaviorsType //TODO: Not implemented yet, only few of them
@@ -861,7 +862,7 @@ public class Item : IFeedable
             ActivateEffects = elem.Elements("Activate").Select(i => new ActivateEffect(i)).ToArray();
             Projectiles = elem.Elements("Projectile").Select(i => new ProjectileDesc(i)).ToArray();
             MpEndCost = (n = elem.Element("MpEndCost")) != null ? int.Parse(elem.Element("MpEndCost").Value) : null as int?;
-            Timer = (n = elem.Element("Timer")) != null ? float.Parse(elem.Element("Timer").Value) : null as float?;
+            Timer = (n = elem.Element("Timer")) != null ? float.Parse(elem.Element("Timer").Value, NumberStyles.Any, ci) : null as float?;
             XpBooster = elem.Element("XpBoost") != null;
             LootDropBooster = elem.Element("LDBoosted") != null;
             LootTierBooster = elem.Element("LTBoosted") != null;
