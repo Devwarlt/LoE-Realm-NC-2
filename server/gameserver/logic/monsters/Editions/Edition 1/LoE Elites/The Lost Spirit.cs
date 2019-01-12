@@ -10,7 +10,7 @@ namespace LoESoft.GameServer.logic
 			.Init("The Lost Spirit",
 				new State(
 					new ScaleHP(500),
-					new TransformOnDeath("OM Loot Chest", 1, 1, 1),
+					new TransformOnDeath("SPIRIT Loot Chest", 1, 1, 1),
 					new HpLessTransition(0.12, "DyingPhase"),
 					new State("idle",
 						 new HpLessTransition(0.99, "Awakening")

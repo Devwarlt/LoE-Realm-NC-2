@@ -24,7 +24,7 @@ namespace LoESoft.GameServer.realm.world
             SafePlace = true;
         }
 
-        protected override void Init() => LoadMap(FILISHA_RESOURCE, MapType.Json);
+        protected override void Init() => LoadMap(SUMMER_RESOURCE, MapType.Json);
 
         public override void Tick(RealmTime time)
         {
