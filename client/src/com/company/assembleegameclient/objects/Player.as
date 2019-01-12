@@ -759,8 +759,10 @@ public class Player extends Character {
     }
 
     override public function draw(_arg1:Vector.<IGraphicsData>, _arg2:Camera, _arg3:int):void {
-        super.draw(_arg1, _arg2, _arg3);
         if (this != map_.player_) {
+            if(Parameters.data_.hidePlayers){
+                return;
+            }
             if (!Parameters.screenShotMode_) {
                 drawName(_arg1, _arg2);
             }
@@ -770,6 +772,7 @@ public class Player extends Character {
                 this.drawBreathBar(_arg1, _arg3);
             }
         }
+        super.draw(_arg1, _arg2, _arg3);
     }
 
     private function getMoveSpeed():Number {

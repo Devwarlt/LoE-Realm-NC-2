@@ -515,6 +515,8 @@ public class Options extends Sprite {
         this.addOptionAndPosition(new ChoiceOption("showTradePopup", makeOnOffLabels(), [true, false], TextKey.OPTIONS_SHOW_TRADE_REQUEST_PANEL, TextKey.OPTIONS_SHOW_TRADE_REQUEST_PANEL_DESC, null));
         this.addOptionAndPosition(new ChoiceOption("showGuildInvitePopup", makeOnOffLabels(), [true, false], TextKey.OPTIONS_SHOW_GUILD_INVITE_PANEL, TextKey.OPTIONS_SHOW_GUILD_INVITE_PANEL_DESC, null));
         this.addOptionAndPosition(new ChoiceOption("cursorSelect", makeCursorSelectLabels(), cursors, "Custom Cursor", "Click here to change the mouse cursor. May help with aiming.", refreshCursor));
+        this.addOptionAndPosition(new ChoiceOption("hidePets",makeOnOffLabels(),[true,false],"Hide Pets","Hide all pets",null));
+        this.addOptionAndPosition(new ChoiceOption("hidePlayers",makeOnOffLabels(),[true,false],"Hide Players","Hide all players",null));
         if (!Parameters.GPURenderError) {
             _local1 = TextKey.OPTIONS_HARDWARE_ACC_DESC;
             _local2 = 0xFFFFFF;
