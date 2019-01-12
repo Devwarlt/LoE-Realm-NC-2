@@ -14,7 +14,8 @@ namespace LoESoft.GameServer.logic.behaviors
         {
             if (!(host is Enemy))
                 throw new NotSupportedException("Use Decay instead");
-            (host as Enemy).CheckDeath = true;
+            //(host as Enemy).CheckDeath = true;
+            (host as Enemy).Death(time);
         }
     }
 }
