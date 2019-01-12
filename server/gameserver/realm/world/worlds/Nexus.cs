@@ -11,8 +11,9 @@ namespace LoESoft.GameServer.realm.world
         public const string LOE_CHICAGO_21 = "loe_chicago_2.1";
         public const string WINTER_RESOURCE = "nexus_winter";
         public const string SUMMER_RESOURCE = "nexus_summer";
+		public const string FILISHA_RESOURCE = "SND";
 
-        public Nexus()
+		public Nexus()
         {
             Id = (int) WorldID.NEXUS_ID;
             Name = "Nexus";
@@ -23,7 +24,7 @@ namespace LoESoft.GameServer.realm.world
             SafePlace = true;
         }
 
-        protected override void Init() => LoadMap(LOE_CHICAGO_21, MapType.Json);
+        protected override void Init() => LoadMap(FILISHA_RESOURCE, MapType.Json);
 
         public override void Tick(RealmTime time)
         {

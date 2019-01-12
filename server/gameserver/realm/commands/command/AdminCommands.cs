@@ -16,6 +16,56 @@ using static LoESoft.GameServer.networking.Client;
 
 namespace LoESoft.GameServer.realm.commands
 {
+	internal class TqCommand : Command
+	{
+		public TqCommand() : base("tq", (int)AccountType.ADMIN)
+		{
+		}
+
+		protected override bool Process(Player player, RealmTime time, string[] args)
+		{
+			if (player.Quest == null)
+			{
+				player.SendInfo("There is no quest to teleport!");
+				return false;
+			}
+			player.Move(player.Quest.X + 0.5f, player.Quest.Y + 0.5f);
+			player.UpdateCount++;
+			player.Owner.BroadcastMessage(new GOTO
+			{
+				ObjectId = player.Id,
+				Position = new Position
+				{
+					X = player.Quest.X,
+					Y = player.Quest.Y
+				}
+			}, null);
+			player.SendInfo("Success!");
+			return true;
+		}
+	}
+	internal class KillPlayerCommand : Command
+	{
+		public KillPlayerCommand() : base("kill", (int)AccountType.ADMIN)
+		{
+		}
+
+		protected override bool Process(Player player, RealmTime time, string[] args)
+		{
+			foreach (ClientData cData in GameServer.Manager.ClientManager.Values)
+			{
+				if (cData.Client.Account.Name.EqualsIgnoreCase(args[0]))
+				{
+					cData.Client.Player.HP = 0;
+					cData.Client.Player.Death("server.game_admin");
+					player.SendInfo($"Player {cData.Client.Account.Name} has been killed!");
+					return true;
+				}
+			}
+			player.SendInfo(string.Format("Player '{0}' could not be found!", args));
+			return false;
+		}
+	}
 	internal class ArenaCommand : Command
 	{
 		public ArenaCommand()
@@ -404,7 +454,7 @@ namespace LoESoft.GameServer.realm.commands
 
 			string name = string.Join(" ", args.ToArray()).Trim();
 
-			if (Blacklist.Contains(name.ToLower()) && player.AccountType != (int)AccountType.DEVELOPER)
+			if (Blacklist.Contains(name.ToLower()) && player.AccountType <= (int)AccountType.DEVELOPER)
 			{
 				player.SendHelp($"You cannot give '{name}', access denied.");
 				return false;

@@ -165,8 +165,7 @@ public enum ConditionEffectIndex
     VipAccount = 52,
     ModAccount = 53,
     DeveloperAccount = 54,
-    AdminAccount = 55,
-	DesignerAccount =56
+    AdminAccount = 55
 }
 
 public enum XMLBehaviorsType //TODO: Not implemented yet, only few of them

@@ -60,10 +60,9 @@ public class RankText extends Sprite {
 
     internal static const REGULAR:int = 0;
     internal static const VIP:int = 1;
-    internal static const DESIGNER:int = 2;
-    internal static const MOD:int = 3;
-    internal static const DEVELOPER:int = 4;
-    internal static const NORGA:int = 5;
+    internal static const MOD:int = 2;
+    internal static const DEVELOPER:int = 3;
+    internal static const ADMIN: int = 4;
 
     private static function GetAccountType(accountType:int, full:Boolean = false):String {
         var label:String = null;
@@ -71,17 +70,14 @@ public class RankText extends Sprite {
             case VIP:
                 label = "VIP";
                 break;
-            case DESIGNER:
-                label = "DESIGNER";
-                break;
             case MOD:
                 label = "MOD";
                 break;
             case DEVELOPER:
                 label = "DEVELOPER";
                 break;
-            case NORGA:
-                label = "NORGA";
+            case ADMIN:
+                label = "ADMIN";
                 break;
             case REGULAR:
             default:
@@ -95,13 +91,11 @@ public class RankText extends Sprite {
         switch (accountType) {
             case VIP:
                 return 0xFFFF00;
-            case DESIGNER:
-                return 0xFFB6C1;
             case MOD:
                 return 0x1E90FF;
             case DEVELOPER:
                 return 0xB8860B;
-            case NORGA:
+            case ADMIN:
                 return 0xB03060;
             case REGULAR:
             default:

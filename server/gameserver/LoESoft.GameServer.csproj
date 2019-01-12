@@ -165,7 +165,9 @@
     <Compile Include="logic\monsters\Dungeons\The Shatters\Regular Enemies\Stone Paladin.cs" />
     <Compile Include="logic\monsters\Dungeons\The Shatters\Regular Enemies\Stone Knight.cs" />
     <Compile Include="logic\monsters\Editions\Edition 1\Bosses.cs" />
+    <Compile Include="logic\monsters\Editions\Edition 1\LoE Elites\Dyno Bot.cs" />
     <Compile Include="logic\monsters\Editions\Edition 1\LoE Elites\Maurth the Succubus Princess.cs" />
+    <Compile Include="logic\monsters\Editions\Edition 1\LoE Elites\The Lost Spirit.cs" />
     <Compile Include="logic\monsters\Editions\Edition 1\LoE Elites\Undertaker the Great Juggernaut.cs" />
     <Compile Include="logic\monsters\Editions\Edition 1\MiniBosses.cs" />
     <Compile Include="logic\monsters\Editions\Edition 1\Minions.cs" />
@@ -214,6 +216,7 @@
     <Compile Include="logic\monsters\Realm\Shoreline\Shore Plains.cs" />
     <Compile Include="logic\monsters\Realm\Shoreline\Shore Sand.cs" />
     <Compile Include="logic\skills\Aoe.cs" />
+    <Compile Include="logic\skills\HPScale.cs" />
     <Compile Include="logic\skills\WorldQuestNotification.cs" />
     <Compile Include="logic\skills\GroundTransform.cs" />
     <Compile Include="logic\skills\HealGroup.cs" />
@@ -430,6 +433,8 @@
     <Compile Include="realm\ChatManager.cs" />
     <Compile Include="realm\entity\player\Player.IO.cs" />
     <Compile Include="realm\entity\player\Player.Tasks.cs" />
+    <Compile Include="realm\mapsetpiece\setpieces\DynoBot.cs" />
+    <Compile Include="realm\mapsetpiece\setpieces\LostSpirit.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\Undertaker.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\Maurth.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\DreamIsle.cs" />
@@ -745,7 +750,8 @@
     <None Include="realm\world\maps\json\classic.jm" />
     <EmbeddedResource Include="realm\world\maps\json\drasta.json" />
     <EmbeddedResource Include="realm\world\maps\json\dream-island-expansion1.json" />
-    <EmbeddedResource Include="realm\world\maps\json\dungeons\undead_lair\udl.jm" />
+    <None Include="realm\world\maps\json\dungeons\undead_lair\udl.json" />
+    <EmbeddedResource Include="realm\world\maps\json\SND.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="realm\world\maps\json\dungeons\spider_den\" />

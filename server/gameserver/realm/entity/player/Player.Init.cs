@@ -36,6 +36,7 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             try
             {
+				
                 if (client.Account.Admin == true)
                     Admin = 1;
                 Achievements = new List<string>();
@@ -353,8 +354,8 @@ namespace LoESoft.GameServer.realm.entity.player
                 Owner.EnterWorld(Pet);
                 Pet.IsPet = true;
             }
-
-            SendAccountList(Locked, ACCOUNTLIST.LOCKED_LIST_ID);
+			//var player = Resolve("Filisha");
+			SendAccountList(Locked, ACCOUNTLIST.LOCKED_LIST_ID);
             SendAccountList(Ignored, ACCOUNTLIST.IGNORED_LIST_ID);
 
             CheckSetTypeSkin();

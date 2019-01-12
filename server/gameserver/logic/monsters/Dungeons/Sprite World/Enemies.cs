@@ -16,7 +16,7 @@ namespace LoESoft.GameServer.logic
 					 new PlayerWithinTransition(12, "nothing")
 				 ),
 				 new State("nothing",
-					 new Wander(0.07),
+					 new Wander(.7),
 					 new AddCond(ConditionEffectIndex.Invulnerable),
 					 new TimedTransition(2000, "e.e")
 					 ),
@@ -24,7 +24,7 @@ namespace LoESoft.GameServer.logic
 					 new AddCond(ConditionEffectIndex.Invulnerable),
 					 new Prioritize(
 					 new Charge(1, range: 4, coolDown: 1500),
-					 new Wander(1),
+					 new Wander(10),
 					 new StayAbove(0.45, 4)
 					 ),
 					 new Shoot(10, 2, 20, angleOffset: 0 / 2, index: 0, coolDown: 300),
@@ -35,7 +35,7 @@ namespace LoESoft.GameServer.logic
 				 new State(":c",
 					 new Prioritize(
 						 new Charge(1, range: 4, coolDown: 4000),
-						 new Wander(0.5),
+						 new Wander(5),
 						 new StayAbove(0.45, 4)
 					 ),
 					 new Shoot(10, 2, 20, angleOffset: 0 / 2, index: 0, coolDown: 300),
