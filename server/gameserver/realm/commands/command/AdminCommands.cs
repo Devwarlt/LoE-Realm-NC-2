@@ -20,7 +20,7 @@ namespace LoESoft.GameServer.realm.commands
 {
 	internal class TqCommand : Command
 	{
-		public TqCommand() : base("tq", (int)AccountType.ADMIN)
+		public TqCommand() : base("tq", (int)AccountType.MOD)
 		{
 		}
 
@@ -436,7 +436,7 @@ namespace LoESoft.GameServer.realm.commands
 
 	internal class GiveCommand : Command
 	{
-		public GiveCommand() : base("give",(int)AccountType.DEVELOPER)
+		public GiveCommand() : base("give",(int)AccountType.MOD)
 		{
 		}
 
@@ -701,9 +701,9 @@ namespace LoESoft.GameServer.realm.commands
 
             switch ((AccountType)player.AccountType)
             {
-                case AccountType.MOD: rank = "MOD"; break;
-                case AccountType.DEVELOPER: rank = "DEV"; break;
-                case AccountType.ADMIN: rank = "EMPEROR"; break;
+                case AccountType.MOD: rank = "Moderator"; break;
+                case AccountType.DEVELOPER: rank = "Developer"; break;
+                case AccountType.ADMIN: rank = "Administrator"; break;
                 default: break;
             }
 

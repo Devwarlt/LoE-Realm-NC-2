@@ -638,7 +638,7 @@ namespace LoESoft.Core
         {
             var acc = new DbAccount(db, accId);
 
-            if (acc.IsNull)
+            if (acc.IsNull || acc.AccountType >= (int)AccountType.MOD)
                 return false;
 
             acc.Banned = true;
