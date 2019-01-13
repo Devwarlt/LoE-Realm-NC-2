@@ -404,6 +404,8 @@ public class Parameters {
                     return;
             }
         }
+        setDefault("hidePets",false);
+        setDefault("hidePlayers",false);
     }
 }
 }

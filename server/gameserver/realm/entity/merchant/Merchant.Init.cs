@@ -157,7 +157,9 @@ namespace LoESoft.GameServer.realm.entity.merchant
 
                 var s = Random.Next(0, 100);
 
-                if (prices.TryGetValue(MType, out Tuple<int, CurrencyType> price))
+                Tuple<int, CurrencyType> price;
+
+                if (prices.TryGetValue(MType, out price))
                 {
                     Price = price.Item1;
                     Currency = price.Item2;

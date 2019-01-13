@@ -1,59 +1,150 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Objects>
-	<Object type="0x6720" id="World Boss 1">
-		<DisplayId>WORLD BOSS</DisplayId>
-		<Enemy />
+	<Object type="0x6725" id="The Lost Spirit">
+		<Enemy/>
 		<Class>Character</Class>
+		<Group>Haunted</Group>
 		<AnimatedTexture>
-			<File>chars16x16dMountains1</File>
-			<Index>0x08</Index>
+			<File>chars16x16dEncounters2</File>
+			<Index>96</Index>
 		</AnimatedTexture>
-		<HitSound>monster/pythons_hit</HitSound>
-		<DeathSound>monster/pythons_death</DeathSound>
-		<Size>110</Size>
-		<MaxHitPoints>50000000</MaxHitPoints>
-		<Defense>60</Defense>
-		<XpMult>1100.0</XpMult>
+		<HitSound>monster/slimes_death</HitSound>
+		<DeathSound>monster/flying_brain_death</DeathSound>
+		<Size>150</Size>
+		<ShadowSize>130</ShadowSize>
+		<Z>0.2</Z>
+		<Flying/>
+		<MaxHitPoints>45000</MaxHitPoints>
+		<Defense>45</Defense>
+		<XpMult>0.9</XpMult>
+		<LeachHealth/>
+		<God/>
+		<StasisImmune/>
+		<Quest/>
 		<Projectile id="0">
-			<ObjectId>Puppet Green Wheel</ObjectId>
-			<Speed>25</Speed>
-			<Damage>200</Damage>
-			<LifetimeMS>8000</LifetimeMS>
-			<Amplitude>2.9</Amplitude>
-			<Frequency>2.5</Frequency>
-			<Size>100</Size>
-			<MultiHit />
+			<ObjectId>Dagger</ObjectId>
+			<Damage>100</Damage>
+			<Speed>50</Speed>
+			<Size>80</Size>
+			<ConditionEffect duration="2">Curse</ConditionEffect>
+			<LifetimeMS>2400</LifetimeMS>
 		</Projectile>
 		<Projectile id="1">
-			<ObjectId>Green Star</ObjectId>
-			<Speed>75</Speed>
-			<Damage>150</Damage>
-			<LifetimeMS>3000</LifetimeMS>
-			<Amplitude>1</Amplitude>
-			<Frequency>2.5</Frequency>
-			<Size>100</Size>
-			<MultiHit />
-			<PassesCover />
-		</Projectile>
-		<Projectile id="2">
-			<ObjectId>Green Spinner</ObjectId>
-			<Speed>200</Speed>
-			<Damage>0</Damage>
-			<LifetimeMS>750</LifetimeMS>
-			<ConditionEffect duration="10">Confused</ConditionEffect>
-			<Size>100</Size>
-			<MultiHit />
-			<PassesCover />
+			<ObjectId>Colossal Wheel</ObjectId>
+			<Damage>90</Damage>
+			<Speed>65</Speed>
+			<Size>140</Size>
+			<ConditionEffect duration="2">Dazed</ConditionEffect>
+			<LifetimeMS>3400</LifetimeMS>
+			<MultiHit/>
 		</Projectile>
 		<Projectile id="3">
-			<ObjectId>Green Missile</ObjectId>
-			<Speed>50</Speed>
-			<Damage>150</Damage>
-			<LifetimeMS>3000</LifetimeMS>
-			<Size>100</Size>
-			<MultiHit />
-			<PassesCover />
+			<ObjectId>Dark Gray Spinner</ObjectId>
+			<Speed>85</Speed>
+			<Size>140</Size>
+			<Damage>1</Damage>
+			<LifetimeMS>1800</LifetimeMS>
+			<ConditionEffect duration="8">Quiet</ConditionEffect>
+			<MultiHit/>
 		</Projectile>
+		<Projectile id="4">
+			<ObjectId>Grey Boomerang</ObjectId>
+			<Damage>80</Damage>
+			<Speed>55</Speed>
+			<Size>120</Size>
+			<LifetimeMS>2900</LifetimeMS>
+			<Boomerang/>
+		</Projectile>
+		<Projectile id="5">
+			<ObjectId>Dragon Attack Black Bullet</ObjectId>
+			<Speed>100</Speed>
+			<Damage>200</Damage>
+			<Size>140</Size>
+			<ConditionEffect duration="4">Dazed</ConditionEffect>
+			<LifetimeMS>1200</LifetimeMS>
+		</Projectile>
+		<Projectile id="6">
+			<ObjectId>Black Missile</ObjectId>
+			<Speed>55</Speed>
+			<Damage>100</Damage>
+			<Size>180</Size>
+			<ConditionEffect duration="2">Stunned</ConditionEffect>
+			<LifetimeMS>1200</LifetimeMS>
+		</Projectile>
+		<DisplayId>The Lost Spirit</DisplayId>
+	</Object>
+
+	<Object type="0x6724" id="SPIRIT Loot Chest">
+		<Class>Character</Class>
+		<Enemy/>
+		<Texture>
+			<File>lofiObj3</File>
+			<Index>0x466</Index>
+		</Texture>
+		<MaxHitPoints>25000</MaxHitPoints>
+		<Defense>0</Defense>
+		<Size>120</Size>
+		<XpMult>0.0</XpMult>
+		<StasisImmune/>
+		<DisplayId>SPIRIT Loot Chest</DisplayId>
+	</Object>
+
+	<Object type="0x6723" id="Dyno Bot">
+		<DisplayId>Dyno Bot</DisplayId>
+		<Class>Character</Class>
+		<Enemy/>
+		<AnimatedTexture>
+			<File>d3Chars16x16rEmbed</File>
+			<Index>33</Index>
+		</AnimatedTexture>
+		<HitSound>monster/skeletons_hit</HitSound>
+		<DeathSound>monster/skeletons_death</DeathSound>
+		<Size>120</Size>
+		<ShadowSize>25</ShadowSize>
+		<MaxHitPoints>115000</MaxHitPoints>
+		<Defense>40</Defense>
+		<Enemy/>
+		<Hero/>
+		<Quest/>
+		<God/>
+		<Encounter/>
+		<StasisImmune/>
+		<StunImmune/>
+		<XpMult>4.5</XpMult>
+		<Level>20</Level>
+		<StasisImmune/>
+		<StunImmune/>
+		<ParalyzeImmune/>
+		<Projectile id="0">
+			<ObjectId>Dyno Spiral</ObjectId>
+			<Speed>30</Speed>
+			<MinDamage>75</MinDamage>
+			<MaxDamage>95</MaxDamage>
+			<LifetimeMS>4000</LifetimeMS>
+		</Projectile>
+		<Projectile id="1">
+			<ObjectId>Dyno Shot</ObjectId>
+			<Speed>60</Speed>
+			<MinDamage>80</MinDamage>
+			<MaxDamage>100</MaxDamage>
+			<LifetimeMS>4500</LifetimeMS>
+		</Projectile>
+	</Object>
+	<Object type="0x6721" id="Dyno Spiral">
+		<Class>Projectile</Class>
+		<Texture>
+			<File>lofiProjs</File>
+			<Index>0x99</Index>
+		</Texture>
+		<Rotation>100</Rotation>
+	</Object>
+	<Object type="0x6720" id="Dyno Shot">
+		<Class>Projectile</Class>
+		<Texture>
+			<File>lofiProjs</File>
+			<Index>0x9a</Index>
+		</Texture>
+		<AngleCorrection>1</AngleCorrection>
 	</Object>
   <Object type="0x670a" id="Frog Bomb">
     <DisplayId>Frog Bomb</DisplayId>

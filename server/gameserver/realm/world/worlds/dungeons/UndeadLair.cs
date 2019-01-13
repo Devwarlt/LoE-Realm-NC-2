@@ -10,6 +10,6 @@
             AllowTeleport = true;
         }
 
-        protected override void Init() => LoadMap("dungeons.undead_lair.udl", MapType.Json);
+        protected override void Init() => LoadMap("udl", MapType.Json);
     }
 }

@@ -82,12 +82,12 @@ public class TitleView extends Sprite {
         this.supportClicked = _local5.clicked;
         this.textureEditorClicked = _local6.clicked;
         var _local7:MenuOptionsBar = new MenuOptionsBar();
-        _local7.addButton(_local1, MenuOptionsBar.CENTER);
-        _local7.addButton(_local2, MenuOptionsBar.LEFT);
-        _local7.addButton(_local5, MenuOptionsBar.LEFT);
-        _local7.addButton(_local3, MenuOptionsBar.RIGHT);
-        _local7.addButton(_local4, MenuOptionsBar.RIGHT);
-        _local7.addButton(_local6, MenuOptionsBar.LEFT);
+        _local7.addButton(_local1, MenuOptionsBar.PLAY);
+        _local7.addButton(_local2, MenuOptionsBar.SERVER);
+        _local7.addButton(_local5, MenuOptionsBar.SUPPORT);
+        _local7.addButton(_local3, MenuOptionsBar.ACCOUNT);
+        _local7.addButton(_local4, MenuOptionsBar.LEGENDS);
+        _local7.addButton(_local6, MenuOptionsBar.TEXTURE);
         return (_local7);
     }
 

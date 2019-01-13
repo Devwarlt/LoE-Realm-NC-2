@@ -5,11 +5,18 @@
 		<Item />
 		<Texture>
 			<File>lofiObj5</File>
-			<Index>0xca</Index>
+			<Index>0x8c</Index>
 		</Texture>
-		<Description/>
 		<SlotType>10</SlotType>
+		<Description>The Jester from VoTR left his robe in LoE.</Description>
+		<ActivateOnEquip stat="21" amount="15">IncrementStat</ActivateOnEquip>
+		<ActivateOnEquip stat="0" amount="10">IncrementStat</ActivateOnEquip>
+		<ActivateOnEquip stat="28" amount="-10">IncrementStat</ActivateOnEquip>
+		<ActivateOnEquip stat="20" amount="10">IncrementStat</ActivateOnEquip>
 		<BagType>6</BagType>
+		<FameBonus>6</FameBonus>
+		<feedPower>500</feedPower>
+		<Soulbound/>
 	</Object>
 	<Object type="0x510f" id="The Egyptian's Crook" spritePeriod="4" spriteFile="lofiObj5" spriteArray="200-201">
 		<Class>Equipment</Class>
@@ -18,7 +25,7 @@
 			<File>lofiObj5</File>
 			<Index>200</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -29,7 +36,14 @@
 			<File>lofiObj5</File>
 			<Index>0xb9</Index>
 		</Texture>
-		<Description/>
+		<Description> The Frog King's Crown holds the very essence of Filisha himself </Description>
+		<ActivateOnEquip stat="20" amount="-5">IncrementStat</ActivateOnEquip>
+		<ActivateOnEquip stat="0" amount="150">IncrementStat</ActivateOnEquip>
+		<ActivateOnEquip stat="3" amount="50">IncrementStat</ActivateOnEquip>
+		<ActivateOnEquip stat="21" amount="-5">IncrementStat</ActivateOnEquip>
+		<ActivateOnEquip stat="27" amount="5">IncrementStat</ActivateOnEquip>
+		<ActivateOnEquip stat="28" amount="5">IncrementStat</ActivateOnEquip>
+		<ActivateOnEquip stat="26" amount="5">IncrementStat</ActivateOnEquip>
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -40,7 +54,7 @@
 			<File>lofiObj5</File>
 			<Index>0xb8</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -51,7 +65,7 @@
 			<File>lofiObj5</File>
 			<Index>0xac</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -62,7 +76,7 @@
 			<File>lofiObj5</File>
 			<Index>0xab</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -73,7 +87,7 @@
 			<File>lofiObj5</File>
 			<Index>0xaa</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -84,7 +98,7 @@
 			<File>lofiObj5</File>
 			<Index>0xa9</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -95,7 +109,7 @@
 			<File>lofiObj5</File>
 			<Index>0xa8</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -106,7 +120,7 @@
 			<File>lofiObj5</File>
 			<Index>0xfd</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -117,7 +131,7 @@
 			<File>lofiObj5</File>
 			<Index>0xfc</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -128,7 +142,7 @@
 			<File>lofiObj5</File>
 			<Index>0xfb</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -139,7 +153,7 @@
 			<File>lofiObj5</File>
 			<Index>0xfa</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -150,7 +164,7 @@
 			<File>lofiObj5</File>
 			<Index>248</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -161,7 +175,7 @@
 			<File>lofiObj4</File>
 			<Index>0xc5</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -172,7 +186,7 @@
 			<File>lofiObj6</File>
 			<Index>0xc9</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -183,7 +197,7 @@
 			<File>lofiObj6</File>
 			<Index>0xe6</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -194,7 +208,7 @@
 			<File>lofiObj6</File>
 			<Index>0xe5</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -205,7 +219,7 @@
 			<File>lofiObj6</File>
 			<Index>0xe4</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -216,7 +230,7 @@
 			<File>lofiObj6</File>
 			<Index>0xe3</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -227,7 +241,7 @@
 			<File>lofiObj6</File>
 			<Index>0xd6</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -238,7 +252,7 @@
 			<File>lofiObj6</File>
 			<Index>0xd4</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -249,7 +263,7 @@
 			<File>lofiObj6</File>
 			<Index>0xd5</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -260,7 +274,7 @@
 			<File>lofiObj6</File>
 			<Index>0xd3</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -271,7 +285,7 @@
 			<File>lofiObj6</File>
 			<Index>0xe0</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -282,7 +296,7 @@
 			<File>lofiObj6</File>
 			<Index>0xe1</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -293,7 +307,7 @@
 			<File>lofiObj6</File>
 			<Index>0x9a</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -304,7 +318,7 @@
 			<File>lofiObj5</File>
 			<Index>0xf6</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -315,7 +329,7 @@
 			<File>lofiObj5</File>
 			<Index>0xf1</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -326,7 +340,7 @@
 			<File>lofiObj5</File>
 			<Index>0xef</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -337,7 +351,7 @@
 			<File>lofiObj5</File>
 			<Index>0xec</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -348,7 +362,7 @@
 			<File>lofiObj5</File>
 			<Index>0xeb</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -359,7 +373,7 @@
 			<File>lofiObj5</File>
 			<Index>0xea</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -370,7 +384,7 @@
 			<File>lofiObj5</File>
 			<Index>0xe9</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -381,7 +395,7 @@
 			<File>lofiObj5</File>
 			<Index>0xe6</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -392,7 +406,7 @@
 			<File>lofiObj5</File>
 			<Index>0xe5</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -403,9 +417,32 @@
 			<File>lofiObj5</File>
 			<Index>0xe4</Index>
 		</Texture>
-		<Description/>
-		<SlotType>10</SlotType>
-		<BagType>6</BagType>
+		<Description>Made by the materials of a nuclear bomb,this quiver is just as deadly...</Description>
+		<Sound>spell/fire_spray</Sound>
+		<SlotType>15</SlotType>
+		<Projectile>
+			<ObjectId>ARMY QUIVER SHOT</ObjectId>
+			<Speed>100</Speed>
+			<MinDamage>500</MinDamage>
+			<MaxDamage>750</MaxDamage>
+			<LifetimeMS>500</LifetimeMS>
+			<Size>400</Size>
+			<ConditionEffect duration="4">Bleeding</ConditionEffect>
+			<ConditionEffect duration="8">Slowed</ConditionEffect>
+			<PassesCover />
+			<MultiHit />
+		</Projectile>
+		<Cooldown>6.5</Cooldown>
+		<ActivateOnEquip stat="21" amount="-5">IncrementStat</ActivateOnEquip>
+		<ActivateOnEquip stat="0" amount="-10">IncrementStat</ActivateOnEquip>
+		<Usable />
+		<NumProjectiles>1</NumProjectiles>
+		<BagType>9</BagType>
+		<FameBonus>6</FameBonus>
+		<MpCost>150</MpCost>
+		<Activate>Shoot</Activate>
+		<feedPower>7000</feedPower>
+		<Soulbound />
 	</Object>
 	<Object type="0x5074" id="Phantom Strike-400">
 		<Class>Equipment</Class>
@@ -414,7 +451,7 @@
 			<File>lofiObj5</File>
 			<Index>0xe3</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -425,9 +462,15 @@
 			<File>lofiObj5</File>
 			<Index>0xdf</Index>
 		</Texture>
-		<Description/>
-		<SlotType>10</SlotType>
+		<SlotType>6</SlotType>
+		<Description>One of Dr.Terrible's inventions.</Description>
+		<ActivateOnEquip stat="21" amount="15">IncrementStat</ActivateOnEquip>
+		<ActivateOnEquip stat="20" amount="10">IncrementStat</ActivateOnEquip>
+		<ActivateOnEquip stat="28" amount="30">IncrementStat</ActivateOnEquip>
 		<BagType>6</BagType>
+		<FameBonus>6</FameBonus>
+		<feedPower>500</feedPower>
+		<Soulbound/>
 	</Object>
 	<Object type="0x5071" id="Quiver of the Frozen North">
 		<Class>Equipment</Class>
@@ -436,7 +479,7 @@
 			<File>lofiObj5</File>
 			<Index>0xdd</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -447,9 +490,25 @@
 			<File>lofiObj5</File>
 			<Index>0xe1</Index>
 		</Texture>
-		<Description/>
-		<SlotType>10</SlotType>
-		<BagType>6</BagType>
+		<SlotType>3</SlotType>
+		<Description>Along with the quiver,this bow is slow, but does OP damage.</Description>
+		<RateOfFire>0.5</RateOfFire>
+		<Sound>weapon/golden_bow</Sound>
+		<Projectile>
+			<ObjectId>FROZEN BOW SHOT</ObjectId>
+			<Speed>100</Speed>
+			<MinDamage>100</MinDamage>
+			<MaxDamage>200</MaxDamage>
+			<LifetimeMS>900</LifetimeMS>
+			<MultiHit/>
+		</Projectile>
+		<BagType>8</BagType>
+		<FameBonus>12</FameBonus>
+		<NumProjectiles>4</NumProjectiles>
+		<OldSound>arrowShoot</OldSound>
+		<feedPower>1000</feedPower>
+		<Soulbound/>
+		<DisplayId>Crossbow of the Frozen North</DisplayId>
 	</Object>
 	<Object type="0x5069" id="The Forgotten Monk's Robe">
 		<Class>Equipment</Class>
@@ -458,7 +517,7 @@
 			<File>lofiObj5</File>
 			<Index>0xdc</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -469,7 +528,7 @@
 			<File>lofiObj5</File>
 			<Index>0xdb</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -480,7 +539,7 @@
 			<File>lofiObj5</File>
 			<Index>0x8b</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -491,7 +550,7 @@
 			<File>lofiObj5</File>
 			<Index>0x8a</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -502,9 +561,22 @@
 			<File>lofiObj5</File>
 			<Index>0x89</Index>
 		</Texture>
-		<Description/>
-		<SlotType>10</SlotType>
+		<SlotType>2</SlotType>
+		<Description>The bane of one's childhood..</Description>
+		<RateOfFire>.5</RateOfFire>
+		<Sound>weapon/dirk</Sound>
+		<Projectile>
+			<ObjectId>DoomSpoon</ObjectId>
+			<Speed>14</Speed>
+			<MinDamage>350</MinDamage>
+			<MaxDamage>450</MaxDamage>
+			<LifetimeMS>4000</LifetimeMS>
+		</Projectile>
 		<BagType>6</BagType>
+		<OldSound>daggerSwing</OldSound>
+		<FameBonus>6</FameBonus>
+		<feedPower>600</feedPower>
+		<Soulbound/>
 	</Object>
 	<Object type="0x5061" id="Spell of Alantis">
 		<Class>Equipment</Class>
@@ -513,7 +585,7 @@
 			<File>lofiObj5</File>
 			<Index>0x88</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -524,7 +596,7 @@
 			<File>lofiObj5</File>
 			<Index>0x9c</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -535,7 +607,7 @@
 			<File>lofiObj5</File>
 			<Index>0x9b</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -546,7 +618,7 @@
 			<File>lofiObj5</File>
 			<Index>0x9a</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -557,7 +629,7 @@
 			<File>lofiObj5</File>
 			<Index>0x99</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -568,7 +640,7 @@
 			<File>lofiObj5</File>
 			<Index>0x98</Index>
 		</Texture>
-		<Description/>
+		<Description />
 		<SlotType>10</SlotType>
 		<BagType>6</BagType>
 	</Object>
@@ -579,8 +651,26 @@
 			<File>lofiObj4</File>
 			<Index>0xb5</Index>
 		</Texture>
-		<Description/>
-		<SlotType>10</SlotType>
+		<Description>Aliens from outer space donated this weapon as part of the treaty that ended the Space Wars.</Description>
+		<RateOfFire>.5</RateOfFire>
+		<Sound>weapon/mithril_sword</Sound>
+		<SlotType>1</SlotType>
+		<Projectile>
+			<ObjectId>Axe Shot</ObjectId>
+			<Speed>85</Speed>
+			<MinDamage>400</MinDamage>
+			<MaxDamage>450</MaxDamage>
+			<Boomerang />
+			<MultiHit/>
+			<PassesCover/>
+			<LifetimeMS>825</LifetimeMS>
+			<Size>90</Size>
+		</Projectile>
+		<NumProjectiles>1</NumProjectiles>
+		<ActivateOnEquip stat="26" amount="5">IncrementStat</ActivateOnEquip>
 		<BagType>6</BagType>
+		<FameBonus>6</FameBonus>
+		<OldSound>bladeSwing</OldSound>
+		<feedPower>5000</feedPower>
 	</Object>
 </Objects>

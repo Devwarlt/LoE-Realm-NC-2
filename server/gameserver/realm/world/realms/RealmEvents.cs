@@ -17,8 +17,10 @@ namespace LoESoft.GameServer.realm
             new RealmEvent("Cube God",  new CubeGod(), "Your meager abillities cannot possibly challenge a Cube God!"),
             new RealmEvent("Dream Island Horde",  new DreamIsle(), "Fools! your futile efforts are no match for a Dream Island Horde!"),
             new RealmEvent("Maurth the Succubus Princess", new Maurth(), "Haha!! My Maurth the Succubus Princess will SUCC the Life out of you!"),
-            new RealmEvent("Undertaker the Great Juggernaut", new Undertaker(), "You Humans are fools! My Undertaker the Great Juggernaut will take care to crush your spines!")
-        };
+            new RealmEvent("Undertaker the Great Juggernaut", new Undertaker(), "You Humans are fools! My Undertaker the Great Juggernaut will take care to crush your spines!"),
+			new RealmEvent("Dyno Bot", new DynoBot(), "BEWARE FOOLS! My Dyno Bot mutes,kicks, and bans!"),
+			new RealmEvent("The Lost Spirit", new LostSpirit(), "The ancient soul of my father still presides within this realm.. and now he has awoken.. YOU ARE DOOMED MORTAL!")
+		};
 
         public void HandleRealmEvent(Enemy enemy, Player killer)
         {

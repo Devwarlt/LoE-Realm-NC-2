@@ -24,7 +24,7 @@ namespace LoESoft.GameServer.realm.entity
         private float bleeding;
         private Position? pos;
         private bool Npc { get; set; }
-        public bool CheckDeath { get; set; }
+        //public bool CheckDeath { get; set; }
         private bool Done { get; set; }
 
         public Enemy(ushort objType, bool npc)
@@ -142,7 +142,8 @@ namespace LoESoft.GameServer.realm.entity
                 }
 
                 if (HP <= 0)
-                    CheckDeath = true;
+                    //CheckDeath = true;
+                    Death(time);
 
                 UpdateCount++;
                 return effDmg;
@@ -180,7 +181,8 @@ namespace LoESoft.GameServer.realm.entity
                 counter.HitBy(projectile.ProjectileOwner as Player, time, projectile, dmg);
 
                 if (HP <= 0)
-                    CheckDeath = true;
+                    //CheckDeath = true;
+                    Death(time);
 
                 UpdateCount++;
                 return true;
@@ -193,7 +195,7 @@ namespace LoESoft.GameServer.realm.entity
             if (pos == null)
                 pos = new Position { X = X, Y = Y };
 
-            if (CheckDeath)
+            /*if (CheckDeath)
             {
                 try
                 {
@@ -272,7 +274,7 @@ namespace LoESoft.GameServer.realm.entity
                     Death(time);
                     return;
                 }
-            }
+            }*/
 
             if (!stat && HasConditionEffect(ConditionEffectIndex.Bleeding))
             {

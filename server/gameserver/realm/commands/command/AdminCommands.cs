@@ -11,11 +11,63 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using static LoESoft.GameServer.networking.Client;
+using LoESoft.Core.database;
+using LoESoft.Core;
 
 #endregion
 
 namespace LoESoft.GameServer.realm.commands
 {
+	internal class TqCommand : Command
+	{
+		public TqCommand() : base("tq", (int)AccountType.MOD)
+		{
+		}
+
+		protected override bool Process(Player player, RealmTime time, string[] args)
+		{
+			if (player.Quest == null)
+			{
+				player.SendInfo("There is no quest to teleport!");
+				return false;
+			}
+			player.Move(player.Quest.X + 0.5f, player.Quest.Y + 0.5f);
+			player.UpdateCount++;
+			player.Owner.BroadcastMessage(new GOTO
+			{
+				ObjectId = player.Id,
+				Position = new Position
+				{
+					X = player.Quest.X,
+					Y = player.Quest.Y
+				}
+			}, null);
+			player.SendInfo("Success!");
+			return true;
+		}
+	}
+	internal class KillPlayerCommand : Command
+	{
+		public KillPlayerCommand() : base("kill", (int)AccountType.ADMIN)
+		{
+		}
+
+		protected override bool Process(Player player, RealmTime time, string[] args)
+		{
+			foreach (ClientData cData in GameServer.Manager.ClientManager.Values)
+			{
+				if (cData.Client.Account.Name.EqualsIgnoreCase(args[0]))
+				{
+					cData.Client.Player.HP = 0;
+					cData.Client.Player.Death("server.game_admin");
+					player.SendInfo($"Player {cData.Client.Account.Name} has been killed!");
+					return true;
+				}
+			}
+			player.SendInfo(string.Format("Player '{0}' could not be found!", args));
+			return false;
+		}
+	}
 	internal class ArenaCommand : Command
 	{
 		public ArenaCommand()
@@ -384,7 +436,7 @@ namespace LoESoft.GameServer.realm.commands
 
 	internal class GiveCommand : Command
 	{
-		public GiveCommand() : base("give",(int)AccountType.DEVELOPER)
+		public GiveCommand() : base("give",(int)AccountType.MOD)
 		{
 		}
 
@@ -404,7 +456,7 @@ namespace LoESoft.GameServer.realm.commands
 
 			string name = string.Join(" ", args.ToArray()).Trim();
 
-			if (Blacklist.Contains(name.ToLower()) && player.AccountType != (int)AccountType.DEVELOPER)
+			if (Blacklist.Contains(name.ToLower()) && player.AccountType <= (int)AccountType.DEVELOPER)
 			{
 				player.SendHelp($"You cannot give '{name}', access denied.");
 				return false;
@@ -649,9 +701,9 @@ namespace LoESoft.GameServer.realm.commands
 
             switch ((AccountType)player.AccountType)
             {
-                case AccountType.MOD: rank = "MOD"; break;
-                case AccountType.DEVELOPER: rank = "DEV"; break;
-                case AccountType.ADMIN: rank = "EMPEROR"; break;
+                case AccountType.MOD: rank = "Moderator"; break;
+                case AccountType.DEVELOPER: rank = "Developer"; break;
+                case AccountType.ADMIN: rank = "Administrator"; break;
                 default: break;
             }
 
@@ -726,11 +778,9 @@ namespace LoESoft.GameServer.realm.commands
 
             for (var i = 0; i < copy.Length; i++)
             {
-                if (i != 0)
-                    sb.Append(", ");
 
                 if (player.AccountType >= copy[i].PermissionLevel)
-                    sb.Append(copy[i].CommandName);
+                    sb.Append((i != 0 ? ", " : "") + copy[i].CommandName);
             }
 
             player.SendInfo(sb.ToString());
@@ -754,9 +804,14 @@ namespace LoESoft.GameServer.realm.commands
                     return false;
                 }
 
-                player.Client.Manager.Database.BanAccount(int.Parse(args[0]));
-                player.SendInfo("Player has been banned!");
-                return true;
+                if (player.Client.Manager.Database.BanAccount(player.Client.Account.Database, args[0]))
+                {
+                    player.SendInfo("Player has been banned!");
+                    return true;
+                }
+
+                player.SendInfo("Cannon find account!");
+                return false;
             }
             catch
             {
@@ -782,9 +837,14 @@ namespace LoESoft.GameServer.realm.commands
                     return false;
                 }
 
-                player.Client.Manager.Database.UnBanAccount(int.Parse(args[0]));
-                player.SendInfo("Player has been unbanned!");
-                return true;
+                if (player.Client.Manager.Database.UnBanAccount(player.Client.Account.Database, args[0]))
+                {
+                    player.SendInfo("Player has been unbanned!");
+                    return true;
+                }
+
+                player.SendInfo("Cannon find account!");
+                return false;
             }
             catch
             {

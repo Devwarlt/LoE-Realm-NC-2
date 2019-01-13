@@ -634,11 +634,29 @@ namespace LoESoft.Core
             Update(acc);
         }
 
-        public void BanAccount(int accountId)
-            => Connection.Hashes.Set(0, $"account.{accountId}", "banned", "1");
+        public bool BanAccount(Database db, string accId)
+        {
+            var acc = new DbAccount(db, accId);
 
-        public void UnBanAccount(int accountId)
-            => Connection.Hashes.Set(0, $"account.{accountId}", "banned", "0");
+            if (acc.IsNull || acc.AccountType >= (int)AccountType.MOD)
+                return false;
+
+            acc.Banned = true;
+            Update(acc);
+            return true;
+        }
+
+        public bool UnBanAccount(Database db, string accId)
+        {
+            var acc = new DbAccount(db, accId);
+
+            if (acc.IsNull)
+                return false;
+
+            acc.Banned = false;
+            Update(acc);
+            return true;
+        }
 
         public List<string> GetLockeds(DbAccount acc)
         {
