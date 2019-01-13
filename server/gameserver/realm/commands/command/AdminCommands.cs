@@ -11,6 +11,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using static LoESoft.GameServer.networking.Client;
+using LoESoft.Core.database;
+using LoESoft.Core;
 
 #endregion
 
@@ -776,11 +778,9 @@ namespace LoESoft.GameServer.realm.commands
 
             for (var i = 0; i < copy.Length; i++)
             {
-                if (i != 0)
-                    sb.Append(", ");
 
                 if (player.AccountType >= copy[i].PermissionLevel)
-                    sb.Append(copy[i].CommandName);
+                    sb.Append((i != 0 ? ", " : "") + copy[i].CommandName);
             }
 
             player.SendInfo(sb.ToString());
@@ -804,9 +804,14 @@ namespace LoESoft.GameServer.realm.commands
                     return false;
                 }
 
-                player.Client.Manager.Database.BanAccount(int.Parse(args[0]));
-                player.SendInfo("Player has been banned!");
-                return true;
+                if (player.Client.Manager.Database.BanAccount(player.Client.Account.Database, args[0]))
+                {
+                    player.SendInfo("Player has been banned!");
+                    return true;
+                }
+
+                player.SendInfo("Cannon find account!");
+                return false;
             }
             catch
             {
@@ -832,9 +837,14 @@ namespace LoESoft.GameServer.realm.commands
                     return false;
                 }
 
-                player.Client.Manager.Database.UnBanAccount(int.Parse(args[0]));
-                player.SendInfo("Player has been unbanned!");
-                return true;
+                if (player.Client.Manager.Database.UnBanAccount(player.Client.Account.Database, args[0]))
+                {
+                    player.SendInfo("Player has been unbanned!");
+                    return true;
+                }
+
+                player.SendInfo("Cannon find account!");
+                return false;
             }
             catch
             {
