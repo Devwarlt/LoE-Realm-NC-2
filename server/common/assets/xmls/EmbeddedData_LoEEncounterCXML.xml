@@ -6,7 +6,7 @@
 		<Group>Haunted</Group>
 		<AnimatedTexture>
 			<File>chars16x16dEncounters2</File>
-			<Index>95</Index>
+			<Index>96</Index>
 		</AnimatedTexture>
 		<HitSound>monster/slimes_death</HitSound>
 		<DeathSound>monster/flying_brain_death</DeathSound>

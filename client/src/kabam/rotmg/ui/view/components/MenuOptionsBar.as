@@ -39,12 +39,12 @@ public class MenuOptionsBar extends Sprite {
         switch (_arg2) {
             case PLAY:
                 this.leftObjects[0] = (this.rightObjects[0] = _arg1);
-                _arg1.x = 395;
+                _arg1.x = 405;
                 _arg1.y = 380;
                 return;
             case SERVER:
                 this.leftObjects[0] = (this.rightObjects[0] = _arg1);
-                _arg1.x = 430;
+                _arg1.x = 440;
                 _arg1.y = 420;
                 return;
             case ACCOUNT:
@@ -59,7 +59,7 @@ public class MenuOptionsBar extends Sprite {
                 return;
             case SUPPORT:
                 this.leftObjects[0] = (this.rightObjects[0] = _arg1);
-                _arg1.x = 430;
+                _arg1.x = 445;
                 _arg1.y = 480;
                 return;
             case TEXTURE:

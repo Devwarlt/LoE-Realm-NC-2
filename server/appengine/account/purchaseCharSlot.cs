@@ -28,12 +28,12 @@ namespace LoESoft.AppEngine.account
                             WriteErrorLine("Account in use");
                             return;
                         }
-                        else if (acc.Fame < 100)
+                        else if (acc.Credits < 100)
                         {
-                            WriteErrorLine("Not enough Fame");
+                            WriteErrorLine("Not enough Gold");
                             return;
                         }
-                        Database.UpdateFame(acc, -100); //should be rebuilded
+                        Database.UpdateCredit(acc, -100); //should be rebuilded
                         acc.MaxCharSlot++;
                         acc.Flush();
                     }

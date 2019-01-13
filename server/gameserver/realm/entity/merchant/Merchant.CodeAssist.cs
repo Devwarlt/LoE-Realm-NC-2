@@ -30,7 +30,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
             if (ObjectType == 0x01ca) //Merchant
             {
                 int originalPrice = Price;
-           //     Price = (int) (Price * player.AccountPerks.MerchantDiscount());
+                Price = (int) (Price * player.AccountPerks.MerchantDiscount());
                 if (TryDeduct(player))
                 {
                     for (var i = 4; i < player.Inventory.Length; i++)
@@ -76,8 +76,8 @@ namespace LoESoft.GameServer.realm.entity.merchant
                                     default:
                                         break;
                                 }
-                             //   if (1 - player.AccountPerks.MerchantDiscount() > 0 && (currency.Key != null && currency.Value != -1))
-                           //         player.SendInfo($"You saved {originalPrice - Price} {currency.Key}{(currency.Value > 1 ? "s" : "")} ({(1 - player.AccountPerks.MerchantDiscount()) * 100}% off)!");
+                                if (1 - player.AccountPerks.MerchantDiscount() > 0 && (currency.Key != null && currency.Value != -1))
+                                    player.SendInfo($"You saved {originalPrice - Price} {currency.Key}{(currency.Value > 1 ? "s" : "")} ({(1 - player.AccountPerks.MerchantDiscount()) * 100}% off)!");
                                 player.Client.SendMessage(new BUYRESULT
                                 {
                                     Result = 0,

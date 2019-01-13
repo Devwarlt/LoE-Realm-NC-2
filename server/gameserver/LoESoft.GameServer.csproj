@@ -748,6 +748,7 @@
     <EmbeddedResource Include="realm\world\maps\json\loe_chicago_2.1.json" />
     <None Include="realm\world\maps\json\classic.jm" />
     <EmbeddedResource Include="realm\world\maps\json\drasta.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dream-island-expansion1.json" />
     <None Include="realm\world\maps\json\dungeons\undead_lair\udl.json" />
     <EmbeddedResource Include="realm\world\maps\json\SND.json" />
     <EmbeddedResource Include="realm\world\maps\json\nexus_summer.json" />

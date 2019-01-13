@@ -30,7 +30,6 @@ public class BuyCharacterRect extends CharacterRect {
 
     private function makeCurrency():void {
         var dat:BitmapData = this.model.getCharSlotCurrency() == 0 ?
-                //IconFactory.makeCoin():
                 IconFactory.makeFame() :
                 IconFactory.makeFame();
         var cur:Bitmap = new Bitmap(dat);

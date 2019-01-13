@@ -614,15 +614,7 @@ namespace LoESoft.GameServer.realm.entity.player
                     XpBoosted = false;
                     XpBoostTimeLeft = 0;
                 }
-				if (Stars == 2)
-				{
-					SendInfo("You can now use the /glands Feature!");
-				}
-				if (Stars == 10)
-				{
-						SendInfo("You can now use the Hotkey Feature! Go into Options>Misc and set your keybinds!");
-				}
-					Quest = null;
+                Quest = null;
                 return true;
             }
             CalculateFame();
