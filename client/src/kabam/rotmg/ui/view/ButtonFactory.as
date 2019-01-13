@@ -9,7 +9,7 @@ import kabam.rotmg.text.view.TextFieldDisplayConcrete;
 
 public class ButtonFactory {
 
-    public static const BUTTON_SIZE_LARGE:uint = 36;
+    public static const BUTTON_SIZE_LARGE:uint = 48;
     public static const BUTTON_SIZE_SMALL:uint = 22;
     private static const LEFT:String = TextFieldAutoSize.LEFT;//"left"
     private static const CENTER:String = TextFieldAutoSize.CENTER;//"center"

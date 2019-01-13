@@ -66,19 +66,19 @@ namespace LoESoft.GameServer.realm
                     "My last Phoenix Lord will blacken your bones!"
                 }
             }),
-            Tuple.Create("Ghost King", new TauntData
-            {
-                numberOfEnemies = new[]
-                {
-                    "My {COUNT} Ghost Kings give me more than enough protection!",
-                    "Pathetic humans! My {COUNT} Ghost Kings shall destroy you utterly!"
-                },
-                final = new[]
-                {
-                    "A mighty Ghost King remains to guard me!",
-                    "My final Ghost King is untouchable!"
-                }
-            }),
+           // Tuple.Create("Ghost King", new TauntData
+         //   {
+           //     numberOfEnemies = new[]
+           //     {
+          //          "My {COUNT} Ghost Kings give me more than enough protection!",
+          //          "Pathetic humans! My {COUNT} Ghost Kings shall destroy you utterly!"
+          //      },
+          //      final = new[]
+         //       {
+         //           "A mighty Ghost King remains to guard me!",
+         //           "My final Ghost King is untouchable!"
+        //        }
+        //    }),
             Tuple.Create("Cyclops God", new TauntData
             {
                 numberOfEnemies = new[]

@@ -18,7 +18,7 @@ namespace LoESoft.GameServer.realm
             "Actual Ent Ancient",
             "Phoenix Reborn",
             "Oasis Giant",
-            "Ghost King",
+        //    "Ghost King",
             "Cyclops God",
             "Red Demon"
         };

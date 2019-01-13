@@ -64,7 +64,7 @@ public class ChatInput extends Sprite {
         this.input.border = true;
         this.input.selectable = true;
         this.input.maxChars = 128;
-        this.input.borderColor = 0xFFFFFF;
+        this.input.borderColor = 0xFFFF00;
         this.input.height = 18;
         this.input.filters = [new GlowFilter(0, 1, 3, 3, 2, 1)];
         addEventListener(KeyboardEvent.KEY_UP, this.onKeyUp);

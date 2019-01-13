@@ -18,6 +18,111 @@ using LoESoft.Core;
 
 namespace LoESoft.GameServer.realm.commands
 {
+	internal class GiftCommand : Command
+	{
+		public GiftCommand()
+			: base("gift", (int)AccountType.ADMIN)
+		{
+		}
+		protected override bool Process(Player player, RealmTime time, string[] args)
+		{
+			if (args.Length == 1)
+			{
+				player.SendHelp("Usage: /gift <Playername> <Itemname>");
+				return false;
+			}
+			string name = string.Join(" ", args.Skip(1).ToArray()).Trim();
+			var plr = GameServer.Manager.FindPlayer(args[0]);
+			ushort objType;
+			Dictionary<string, ushort> icdatas = new Dictionary<string, ushort>(GameServer.Manager.GameData.IdToObjectType,
+				StringComparer.OrdinalIgnoreCase);
+			if (!icdatas.TryGetValue(name, out objType))
+			{
+				player.SendError("Item not found, PERHAPS YOUR A RETARD LIKE LYNX WHO CAN'T SPELL SHIT?");
+				return false;
+			}
+			if (!GameServer.Manager.GameData.Items[objType].Secret || player.Client.Account.AccountType >= 4)
+			{
+				for (int i = 0; i < plr.Inventory.Length; i++)
+					if (plr.Inventory[i] == null)
+					{
+						plr.Inventory[i] = GameServer.Manager.GameData.Items[objType];
+						plr.UpdateCount++;
+						plr.SaveToCharacter();
+						player.SendInfo("Success sending " + name + " to " + plr.Name);
+						plr.SendLootAnnounce("You got a " + name + " from " + player.Name);
+						break;
+					}
+			}
+			else
+			{
+				player.SendError("Item failed sending to " + plr.Name + ", make sure you spelt the command right, and their name!");
+				return false;
+			}
+			return true;
+		}
+	}
+	internal class GodCommand : Command
+	{
+		public GodCommand()
+		: base("god", (int)AccountType.ADMIN)
+		{
+		}
+
+		protected override bool Process(Player player, RealmTime time, string[] args)
+		{
+			if (player.HasConditionEffect(ConditionEffectIndex.Invincible))
+			{
+				player.ApplyConditionEffect(new ConditionEffect
+				{
+					Effect = ConditionEffectIndex.Invincible,
+					DurationMS = 0
+				});
+				player.SendInfo("Godmode Off");
+			}
+			else
+			{
+				player.ApplyConditionEffect(new ConditionEffect
+				{
+					Effect = ConditionEffectIndex.Invincible,
+					DurationMS = -1
+				});
+				player.SendInfo("Godmode On");
+			}
+			return true;
+		}
+	}
+
+	internal class Invisible : Command
+	{
+		public Invisible()
+		: base("invisible", (int)AccountType.ADMIN)
+		{
+		}
+
+		protected override bool Process(Player player, RealmTime time, string[] args)
+		{
+			if (player.HasConditionEffect(ConditionEffectIndex.Invisible))
+			{
+				player.ApplyConditionEffect(new ConditionEffect
+				{
+					Effect = ConditionEffectIndex.Invisible,
+					DurationMS = 0
+				});
+				player.SendInfo("Invisible Off");
+			}
+			else
+			{
+				player.ApplyConditionEffect(new ConditionEffect
+				{
+					Effect = ConditionEffectIndex.Invisible,
+					DurationMS = -1
+				});
+				player.SendInfo("Invisible On");
+			}
+			return true;
+		}
+	}
 	internal class TqCommand : Command
 	{
 		public TqCommand() : base("tq", (int)AccountType.MOD)
@@ -281,7 +386,22 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
+			player.ApplyConditionEffect(new ConditionEffect
+			{
+				Effect = ConditionEffectIndex.Paralyzed,
+				DurationMS = 2000
+			});
+			player.ApplyConditionEffect(new ConditionEffect
+			{
+				Effect = ConditionEffectIndex.Stunned,
+				DurationMS = 2000
+			});
+			player.ApplyConditionEffect(new ConditionEffect
+			{
+				Effect = ConditionEffectIndex.Invulnerable,
+				DurationMS = 2000
+			});
+			if (player.Stars >= 2 || player.AccountType != (int)AccountType.REGULAR)
             {
                 player.Move(1000f, 1000f);
                 player.Owner.BroadcastMessage(new GOTO
@@ -297,7 +417,7 @@ namespace LoESoft.GameServer.realm.commands
             }
             else
             {
-                player.SendHelp("You need at least 10 stars to unlock the god lands instant access feature, try again later.");
+                player.SendHelp("You need at least 2 stars to unlock the god lands instant access feature, try again later.");
                 return false;
             }
 

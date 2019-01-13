@@ -72,6 +72,6 @@
             return icon;
         }
 
-        public double MerchantDiscount() => _accountType == AccountType.VIP ? 0.9 : 1;
+      //  public double MerchantDiscount() => _accountType == AccountType.VIP ? 0.9 : 1;
     }
 }

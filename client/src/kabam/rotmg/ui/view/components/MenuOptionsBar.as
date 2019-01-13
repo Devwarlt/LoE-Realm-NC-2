@@ -12,6 +12,13 @@ public class MenuOptionsBar extends Sprite {
     public static const CENTER:String = "CENTER";
     public static const RIGHT:String = "RIGHT";
     public static const LEFT:String = "LEFT";
+    public static const PLAY:String = "PLAY";
+    public static const SERVER:String = "SERVER";
+    public static const ACCOUNT:String = "ACCOUNT";
+    public static const LEGENDS:String = "LEGEND";
+    public static const SUPPORT:String = "SUPPORT";
+    public static const TEXTURE:String = "TEXTURE";
+    public static const EDITOR: String = "Editor";
 
     private const leftObjects:Array = [];
     private const rightObjects:Array = [];
@@ -30,6 +37,41 @@ public class MenuOptionsBar extends Sprite {
     public function addButton(_arg1:TitleMenuOption, _arg2:String):void {
         this.screenGraphic.addChild(_arg1);
         switch (_arg2) {
+            case PLAY:
+                this.leftObjects[0] = (this.rightObjects[0] = _arg1);
+                _arg1.x = 395;
+                _arg1.y = 380;
+                return;
+            case SERVER:
+                this.leftObjects[0] = (this.rightObjects[0] = _arg1);
+                _arg1.x = 430;
+                _arg1.y = 420;
+                return;
+            case ACCOUNT:
+                this.leftObjects[0] = (this.rightObjects[0] = _arg1);
+                _arg1.x = 360;
+                _arg1.y = 440;
+                return;
+            case LEGENDS:
+                this.leftObjects[0] = (this.rightObjects[0] = _arg1);
+                _arg1.x = 360;
+                _arg1.y = 460;
+                return;
+            case SUPPORT:
+                this.leftObjects[0] = (this.rightObjects[0] = _arg1);
+                _arg1.x = 430;
+                _arg1.y = 480;
+                return;
+            case TEXTURE:
+                this.leftObjects[0] = (this.rightObjects[0] = _arg1);
+                _arg1.x = 360;
+                _arg1.y = 500;
+                return;
+            case EDITOR:
+                this.leftObjects[0] = (this.rightObjects[0] = _arg1);
+                _arg1.x = 50;
+                _arg1.y = 520;
+                return;
             case CENTER:
                 this.leftObjects[0] = (this.rightObjects[0] = _arg1);
                 _arg1.x = (this.screenGraphic.width / 2);

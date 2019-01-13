@@ -30,7 +30,8 @@ public class BuyCharacterRect extends CharacterRect {
 
     private function makeCurrency():void {
         var dat:BitmapData = this.model.getCharSlotCurrency() == 0 ?
-                IconFactory.makeCoin() :
+                //IconFactory.makeCoin():
+                IconFactory.makeFame() :
                 IconFactory.makeFame();
         var cur:Bitmap = new Bitmap(dat);
         cur.x = WIDTH - 43;
@@ -40,7 +41,7 @@ public class BuyCharacterRect extends CharacterRect {
 
     private function makePriceText():void {
         var _local1:TextFieldDisplayConcrete;
-        _local1 = new TextFieldDisplayConcrete().setSize(18).setColor(0xFFFFFF).setAutoSize(TextFieldAutoSize.RIGHT);
+        _local1 = new TextFieldDisplayConcrete().setSize(18).setColor(0xFFFF00).setAutoSize(TextFieldAutoSize.RIGHT);
         _local1.setStringBuilder(new StaticStringBuilder(this.model.getCharSlotPrice().toString()));
         _local1.filters = [new DropShadowFilter(0, 0, 0, 1, 8, 8)];
         _local1.x = (WIDTH - 43);
