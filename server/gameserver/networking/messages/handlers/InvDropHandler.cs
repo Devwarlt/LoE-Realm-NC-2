@@ -26,18 +26,20 @@ namespace LoESoft.GameServer.networking.handlers
             if (message.SlotObject.ObjectId != client.Player.Id)
                 return;
 
+            if (!client.InvDropClockInitialized)
+            {
+                client.InvDropClock.Elapsed += delegate { client.CanInvDrop = true; };
+                client.InvDropClock.Start();
+                client.InvDropClockInitialized = true;
+            }
+
             Manager.Logic.AddPendingAction(t =>
             {
-                if (client.LastInvDropEntry == 0)
-                    client.LastInvDropEntry = t.TotalElapsedMs;
-
-                if (t.TotalElapsedMs - client.LastInvDropEntry < 1000)
+                if (!client.CanInvDrop)
                 {
                     client.Player.SendHelp("You cannot drop items that fast.");
                     return;
                 }
-                else
-                    client.LastInvDropEntry = t.TotalElapsedMs;
 
                 //TODO: locker again
                 const ushort NORM_BAG = 0x0500;
@@ -97,6 +99,7 @@ namespace LoESoft.GameServer.networking.handlers
                             });
                             (entity as Player).Client.Player.SaveToCharacter();
                         }
+
                         if (client.Player.Owner is Vault)
                             if ((client.Player.Owner as Vault).PlayerOwnerName == client.Account.Name)
                                 return;
@@ -107,6 +110,8 @@ namespace LoESoft.GameServer.networking.handlers
                         log4net.InfoFormat(client.Player.Name + " just attempted to dupe.");
                     }
                 }
+
+                client.CanInvDrop = false;
             });
         }
     }

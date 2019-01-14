@@ -23,18 +23,20 @@ namespace LoESoft.GameServer.networking.handlers
             if (client.Player.Owner == null)
                 return;
 
+            if (!client.InvSwapClockInitialized)
+            {
+                client.InvSwapClock.Elapsed += delegate { client.CanInvSwap = true; };
+                client.InvSwapClock.Start();
+                client.InvSwapClockInitialized = true;
+            }
+
             Manager.Logic.AddPendingAction(t =>
             {
-                if (client.LastInvSwapEntry == 0)
-                    client.LastInvSwapEntry = t.TotalElapsedMs;
-
-                if (t.TotalElapsedMs - client.LastInvSwapEntry < 1000)
+                if (!client.CanInvSwap)
                 {
                     client.Player.SendHelp("You cannot swap items that fast.");
                     return;
                 }
-                else
-                    client.LastInvSwapEntry = t.TotalElapsedMs;
 
                 Entity en1 = client.Player.Owner.GetEntity(message.SlotObject1.ObjectId);
                 Entity en2 = client.Player.Owner.GetEntity(message.SlotObject2.ObjectId);
@@ -99,12 +101,6 @@ namespace LoESoft.GameServer.networking.handlers
                     en2.UpdateCount++;
                     return;
                 }
-                //todo
-                //if (!IsValid(item1, item2, con1, con2, packet, client))
-                //{
-                //    client.Disconnect();
-                //    return;
-                //}
 
                 if (item1 != null && item2 != null && item1.Quantity > 0 && item2.Quantity > 0 && en1 is Player && en2 is Player && en1 == en2 && message.SlotObject1.SlotId != message.SlotObject2.SlotId)
                 {
@@ -215,7 +211,9 @@ namespace LoESoft.GameServer.networking.handlers
                 if (client.Player.Owner is Vault)
                     if ((client.Player.Owner as Vault).PlayerOwnerName == client.Account.Name)
                         return;
+
                 client.Player.SaveToCharacter();
+                client.CanInvSwap = false;
             }, PendingPriority.Networking);
         }
 

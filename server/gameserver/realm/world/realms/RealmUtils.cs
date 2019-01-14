@@ -41,7 +41,7 @@ namespace LoESoft.GameServer.realm
 
         private ushort GetRandomObjType(WmapTerrain wmapTerrain)
         {
-            foreach (Spawn i in RealmSpawnCache)
+            foreach (var i in RealmSpawnCache)
             {
                 if (i.WmapTerrain == wmapTerrain) // assuming only one
                 {

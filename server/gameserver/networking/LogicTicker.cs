@@ -20,7 +20,7 @@ namespace LoESoft.GameServer.realm
         private ManualResetEvent _mre { get; set; }
         private Task _logic { get; set; }
 
-        public static int COOLDOWN_DELAY => 666 / Settings.GAMESERVER.TICKETS_PER_SECOND;
+        public static int COOLDOWN_DELAY => 1000 / Settings.GAMESERVER.TICKETS_PER_SECOND;
 
         public RealmTime CurrentTime { get; private set; }
 
@@ -128,8 +128,6 @@ namespace LoESoft.GameServer.realm
         }
 
         public void AddPendingAction(Action<RealmTime> callback, PendingPriority priority = PendingPriority.Normal)
-            => callback.Invoke(CurrentTime);
-
-        //=> _pendings[(int)priority].Enqueue(callback);
+            => _pendings[(int)priority].Enqueue(callback);
     }
 }

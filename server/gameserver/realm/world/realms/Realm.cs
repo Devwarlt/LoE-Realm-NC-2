@@ -54,8 +54,8 @@ namespace LoESoft.GameServer.realm
             {
                 var terrain = i.WmapTerrain;
                 var idx = (int)terrain - 1;
-                var enemyCount = stats[idx] / i.Density;
-                enemyMaxCounts[idx] = enemyCount;
+                var enemyCount = i.Density;
+                enemyMaxCounts[idx] = i.Density;
                 enemyCounts[idx] = 0;
                 for (var j = 0; j < enemyCount; j++)
                 {
