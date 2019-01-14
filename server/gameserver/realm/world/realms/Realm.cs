@@ -22,7 +22,7 @@ namespace LoESoft.GameServer.realm
         private readonly int[] enemyCounts = new int[12];
         private readonly int[] enemyMaxCounts = new int[12];
 
-        private readonly Random rand = new Random();
+        public readonly Random rand = new Random();
         private GameWorld world;
         public bool ClosingStarted = false;
         public bool RealmClosed = false;
@@ -48,12 +48,12 @@ namespace LoESoft.GameServer.realm
                 {
                     var tile = world.Map[x, y];
                     if (tile.Terrain != WmapTerrain.None)
-                        stats[(int) tile.Terrain - 1]++;
+                        stats[(int)tile.Terrain - 1]++;
                 }
-            foreach (Spawn i in RealmSpawnCache)
+            foreach (var i in RealmSpawnCache)
             {
                 var terrain = i.WmapTerrain;
-                var idx = (int) terrain - 1;
+                var idx = (int)terrain - 1;
                 var enemyCount = stats[idx] / i.Density;
                 enemyMaxCounts[idx] = enemyCount;
                 enemyCounts[idx] = 0;
@@ -92,7 +92,7 @@ namespace LoESoft.GameServer.realm
 
         public void AnnounceRealmClose()
         {
-            foreach (ClientData i in GameServer.Manager.ClientManager.Values)
+            foreach (var i in GameServer.Manager.ClientManager.Values)
                 i.Client.Player?.SendInfo($"Oryx is preparing to close realm '{world.Name}' in 1 minute.");
 
             Done = true;
@@ -100,11 +100,11 @@ namespace LoESoft.GameServer.realm
             world.Timers.Add(new WorldTimer(100000, (ww, tt) => GameServer.Manager.CloseWorld(world)));
             world.Timers.Add(new WorldTimer(120000, (ww, tt) => CloseRealm()));
 
-            GameServer.Manager.GetWorld((int) WorldID.NEXUS_ID).Timers.Add(new WorldTimer(130000, (w, t) =>
-                 Task.Factory.StartNew(() =>
-                     GameWorld.AutoName(1, true))
-                     .ContinueWith(_ => GameServer.Manager.AddWorld(_.Result)
-                 , TaskScheduler.Default)
+            GameServer.Manager.GetWorld((int)WorldID.NEXUS_ID).Timers.Add(new WorldTimer(130000, (w, t) =>
+                Task.Factory.StartNew(() =>
+                    GameWorld.AutoName(1, true))
+                    .ContinueWith(_ => GameServer.Manager.AddWorld(_.Result)
+                , TaskScheduler.Default)
             ));
         }
 
@@ -113,7 +113,7 @@ namespace LoESoft.GameServer.realm
             World ocWorld = null;
             world.Timers.Add(new WorldTimer(2000, (w, t) =>
             {
-                ocWorld = GameServer.Manager.AddWorld(new OryxCastle());
+                ocWorld = GameServer.Manager.AddWorld(new WineCellar());
                 ocWorld.Manager = GameServer.Manager;
             }));
             world.Timers.Add(new WorldTimer(8000, (w, t) =>
@@ -136,7 +136,7 @@ namespace LoESoft.GameServer.realm
             {
                 SendMsg(i, "MY MINIONS HAVE FAILED ME!", "#Oryx the Mad God");
                 SendMsg(i, "BUT NOW YOU SHALL FEEL MY WRATH!", "#Oryx the Mad God");
-                SendMsg(i, "COME MEET YOUR DOOM AT THE WALLS OF MY CASTLE!", "#Oryx the Mad God");
+                SendMsg(i, "COME MEET YOUR DOOM AT THE WALLS OF MY WINE CELLAR!", "#Oryx the Mad God");
                 i.Client.SendMessage(new SHOWEFFECT
                 {
                     EffectType = EffectType.Jitter
@@ -180,7 +180,7 @@ namespace LoESoft.GameServer.realm
 
             foreach (var i in world.Enemies)    //Kill
             {
-                int idx = (int) i.Value.Terrain - 1;
+                int idx = (int)i.Value.Terrain - 1;
 
                 if (idx == -1
                     || state[idx] == 0
@@ -208,7 +208,7 @@ namespace LoESoft.GameServer.realm
                     continue;
 
                 int x = diff[i];
-                WmapTerrain t = (WmapTerrain) (i + 1);
+                WmapTerrain t = (WmapTerrain)(i + 1);
 
                 for (int j = 0; j < x;)
                 {
@@ -233,7 +233,7 @@ namespace LoESoft.GameServer.realm
             var pt = new IntPoint();
             if (desc.Spawn != null)
             {
-                var num = (int) GetNormal(rand, desc.Spawn.Mean, desc.Spawn.StdDev);
+                var num = (int)GetNormal(rand, desc.Spawn.Mean, desc.Spawn.StdDev);
                 if (num > desc.Spawn.Max)
                     num = desc.Spawn.Max;
                 else if (num < desc.Spawn.Min)
@@ -251,8 +251,8 @@ namespace LoESoft.GameServer.realm
                 {
                     entity = Entity.Resolve(desc.ObjectType);
                     entity.Move(
-                        pt.X + (float) (rand.NextDouble() * 2 - 1) * 5,
-                        pt.Y + (float) (rand.NextDouble() * 2 - 1) * 5);
+                        pt.X + (float)(rand.NextDouble() * 2 - 1) * 5,
+                        pt.Y + (float)(rand.NextDouble() * 2 - 1) * 5);
                     (entity as Enemy).Terrain = terrain;
                     if (entity.GetNearestEntity(10, true) == null)
                         world.EnterWorld(entity);
@@ -278,7 +278,7 @@ namespace LoESoft.GameServer.realm
             return ret;
         }
 
-        private void SpawnEvent(string name, MapSetPiece setpiece)
+        public void SpawnEvent(string name, MapSetPiece setpiece)
         {
             var pt = new IntPoint();
             do

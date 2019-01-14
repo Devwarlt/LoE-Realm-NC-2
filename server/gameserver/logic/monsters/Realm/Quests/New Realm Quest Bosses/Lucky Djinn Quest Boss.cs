@@ -1,4 +1,5 @@
 ﻿using LoESoft.GameServer.logic.behaviors;
+using LoESoft.GameServer.logic.loot;
 using LoESoft.GameServer.logic.transitions;
 
 namespace LoESoft.GameServer.logic
@@ -8,7 +9,7 @@ namespace LoESoft.GameServer.logic
         private _ NewRealmQuestBossesLuckyDjinnQuestBoss = () => Behav()
             .Init("Lucky Djinn",
                 new State(
-                    new TransformOnDeath("The Crawling Depths", probability: 1),
+                    //new TransformOnDeath("The Crawling Depths", probability: 1),
                     new State("Idle",
                         new Prioritize(
                             new StayAbove(10, 200),
@@ -62,6 +63,28 @@ namespace LoESoft.GameServer.logic
                         new Shoot(0, shoots: 10, shootAngle: 36, direction: 0),
                         new Suicide()
                         )
+                    ),
+                new Drops(
+                    new MostDamagers(3, new BlueBag(Potions.POTION_OF_MANA, true)),
+                    new BlueBag(
+                        new string[]
+                        {
+                            Potions.POTION_OF_ATTACK,
+                            Potions.POTION_OF_VITALITY,
+                            Potions.POTION_OF_DEXTERITY,
+                            Potions.POTION_OF_DEFENSE
+                        },
+                        new bool[]
+                        {
+                            true,
+                            true,
+                            true,
+                            true
+                        }),
+                    new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4 }),
+                    new CyanBag(ItemType.Weapon, 12),
+                    new CyanBag(ItemType.Armor, 13),
+                    new WhiteBag("Doku No Ken")
                     )
             )
         ;

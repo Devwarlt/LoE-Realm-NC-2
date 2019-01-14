@@ -29,7 +29,8 @@ namespace LoESoft.GameServer.networking.handlers
             if (prj == null)
                 return;
 
-            prj.Owner.RemoveProjectileFromId(player.Id, message.BulletId);
+            if (!prj.ProjDesc.MultiHit)
+                prj.Owner.RemoveProjectileFromId(player.Id, message.BulletId);
 
             if (prj.ProjDesc.Effects.Length != 0)
                 foreach (var effect in prj.ProjDesc.Effects)

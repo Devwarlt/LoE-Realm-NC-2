@@ -433,6 +433,10 @@
     <Compile Include="realm\ChatManager.cs" />
     <Compile Include="realm\entity\player\Player.IO.cs" />
     <Compile Include="realm\entity\player\Player.Tasks.cs" />
+    <Compile Include="realm\mapsetpiece\setpieces\MountainTemple.cs" />
+    <Compile Include="realm\mapsetpiece\setpieces\LordOfTheLostLands.cs" />
+    <Compile Include="realm\mapsetpiece\setpieces\LuckyDjinn.cs" />
+    <Compile Include="realm\mapsetpiece\setpieces\LuckyEntGod.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\DynoBot.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\LostSpirit.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\Undertaker.cs" />

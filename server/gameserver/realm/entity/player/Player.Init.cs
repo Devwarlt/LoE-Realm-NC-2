@@ -36,7 +36,6 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             try
             {
-				
                 if (client.Account.Admin == true)
                     Admin = 1;
                 Achievements = new List<string>();
@@ -323,7 +322,7 @@ namespace LoESoft.GameServer.realm.entity.player
             var newposition = owner.RemovePositionFromReconnect(AccountId);
 
             if (newposition != null)
-                Move((int)newposition.Item1, (int)newposition.Item2);
+                Move((int)newposition.Item1 + 0.5f, (int)newposition.Item2 + 0.5f);
             else
                 Move(x + 0.5f, y + 0.5f);
 
@@ -354,8 +353,8 @@ namespace LoESoft.GameServer.realm.entity.player
                 Owner.EnterWorld(Pet);
                 Pet.IsPet = true;
             }
-			//var player = Resolve("Filisha");
-			SendAccountList(Locked, ACCOUNTLIST.LOCKED_LIST_ID);
+            //var player = Resolve("Filisha");
+            SendAccountList(Locked, ACCOUNTLIST.LOCKED_LIST_ID);
             SendAccountList(Ignored, ACCOUNTLIST.IGNORED_LIST_ID);
 
             CheckSetTypeSkin();
@@ -469,32 +468,36 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             int score = 0;
 
-            if (enemy.Oryx)
-                score += 100000;
+            try
+            {
+                if (enemy.Oryx)
+                    score += 100000;
 
-            if (enemy.Cube)
-                score += 2500;
+                if (enemy.Cube)
+                    score += 2500;
 
-            if (enemy.God)
-                score += 500;
+                if (enemy.God)
+                    score += 500;
 
-            if (enemy.Hero)
-                score += 1250;
+                if (enemy.Hero)
+                    score += 1250;
 
-            if (enemy.Encounter)
-                score += 5000;
+                if (enemy.Encounter)
+                    score += 5000;
 
-            if (enemy.Quest)
-                score += 250;
+                if (enemy.Quest)
+                    score += 250;
 
-            if (enemy.ObjectId.ToLower().Contains("maurth"))
-                score += 100000;
+                if (enemy.ObjectId == "Maurth the Succubus Princess")
+                    score += 100000;
 
-            if (enemy.ObjectId.ToLower().Contains("undertaker"))
-                score += 500000;
+                if (enemy.ObjectId == "Undertaker the Great Juggernaut")
+                    score += 500000;
 
-            score += enemy.MaxHitPoints;
-            score += enemy.Defense * enemy.Level;
+                score += enemy.MaxHitPoints;
+                score += enemy.Defense * enemy.Level;
+            }
+            catch { }
 
             return score;
         }

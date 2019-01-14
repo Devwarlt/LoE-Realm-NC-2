@@ -17,13 +17,15 @@ namespace LoESoft.GameServer.logic.loot
         public readonly Item Item;
         public readonly double Probabilty;
         public readonly string LootState;
+        public readonly bool Shared;
         public readonly bool WhiteBag;
 
-        public LootDef(Item item, double probabilty, string lootState, bool whiteBag = false)
+        public LootDef(Item item, double probabilty, string lootState, bool shared = true, bool whiteBag = false)
         {
             Item = item;
             Probabilty = probabilty;
             LootState = lootState;
+            Shared = shared;
             WhiteBag = whiteBag;
         }
     }
@@ -75,9 +77,13 @@ namespace LoESoft.GameServer.logic.loot
                     i.Populate(enemy, null, rand, i.Lootstate, consideration);
 
                 foreach (var i in consideration)
+                {
+                    if (!i.Shared)
+                        continue;
                     if (i.LootState == enemy.LootState || i.LootState == null)
                         if (rand.NextDouble() <= i.Probabilty)
                             sharedLoots.Add(i.Item);
+                }
 
                 var dats = enemy.DamageCounter.GetPlayerData();
                 var loots = enemy.DamageCounter.GetPlayerData().ToDictionary(d => d.Item1, d => (IList<Item>)new List<Item>());

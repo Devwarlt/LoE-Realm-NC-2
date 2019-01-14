@@ -167,13 +167,8 @@ namespace LoESoft.AppEngine
             _websocket.Start();
 
             try
-            {
-                _websocket.BeginGetContext(WebSocketCallback, null);
-            }
-            catch (Exception)
-            {
-                return;
-            }
+            { _websocket.BeginGetContext(WebSocketCallback, null); }
+            catch { return; }
 
             int i = 0;
 
@@ -190,9 +185,9 @@ namespace LoESoft.AppEngine
 
         private void WebSocketAddAddress(string address, string domain, string user)
         {
-            string args = string.Format(@"http add urlacl url={0}", address) + " user=\"" + domain + "\\" + user + "\"";
+            var args = string.Format(@"http add urlacl url={0}", address) + " user=\"" + domain + "\\" + user + "\"";
 
-            ProcessStartInfo psi = new ProcessStartInfo("netsh", args)
+            var psi = new ProcessStartInfo("netsh", args)
             {
                 Verb = "runas",
                 CreateNoWindow = true,
@@ -208,7 +203,15 @@ namespace LoESoft.AppEngine
             try
             {
                 if (!_websocket.IsListening)
+                {
+                    Log.Warn("Terminated AppEngine.");
+
+                    Thread.Sleep(1000);
+
+                    Process.Start(Settings.APPENGINE.FILE);
+
                     return;
+                }
 
                 HttpListenerContext _webcontext = _websocket.EndGetContext(response);
 
@@ -220,7 +223,16 @@ namespace LoESoft.AppEngine
                     _webevent.Set();
                 }
             }
-            catch (Exception) { }
+            catch
+            {
+                Log.Warn("Terminated AppEngine.");
+
+                Thread.Sleep(1000);
+
+                Process.Start(Settings.APPENGINE.FILE);
+
+                return;
+            }
         }
 
         private void WebSocketThread()
@@ -228,7 +240,7 @@ namespace LoESoft.AppEngine
             do
             {
                 if (_shutdown)
-                    return;
+                    break;
 
                 HttpListenerContext _webcontext;
 
@@ -247,10 +259,7 @@ namespace LoESoft.AppEngine
                 {
                     WebSocketHandler(_webcontext);
                 }
-                catch (Exception)
-                {
-                    return;
-                }
+                catch { return; }
             } while (_webevent.WaitOne());
         }
 
@@ -303,14 +312,7 @@ namespace LoESoft.AppEngine
 
                 _webcontext.Response.Close();
             }
-            catch (Exception)
-            {
-                if (_webqueue.Count != 0)
-                    _webcontext = _webqueue.Dequeue();
-
-                using (StreamWriter stream = new StreamWriter(_webcontext.Response.OutputStream))
-                    stream.Write($"<h1>Bad request!</h1>\n{_webcontext.Request.Url.LocalPath}");
-            }
+            catch { }
         }
     }
 }

@@ -366,10 +366,15 @@ namespace LoESoft.GameServer.logic
 
             .Init("Encounter Altar",
                 new State(
-                    new DropPortalOnDeath("Mountain Temple Portal", 0.4),
+                    //new DropPortalOnDeath("Mountain Temple Portal", 0.4),
                     new State("Wait",
                         new AddCond(ConditionEffectIndex.Invincible),
-                        new PlayerWithinTransition(6, "ActivateG&J")
+                        new PlayerWithinTransition(6, "toss")
+                        ),
+                    new State("toss",
+                        new TossObject("Garnet Statue", 5, 0, int.MaxValue - 1, 0, false, true),
+                        new TossObject("Jade Statue", 5, 180, int.MaxValue - 1, 0, false, true),
+                        new TimedTransition(5000, "ActivateG&J")
                         ),
                     new State("ActivateG&J",
                         new EntityOrder(100, "Garnet Statue", "Activate"),

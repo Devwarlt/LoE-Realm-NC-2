@@ -46,8 +46,8 @@ namespace LoESoft.GameServer.logic
                             new HpLessTransition(0.90, "TransAttack")
                             ),
                         new State("TransAttack",
-                            new AddCond(ConditionEffectIndex.Invulnerable), // ok
                             new State("TransAttack1",
+                                new AddCond(ConditionEffectIndex.Invulnerable), // ok
                                 new Taunt(0.99, "Ready..."),
                                 new ReturnToSpawn(false, 3),
                                 new TimedTransition(1000, "TransAttack1.1")
@@ -223,7 +223,9 @@ namespace LoESoft.GameServer.logic
                         new CyanBag(ItemType.Ring, 5),
                         new CyanBag("Wine Cellar Incantation")
                         ),
-                    new BlueBag(Potions.POTION_OF_WISDOM)
+                    new CyanBag("Spectral Cloth Armor"),
+                    new BlueBag(Potions.POTION_OF_WISDOM),
+                    new WhiteBag(new string[] { "Spirit Dagger", "Ghostly Prism" })
                     )
             )
             .Init("Ghost Ship Anchor",
@@ -239,7 +241,7 @@ namespace LoESoft.GameServer.logic
                         new Suicide()
                         ),
                     new State("nah2",
-                        new DropPortalOnDeath("Davy Jones' Locker Portal", 1),
+                        //new DropPortalOnDeath("Davy Jones' Locker Portal", 1),
                         new Suicide()
                         ),
                     new State("Davy",

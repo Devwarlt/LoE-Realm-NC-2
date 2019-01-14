@@ -406,7 +406,7 @@ namespace LoESoft.GameServer.realm.entity.player
         private readonly ConcurrentQueue<long> _updateAckTimeout = new ConcurrentQueue<long>();
         private readonly ConcurrentQueue<long> _gotoAckTimeout = new ConcurrentQueue<long>();
 
-        private bool once { get; set; }
+        private bool _once { get; set; }
         private int DcThresholdCounter { get; set; } = 0;
 
         public bool KeepAlive(RealmTime time)
@@ -419,6 +419,9 @@ namespace LoESoft.GameServer.realm.entity.player
 
             if (time.TotalElapsedMs - _pongTime > DcThreshold)
             {
+                if (!HasConditionEffect(ConditionEffectIndex.Invincible))
+                    ApplyConditionEffect(ConditionEffectIndex.Invincible);
+
                 if (DcThresholdCounter <= 10)
                 {
                     Client.SendMessage(new PING() { Serial = (int)time.TotalElapsedMs });
@@ -429,9 +432,9 @@ namespace LoESoft.GameServer.realm.entity.player
                     if (Owner == null)
                         return false;
 
-                    if (!once)
+                    if (!_once)
                     {
-                        once = true;
+                        _once = true;
 
                         SendHelp("You dropped your connection with the server! Reconnecting...");
 
@@ -449,6 +452,11 @@ namespace LoESoft.GameServer.realm.entity.player
 
                     return false;
                 }
+            }
+            else
+            {
+                if (HasConditionEffect(ConditionEffects.Invincible))
+                    ApplyConditionEffect(ConditionEffectIndex.Invincible, 0);
             }
 
             if (time.TotalElapsedMs - _pingTime < PingPeriod)

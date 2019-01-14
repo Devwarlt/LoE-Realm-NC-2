@@ -10,11 +10,12 @@ namespace LoESoft.GameServer.logic
         private _ EventBossesLordoftheLostLandsEvent = () => Behav()
             .Init("Lord of the Lost Lands",
                 new State(
-                    new DropPortalOnDeath("Ice Cave Portal", 0.5),
+                    //new DropPortalOnDeath("Ice Cave Portal", 0.5),
                     new State("Waiting",
                         new HpLessTransition(0.99, "Start1.0")
                         ),
                     new State("Start1.0",
+                        new RemCond(ConditionEffectIndex.Invulnerable),
                         new HpLessTransition(0.1, "Dead"),
                         new State("Start",
                             new SetAltTexture(0),
@@ -74,6 +75,7 @@ namespace LoESoft.GameServer.logic
                                 )
                             ),
                         new State("Protection",
+                            new AddCond(ConditionEffectIndex.StunImmune),
                             new SetAltTexture(0),
                             new TossObject("Protection Crystal", 4, angle: 0, coolDown: 5000),
                             new TossObject("Protection Crystal", 4, angle: 45, coolDown: 5000),
@@ -88,11 +90,12 @@ namespace LoESoft.GameServer.logic
                         ),
                     new State("Waiting",
                         new AddCond(ConditionEffectIndex.Invulnerable), // ok
+                        new RemCond(ConditionEffectIndex.StunImmune),
                         new SetAltTexture(1),
                         new EntityNotExistsTransition("Protection Crystal", 10, "Start1.0")
                         ),
                     new State("Dead",
-                        new RemCond(ConditionEffectIndex.Invulnerable), // ok
+                        new AddCond(ConditionEffectIndex.Invulnerable), // ok
                         new SetAltTexture(3),
                         new Taunt(0.99, "NOOOO!!!!!!"),
                         new Flashing(0xFF0000, .1, 1000),
@@ -105,6 +108,10 @@ namespace LoESoft.GameServer.logic
                         )
                     ),
                 new Drops(
+                    new MostDamagers(2, new BlueBag(Potions.POTION_OF_MANA, true)),
+                    new CyanBag(ItemType.Armor, 13),
+                    new CyanBag(ItemType.Weapon, 12),
+                    new CyanBag(ItemType.Ability, 6),
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
                         new PurpleBag(ItemType.Weapon, 9),
@@ -132,7 +139,7 @@ namespace LoESoft.GameServer.logic
                         new BlueBag(Potions.POTION_OF_VITALITY),
                         new BlueBag(Potions.POTION_OF_WISDOM)
                         ),
-                    new WhiteBag("Shield of Ogmur")
+                    new WhiteBag(new string[] { "Shield of Ogmur", "Staff of Esben", "Skullish Remains of Esben" })
                     )
             )
 

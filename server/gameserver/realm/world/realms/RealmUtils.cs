@@ -106,7 +106,7 @@ namespace LoESoft.GameServer.realm
             }
         }
 
-        private void BroadcastMsg(string message) =>
+        public void BroadcastMsg(string message) =>
             GameServer.Manager.Chat.Oryx(world, message);
 
         private void SendMsg(Player player, string message, string src = "") =>

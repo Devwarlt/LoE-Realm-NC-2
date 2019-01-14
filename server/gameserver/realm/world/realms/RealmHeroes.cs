@@ -6,8 +6,8 @@ namespace LoESoft.GameServer.realm
     {
         public void UpdateHeroes()
         {
-            foreach (RealmEvent i in RealmEventCache)
-                RealmHeroCache.Add(i.Name); // handle all events as well (realm cannot close untill they are alive)
+            foreach (var i in RealmEventCache)
+                RealmHeroCache.Add(i.Name);
         }
 
         public List<string> RealmHeroCache = new List<string>
