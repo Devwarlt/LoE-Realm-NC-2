@@ -128,6 +128,8 @@ namespace LoESoft.GameServer.realm
         }
 
         public void AddPendingAction(Action<RealmTime> callback, PendingPriority priority = PendingPriority.Normal)
-            => _pendings[(int)priority].Enqueue(callback);
+            => callback.Invoke(CurrentTime);
+
+        //=> _pendings[(int)priority].Enqueue(callback);
     }
 }

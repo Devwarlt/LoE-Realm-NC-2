@@ -73,15 +73,21 @@ namespace LoESoft.GameServer.realm.world
                             var revent = Overseer.RealmEventCache[Overseer.rand.Next(0, Overseer.RealmEventCache.Count)];
                             var success = true;
 
-                            if (revent.Probability != 1)
-                                if (revent.Probability > Overseer.rand.NextDouble())
-                                    success = false;
-
-                            if (success)
+                            if (!Overseer.UniqueEvents.Contains(revent.Name))
                             {
-                                Overseer.ActualRunningEvents.Add(revent.Name);
-                                Overseer.SpawnEvent(revent.Name, revent.MapSetPiece);
-                                Overseer.BroadcastMsg(revent.Message);
+                                if (revent.Probability != 1)
+                                    if (revent.Probability > Overseer.rand.NextDouble())
+                                        success = false;
+
+                                if (success)
+                                {
+                                    if (revent.Once)
+                                        Overseer.UniqueEvents.Add(revent.Name);
+
+                                    Overseer.ActualRunningEvents.Add(revent.Name);
+                                    Overseer.SpawnEvent(revent.Name, revent.MapSetPiece);
+                                    Overseer.BroadcastMsg(revent.Message);
+                                }
                             }
                         }
 

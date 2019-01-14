@@ -330,8 +330,6 @@ namespace LoESoft.GameServer.logic.loot
             else
                 probability = .0025; // 0.25%
 
-            probability *= Settings.EVENT_RATE;
-
             var eggBasket = new ILootDef[] { new Drops(new ItemLoot(onlyOne.ObjectType, probability, false)) };
             eggBasket[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
         }
@@ -457,7 +455,7 @@ namespace LoESoft.GameServer.logic.loot
 
             if (single)
             {
-                var blueBag = new ILootDef[] { new Drops(new ItemLoot(itemName, alwaysDrop ? 1 : 0.1 * Settings.EVENT_RATE, false)) };
+                var blueBag = new ILootDef[] { new Drops(new ItemLoot(itemName, alwaysDrop ? 1 : 0.1, false)) };
                 blueBag[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
             }
             else
@@ -465,7 +463,7 @@ namespace LoESoft.GameServer.logic.loot
                 var blueBag = new List<ILootDef>();
 
                 for (int i = 0; i < itemNames.Length; i++)
-                    blueBag.Add(new Drops(new ItemLoot(itemNames[i], alwaysDrops[i] ? 1 : 0.1 * Settings.EVENT_RATE, false)));
+                    blueBag.Add(new Drops(new ItemLoot(itemNames[i], alwaysDrops[i] ? 1 : 0.1, false)));
 
                 blueBag.Select(drop => { drop.Populate(enemy, playerData, rnd, lootState, lootDefs); return drop; }).ToList();
             }
@@ -669,12 +667,13 @@ namespace LoESoft.GameServer.logic.loot
         {
             this.tier = tier;
             this.type = type;
+            this.probability = probability;
 
             Shared = shared;
 
             double bagProbability = 0;
 
-            if (probability == 0)
+            if (this.probability == 0)
             {
                 switch (bag)
                 {
@@ -705,9 +704,9 @@ namespace LoESoft.GameServer.logic.loot
                 }
             }
             else
-                bagProbability = probability;
+                bagProbability = this.probability;
 
-            probability = GetProbability * bagProbability * (Settings.EVENT_RATE != 1 ? 1 - Settings.EVENT_RATE : 1);
+            this.probability = GetProbability * bagProbability * Settings.EVENT_RATE;
 
             switch (type)
             {
@@ -841,9 +840,6 @@ namespace LoESoft.GameServer.logic.loot
             )
         {
             Lootstate = lootState;
-
-            if (playerDat == null)
-                return;
 
             foreach (var i in children)
                 i.Populate(enemy, null, rand, lootState, lootDefs);

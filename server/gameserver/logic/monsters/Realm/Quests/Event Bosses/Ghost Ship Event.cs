@@ -224,7 +224,7 @@ namespace LoESoft.GameServer.logic
                         new CyanBag("Wine Cellar Incantation")
                         ),
                     new CyanBag("Spectral Cloth Armor"),
-                    new BlueBag(Potions.POTION_OF_WISDOM),
+                    new BlueBag(Potions.POTION_OF_WISDOM, true),
                     new WhiteBag(new string[] { "Spirit Dagger", "Ghostly Prism" })
                     )
             )

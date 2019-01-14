@@ -51,13 +51,8 @@ namespace LoESoft.Core
                 Content = val
             };
             try
-            {
-                Database.Connection?.Publish(channel, JsonConvert.SerializeObject(message));
-            }
-            catch (Exception)
-            {
-                return;
-            }
+            { Database.Connection.Publish(channel, JsonConvert.SerializeObject(message)); }
+            catch { }
         }
 
         public void AddHandler<T>(string channel, EventHandler<InterServerEventArgs<T>> handler) where T : struct

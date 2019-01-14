@@ -1529,8 +1529,8 @@ namespace LoESoft.GameServer.logic
                         )
                     ),
                 new Drops(
-                    new MostDamagers(3, new BlueBag(Potions.POTION_OF_MANA, true)),
-                    new MostDamagers(2, new BlueBag(Potions.POTION_OF_LIFE, true)),
+                    new BlueBag(Potions.POTION_OF_MANA),
+                    new BlueBag(Potions.POTION_OF_LIFE),
                     new CyanBag(ItemType.Armor, 13),
                     new CyanBag(ItemType.Weapon, 12),
                     new CyanBag(ItemType.Ability, 6),
@@ -1554,12 +1554,12 @@ namespace LoESoft.GameServer.logic
                         new CyanBag(ItemType.Ring, 6)
                         ),
                     new OnlyOne(
-                        new BlueBag(Potions.POTION_OF_ATTACK),
-                        new BlueBag(Potions.POTION_OF_DEFENSE),
-                        new BlueBag(Potions.POTION_OF_SPEED),
-                        new BlueBag(Potions.POTION_OF_DEXTERITY),
-                        new BlueBag(Potions.POTION_OF_VITALITY),
-                        new BlueBag(Potions.POTION_OF_WISDOM)
+                        new BlueBag(Potions.POTION_OF_ATTACK, true),
+                        new BlueBag(Potions.POTION_OF_DEFENSE, true),
+                        new BlueBag(Potions.POTION_OF_SPEED, true),
+                        new BlueBag(Potions.POTION_OF_DEXTERITY, true),
+                        new BlueBag(Potions.POTION_OF_VITALITY, true),
+                        new BlueBag(Potions.POTION_OF_WISDOM, true)
                         ),
                     new OnlyOne(
                         new CyanBag("Sentient Staff"),

@@ -9,6 +9,8 @@ namespace LoESoft.GameServer.networking
 
         public ProtocolState State { get; internal set; }
         public Player Player { get; internal set; }
+        public long LastInvDropEntry { get; internal set; } = 0;
+        public long LastInvSwapEntry { get; internal set; } = 0;
 
         public bool IsReady()
             => State == ProtocolState.Disconnected ? false :

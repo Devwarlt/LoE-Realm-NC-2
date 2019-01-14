@@ -22,7 +22,7 @@ namespace LoESoft.GameServer.realm
         public RealmPortalMonitor(RealmManager manager)
         {
             this.manager = manager;
-            nexus = manager.Worlds[(int) WorldID.NEXUS_ID] as Nexus;
+            nexus = manager.Worlds[(int)WorldID.NEXUS_ID] as Nexus;
             lock (worldLock)
                 foreach (KeyValuePair<int, World> i in manager.Worlds)
                 {
@@ -43,18 +43,18 @@ namespace LoESoft.GameServer.realm
                 nexus.Map[x, y].Region != TileRegion.Realm_Portals);
             return new Position { X = x, Y = y };
         }
-		private readonly RealmManager manager_;
-		public bool AddPortal(int worldId,World world, Portal portal = null, Position? position = null, bool announce = true)
-		{
-			if (announce)
-				foreach (var w in manager_.Worlds.Values)
-					foreach (var p in w.Players.Values)
-						p.SendInfo(
-							$"A portal to {(w == world ? "this land" : world.GetDisplayName())} has opened up{(w is Nexus ? "" : " in Nexus")}.");
-			return true;
-		}
 
-		public void WorldAdded(World world)
+        public bool AddPortal(int worldId, World world, Portal portal = null, Position? position = null, bool announce = true)
+        {
+            if (announce)
+                foreach (var w in GameServer.Manager.Worlds.Values)
+                    foreach (var p in w.Players.Values)
+                        p.SendInfo(
+                            $"A portal to {(w == world ? "this land" : world.GetDisplayName())} has opened up{(w is Nexus ? "" : " in Nexus")}.");
+            return true;
+        }
+
+        public void WorldAdded(World world)
         {
             lock (worldLock)
             {
@@ -68,8 +68,7 @@ namespace LoESoft.GameServer.realm
                 portal.Move(pos.X + 0.5f, pos.Y + 0.5f);
                 nexus.EnterWorld(portal);
                 portals.Add(world, portal);
-				
-			}
+            }
         }
 
         public void WorldRemoved(World world)
@@ -120,7 +119,7 @@ namespace LoESoft.GameServer.realm
             {
                 World[] worlds = portals.Keys.ToArray();
                 if (worlds.Length == 0)
-                    return manager.Worlds[(int) WorldID.NEXUS_ID];
+                    return manager.Worlds[(int)WorldID.NEXUS_ID];
                 return worlds[Environment.TickCount % worlds.Length];
             }
         }

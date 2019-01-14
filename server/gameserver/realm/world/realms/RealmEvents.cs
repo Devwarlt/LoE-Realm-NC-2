@@ -25,6 +25,7 @@ namespace LoESoft.GameServer.realm
             new RealmEvent("Ghost Ship", 0.2, false, new GhostShip(), "My Ghost Ship will terrorize you pathetic peasants!")
         };
 
+        public List<string> UniqueEvents { get; set; } = new List<string>();
         public List<string> ActualRunningEvents { get; set; } = new List<string>();
 
         public void HandleRealmEvent(Enemy enemy, Player killer)

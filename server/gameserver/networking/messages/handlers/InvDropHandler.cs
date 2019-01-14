@@ -22,11 +22,23 @@ namespace LoESoft.GameServer.networking.handlers
         {
             if (client.Player.Owner == null)
                 return;
+
             if (message.SlotObject.ObjectId != client.Player.Id)
                 return;
 
             Manager.Logic.AddPendingAction(t =>
             {
+                if (client.LastInvDropEntry == 0)
+                    client.LastInvDropEntry = t.TotalElapsedMs;
+
+                if (t.TotalElapsedMs - client.LastInvDropEntry < 1000)
+                {
+                    client.Player.SendHelp("You cannot drop items that fast.");
+                    return;
+                }
+                else
+                    client.LastInvDropEntry = t.TotalElapsedMs;
+
                 //TODO: locker again
                 const ushort NORM_BAG = 0x0500;
                 const ushort SOUL_BAG = 0x0507;
@@ -68,8 +80,8 @@ namespace LoESoft.GameServer.networking.handlers
                     {
                         container = new Container(NORM_BAG, 1000 * 30, true);
                     }
-                    float bagx = entity.X + (float) ((invRand.NextDouble() * 2 - 1) * 0.5);
-                    float bagy = entity.Y + (float) ((invRand.NextDouble() * 2 - 1) * 0.5);
+                    float bagx = entity.X + (float)((invRand.NextDouble() * 2 - 1) * 0.5);
+                    float bagy = entity.Y + (float)((invRand.NextDouble() * 2 - 1) * 0.5);
                     try
                     {
                         container.Inventory[0] = item;
@@ -95,7 +107,7 @@ namespace LoESoft.GameServer.networking.handlers
                         log4net.InfoFormat(client.Player.Name + " just attempted to dupe.");
                     }
                 }
-            }, PendingPriority.Networking);
+            });
         }
     }
 }

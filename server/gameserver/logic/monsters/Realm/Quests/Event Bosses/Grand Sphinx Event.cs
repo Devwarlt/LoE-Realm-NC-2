@@ -87,7 +87,7 @@ namespace LoESoft.GameServer.logic
             ),
             new Drops(
                 new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4 }),
-                new BlueBag(new[] { Potions.POTION_OF_VITALITY, Potions.POTION_OF_WISDOM }, new[] { false, false }),
+                new BlueBag(new[] { Potions.POTION_OF_VITALITY, Potions.POTION_OF_WISDOM }, new[] { true, true }),
                 new WhiteBag("Helm of the Juggernaut")
                 )
             )
