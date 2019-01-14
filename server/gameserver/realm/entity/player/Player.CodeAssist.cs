@@ -381,10 +381,13 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             if (HasConditionEffect(ConditionEffectIndex.Paused))
                 return false;
+
             if (HasConditionEffect(ConditionEffectIndex.Invisible))
                 return false;
+
             if (newbieTime > 0)
                 return false;
+
             return true;
         }
 
