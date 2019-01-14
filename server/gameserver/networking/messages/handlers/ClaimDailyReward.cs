@@ -23,13 +23,13 @@ namespace LoESoft.GameServer.networking.handlers
             #region Message vars
 
             int ClaimKey = (Convert.ToInt32(message.ClaimKey) - 1);
-            int Type = Convert.ToInt32(message.Type); // probably for NonCon and Con TODO
+            string Type = message.Type; // TODO Consecutive Calendar
 
             #endregion
 
-            if (MonthCalendarUtils.DISABLE_CALENDAR || CalendarDb.IsNull ||
-                CalendarDb.ClaimedDays.ToCommaSepString().Contains(message.ClaimKey) 
-                || CalendarDb.UnlockableDays < ClaimKey || ClaimKey > Calendar.Count)
+            if (MonthCalendarUtils.DISABLE_CALENDAR || DateTime.UtcNow >= MonthCalendarUtils.EndDate || CalendarDb.IsNull ||
+                CalendarDb.ClaimedDays.ToCommaSepString().Contains(message.ClaimKey + 1) 
+                || CalendarDb.UnlockableDays < ClaimKey || Calendar.Count < ClaimKey)
                 return;
 
             client.SendMessage(new LOGIN_REWARD_MSG
@@ -53,7 +53,7 @@ namespace LoESoft.GameServer.networking.handlers
 
             var ClaimedDays = CalendarDb.ClaimedDays.ToList();
 
-            ClaimedDays.Add(ClaimKey);
+            ClaimedDays.Add(ClaimKey + 1);
             CalendarDb.ClaimedDays = ClaimedDays.ToArray();
             CalendarDb.Flush();
 
