@@ -2,6 +2,8 @@
 
 using LoESoft.Core.config;
 using LoESoft.Core.database;
+using LoESoft.GameServer.networking;
+using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.entity.player;
 using System;
 using System.Collections.Generic;
@@ -172,7 +174,7 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                                         gifts.Add(GameServer.Manager.GameData.IdToObjectType[currentTask.RewardDatas[i].ObjectId]);
 
                                 player.Client.Account.Gifts = gifts.ToArray();
-                                player.Client.Account.Flush();
+                                player.Client.Account.FlushAsync();
                                 player.Client.Account.Reload();
                                 player.ActualTask = null;
                                 player.SaveToCharacter();
@@ -211,6 +213,92 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                             Key = Empty<byte>.Array,
                         });
                         return;
+                    #endregion
+                    #region "Event: max"
+                    case "max":
+                        var eventmax = new DateTime(2019, 1, 17, 12, 59, 59);
+
+                        if (DateTime.UtcNow > eventmax)
+                            callback = "The event already over, try again later.";
+                        else
+                        {
+                            player.Stats[0] = player.ObjectDesc.MaxHitPoints;
+                            player.Stats[1] = player.ObjectDesc.MaxMagicPoints;
+                            player.Stats[2] = player.ObjectDesc.MaxAttack;
+                            player.Stats[3] = player.ObjectDesc.MaxDefense;
+                            player.Stats[4] = player.ObjectDesc.MaxSpeed;
+                            player.Stats[5] = player.ObjectDesc.MaxHpRegen;
+                            player.Stats[6] = player.ObjectDesc.MaxMpRegen;
+                            player.Stats[7] = player.ObjectDesc.MaxDexterity;
+                            player.SaveToCharacter();
+                            player.UpdateCount++;
+
+                            callback = "You have been maxed!";
+                        }
+                        break;
+                    #endregion
+                    #region "Event: vip"
+                    case "vip":
+                        var eventvip = new DateTime(2019, 1, 17, 12, 59, 59);
+
+                        if (DateTime.UtcNow > eventvip)
+                            callback = "The event already over, try again later.";
+                        else
+                        {
+                            if (player.AccountType != (int)AccountType.REGULAR)
+                                callback = "You already have VIP perks.";
+                            else
+                            {
+                                var _outgoing = new List<Message>();
+                                var _world = GameServer.Manager.GetWorld(player.Owner.Id);
+                                var acc = player.Client.Account;
+                                var days = 7;
+
+                                var _notification = new NOTIFICATION
+                                {
+                                    Color = new ARGB(0xFFFFFF),
+                                    ObjectId = player.Id,
+                                    Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"Success!\"}}"
+                                };
+
+                                _outgoing.Add(_notification);
+
+                                var _showeffect = new SHOWEFFECT
+                                {
+                                    Color = new ARGB(0xffddff00),
+                                    EffectType = EffectType.Nova,
+                                    PosA = new Position { X = 2 }
+                                };
+
+                                _outgoing.Add(_showeffect);
+
+                                player.Owner.BroadcastMessage(_outgoing, null);
+
+                                acc.AccountLifetime = DateTime.Now;
+                                acc.AccountLifetime = acc.AccountLifetime.AddDays(days);
+                                acc.AccountType = (int)AccountType.VIP;
+                                acc.FlushAsync();
+                                acc.Reload();
+
+                                player.UpdateCount++;
+
+                                player.SendInfo("Reconnecting...");
+
+                                var _reconnect = new RECONNECT
+                                {
+                                    GameId = (int)WorldID.NEXUS_ID, // change to Drasta Citadel in future versions!
+                                    Host = string.Empty,
+                                    Key = Empty<byte>.Array,
+                                    Name = "Nexus",
+                                    Port = Settings.GAMESERVER.PORT
+                                };
+
+                                _world.Timers.Add(new WorldTimer(2000, (w, t) => player.Client.Reconnect(_reconnect)));
+
+                                callback = $"Success! You received {days} day{(days > 1 ? "s" : "")} as account lifetime to your VIP account type along event!";
+                            }
+                        }
+                        break;
                     #endregion
                     case "hi":
                     case "hello":

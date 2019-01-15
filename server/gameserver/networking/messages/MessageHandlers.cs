@@ -23,6 +23,7 @@ namespace LoESoft.GameServer.networking
         public void Handle(Client client, IncomingMessage message)
         {
             Client = client;
+
             HandleMessage(client, (T)message);
         }
 

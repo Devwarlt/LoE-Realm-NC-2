@@ -23,8 +23,21 @@ namespace LoESoft.GameServer.networking.handlers
             if (client.Player.Owner == null)
                 return;
 
+            if (!client.InvSwapClockInitialized)
+            {
+                client.InvSwapClock.Elapsed += delegate { client.CanInvSwap = true; };
+                client.InvSwapClock.Start();
+                client.InvSwapClockInitialized = true;
+            }
+
             Manager.Logic.AddPendingAction(t =>
             {
+                if (!client.CanInvSwap)
+                {
+                    client.Player.SendHelp("You cannot swap items that fast.");
+                    return;
+                }
+
                 Entity en1 = client.Player.Owner.GetEntity(message.SlotObject1.ObjectId);
                 Entity en2 = client.Player.Owner.GetEntity(message.SlotObject2.ObjectId);
                 IContainer con1 = en1 as IContainer;
@@ -88,12 +101,6 @@ namespace LoESoft.GameServer.networking.handlers
                     en2.UpdateCount++;
                     return;
                 }
-                //todo
-                //if (!IsValid(item1, item2, con1, con2, packet, client))
-                //{
-                //    client.Disconnect();
-                //    return;
-                //}
 
                 if (item1 != null && item2 != null && item1.Quantity > 0 && item2.Quantity > 0 && en1 is Player && en2 is Player && en1 == en2 && message.SlotObject1.SlotId != message.SlotObject2.SlotId)
                 {
@@ -147,7 +154,7 @@ namespace LoESoft.GameServer.networking.handlers
                     giftsList.Remove(con1.Inventory[message.SlotObject1.SlotId].ObjectType);
                     int[] result = giftsList.ToArray();
                     client.Account.Gifts = result;
-                    client.Account.Flush();
+                    client.Account.FlushAsync();
 
                     con1.Inventory[message.SlotObject1.SlotId] = null;
                     con2.Inventory[message.SlotObject2.SlotId] = item1;
@@ -204,7 +211,9 @@ namespace LoESoft.GameServer.networking.handlers
                 if (client.Player.Owner is Vault)
                     if ((client.Player.Owner as Vault).PlayerOwnerName == client.Account.Name)
                         return;
+
                 client.Player.SaveToCharacter();
+                client.CanInvSwap = false;
             }, PendingPriority.Networking);
         }
 
@@ -224,7 +233,7 @@ namespace LoESoft.GameServer.networking.handlers
                     log4net.FatalFormat("Cheat engine detected for player {0},\nInvalid InvSwap. {1} instead of {2}",
                             client.Player.Name, Manager.GameData.Items[packet.SlotObject1.ObjectType].ObjectId, item1.ObjectId);
                     foreach (Player player in client.Player.Owner.Players.Values)
-                        if (player.Client.Account.AccountType >= (int) LoESoft.Core.config.AccountType.DEVELOPER)
+                        if (player.Client.Account.AccountType >= (int)LoESoft.Core.config.AccountType.DEVELOPER)
                             player.SendInfo(string.Format("Cheat engine detected for player {0},\nInvalid InvSwap. {1} instead of {2}",
                                 client.Player.Name, Manager.GameData.Items[packet.SlotObject1.ObjectType].ObjectId, item1.ObjectId));
                 }
@@ -238,7 +247,7 @@ namespace LoESoft.GameServer.networking.handlers
                     log4net.FatalFormat("Cheat engine detected for player {0},\nInvalid InvSwap. {1} instead of {2}",
                             client.Player.Name, item1.ObjectId, Manager.GameData.Items[packet.SlotObject2.ObjectType].ObjectId);
                     foreach (Player player in client.Player.Owner.Players.Values)
-                        if (player.Client.Account.AccountType >= (int) LoESoft.Core.config.AccountType.DEVELOPER)
+                        if (player.Client.Account.AccountType >= (int)LoESoft.Core.config.AccountType.DEVELOPER)
                             player.SendInfo(string.Format("Cheat engine detected for player {0},\nInvalid InvSwap. {1} instead of {2}",
                                 client.Player.Name, item1.ObjectId, Manager.GameData.Items[packet.SlotObject2.ObjectType].ObjectId));
                 }

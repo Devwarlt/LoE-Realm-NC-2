@@ -204,7 +204,7 @@ namespace LoESoft.GameServer.networking.handlers
                     if (_vipRegistration <= _currentTime)
                     {
                         acc.AccountType = (int)AccountType.REGULAR;
-                        acc.Flush();
+                        acc.FlushAsync();
                         acc.Reload();
 
                         var _failure = new FAILURE

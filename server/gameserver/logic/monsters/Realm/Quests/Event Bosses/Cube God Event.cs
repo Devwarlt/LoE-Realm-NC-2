@@ -18,7 +18,7 @@ namespace LoESoft.GameServer.logic
                         ),
                     new State("flashing",
                         new AddCond(ConditionEffectIndex.Invulnerable), // ok
-                        new Flashing(0xFF0000, 0.5, (int) (10 / 0.5)),
+                        new Flashing(0xFF0000, 0.5, (int)(10 / 0.5)),
                         new TimedTransition(5000, "final")
                         ),
                     new State("final",
@@ -52,12 +52,12 @@ namespace LoESoft.GameServer.logic
                         new CyanBag(ItemType.Ring, 5)
                         ),
                     new OnlyOne(
-                        new BlueBag(Potions.POTION_OF_ATTACK),
-                        new BlueBag(Potions.POTION_OF_DEFENSE),
-                        new BlueBag(Potions.POTION_OF_SPEED),
-                        new BlueBag(Potions.POTION_OF_DEXTERITY),
-                        new BlueBag(Potions.POTION_OF_VITALITY),
-                        new BlueBag(Potions.POTION_OF_WISDOM)
+                        new BlueBag(Potions.POTION_OF_ATTACK, true),
+                        new BlueBag(Potions.POTION_OF_DEFENSE, true),
+                        new BlueBag(Potions.POTION_OF_SPEED, true),
+                        new BlueBag(Potions.POTION_OF_DEXTERITY, true),
+                        new BlueBag(Potions.POTION_OF_VITALITY, true),
+                        new BlueBag(Potions.POTION_OF_WISDOM, true)
                         ),
                     new WhiteBag("Dirk of Cronus")
                     )

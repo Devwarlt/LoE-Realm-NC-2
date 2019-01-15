@@ -67,13 +67,13 @@ namespace LoESoft.AppEngine
             while (Console.ReadKey(true).Key != ConsoleKey.Escape)
                 ;
 
-            Database.Connection.Dispose();
+            Database.Dispose();
 
             AppEngineManager._shutdown = true;
 
             Log.Warn("Terminating AppEngine, disposing all instances.");
 
-            var webSocketIAsyncResult = new WebSocketDelegate(AppEngineManager.SafeShutdown).BeginInvoke(new AsyncCallback(AppEngineManager.SafeDispose), null);
+            var webSocketIAsyncResult = new WebSocketDelegate(() => true).BeginInvoke(new AsyncCallback(AppEngineManager.SafeDispose), null);
             webSocketIAsyncResult.AsyncWaitHandle.WaitOne(5000, true);
         }
     }

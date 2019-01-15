@@ -62,62 +62,66 @@ namespace LoESoft.GameServer
             if (!Directory.Exists(TaskCachePath)) Directory.CreateDirectory(TaskCachePath);
             if (!Directory.Exists(AchievementCachePath)) Directory.CreateDirectory(AchievementCachePath);
 
-            var db = new Database();
-            GameUsage = -1;
-
-            Manager = new RealmManager(db);
-
-            AutoRestart = Settings.NETWORKING.RESTART.ENABLE_RESTART;
-
-            Manager.Initialize();
-            new Thread(() => Manager.Run()) { IsBackground = true }.Start();
-
-            Log._("Message", Message.Messages.Count);
-
-            var server = new Server(Manager);
-            var policy = new PolicyServer();
-
-            Console.CancelKeyPress += (sender, e) => e.Cancel = true;
-
-            Settings.DISPLAY_SUPPORTED_VERSIONS();
-
-            Log.Info("Initializing GameServer...");
-
-            policy.Start();
-            server.Start();
-
-            if (AutoRestart)
+            try
             {
-                Chat = Manager.Chat;
-                Uptime = DateTime.Now;
-                Restart();
+                var db = new Database();
+                GameUsage = -1;
+
+                Manager = new RealmManager(db);
+
+                AutoRestart = Settings.NETWORKING.RESTART.ENABLE_RESTART;
+
+                Manager.Initialize();
+                Manager.Run();
+
+                Log._("Message", Message.Messages.Count);
+
+                var server = new Server(Manager);
+                var policy = new PolicyServer();
+
+                Console.CancelKeyPress += (sender, e) => e.Cancel = true;
+
+                Settings.DISPLAY_SUPPORTED_VERSIONS();
+
+                Log.Info("Initializing GameServer...");
+
+                policy.Start();
+                server.Start();
+
+                if (AutoRestart)
+                {
+                    Chat = Manager.Chat;
+                    Uptime = DateTime.Now;
+                    Restart();
+                }
+
+                Console.Title = Settings.GAMESERVER.TITLE;
+
+                Log.Info("Initializing GameServer... OK!");
+
+                Console.CancelKeyPress += delegate
+                {
+                    Shutdown?.Set();
+                };
+
+                while (Console.ReadKey(true).Key != ConsoleKey.Escape)
+                    ;
+
+                Log.Info("Terminating...");
+
+                server?.Stop();
+                policy?.Stop();
+                Manager?.Stop();
+                Manager?.Database.Dispose();
+                Shutdown?.Dispose();
+
+                Log.Warn("Terminated GameServer.");
+
+                Thread.Sleep(1000);
+
+                Environment.Exit(0);
             }
-
-            Console.Title = Settings.GAMESERVER.TITLE;
-
-            Log.Info("Initializing GameServer... OK!");
-
-            Console.CancelKeyPress += delegate
-            {
-                Shutdown?.Set();
-            };
-
-            while (Console.ReadKey(true).Key != ConsoleKey.Escape)
-                ;
-
-            Log.Info("Terminating...");
-
-            server?.Stop();
-            policy?.Stop();
-            Manager?.Stop();
-            Manager?.Database.Connection.Dispose();
-            Shutdown?.Dispose();
-
-            Log.Warn("Terminated GameServer.");
-
-            Thread.Sleep(1000);
-
-            Environment.Exit(0);
+            catch (Exception e) { ForceShutdown(e); }
         }
 
         private static int ToMiliseconds(int minutes) => minutes * 60 * 1000;
@@ -126,18 +130,14 @@ namespace LoESoft.GameServer
 
         public async static void ForceShutdown(Exception ex = null)
         {
-            Task task = Task.Delay(1000);
+            if (ex != null)
+                log.Error(ex);
 
-            await task;
-
-            task.Dispose();
+            await Task.Delay(1000);
 
             Process.Start(Settings.GAMESERVER.FILE);
 
             Environment.Exit(0);
-
-            if (ex != null)
-                Log.Error(ex.ToString());
         }
 
         public static void SafeRestart()

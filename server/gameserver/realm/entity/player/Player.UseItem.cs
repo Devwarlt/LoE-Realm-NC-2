@@ -1322,7 +1322,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             acc.AccountLifetime = DateTime.Now;
                             acc.AccountLifetime = acc.AccountLifetime.AddDays(days);
                             acc.AccountType = (int)Core.config.AccountType.VIP;
-                            acc.Flush();
+                            acc.FlushAsync();
                             acc.Reload();
 
                             UpdateCount++;
@@ -1385,7 +1385,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                         CurrentFame = Client.Account.Fame;
                                         Credits = Client.Account.Credits;
                                         Client.Account.Gifts = gifts.ToArray();
-                                        Client.Account.Flush();
+                                        Client.Account.FlushAsync();
                                         Client.Account.Reload();
 
                                         SendInfo($"You received as bonus reward: 200,000 EXP + 1000 Fame + 200 Realm Gold + 1 x {getUmbral} (Vault) + 1 x {getEgg} (Vault)!");

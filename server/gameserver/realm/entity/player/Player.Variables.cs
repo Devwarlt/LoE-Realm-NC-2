@@ -132,10 +132,5 @@ namespace LoESoft.GameServer.realm.entity.player
         public const int DcThreshold = 12000;
         private long _pingTime = -1;
         private long _pongTime = -1;
-        private int _cnt;
-        private long _sum;
-        public long TimeMap { get; private set; }
-        private long _latSum;
-        public int Latency { get; private set; }
     }
 }

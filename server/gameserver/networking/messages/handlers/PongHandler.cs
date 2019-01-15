@@ -13,6 +13,6 @@ namespace LoESoft.GameServer.networking.handlers
 
         protected override void HandleMessage(Client client, PONG message) => Manager.Logic.AddPendingAction(t => Handle(client, message, t));
 
-        private void Handle(Client client, PONG message, RealmTime t) => client.Player?.Pong(t, message);
+        private void Handle(Client client, PONG message, RealmTime t) => client.Player.Pong(t, message);
     }
 }

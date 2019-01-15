@@ -1,6 +1,7 @@
 ﻿#region
 
 using LoESoft.GameServer.logic.behaviors;
+using LoESoft.GameServer.logic.loot;
 using LoESoft.GameServer.logic.transitions;
 
 #endregion
@@ -12,7 +13,7 @@ namespace LoESoft.GameServer.logic
         private _ Avatar = () => Behav()
             .Init("shtrs Defense System",
                 new State(
-                    new DropPortalOnDeath("The Shatters", percent: 65, dropDelaySec: 2, XAdjustment: 0, YAdjustment: 2, PortalDespawnTimeSec: 70),
+                    //new DropPortalOnDeath("The Shatters", percent: 65, dropDelaySec: 2, XAdjustment: 0, YAdjustment: 2, PortalDespawnTimeSec: 70),
                     new ChangeGroundOnDeath(new[] { "Pure Evil" }, new[] { "shtrs Disaster Floor", "shtrs Shattered Floor" },
                     30),
                     new State("stars",
@@ -292,8 +293,8 @@ namespace LoESoft.GameServer.logic
                         new TimedTransition(3000, "stars")
                         ),
                     new State("Throwing niggos",
-                        new AddCond(ConditionEffectIndex.Invulnerable),
                         new State("Niggos like dancing",
+                            new AddCond(ConditionEffectIndex.Invulnerable),
                             new Taunt("Be consumed by shadow!"),
                             new TossObject("shtrs shadowmans", 5, 0, coolDown: 100000, coolDownOffset: 1900),
                             new TossObject("shtrs shadowmans", 5, 45, coolDown: 100000, coolDownOffset: 1900),
@@ -306,11 +307,11 @@ namespace LoESoft.GameServer.logic
                             new TimedTransition(4000, "kill niggos")
                             ),
                         new State("kill niggos",
-                            new AddCond(ConditionEffectIndex.Invulnerable),
                             new EntityNotExistsTransition("shtrs shadowmans", 100, "stars after niggo")
                             )
                         ),
                     new State("stars after niggo",
+                        new RemCond(ConditionEffectIndex.Invulnerable),
                         new Taunt("You show some strangth, but your coniction is lacking."),
                         new Taunt("BURN!!"),
                         new HpLessTransition(.6, "fuck this eyes"),
@@ -603,14 +604,15 @@ namespace LoESoft.GameServer.logic
                         new TimedTransition(1600, "spiral after niggo")
                         ),
                     new State("fuck this eyes",
-                        new AddCond(ConditionEffectIndex.Invulnerable),
                         new State("eyes...",
+                           new AddCond(ConditionEffectIndex.Invulnerable),
                            new Taunt("EYE see you!"),
-                           new Spawn("shtrs eyeswarmer", 5, 1, coolDown: 10000),
+                           new Spawn("shtrs eyeswarmer", 12, 1, coolDown: 10000),
                            new EntityNotExistsTransition("shtrs eyeswarmer", 10, "stars after eyes")
                            )
                         ),
                     new State("stars after eyes",
+                        new RemCond(ConditionEffectIndex.Invulnerable),
                         new Taunt("Do not test me whelps!!"),
                         new Taunt("BURN!!"),
                         new HpLessTransition(.4, "blobombs do boom!"),
@@ -904,14 +906,15 @@ namespace LoESoft.GameServer.logic
                         ),
                     new State("blobombs do boom!",
                         new State(
-                            new AddCond(ConditionEffectIndex.Invulnerable),
                             new State("BOOM BOOM BOOM",
+                                new AddCond(ConditionEffectIndex.Invulnerable),
                                 new Taunt("You shall be food for the ether. Blobs, attack!"),
                                 new EntityOrder(50, "shtrs blobomb maker", "blobombs avatar"),
                                 new TimedTransition(6000, "stars after blo")
                                 )
                             ),
                     new State("stars after blo",
+                        new RemCond(ConditionEffectIndex.Invulnerable),
                         new EntityOrder(50, "shtrs blobomb maker", "AVATAR HELP!"),
                         new Taunt("I WILL NOT FALL!"),
                         new Taunt("BURN!!"),
@@ -1205,8 +1208,8 @@ namespace LoESoft.GameServer.logic
                         new TimedTransition(1600, "spiral after blo")
                         ),
                     new State("Pillars",
-                        new AddCond(ConditionEffectIndex.Invulnerable),
                         new State("Pillars activated!",
+                            new AddCond(ConditionEffectIndex.Invulnerable),
                             new Taunt("ACTIVATING PILLARS DEFENSES."),
                             new EntityOrder(30, "shtrs Pillar 1", "PROTECT"),
                             new EntityOrder(30, "shtrs Pillar 2", "PROTECT"),
@@ -1219,6 +1222,8 @@ namespace LoESoft.GameServer.logic
                             )
                         ),
                     new State("stars after pillars",
+                        new RemCond(ConditionEffectIndex.Invulnerable),
+                        new AddCond(ConditionEffectIndex.Armored),
                         new Taunt("Destroying me will only serve to bring you closer to death."),
                         new Taunt("BURN!!"),
                         new HpLessTransition(.05, "Die"),
@@ -1511,8 +1516,9 @@ namespace LoESoft.GameServer.logic
                         new TimedTransition(1600, "spiral after pillars")
                         ),
                     new State("Die",
-                        new AddCond(ConditionEffectIndex.Invulnerable),
                         new State("die die",
+                            new AddCond(ConditionEffectIndex.Invulnerable),
+                            new RemCond(ConditionEffectIndex.Armored),
                             new Taunt("YOU KNOW NOT WHAT YOU HAVE DONE!"),
                             new TimedTransition(4000, "suicide")
                             ),
@@ -1521,8 +1527,50 @@ namespace LoESoft.GameServer.logic
                             )
                         )
                         )
+                    ),
+                new Drops(
+                    new BlueBag(Potions.POTION_OF_MANA),
+                    new BlueBag(Potions.POTION_OF_LIFE),
+                    new CyanBag(ItemType.Armor, 13),
+                    new CyanBag(ItemType.Weapon, 12),
+                    new CyanBag(ItemType.Ability, 6),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 9),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4 }),
+                    new OnlyOne(
+                        new CyanBag(ItemType.Weapon, 10),
+                        new CyanBag(ItemType.Weapon, 11),
+                        new CyanBag(ItemType.Armor, 10),
+                        new CyanBag(ItemType.Armor, 11),
+                        new CyanBag(ItemType.Armor, 12),
+                        new CyanBag(ItemType.Ability, 5)
+                        ),
+                    new OnlyOne(
+                        new CyanBag(ItemType.Weapon, 12),
+                        new CyanBag(ItemType.Armor, 13),
+                        new CyanBag(ItemType.Ability, 6),
+                        new CyanBag(ItemType.Ring, 6)
+                        ),
+                    new OnlyOne(
+                        new BlueBag(Potions.POTION_OF_ATTACK, true),
+                        new BlueBag(Potions.POTION_OF_DEFENSE, true),
+                        new BlueBag(Potions.POTION_OF_SPEED, true),
+                        new BlueBag(Potions.POTION_OF_DEXTERITY, true),
+                        new BlueBag(Potions.POTION_OF_VITALITY, true),
+                        new BlueBag(Potions.POTION_OF_WISDOM, true)
+                        ),
+                    new OnlyOne(
+                        new CyanBag("Sentient Staff"),
+                        new CyanBag("Ancient Spell: Pierce"),
+                        new CyanBag("The Robe of Twilight"),
+                        new CyanBag("The Forgotten Ring")
+                        ),
+                    new WhiteBag(new string[] { "Tablet of the King's Avatar", "Bracer of the Guardian", "The Twilight Gemstone", "The Forgotten Crown", "Ice Crown" })
                     )
             )
+
             .Init("shtrs shadowmans",
                 new State(
                     new AddCond(ConditionEffectIndex.Armored),

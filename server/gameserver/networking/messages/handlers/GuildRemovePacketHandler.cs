@@ -36,7 +36,7 @@ namespace LoESoft.GameServer.networking.handlers
                 player.Guild = "";
                 player.GuildRank = -1;
 
-                client.Account.Flush();
+                client.Account.FlushAsync();
 
                 return;
             }
@@ -66,7 +66,7 @@ namespace LoESoft.GameServer.networking.handlers
                     targetPlayer.Guild = "";
                     targetPlayer.GuildRank = -1;
 
-                    client.Account.Flush();
+                    client.Account.FlushAsync();
 
                     Manager.Chat.Guild(player, $"{targetPlayer.Name} has been kicked from the guild by {player.Name}.", true);
                     targetPlayer.SendInfo("You have been kicked from the guild.");

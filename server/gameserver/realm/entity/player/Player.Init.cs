@@ -2,6 +2,7 @@
 
 using LoESoft.Core.config;
 using LoESoft.Core.database;
+using LoESoft.Core.models;
 using LoESoft.GameServer.logic;
 using LoESoft.GameServer.logic.skills.Pets;
 using LoESoft.GameServer.networking;
@@ -11,6 +12,7 @@ using LoESoft.GameServer.realm.terrain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Xml.Linq;
 using static LoESoft.GameServer.networking.Client;
 
@@ -36,7 +38,6 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             try
             {
-				
                 if (client.Account.Admin == true)
                     Admin = 1;
                 Achievements = new List<string>();
@@ -109,8 +110,8 @@ namespace LoESoft.GameServer.realm.entity.player
 
                 try
                 {
-                    Locked = client.Account.Database.GetLockeds(client.Account);
-                    Ignored = client.Account.Database.GetIgnoreds(client.Account);
+                    Locked = GameServer.Manager.Database.GetLockeds(client.Account);
+                    Ignored = GameServer.Manager.Database.GetIgnoreds(client.Account);
                 }
                 catch (Exception) { }
 
@@ -323,7 +324,7 @@ namespace LoESoft.GameServer.realm.entity.player
             var newposition = owner.RemovePositionFromReconnect(AccountId);
 
             if (newposition != null)
-                Move((int)newposition.Item1, (int)newposition.Item2);
+                Move((int)newposition.Item1 + 0.5f, (int)newposition.Item2 + 0.5f);
             else
                 Move(x + 0.5f, y + 0.5f);
 
@@ -354,14 +355,14 @@ namespace LoESoft.GameServer.realm.entity.player
                 Owner.EnterWorld(Pet);
                 Pet.IsPet = true;
             }
-			//var player = Resolve("Filisha");
-			SendAccountList(Locked, ACCOUNTLIST.LOCKED_LIST_ID);
+
+            SendAccountList(Locked, ACCOUNTLIST.LOCKED_LIST_ID);
             SendAccountList(Ignored, ACCOUNTLIST.IGNORED_LIST_ID);
 
             CheckSetTypeSkin();
 
             if (Settings.SERVER_MODE == Settings.ServerMode.Local)
-                if ((AccountType)AccountType == Core.config.AccountType.DEVELOPER)
+                if ((AccountType)AccountType == Core.config.AccountType.ADMIN)
                 {
                     var invincible = new ConditionEffect
                     {
@@ -469,32 +470,36 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             int score = 0;
 
-            if (enemy.Oryx)
-                score += 100000;
+            try
+            {
+                if (enemy.Oryx)
+                    score += 100000;
 
-            if (enemy.Cube)
-                score += 2500;
+                if (enemy.Cube)
+                    score += 2500;
 
-            if (enemy.God)
-                score += 500;
+                if (enemy.God)
+                    score += 500;
 
-            if (enemy.Hero)
-                score += 1250;
+                if (enemy.Hero)
+                    score += 1250;
 
-            if (enemy.Encounter)
-                score += 5000;
+                if (enemy.Encounter)
+                    score += 5000;
 
-            if (enemy.Quest)
-                score += 250;
+                if (enemy.Quest)
+                    score += 250;
 
-            if (enemy.ObjectId.ToLower().Contains("maurth"))
-                score += 100000;
+                if (enemy.ObjectId == "Maurth the Succubus Princess")
+                    score += 100000;
 
-            if (enemy.ObjectId.ToLower().Contains("undertaker"))
-                score += 500000;
+                if (enemy.ObjectId == "Undertaker the Great Juggernaut")
+                    score += 500000;
 
-            score += enemy.MaxHitPoints;
-            score += enemy.Defense * enemy.Level;
+                score += enemy.MaxHitPoints;
+                score += enemy.Defense * enemy.Level;
+            }
+            catch { }
 
             return score;
         }

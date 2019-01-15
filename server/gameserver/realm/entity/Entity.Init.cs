@@ -716,6 +716,10 @@ namespace LoESoft.GameServer.realm
             return (ConditionEffects & (ConditionEffects)((ulong)1 << (int)eff)) != 0;
         }
 
+        public void RemoveConditionEffect(ConditionEffectIndex effect)
+        {
+        }
+
         public void ApplyConditionEffect(ConditionEffectIndex effect, int durationMs = -1)
         {
             if (!ApplyCondition(effect))

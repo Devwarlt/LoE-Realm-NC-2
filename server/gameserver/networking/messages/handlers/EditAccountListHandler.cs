@@ -35,11 +35,11 @@ namespace LoESoft.GameServer.networking.handlers
             switch (message.AccountListId)
             {
                 case ACCOUNTLIST.LOCKED_LIST_ID:
-                    client.Account.Database.LockAccount(client.Account, int.Parse(target.AccountId));
+                    GameServer.Manager.Database.LockAccount(client.Account, int.Parse(target.AccountId));
                     break;
 
                 case ACCOUNTLIST.IGNORED_LIST_ID:
-                    client.Account.Database.IgnoreAccount(client.Account, int.Parse(target.AccountId));
+                    GameServer.Manager.Database.IgnoreAccount(client.Account, int.Parse(target.AccountId));
                     break;
             }
         }

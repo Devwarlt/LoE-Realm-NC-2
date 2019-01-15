@@ -201,6 +201,7 @@ namespace LoESoft.GameServer.logic
                         new WhiteBag("Blizzard Sorcerer Skin")
                         ),
                     new WhiteBag("Helm of the Juggernaut"),
+                    new WhiteBag("The Rusher Skin"),
                     new BlueBag(Potions.POTION_OF_LIFE, true),
                     new BlueBag(Potions.POTION_OF_MANA, true),
                     new OnlyOne(

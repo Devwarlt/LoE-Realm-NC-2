@@ -252,7 +252,7 @@ namespace LoESoft.GameServer.realm.commands
                 }
             }
 
-            foreach (ClientData cData in GameServer.Manager.ClientManager.Values)
+            foreach (var cData in GameServer.Manager.ClientManager.Values)
             {
                 if (cData.Client.Account.NameChosen && cData.Client.Account.Name.EqualsIgnoreCase(playername))
                 {

@@ -381,10 +381,13 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             if (HasConditionEffect(ConditionEffectIndex.Paused))
                 return false;
+
             if (HasConditionEffect(ConditionEffectIndex.Invisible))
                 return false;
+
             if (newbieTime > 0)
                 return false;
+
             return true;
         }
 
@@ -406,7 +409,7 @@ namespace LoESoft.GameServer.realm.entity.player
         private readonly ConcurrentQueue<long> _updateAckTimeout = new ConcurrentQueue<long>();
         private readonly ConcurrentQueue<long> _gotoAckTimeout = new ConcurrentQueue<long>();
 
-        private bool once { get; set; }
+        private bool _once { get; set; }
         private int DcThresholdCounter { get; set; } = 0;
 
         public bool KeepAlive(RealmTime time)
@@ -417,21 +420,23 @@ namespace LoESoft.GameServer.realm.entity.player
                 _pongTime = time.TotalElapsedMs;
             }
 
-            if (time.TotalElapsedMs - _pongTime > DcThreshold)
+            var pong = time.TotalElapsedMs - _pongTime;
+
+            if (pong > DcThreshold * Settings.GAMESERVER.TICKETS_PER_SECOND)
             {
+                if (!HasConditionEffect(ConditionEffectIndex.Invincible))
+                    ApplyConditionEffect(ConditionEffectIndex.Invincible);
+
                 if (DcThresholdCounter <= 10)
-                {
-                    Client.SendMessage(new PING() { Serial = (int)time.TotalElapsedMs });
                     DcThresholdCounter++;
-                }
                 else
                 {
                     if (Owner == null)
                         return false;
 
-                    if (!once)
+                    if (!_once)
                     {
-                        once = true;
+                        _once = true;
 
                         SendHelp("You dropped your connection with the server! Reconnecting...");
 
@@ -450,8 +455,19 @@ namespace LoESoft.GameServer.realm.entity.player
                     return false;
                 }
             }
+            else
+            {
+                if (HasConditionEffect(ConditionEffects.Invincible))
+                {
+                    ApplyConditionEffect(ConditionEffectIndex.Invincible, 0);
 
-            if (time.TotalElapsedMs - _pingTime < PingPeriod)
+                    DcThresholdCounter = 0;
+                }
+            }
+
+            var ping = time.TotalElapsedMs - _pingTime;
+
+            if (ping < PingPeriod * Settings.GAMESERVER.TICKETS_PER_SECOND)
                 return true;
 
             _pingTime = time.TotalElapsedMs;
@@ -480,22 +496,7 @@ namespace LoESoft.GameServer.realm.entity.player
             return true;
         }
 
-        public void Pong(RealmTime time, PONG pong)
-        {
-            try
-            {
-                _cnt++;
-
-                _sum += time.TotalElapsedMs - pong.Time;
-                TimeMap = _sum / _cnt;
-
-                _latSum += (time.TotalElapsedMs - pong.Serial) / 2;
-                Latency = (int)_latSum / _cnt;
-
-                _pongTime = time.TotalElapsedMs;
-            }
-            catch (Exception) { }
-        }
+        public void Pong(RealmTime time, PONG pong) => _pongTime = time.TotalElapsedMs;
 
         public void AwaitUpdateAck(long serverTime) => _updateAckTimeout.Enqueue(serverTime + DcThreshold);
 

@@ -4,6 +4,7 @@ using LoESoft.AppEngine.account;
 using LoESoft.Core;
 using LoESoft.Core.config;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -567,7 +568,7 @@ namespace LoESoft.AppEngine
 
         private static IEnumerable<NewsItem> GetItems(Database db, DbAccount acc)
         {
-            var news = new DbNews(db, 10).Entries
+            var news = new DbNews(db.Conn, 10).Entries
                 .Select(x => NewsItem.FromDb(x)).ToArray();
             var chars = db.GetDeadCharacters(acc).Take(10).Select(x =>
             {
@@ -761,12 +762,13 @@ namespace LoESoft.AppEngine
 
     internal class FameListEntry
     {
-        public string AccountId { get; private set; }
+        public int AccountId { get; private set; }
         public int CharId { get; private set; }
         public string Name { get; private set; }
         public ushort ObjectType { get; private set; }
         public int Tex1 { get; private set; }
         public int Tex2 { get; private set; }
+        public int Skin { get; private set; }
         public int[] Equipment { get; private set; }
         public int TotalFame { get; private set; }
 
@@ -775,12 +777,13 @@ namespace LoESoft.AppEngine
             var death = new DbDeath(character.Account, character.CharId);
             return new FameListEntry()
             {
-                AccountId = character.Account.AccountId,
+                AccountId = int.Parse(character.Account.AccountId),
                 CharId = character.CharId,
                 Name = character.Account.Name,
                 ObjectType = character.ObjectType,
                 Tex1 = character.Tex1,
                 Tex2 = character.Tex2,
+                Skin = character.Skin,
                 Equipment = character.Items,
                 TotalFame = death.TotalFame
             };
@@ -796,6 +799,7 @@ namespace LoESoft.AppEngine
                     new XElement("ObjectType", ObjectType),
                     new XElement("Tex1", Tex1),
                     new XElement("Tex2", Tex2),
+                    new XElement("Texture", Skin),
                     new XElement("Equipment", Equipment.ToCommaSepString()),
                     new XElement("TotalFame", TotalFame)
                 );
@@ -804,46 +808,47 @@ namespace LoESoft.AppEngine
 
     internal class FameList
     {
-        public string TimeSpan { get; private set; }
-        public IEnumerable<FameListEntry> Entries { get; private set; }
+        private string _timeSpan;
+        private IEnumerable<FameListEntry> _entries;
+        private int _lastUpdate;
+
+        private static readonly ConcurrentDictionary<string, FameList> StoredLists =
+            new ConcurrentDictionary<string, FameList>();
 
         public static FameList FromDb(Database db, string timeSpan, DbChar character)
         {
-            DbLegendTimeSpan span;
-            if (timeSpan.EqualsIgnoreCase("week"))
-                span = DbLegendTimeSpan.Week;
-            else if (timeSpan.EqualsIgnoreCase("month"))
-                span = DbLegendTimeSpan.Month;
-            else if (timeSpan.EqualsIgnoreCase("all"))
-                span = DbLegendTimeSpan.All;
-            else
-                return null;
+            timeSpan = timeSpan.ToLower();
 
-            DbLegend legend = new DbLegend(db, span, 20);
-            IEnumerable<DbChar> chars;
-            if (character == null)
-                chars = legend.GetEntries.Select(x =>
-                    db.LoadCharacter(x.AccId, x.ChrId));
-            else
-                chars = legend.GetEntries.Select(x =>
-                    db.LoadCharacter(x.AccId, x.ChrId)
-                ).Concat(new[] { character }).Take(20);
-
-            return new FameList()
+            // check if we already got updated list
+            var lastUpdate = db.LastLegendsUpdateTime();
+            if (StoredLists.ContainsKey(timeSpan))
             {
-                TimeSpan = timeSpan.ToLower(),
-                Entries = chars
-                    .Select(x => FameListEntry.FromDb(x))
-                    .OrderByDescending(x => x.TotalFame)
+                var fl = StoredLists[timeSpan];
+                if (lastUpdate == fl._lastUpdate)
+                {
+                    return fl;
+                }
+            }
+
+            // get & store list
+            var entries = db.GetLegendsBoard(timeSpan);
+            var fameList = new FameList()
+            {
+                _timeSpan = timeSpan,
+                _entries = entries.Select(FameListEntry.FromDb),
+                _lastUpdate = lastUpdate
             };
+            StoredLists[timeSpan] = fameList;
+
+            return fameList;
         }
 
         public XElement ToXml()
         {
             return
                 new XElement("FameList",
-                    new XAttribute("timespan", TimeSpan),
-                    Entries.Select(x => x.ToXml())
+                    new XAttribute("timespan", _timeSpan),
+                    _entries.Select(x => x.ToXml())
                 );
         }
     }

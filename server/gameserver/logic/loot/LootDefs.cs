@@ -330,9 +330,7 @@ namespace LoESoft.GameServer.logic.loot
             else
                 probability = .0025; // 0.25%
 
-            probability *= Settings.EVENT_RATE;
-
-            var eggBasket = new ILootDef[] { new Drops(new ItemLoot(onlyOne.ObjectType, probability)) };
+            var eggBasket = new ILootDef[] { new Drops(new ItemLoot(onlyOne.ObjectType, probability, false)) };
             eggBasket[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
         }
     }
@@ -356,7 +354,7 @@ namespace LoESoft.GameServer.logic.loot
             BagType = BagType.Pink;
             Lootstate = lootState;
 
-            var pinkBag = new ILootDef[] { new Drops(new TierLoot(tier, itemType, BagType)) };
+            var pinkBag = new ILootDef[] { new Drops(new TierLoot(tier, itemType, BagType, true, LootBagRate.PINK_BAG)) };
             pinkBag[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
         }
     }
@@ -380,7 +378,7 @@ namespace LoESoft.GameServer.logic.loot
             BagType = BagType.Purple;
             Lootstate = lootState;
 
-            var purpleBag = new ILootDef[] { new Drops(new TierLoot(tier, itemType, BagType)) };
+            var purpleBag = new ILootDef[] { new Drops(new TierLoot(tier, itemType, BagType, false, LootBagRate.PURPLE_BAG)) };
             purpleBag[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
         }
     }
@@ -419,8 +417,8 @@ namespace LoESoft.GameServer.logic.loot
             BagType = BagType.Cyan;
             Lootstate = lootState;
 
-            var cyanBag = !setByTier ? new ILootDef[] { new Drops(new ItemLoot(itemName, 0.1)) }
-                : new ILootDef[] { new Drops(new TierLoot(tier, itemType, BagType)) };
+            var cyanBag = !setByTier ? new ILootDef[] { new Drops(new ItemLoot(itemName, LootBagRate.CYAN_BAG, false, false)) }
+                : new ILootDef[] { new Drops(new TierLoot(tier, itemType, BagType, false, LootBagRate.CYAN_BAG)) };
             cyanBag[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
         }
     }
@@ -457,7 +455,7 @@ namespace LoESoft.GameServer.logic.loot
 
             if (single)
             {
-                var blueBag = new ILootDef[] { new Drops(new ItemLoot(itemName, alwaysDrop ? 1 : 0.1 * Settings.EVENT_RATE)) };
+                var blueBag = new ILootDef[] { new Drops(new ItemLoot(itemName, alwaysDrop ? 1 : 0.1, false)) };
                 blueBag[0].Populate(enemy, playerData, rnd, lootState, lootDefs);
             }
             else
@@ -465,7 +463,7 @@ namespace LoESoft.GameServer.logic.loot
                 var blueBag = new List<ILootDef>();
 
                 for (int i = 0; i < itemNames.Length; i++)
-                    blueBag.Add(new Drops(new ItemLoot(itemNames[i], alwaysDrops[i] ? 1 : 0.1 * Settings.EVENT_RATE)));
+                    blueBag.Add(new Drops(new ItemLoot(itemNames[i], alwaysDrops[i] ? 1 : 0.1, false)));
 
                 blueBag.Select(drop => { drop.Populate(enemy, playerData, rnd, lootState, lootDefs); return drop; }).ToList();
             }
@@ -511,7 +509,7 @@ namespace LoESoft.GameServer.logic.loot
             else
                 probability = .0002 + .000005 * playersCount;
 
-            var whitebag = new ILootDef[] { new Drops(new ItemLoot(itemName, probability * (eventChest ? .8 : 1), true)) };
+            var whitebag = new ILootDef[] { new Drops(new ItemLoot(itemName, probability * (eventChest ? .8 : 1), false, true)) };
             whitebag[0].Populate(enemy, playerData, rnd, Lootstate, lootDefs);
         }
     }
@@ -525,21 +523,24 @@ namespace LoESoft.GameServer.logic.loot
         private readonly bool whiteBag;
 
         public string Lootstate { get; set; }
+        public bool Shared { get; set; }
         public BagType BagType { get; set; }
 
-        public ItemLoot(ushort id, double probability, bool whiteBag = false)
+        public ItemLoot(ushort id, double probability, bool shared = true, bool whiteBag = false)
         {
             this.id = id;
             this.probability = probability;
             isId = true;
+            Shared = shared;
             this.whiteBag = whiteBag;
         }
 
-        public ItemLoot(string item, double probability, bool whiteBag = false)
+        public ItemLoot(string item, double probability, bool shared = true, bool whiteBag = false)
         {
             this.item = item;
             this.probability = probability;
             isId = false;
+            Shared = shared;
             this.whiteBag = whiteBag;
         }
 
@@ -553,10 +554,10 @@ namespace LoESoft.GameServer.logic.loot
         {
             Lootstate = lootState;
 
-            EmbeddedData dat = GameServer.Manager.GameData;
+            var dat = GameServer.Manager.GameData;
 
             try
-            { lootDefs.Add(new LootDef(dat.Items[isId ? id : dat.IdToObjectType[item]], probability, lootState, whiteBag)); }
+            { lootDefs.Add(new LootDef(dat.Items[isId ? id : dat.IdToObjectType[item]], probability, lootState, Shared, whiteBag)); }
             catch (KeyNotFoundException) { Log.Error($"Item '{item}', wasn't added in loot list of entity '{enemy.Name}', because doesn't contains in assets."); }
         }
     }
@@ -623,13 +624,15 @@ namespace LoESoft.GameServer.logic.loot
             )
         {
             Lootstate = lootState;
-            Item[] candidates = GameServer.Manager.GameData.Items
+
+            var candidates = GameServer.Manager.GameData.Items
                 .Where(item => item.Value.SlotType == 9000)
                 .Where(item => item.Value.MinStars <= (int)rarity)
                 .Select(item => item.Value)
                 .ToArray();
-            foreach (Item i in candidates)
-                lootDefs.Add(new LootDef(i, probability / candidates.Length, lootState));
+
+            foreach (var i in candidates)
+                lootDefs.Add(new LootDef(i, probability / candidates.Length, Lootstate, false));
         }
     }
 
@@ -646,53 +649,64 @@ namespace LoESoft.GameServer.logic.loot
         private readonly ItemType type;
         private readonly int[] types;
 
-        public BagType BagType { get; set; }
         public string Lootstate { get; set; }
+        public bool Shared { get; set; }
+        public BagType BagType { get; set; }
 
-        public TierLoot(byte tier, ItemType type) : this(tier, type, BagType.Pink)
+        public TierLoot(byte tier, ItemType type, bool shared = true, double probability = 0)
+            : this(tier, type, BagType.Pink, shared, probability)
         {
         }
 
-        public TierLoot(byte tier, ItemType type, double val) : this(tier, type, BagType.Pink)
+        public TierLoot(byte tier, ItemType type, double val, bool shared = true, double probability = 0)
+            : this(tier, type, BagType.Pink, shared, probability)
         {
         }
 
-        public TierLoot(byte tier, ItemType type, BagType bag)
+        public TierLoot(byte tier, ItemType type, BagType bag, bool shared = true, double probability = 0)
         {
             this.tier = tier;
             this.type = type;
+            this.probability = probability;
+
+            Shared = shared;
 
             double bagProbability = 0;
 
-            switch (bag)
+            if (this.probability == 0)
             {
-                case BagType.Pink:
-                    bagProbability = 0.95;
-                    break;
+                switch (bag)
+                {
+                    case BagType.Pink:
+                        bagProbability = 0.95;
+                        break;
 
-                case BagType.Purple:
-                    bagProbability = 0.9;
-                    break;
+                    case BagType.Purple:
+                        bagProbability = 0.9;
+                        break;
 
-                case BagType.Cyan:
-                    bagProbability = 0.85;
-                    break;
+                    case BagType.Cyan:
+                        bagProbability = 0.85;
+                        break;
 
-                case BagType.Blue:
-                    bagProbability = 0.8;
-                    break;
+                    case BagType.Blue:
+                        bagProbability = 0.8;
+                        break;
 
-                case BagType.White:
-                    bagProbability = 0.75;
-                    break;
+                    case BagType.White:
+                        bagProbability = 0.75;
+                        break;
 
-                case BagType.None:
-                default:
-                    bagProbability = 1;
-                    break;
+                    case BagType.None:
+                    default:
+                        bagProbability = 1;
+                        break;
+                }
             }
+            else
+                bagProbability = this.probability;
 
-            probability = GetProbability * bagProbability * Settings.EVENT_RATE;
+            this.probability = GetProbability * bagProbability * Settings.EVENT_RATE;
 
             switch (type)
             {
@@ -758,13 +772,15 @@ namespace LoESoft.GameServer.logic.loot
             )
         {
             Lootstate = lootState;
-            Item[] candidates = GameServer.Manager.GameData.Items
+
+            var candidates = GameServer.Manager.GameData.Items
                 .Where(item => Array.IndexOf(types, item.Value.SlotType) != -1)
                 .Where(item => item.Value.Tier == tier)
                 .Select(item => item.Value)
                 .ToArray();
-            foreach (Item i in candidates)
-                lootDefs.Add(new LootDef(i, probability / candidates.Length, lootState));
+
+            foreach (var i in candidates)
+                lootDefs.Add(new LootDef(i, probability / candidates.Length, Lootstate, Shared));
         }
     }
 
@@ -825,7 +841,7 @@ namespace LoESoft.GameServer.logic.loot
         {
             Lootstate = lootState;
 
-            foreach (ILootDef i in children)
+            foreach (var i in children)
                 i.Populate(enemy, null, rand, lootState, lootDefs);
         }
     }

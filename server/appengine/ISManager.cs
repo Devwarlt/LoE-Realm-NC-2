@@ -4,7 +4,7 @@ using LoESoft.Core;
 using log4net;
 using System;
 using System.Collections.Concurrent;
-using System.Timers;
+using System.Threading;
 
 #endregion
 
@@ -45,7 +45,7 @@ namespace LoESoft.AppEngine
 
         private ConcurrentDictionary<string, int> availableInstance = new ConcurrentDictionary<string, int>();
 
-        private Timer tmr = new Timer(2000);
+        private System.Timers.Timer tmr = new System.Timers.Timer(2000);
 
         public void Run()
         {
@@ -79,6 +79,9 @@ namespace LoESoft.AppEngine
             switch (e.Content.Code)
             {
                 case NetworkCode.JOIN:
+                    do Thread.Sleep(250);
+                    while (e.InstanceId != null);
+
                     if (availableInstance.TryAdd(e.InstanceId, 5))
                     {
                         Publish(NETWORK, new NetworkMsg()   //for the new instances

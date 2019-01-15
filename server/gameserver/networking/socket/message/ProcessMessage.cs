@@ -1,5 +1,6 @@
 ﻿using LoESoft.GameServer.realm.entity.player;
 using System.Collections.Generic;
+using System.Timers;
 
 namespace LoESoft.GameServer.networking
 {
@@ -9,6 +10,12 @@ namespace LoESoft.GameServer.networking
 
         public ProtocolState State { get; internal set; }
         public Player Player { get; internal set; }
+        public bool InvDropClockInitialized { get; set; }
+        public bool InvSwapClockInitialized { get; set; }
+        public Timer InvDropClock { get; internal set; } = new Timer(1000) { AutoReset = true };
+        public Timer InvSwapClock { get; internal set; } = new Timer(1000) { AutoReset = true };
+        public bool CanInvDrop { get; set; } = true;
+        public bool CanInvSwap { get; set; } = true;
 
         public bool IsReady()
             => State == ProtocolState.Disconnected ? false :

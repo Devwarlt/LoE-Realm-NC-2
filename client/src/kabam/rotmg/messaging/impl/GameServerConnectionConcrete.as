@@ -248,7 +248,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
     private var giftChestUpdateSignal:GiftStatusUpdateSignal;
     private var death:Death;
     private var retryTimer_:Timer;
-    private var delayBeforeReconnect:int = 2;
+    private var delayBeforeReconnect:int = 1;
     private var addTextLine:AddTextLineSignal;
     private var addSpeechBalloon:AddSpeechBalloonSignal;
     private var updateGroundTileSignal:UpdateGroundTileSignal;
@@ -2222,7 +2222,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
         else {
             if (this.retryConnection_) {
                 if (this.delayBeforeReconnect <= 100) {
-                    this.retry();
+                    this.retry(this.delayBeforeReconnect++);
                     this.addTextLine.dispatch(ChatMessage.make(Parameters.ERROR_CHAT_NAME, "[" + this.delayBeforeReconnect + "/100 Attempts] Connection failed!  Retrying..."));
                 }
                 else {
@@ -2232,10 +2232,10 @@ public class GameServerConnectionConcrete extends GameServerConnection {
         }
     }
 
-    private function retry():void {
-        var timer:Timer = new Timer(1000);
-        timer.addEventListener(TimerEvent.TIMER_COMPLETE, this.SocketReconnect);
-        timer.start();
+    private function retry(delay:int):void {
+        this.retryTimer_ = new Timer(1000 * delay, 1);
+        this.retryTimer_.addEventListener(TimerEvent.TIMER_COMPLETE, this.SocketReconnect);
+        this.retryTimer_.start();
     }
 
     private function SocketReconnect(_arg1:TimerEvent):void {

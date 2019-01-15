@@ -11,106 +11,54 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using static LoESoft.GameServer.networking.Client;
-using LoESoft.Core.database;
-using LoESoft.Core;
 
 #endregion
 
 namespace LoESoft.GameServer.realm.commands
 {
-	internal class TqCommand : Command
-	{
-		public TqCommand() : base("tq", (int)AccountType.MOD)
-		{
-		}
+    internal class ArenaCommand : Command
+    {
+        public ArenaCommand() : base("arena", (int)AccountType.DEVELOPER)
+        {
+        }
 
-		protected override bool Process(Player player, RealmTime time, string[] args)
-		{
-			if (player.Quest == null)
-			{
-				player.SendInfo("There is no quest to teleport!");
-				return false;
-			}
-			player.Move(player.Quest.X + 0.5f, player.Quest.Y + 0.5f);
-			player.UpdateCount++;
-			player.Owner.BroadcastMessage(new GOTO
-			{
-				ObjectId = player.Id,
-				Position = new Position
-				{
-					X = player.Quest.X,
-					Y = player.Quest.Y
-				}
-			}, null);
-			player.SendInfo("Success!");
-			return true;
-		}
-	}
-	internal class KillPlayerCommand : Command
-	{
-		public KillPlayerCommand() : base("kill", (int)AccountType.ADMIN)
-		{
-		}
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            Entity prtal = Entity.Resolve("Undead Lair Portal");
+            prtal.Move(player.X, player.Y);
+            player.Owner.EnterWorld(prtal);
+            World w = GameServer.Manager.GetWorld(player.Owner.Id);
+            w.Timers.Add(new WorldTimer(30 * 1000, (world, t) =>
+            {
+                try
+                {
+                    w.LeaveWorld(prtal);
+                }
+                catch
+                {
+                    Console.Out.WriteLine("F.");
+                }
+            }));
+            foreach (var cData in GameServer.Manager.ClientManager.Values)
+                cData.Client?.SendMessage(new TEXT
+                {
+                    BubbleTime = 0,
+                    Stars = -1,
+                    Name = "",
+                    Text = "Arena Opened"
+                });
+            foreach (var cData in GameServer.Manager.ClientManager.Values)
+                cData.Client?.SendMessage(new NOTIFICATION
+                {
+                    Color = new ARGB(0xff00ff00),
+                    ObjectId = player.Id,
+                    Text = "Arena Opened"
+                });
+            return true;
+        }
+    }
 
-		protected override bool Process(Player player, RealmTime time, string[] args)
-		{
-			foreach (ClientData cData in GameServer.Manager.ClientManager.Values)
-			{
-				if (cData.Client.Account.Name.EqualsIgnoreCase(args[0]))
-				{
-					cData.Client.Player.HP = 0;
-					cData.Client.Player.Death("server.game_admin");
-					player.SendInfo($"Player {cData.Client.Account.Name} has been killed!");
-					return true;
-				}
-			}
-			player.SendInfo(string.Format("Player '{0}' could not be found!", args));
-			return false;
-		}
-	}
-	internal class ArenaCommand : Command
-	{
-		public ArenaCommand()
-			: base("arena", (int)AccountType.DEVELOPER)
-		{
-		}
-
-		protected override bool Process(Player player, RealmTime time, string[] args)
-		{
-			Entity prtal = Entity.Resolve( "Undead Lair Portal");
-			prtal.Move(player.X, player.Y);
-			player.Owner.EnterWorld(prtal);
-			World w = GameServer.Manager.GetWorld(player.Owner.Id);
-			w.Timers.Add(new WorldTimer(30 * 1000, (world, t) =>
-			{
-				try
-				{
-					w.LeaveWorld(prtal);
-				}
-				catch
-				{
-					Console.Out.WriteLine("F.");
-				}
-			}));
-			foreach (var cData in GameServer.Manager.ClientManager.Values)
-				cData.Client?.SendMessage(new TEXT
-				{
-					BubbleTime = 0,
-					Stars = -1,
-					Name = "",
-					Text = "Arena Opened"
-				});
-			foreach (var cData in GameServer.Manager.ClientManager.Values)
-				cData.Client?.SendMessage(new NOTIFICATION
-				{
-					Color = new ARGB(0xff00ff00),
-					ObjectId = player.Id,
-					Text = "Arena Opened"
-				});
-			return true;
-		}
-	}
-	internal class GlobalChat : Command
+    internal class GlobalChat : Command
     {
         public GlobalChat() : base("gchat", (int)AccountType.VIP)
         {
@@ -382,126 +330,136 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
-	internal class SpawnCommand : Command
-	{
-		public SpawnCommand() : base("spawn", (int)AccountType.DEVELOPER)
-		{
-		}
+    internal class SpawnCommand : Command
+    {
+        public SpawnCommand() : base("spawn", (int)AccountType.DEVELOPER)
+        {
+        }
 
-		protected override bool Process(Player player, RealmTime time, string[] args)
-		{
-			if (args.Length > 0 && int.TryParse(args[0], out int num)) //multi
-			{
-				string name = string.Join(" ", args.Skip(1).ToArray());
-				//creates a new case insensitive dictionary based on the XmlDatas
-				Dictionary<string, ushort> icdatas = new Dictionary<string, ushort>(
-					GameServer.Manager.GameData.IdToObjectType,
-					StringComparer.OrdinalIgnoreCase);
-				if (!icdatas.TryGetValue(name, out ushort objType) ||
-					!GameServer.Manager.GameData.ObjectDescs.ContainsKey(objType))
-				{
-					player.SendInfo("Unknown entity!");
-					return false;
-				}
-				int c = int.Parse(args[0]);
-				for (int i = 0; i < num; i++)
-				{
-					Entity entity = Entity.Resolve(objType);
-					entity.Move(player.X, player.Y);
-					player.Owner.EnterWorld(entity);
-				}
-				player.SendInfo("Success!");
-			}
-			else
-			{
-				string name = string.Join(" ", args);
-				//creates a new case insensitive dictionary based on the XmlDatas
-				Dictionary<string, ushort> icdatas = new Dictionary<string, ushort>(
-					GameServer.Manager.GameData.IdToObjectType,
-					StringComparer.OrdinalIgnoreCase);
-				if (!icdatas.TryGetValue(name, out ushort objType) ||
-					!GameServer.Manager.GameData.ObjectDescs.ContainsKey(objType))
-				{
-					player.SendHelp("Usage: /spawn <entityname>");
-					return false;
-				}
-				Entity entity = Entity.Resolve(objType);
-				entity.Move(player.X, player.Y);
-				player.Owner.EnterWorld(entity);
-			}
-			return true;
-		}
-	}
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            {
+                player.SendInfo("You cannot use this feature along Production build.");
+                return false;
+            }
 
+            if (args.Length > 0 && int.TryParse(args[0], out int num)) //multi
+            {
+                string name = string.Join(" ", args.Skip(1).ToArray());
+                //creates a new case insensitive dictionary based on the XmlDatas
+                Dictionary<string, ushort> icdatas = new Dictionary<string, ushort>(
+                    GameServer.Manager.GameData.IdToObjectType,
+                    StringComparer.OrdinalIgnoreCase);
+                if (!icdatas.TryGetValue(name, out ushort objType) ||
+                    !GameServer.Manager.GameData.ObjectDescs.ContainsKey(objType))
+                {
+                    player.SendInfo("Unknown entity!");
+                    return false;
+                }
+                int c = int.Parse(args[0]);
+                for (int i = 0; i < num; i++)
+                {
+                    Entity entity = Entity.Resolve(objType);
+                    entity.Move(player.X, player.Y);
+                    player.Owner.EnterWorld(entity);
+                }
+                player.SendInfo("Success!");
+            }
+            else
+            {
+                string name = string.Join(" ", args);
+                //creates a new case insensitive dictionary based on the XmlDatas
+                Dictionary<string, ushort> icdatas = new Dictionary<string, ushort>(
+                    GameServer.Manager.GameData.IdToObjectType,
+                    StringComparer.OrdinalIgnoreCase);
+                if (!icdatas.TryGetValue(name, out ushort objType) ||
+                    !GameServer.Manager.GameData.ObjectDescs.ContainsKey(objType))
+                {
+                    player.SendHelp("Usage: /spawn <entityname>");
+                    return false;
+                }
+                Entity entity = Entity.Resolve(objType);
+                entity.Move(player.X, player.Y);
+                player.Owner.EnterWorld(entity);
+            }
+            return true;
+        }
+    }
 
-	internal class GiveCommand : Command
-	{
-		public GiveCommand() : base("give",(int)AccountType.MOD)
-		{
-		}
+    internal class GiveCommand : Command
+    {
+        public GiveCommand() : base("give", (int)AccountType.MOD)
+        {
+        }
 
-		private List<string> Blacklist = new List<string>
-		{
-			"admin sword", "admin wand", "admin staff", "admin dagger", "admin bow", "admin katana", "crown",
-			"public arena key"
-		};
+        private List<string> Blacklist = new List<string>
+        {
+            "admin sword", "admin wand", "admin staff", "admin dagger", "admin bow", "admin katana", "crown",
+            "public arena key"
+        };
 
-		protected override bool Process(Player player, RealmTime time, string[] args)
-		{
-			if (args.Length == 0)
-			{
-				player.SendHelp("Usage: /give <item name>");
-				return false;
-			}
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            {
+                player.SendInfo("You cannot use this feature along Production build.");
+                return false;
+            }
 
-			string name = string.Join(" ", args.ToArray()).Trim();
+            if (args.Length == 0)
+            {
+                player.SendHelp("Usage: /give <item name>");
+                return false;
+            }
 
-			if (Blacklist.Contains(name.ToLower()) && player.AccountType <= (int)AccountType.DEVELOPER)
-			{
-				player.SendHelp($"You cannot give '{name}', access denied.");
-				return false;
-			}
+            string name = string.Join(" ", args.ToArray()).Trim();
 
-			try
-			{
-				Dictionary<string, ushort> icdatas = new Dictionary<string, ushort>(GameServer.Manager.GameData.IdToObjectType, StringComparer.OrdinalIgnoreCase);
+            if (Blacklist.Contains(name.ToLower()) && player.AccountType <= (int)AccountType.DEVELOPER)
+            {
+                player.SendHelp($"You cannot give '{name}', access denied.");
+                return false;
+            }
 
-				if (!icdatas.TryGetValue(name, out ushort objType))
-				{
-					player.SendError("Unknown type!");
-					return false;
-				}
+            try
+            {
+                Dictionary<string, ushort> icdatas = new Dictionary<string, ushort>(GameServer.Manager.GameData.IdToObjectType, StringComparer.OrdinalIgnoreCase);
 
-				if (!GameServer.Manager.GameData.Items[objType].Secret || player.Client.Account.Admin)
-				{
-					for (int i = 4; i < player.Inventory.Length; i++)
-						if (player.Inventory[i] == null)
-						{
-							player.Inventory[i] = GameServer.Manager.GameData.Items[objType];
-							player.UpdateCount++;
-							player.SaveToCharacter();
-							player.SendInfo("Success!");
-							break;
-						}
-				}
-				else
-				{
-					player.SendError("An error occurred: inventory out of space, item cannot be given.");
-					return false;
-				}
-			}
-			catch (KeyNotFoundException)
-			{
-				player.SendError($"An error occurred: item '{name}' doesn't exist in game assets.");
-				return false;
-			}
+                if (!icdatas.TryGetValue(name, out ushort objType))
+                {
+                    player.SendError("Unknown type!");
+                    return false;
+                }
 
-			return true;
-		}
-	}
+                if (!GameServer.Manager.GameData.Items[objType].Secret || player.Client.Account.Admin)
+                {
+                    for (int i = 4; i < player.Inventory.Length; i++)
+                        if (player.Inventory[i] == null)
+                        {
+                            player.Inventory[i] = GameServer.Manager.GameData.Items[objType];
+                            player.UpdateCount++;
+                            player.SaveToCharacter();
+                            player.SendInfo("Success!");
+                            break;
+                        }
+                }
+                else
+                {
+                    player.SendError("An error occurred: inventory out of space, item cannot be given.");
+                    return false;
+                }
+            }
+            catch (KeyNotFoundException)
+            {
+                player.SendError($"An error occurred: item '{name}' doesn't exist in game assets.");
+                return false;
+            }
 
+            return true;
+        }
+    }
 
-	internal class Kick : Command
+    internal class Kick : Command
     {
         public Kick() : base("kick", (int)AccountType.MOD)
         {
@@ -549,11 +507,11 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            //     if (Settings.SERVER_MODE == Settings.ServerMode.Production)
-            //     {
-            //         player.SendInfo("You cannot use this feature along Production mode.");
-            //         return false;
-            //     }
+            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            {
+                player.SendInfo("You cannot use this feature along Production mode.");
+                return false;
+            }
 
             try
             {
@@ -723,9 +681,55 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
+    internal class SendCurrencyCommand : Command
+    {
+        public SendCurrencyCommand() : base("send", (int)AccountType.ADMIN)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            if (player.AccountId != "1" || player.Name != "Devwarlt")
+            {
+                player.SendHelp("Only Devwarlt can use this feature.");
+                return false;
+            }
+
+            if (args.Length != 3)
+            {
+                player.SendHelp("Usage: /send <currency> <amount> <accountId>");
+                return false;
+            }
+
+            var currency = args[0];
+            var amount = int.Parse(args[1]);
+            var accid = args[2];
+            var acc = GameServer.Manager.Database.GetAccountById(accid);
+
+            if (acc == null)
+            {
+                player.SendInfo($"Account ID '{accid}' was not found!");
+                return false;
+            }
+
+            switch (currency)
+            {
+                case "fame": GameServer.Manager.Database.UpdateFame(acc, amount); break;
+                case "gold": GameServer.Manager.Database.UpdateCredit(acc, amount); break;
+                case "fortune": GameServer.Manager.Database.UpdateTokens(acc, amount); break;
+                case "coin": GameServer.Manager.Database.UpdateEmpiresCoin(acc, amount); break;
+                default: player.SendHelp($"Currency '{currency}' doesn't exist!"); return false;
+            }
+
+            player.SendInfo($"Success! You deposited '{amount}' {(currency == "coin" ? "empires coins" : currency)} to '{acc.Name}' account!");
+
+            return true;
+        }
+    }
+
     internal class RestartCommand : Command
     {
-        public RestartCommand() : base("restart", (int)AccountType.DEVELOPER)
+        public RestartCommand() : base("restart", (int)AccountType.MOD)
         {
         }
 
@@ -735,13 +739,23 @@ namespace LoESoft.GameServer.realm.commands
             {
                 var world = w.Value;
 
+                var rank = string.Empty;
+
+                switch ((AccountType)player.AccountType)
+                {
+                    case AccountType.MOD: rank = "Mod"; break;
+                    case AccountType.DEVELOPER: rank = "Developer"; break;
+                    case AccountType.ADMIN: rank = "Admin"; break;
+                    default: return false;
+                }
+
                 if (w.Key != 0)
                     world.BroadcastMessage(new TEXT
                     {
                         Name = "@ANNOUNCEMENT",
                         Stars = -1,
                         BubbleTime = 0,
-                        Text = $"Server restarting soon by {(player.AccountType == (int)AccountType.DEVELOPER ? "DEV" : "Emperor")} {player.Name}. Please be ready to disconnect.",
+                        Text = $"Server restarting soon by {rank} {player.Name}. Please be ready to disconnect.",
                         NameColor = 0x123456,
                         TextColor = 0x123456
                     }, null);
@@ -778,7 +792,6 @@ namespace LoESoft.GameServer.realm.commands
 
             for (var i = 0; i < copy.Length; i++)
             {
-
                 if (player.AccountType >= copy[i].PermissionLevel)
                     sb.Append((i != 0 ? ", " : "") + copy[i].CommandName);
             }
@@ -804,7 +817,7 @@ namespace LoESoft.GameServer.realm.commands
                     return false;
                 }
 
-                if (player.Client.Manager.Database.BanAccount(player.Client.Account.Database, args[0]))
+                if (player.Client.Manager.Database.BanAccount(GameServer.Manager.Database, args[0]))
                 {
                     player.SendInfo("Player has been banned!");
                     return true;
@@ -837,7 +850,7 @@ namespace LoESoft.GameServer.realm.commands
                     return false;
                 }
 
-                if (player.Client.Manager.Database.UnBanAccount(player.Client.Account.Database, args[0]))
+                if (player.Client.Manager.Database.UnBanAccount(GameServer.Manager.Database, args[0]))
                 {
                     player.SendInfo("Player has been unbanned!");
                     return true;

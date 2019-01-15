@@ -11,7 +11,7 @@ namespace LoESoft.Core.config
             Production
         }
 
-        public static readonly double EVENT_RATE = 1.25;
+        public static readonly double EVENT_RATE = 2;
         public static readonly string EVENT_MESSAGE = $"The server is hosting an event with +{(EVENT_RATE - 1) * 100}% XP, loot drop rate and Shop discounts. Enjoy!";
         public static readonly ServerMode SERVER_MODE = ServerMode.Production;
         public static readonly bool ENABLE_RESTART_SYSTEM = SERVER_MODE == ServerMode.Production;
@@ -48,8 +48,9 @@ namespace LoESoft.Core.config
             new GameVersion(Version: "2.5.2", Allowed: false),
             new GameVersion(Version: "3.0", Allowed: false),
             new GameVersion(Version: "3.0.1", Allowed: false),
-            new GameVersion(Version: "3.1", Allowed: true),
-		//	new GameVersion(Version: "3.2", Allowed: true)
-		};
+            new GameVersion(Version: "3.1", Allowed: false),
+            new GameVersion(Version: "3.2", Allowed: false),
+            new GameVersion(Version: "3.2.1", Allowed: true)
+        };
     }
 }

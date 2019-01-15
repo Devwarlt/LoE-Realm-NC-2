@@ -51,11 +51,9 @@ namespace LoESoft.GameServer.realm
         public Database Database { get; private set; }
         public bool Terminating { get; private set; }
         public int TPS { get; private set; }
-        public System.Timers.Timer SaveMonitor { get; private set; }
 
         private ConcurrentDictionary<string, Vault> Vaults { get; set; }
 
-#pragma warning restore CS0649 // Field 'RealmManager.network' is never assigned to, and will always have its default value null
         private int nextWorldId;
 
         public RealmManager(Database db)
@@ -68,12 +66,6 @@ namespace LoESoft.GameServer.realm
             Vaults = new ConcurrentDictionary<string, Vault>();
             Random = new Random();
             Database = db;
-            SaveMonitor = new System.Timers.Timer(60000) { AutoReset = true };
-            SaveMonitor.Elapsed += delegate
-            {
-                if (ClientManager.Keys.Count != 0)
-                    ClientManager.Values.Select(client => { client.Client?.Save(); return client; }).ToList();
-            };
         }
 
         #region "Initialize, Run and Stop"
@@ -81,9 +73,7 @@ namespace LoESoft.GameServer.realm
         public void Initialize()
         {
             GameData = new EmbeddedData();
-            SaveMonitor.Start();
             Behaviors = new BehaviorDb(this);
-            QuestPortraits.Add("Eyeguard of Surrender", 20);
 
             Player.HandleQuests(GameData);
             Merchant.HandleMerchant(GameData);
@@ -97,11 +87,14 @@ namespace LoESoft.GameServer.realm
             AddWorld((int)WorldID.DREAM_ISLAND, new DreamIsland());
 
             Monitor = new RealmPortalMonitor(this);
+
             AddWorld(GameWorld.AutoName(1, true));
+
             InterServer = new ISManager(this);
             Chat = new ChatManager(this);
             Commands = new CommandManager(this);
-            NPCs npcs = new NPCs();
+
+            var npcs = new NPCs();
             npcs.Initialize(this);
 
             Log.Info($"\t- {NPCs.Database.Count}\tNPC{(NPCs.Database.Count > 1 ? "s" : "")}.");
@@ -118,16 +111,10 @@ namespace LoESoft.GameServer.realm
 
         public void Stop()
         {
-            SaveMonitor.Stop();
             Terminating = true;
 
-            var saveAccountUnlock = new List<Client>();
-
-            foreach (ClientData cData in ClientManager.Values)
-            {
-                saveAccountUnlock.Add(cData.Client);
+            foreach (var cData in ClientManager.Values)
                 TryDisconnect(cData.Client, DisconnectReason.STOPPING_REALM_MANAGER);
-            }
 
             GameData.Dispose();
         }
@@ -137,9 +124,9 @@ namespace LoESoft.GameServer.realm
         #region "Connection handlers"
 
         /** Disconnect Handler (LoESoft Games)
-	    * Author: DV
-	    * Original Idea: Miniguy
-	    */
+		* Author: DV
+		* Original Idea: Miniguy
+		*/
 
         public ConnectionProtocol TryConnect(Client client)
         {
@@ -187,6 +174,7 @@ namespace LoESoft.GameServer.realm
         {
             if (client == null)
                 return;
+
             DisconnectHandler(client, reason == DisconnectReason.UNKNOW_ERROR_INSTANCE ? DisconnectReason.REALM_MANAGER_DISCONNECT : reason);
         }
 
@@ -282,6 +270,7 @@ namespace LoESoft.GameServer.realm
         {
             if (world.Manager == null)
                 world.Manager = this;
+
             if (world is GameWorld)
                 Monitor.WorldAdded(world);
         }

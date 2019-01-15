@@ -324,7 +324,7 @@ namespace LoESoft.GameServer.networking.handlers
                                     giftsList.Remove(message.SlotObject.ObjectType);
                                     int[] result = giftsList.ToArray();
                                     client.Account.Gifts = result;
-                                    client.Account.Flush();
+                                    client.Account.FlushAsync();
                                 }
                             }
                         }
