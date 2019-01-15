@@ -83,7 +83,6 @@ namespace LoESoft.GameServer.realm
             GameData = new EmbeddedData();
             SaveMonitor.Start();
             Behaviors = new BehaviorDb(this);
-            QuestPortraits.Add("Eyeguard of Surrender", 20);
 
             Player.HandleQuests(GameData);
             Merchant.HandleMerchant(GameData);
@@ -97,11 +96,14 @@ namespace LoESoft.GameServer.realm
             AddWorld((int)WorldID.DREAM_ISLAND, new DreamIsland());
 
             Monitor = new RealmPortalMonitor(this);
+
             AddWorld(GameWorld.AutoName(1, true));
+
             InterServer = new ISManager(this);
             Chat = new ChatManager(this);
             Commands = new CommandManager(this);
-            NPCs npcs = new NPCs();
+
+            var npcs = new NPCs();
             npcs.Initialize(this);
 
             Log.Info($"\t- {NPCs.Database.Count}\tNPC{(NPCs.Database.Count > 1 ? "s" : "")}.");
@@ -123,7 +125,7 @@ namespace LoESoft.GameServer.realm
 
             var saveAccountUnlock = new List<Client>();
 
-            foreach (ClientData cData in ClientManager.Values)
+            foreach (var cData in ClientManager.Values)
             {
                 saveAccountUnlock.Add(cData.Client);
                 TryDisconnect(cData.Client, DisconnectReason.STOPPING_REALM_MANAGER);
@@ -282,6 +284,7 @@ namespace LoESoft.GameServer.realm
         {
             if (world.Manager == null)
                 world.Manager = this;
+
             if (world is GameWorld)
                 Monitor.WorldAdded(world);
         }

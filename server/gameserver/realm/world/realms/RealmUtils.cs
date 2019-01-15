@@ -74,6 +74,7 @@ namespace LoESoft.GameServer.realm
         {
             for (var i = 0; i < enemyCounts.Length; i++)
                 enemyCounts[i] = 0;
+
             foreach (var i in world.Enemies)
             {
                 if (i.Value.Terrain == WmapTerrain.None)
@@ -90,9 +91,12 @@ namespace LoESoft.GameServer.realm
                 {
                     if (x % 2 == 0)
                         HandleAnnouncements();
+
                     if (x % 6 == 0)
                         EnsurePopulation();
+
                     x++;
+
                     prevTick = time.TotalElapsedMs;
                 }
             }

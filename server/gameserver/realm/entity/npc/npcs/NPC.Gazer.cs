@@ -216,7 +216,7 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                     #endregion
                     #region "Event: max"
                     case "max":
-                        var eventmax = new DateTime(2019, 1, 14, 23, 59, 59);
+                        var eventmax = new DateTime(2019, 1, 15, 12, 59, 59);
 
                         if (DateTime.UtcNow > eventmax)
                             callback = "The event already over, try again later.";
@@ -239,7 +239,7 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                     #endregion
                     #region "Event: vip"
                     case "vip":
-                        var eventvip = new DateTime(2019, 1, 14, 23, 59, 59);
+                        var eventvip = new DateTime(2019, 1, 15, 12, 59, 59);
 
                         if (DateTime.UtcNow > eventvip)
                             callback = "The event already over, try again later.";

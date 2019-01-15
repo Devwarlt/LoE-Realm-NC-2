@@ -1,9 +1,7 @@
 #region
 
 using LoESoft.Core.config;
-using LoESoft.Core.models;
 using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -16,8 +14,6 @@ namespace LoESoft.GameServer.realm
     public class LogicTicker
     {
         private RealmManager _manager { get; set; }
-        private ConcurrentQueue<Action<RealmTime>>[] _pendings { get; set; }
-        private ManualResetEvent _mre { get; set; }
         private Task _logic { get; set; }
 
         public static int COOLDOWN_DELAY => 1000 / Settings.GAMESERVER.TICKETS_PER_SECOND;
@@ -27,18 +23,14 @@ namespace LoESoft.GameServer.realm
         public LogicTicker(RealmManager manager)
         {
             _manager = manager;
-            _pendings = new ConcurrentQueue<Action<RealmTime>>[5];
-
-            for (var i = 0; i < 5; i++)
-                _pendings[i] = new ConcurrentQueue<Action<RealmTime>>();
-
-            _mre = new ManualResetEvent(false);
 
             CurrentTime = new RealmTime();
         }
 
-        public void TickLoop()
+        public async void TickLoop()
         {
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
+
             var looptime = 0;
             var t = new RealmTime();
             var watch = Stopwatch.StartNew();
@@ -46,9 +38,6 @@ namespace LoESoft.GameServer.realm
             do
             {
                 t.TotalElapsedMs = watch.ElapsedMilliseconds;
-
-                _mre.WaitOne(Math.Max(0, COOLDOWN_DELAY - (int)(watch.ElapsedMilliseconds - t.TotalElapsedMs)));
-
                 t.TickDelta = looptime / COOLDOWN_DELAY;
                 t.TickCount += t.TickDelta;
                 t.ElapsedMsDelta = t.TickDelta * COOLDOWN_DELAY;
@@ -59,19 +48,14 @@ namespace LoESoft.GameServer.realm
                 TickActions(t);
 
                 looptime += (int)(watch.ElapsedMilliseconds - t.TotalElapsedMs) - t.ElapsedMsDelta;
-            }
-            while (true);
+
+                await Task.Delay(Math.Max(0, COOLDOWN_DELAY - (int)(watch.ElapsedMilliseconds - t.TotalElapsedMs)));
+            } while (true);
         }
 
         private void TickActions(RealmTime t)
         {
             var clients = _manager.ClientManager.Values.Select(client => client.Client).ToList();
-
-            foreach (var pending in _pendings)
-                while (pending.TryDequeue(out Action<RealmTime> action))
-                    try
-                    { action(t); }
-                    catch { };
 
             _manager.InterServer.Tick(t);
 
@@ -80,30 +64,6 @@ namespace LoESoft.GameServer.realm
             foreach (var client in clients)
                 if (client.Player?.Owner != null)
                     client.Player.Flush();
-        }
-
-        private void TickWorlds(RealmTime t)
-        {
-            CurrentTime.TickDelta += t.TickDelta;
-
-            if (_logic == null || _logic.IsCompleted)
-            {
-                t.TickDelta = CurrentTime.TickDelta;
-                t.ElapsedMsDelta = t.TickDelta * COOLDOWN_DELAY;
-
-                if (t.ElapsedMsDelta < COOLDOWN_DELAY)
-                    return;
-
-                CurrentTime.TickDelta = 0;
-
-                _logic = Task.Factory.StartNew(() =>
-                {
-                    foreach (var world in _manager.Worlds.Values.Distinct())
-                        world.Tick(t);
-                }).ContinueWith(task =>
-                Log.Error(task.Exception.InnerException.ToString()),
-                TaskContinuationOptions.OnlyOnFaulted);
-            }
         }
 
         private void TickTrade(RealmTime t)
@@ -127,7 +87,28 @@ namespace LoESoft.GameServer.realm
             TickWorlds(t);
         }
 
+        private void TickWorlds(RealmTime t)
+        {
+            CurrentTime.TickDelta += t.TickDelta;
+
+            if (_logic == null || _logic.IsCompleted)
+            {
+                t.TickDelta = CurrentTime.TickDelta;
+                t.ElapsedMsDelta = t.TickDelta * COOLDOWN_DELAY;
+
+                CurrentTime.TickDelta = 0;
+
+                _logic = Task.Factory.StartNew(() =>
+                {
+                    foreach (var world in _manager.Worlds.Values.Distinct())
+                        world.Tick(t);
+                }).ContinueWith(task
+                => GameServer.log.Error(task.Exception.InnerException),
+                TaskContinuationOptions.OnlyOnFaulted);
+            }
+        }
+
         public void AddPendingAction(Action<RealmTime> callback, PendingPriority priority = PendingPriority.Normal)
-            => _pendings[(int)priority].Enqueue(callback);
+            => callback.Invoke(CurrentTime);
     }
 }

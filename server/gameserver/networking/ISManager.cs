@@ -4,6 +4,7 @@ using LoESoft.Core;
 using LoESoft.Core.config;
 using System;
 using System.Collections.Concurrent;
+using System.Threading;
 
 #endregion
 
@@ -85,6 +86,9 @@ namespace LoESoft.GameServer.realm
                 switch (e.Content.Code)
                 {
                     case NetworkCode.JOIN:
+                        do Thread.Sleep(250);
+                        while (e.InstanceId != null);
+
                         if (availableInstance.TryAdd(e.InstanceId, 5))
                         {
                             Publish(NETWORK, new NetworkMsg()   //for the new instances

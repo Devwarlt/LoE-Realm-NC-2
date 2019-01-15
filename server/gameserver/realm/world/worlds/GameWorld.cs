@@ -5,7 +5,6 @@ using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
 using LoESoft.GameServer.realm.mapsetpiece;
-using log4net;
 using System;
 using System.Threading;
 using static LoESoft.GameServer.networking.Client;
@@ -18,11 +17,9 @@ namespace LoESoft.GameServer.realm.world
 
     internal class GameWorld : World, IDungeon, IRealm
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(GameWorld));
-
         private readonly int mapId;
         private readonly bool oryxPresent;
-        private string displayname;
+        private readonly string displayname;
 
         public GameWorld(int mapId, string name, bool oryxPresent)
         {
@@ -30,6 +27,7 @@ namespace LoESoft.GameServer.realm.world
             Name = name;
             Background = 0;
             Difficulty = -1;
+
             this.oryxPresent = oryxPresent;
             this.mapId = mapId;
         }
@@ -39,7 +37,9 @@ namespace LoESoft.GameServer.realm.world
         protected override void Init()
         {
             LoadMap("world" + mapId, MapType.Wmap);
+
             SetPieces.ApplySetPieces(this);
+
             if (oryxPresent)
                 Overseer = new Realm(this);
             else
@@ -48,15 +48,18 @@ namespace LoESoft.GameServer.realm.world
 
         public static GameWorld AutoName(int mapId, bool oryxPresent)
         {
-            string name = RealmManager.Realms[new Random().Next(RealmManager.Realms.Count)];
+            var name = RealmManager.Realms[new Random().Next(RealmManager.Realms.Count)];
+
             RealmManager.Realms.Remove(name);
             RealmManager.CurrentRealmNames.Add(name);
+
             return new GameWorld(mapId, name, oryxPresent);
         }
 
         public override void Tick(RealmTime time)
         {
             base.Tick(time);
+
             if (Overseer != null)
                 Overseer.Tick(time);
         }
@@ -156,7 +159,7 @@ namespace LoESoft.GameServer.realm.world
 
         public override int EnterWorld(Entity entity)
         {
-            int ret = base.EnterWorld(entity);
+            var ret = base.EnterWorld(entity);
 
             if (entity is Player)
                 Overseer.OnPlayerEntered(entity as Player);
@@ -169,9 +172,11 @@ namespace LoESoft.GameServer.realm.world
             if (Overseer != null)
             {
                 Overseer.Dispose();
+
                 _autoEvents.Abort();
                 _autoClose.Abort();
             }
+
             base.Dispose();
         }
     }

@@ -22,9 +22,11 @@ namespace LoESoft.GameServer.realm
         public RealmPortalMonitor(RealmManager manager)
         {
             this.manager = manager;
+
             nexus = manager.Worlds[(int)WorldID.NEXUS_ID] as Nexus;
+
             lock (worldLock)
-                foreach (KeyValuePair<int, World> i in manager.Worlds)
+                foreach (var i in manager.Worlds)
                 {
                     if (i.Value is GameWorld)
                         WorldAdded(i.Value);
@@ -34,6 +36,7 @@ namespace LoESoft.GameServer.realm
         private Position GetRandPosition()
         {
             int x, y;
+
             do
             {
                 x = rand.Next(0, nexus.Map.Width);
@@ -41,6 +44,7 @@ namespace LoESoft.GameServer.realm
             } while (
                 portals.Values.Any(_ => _.X == x && _.Y == y) ||
                 nexus.Map[x, y].Region != TileRegion.Realm_Portals);
+
             return new Position { X = x, Y = y };
         }
 
