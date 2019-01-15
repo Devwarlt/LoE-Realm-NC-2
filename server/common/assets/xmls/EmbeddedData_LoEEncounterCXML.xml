@@ -6,7 +6,7 @@
 		<Group>Haunted</Group>
 		<AnimatedTexture>
 			<File>chars16x16dEncounters2</File>
-			<Index>96</Index>
+			<Index>95</Index>
 		</AnimatedTexture>
 		<HitSound>monster/slimes_death</HitSound>
 		<DeathSound>monster/flying_brain_death</DeathSound>
@@ -191,7 +191,7 @@
     <Projectile id="0">
       <ObjectId>Green Blob</ObjectId>
       <Speed>25</Speed>
-      <Damage>50</Damage>
+      <Damage>15</Damage>
       <LifetimeMS>8000</LifetimeMS>
       <Amplitude>2.9</Amplitude>
       <Frequency>2.5</Frequency>
@@ -246,7 +246,7 @@
     <Projectile id="0">
       <ObjectId>Puppet Green Wheel</ObjectId>
       <Speed>25</Speed>
-      <Damage>200</Damage>
+      <Damage>120</Damage>
       <LifetimeMS>8000</LifetimeMS>
       <Amplitude>2.9</Amplitude>
       <Frequency>2.5</Frequency>
@@ -256,7 +256,7 @@
     <Projectile id="1">
       <ObjectId>Green Star</ObjectId>
       <Speed>75</Speed>
-      <Damage>150</Damage>
+      <Damage>50</Damage>
       <LifetimeMS>3000</LifetimeMS>
       <Amplitude>1</Amplitude>
       <Frequency>2.5</Frequency>
