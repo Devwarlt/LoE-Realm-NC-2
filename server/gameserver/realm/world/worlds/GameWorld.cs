@@ -1,11 +1,14 @@
 ﻿#region
 
+using LoESoft.Core.config;
+using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
 using LoESoft.GameServer.realm.mapsetpiece;
 using log4net;
 using System;
 using System.Threading;
+using static LoESoft.GameServer.networking.Client;
 
 #endregion
 
@@ -93,15 +96,54 @@ namespace LoESoft.GameServer.realm.world
 
                         Thread.Sleep(15 * 1000);
                     }
-                    while (!Overseer.RealmClosed);
+                    while (true);
                 })
                 { IsBackground = true };
                 _autoClose = new Thread(() =>
                 {
-                    Thread.Sleep(30 * 60 * 1000);
+                    do
+                    {
+                        Thread.Sleep(30 * 60 * 1000);
 
-                    if (!Overseer.RealmClosed)
-                        Overseer.InitCloseRealm();
+                        foreach (var i in Players.Values)
+                        {
+                            Overseer.SendMsg(i, "I HAVE CLOSED THIS REALM!", "#Oryx the Mad God");
+                            Overseer.SendMsg(i, "YOU WILL NOT LIVE TO SEE THE LIGHT OF DAY!", "#Oryx the Mad God");
+                        }
+
+                        foreach (var i in GameServer.Manager.ClientManager.Values)
+                            i.Client.Player?.SendInfo($"Oryx is preparing to close realm '{Name}' in 1 minute.");
+
+                        var wc = GameServer.Manager.AddWorld(new WineCellar());
+                        wc.Manager = GameServer.Manager;
+
+                        Timers.Add(new WorldTimer(8000, (w, t) =>
+                        {
+                            foreach (var i in Players.Values)
+                            {
+                                if (wc == null)
+                                    GameServer.Manager.TryDisconnect(i.Client, DisconnectReason.RECONNECT_TO_CASTLE);
+
+                                i.Client.SendMessage(new RECONNECT
+                                {
+                                    Host = "",
+                                    Port = Settings.GAMESERVER.PORT,
+                                    GameId = wc.Id,
+                                    Name = wc.Name,
+                                    Key = wc.PortalKey
+                                });
+                            }
+                        }));
+
+                        foreach (var i in Players.Values)
+                        {
+                            Overseer.SendMsg(i, "MY MINIONS HAVE FAILED ME!", "#Oryx the Mad God");
+                            Overseer.SendMsg(i, "BUT NOW YOU SHALL FEEL MY WRATH!", "#Oryx the Mad God");
+                            Overseer.SendMsg(i, "COME MEET YOUR DOOM AT THE WALLS OF MY WINE CELLAR!", "#Oryx the Mad God");
+
+                            i.Client.SendMessage(new SHOWEFFECT { EffectType = EffectType.Jitter });
+                        }
+                    } while (true);
                 })
                 { IsBackground = true };
                 _autoEvents.Start();

@@ -86,22 +86,14 @@ namespace LoESoft.GameServer.realm
         {
             if (!disposed)
             {
-                if (HandleHeroes())
+                if (time.TotalElapsedMs - prevTick > 25000)
                 {
-                    if (!ClosingStarted)
-                        InitCloseRealm();
-                }
-                else
-                {
-                    if (time.TotalElapsedMs - prevTick > 25000)
-                    {
-                        if (x % 2 == 0)
-                            HandleAnnouncements();
-                        if (x % 6 == 0)
-                            EnsurePopulation();
-                        x++;
-                        prevTick = time.TotalElapsedMs;
-                    }
+                    if (x % 2 == 0)
+                        HandleAnnouncements();
+                    if (x % 6 == 0)
+                        EnsurePopulation();
+                    x++;
+                    prevTick = time.TotalElapsedMs;
                 }
             }
         }
@@ -109,7 +101,7 @@ namespace LoESoft.GameServer.realm
         public void BroadcastMsg(string message) =>
             GameServer.Manager.Chat.Oryx(world, message);
 
-        private void SendMsg(Player player, string message, string src = "") =>
+        public void SendMsg(Player player, string message, string src = "") =>
             player.Client.SendMessage(new TEXT
             {
                 Name = src,
