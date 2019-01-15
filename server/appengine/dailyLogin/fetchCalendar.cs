@@ -8,15 +8,55 @@ namespace LoESoft.AppEngine.dailyLogin
 {
     public class MonthCalendarUtils
     {
-        public static DateTime MonthDate = new DateTime(2019, 1, 1, 0, 0, 0, Settings.DateTimeKind);
-        public static bool DISABLE_CALENDAR = true;
+        public static DateTime StartDate = new DateTime(2019, 1, 14, 0, 0, 0, Settings.DateTimeKind);
+        public static DateTime EndDate = new DateTime(2019, 1, 25, 0, 0, 0, Settings.DateTimeKind);
+        public static bool DISABLE_CALENDAR = false;
 
-        public static List<FetchCalendarDay> MonthCalendarList = new List<FetchCalendarDay>(1)
+        public static List<FetchCalendarDay> MonthCalendarList = new List<FetchCalendarDay>()
         {
             new FetchCalendarDay
             {
-                Item = 0x575a, //Public Arena Key
+                Item = 0x1088,
                 Quantity = 1
+            },
+            new FetchCalendarDay
+            {
+                Item = 0x1188,
+                Quantity = 1
+            },
+            new FetchCalendarDay
+            {
+                Item = 0xb0b,
+                Quantity = 1
+            },
+            new FetchCalendarDay
+            {
+                Item = 0xaff,
+                Quantity = 1
+            },
+            new FetchCalendarDay
+            {
+                Item = 0xaf6,
+                Quantity = 1
+            },
+            new FetchCalendarDay
+            {
+                Item = 0xc50,
+                Quantity = 1
+            },
+            new FetchCalendarDay
+            {
+                Item = 0xb08,
+                Quantity = 1
+            },
+            new FetchCalendarDay
+            {
+                Item = 0xb02,
+                Quantity = 1
+            },
+            new FetchCalendarDay
+            {
+                Gold = 50
             }
         };
     }
@@ -53,7 +93,7 @@ namespace LoESoft.AppEngine.dailyLogin
                 return;
             }
 
-            if (MonthCalendarUtils.DISABLE_CALENDAR)
+            if (MonthCalendarUtils.DISABLE_CALENDAR || DateTime.UtcNow >= MonthCalendarUtils.EndDate)
             {
                 WriteLine("<Error>This feature is disabled.</Error>");
                 return;
@@ -135,6 +175,6 @@ namespace LoESoft.AppEngine.dailyLogin
 
         internal bool IsNextDay(DateTime dateTime) => dateTime != DateTime.Today;
 
-        internal bool IsNextMonth(DateTime dateTime) => (dateTime.Year == MonthCalendarUtils.MonthDate.Year && dateTime.Month != MonthCalendarUtils.MonthDate.Month) || dateTime.Year != MonthCalendarUtils.MonthDate.Year;
+        internal bool IsNextMonth(DateTime dateTime) => (dateTime.Year == MonthCalendarUtils.StartDate.Year && dateTime.Month != MonthCalendarUtils.StartDate.Month) || dateTime.Year != MonthCalendarUtils.StartDate.Year;
     }
 }
