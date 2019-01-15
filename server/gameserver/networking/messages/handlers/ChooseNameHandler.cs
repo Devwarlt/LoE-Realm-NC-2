@@ -33,7 +33,7 @@ namespace LoESoft.GameServer.networking.handlers
                     while ((lockToken = Manager.Database.AcquireLock(key)) == null)
                         ;
 
-                    if (Manager.Database.Connection.Hashes.Exists(0, "names", name.ToUpperInvariant()).Exec())
+                    if (Manager.Database.Conn.HashExists("names", name.ToUpperInvariant()))
                     {
                         client.SendMessage(new NAMERESULT
                         {

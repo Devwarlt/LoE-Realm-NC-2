@@ -25,7 +25,7 @@ namespace LoESoft.AppEngine.@char
                         WriteErrorLine("<Text>Not enough Gold.</Text>");
                     else
                     {
-                        if (Database.Connection.Hashes.GetString(0, $"classAvailability.{acc.AccountId}", classType.ToString()).Exec()
+                        if (Database.Conn.HashGet($"classAvailability.{acc.AccountId}", classType.ToString())
                             == JsonConvert.SerializeObject(new DbClassAvailabilityEntry
                             {
                                 Id = GameData.ObjectTypeToId[classType],
@@ -34,14 +34,14 @@ namespace LoESoft.AppEngine.@char
                             WriteErrorLine("Class already unlocked");
                         else
                         {
-                            Database.Connection.Hashes.Set(0, $"classAvailability.{acc.AccountId}", classType.ToString(),
+                            Database.Conn.HashSet($"classAvailability.{acc.AccountId}", classType.ToString(),
                             JsonConvert.SerializeObject(new DbClassAvailabilityEntry
                             {
                                 Id = GameData.ObjectTypeToId[classType],
                                 Restricted = "unrestricted"
                             }));
                             Database.UpdateCredit(acc, -price);
-                            acc.Flush();
+                            acc.FlushAsync();
                             acc.Reload();
                             WriteLine("<Success />");
                         }

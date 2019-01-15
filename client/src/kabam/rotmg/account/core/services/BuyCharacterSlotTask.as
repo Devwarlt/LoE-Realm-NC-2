@@ -36,7 +36,7 @@ public class BuyCharacterSlotTask extends BaseTask {
             this.model.changeCredits(-this.price);
         }
         else {
-            this.model.changeFame(-this.price);
+            this.model.changeCredits(-this.price);
         }
     }
 

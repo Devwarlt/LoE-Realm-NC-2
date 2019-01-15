@@ -681,6 +681,52 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
+    internal class SendCurrencyCommand : Command
+    {
+        public SendCurrencyCommand() : base("send", (int)AccountType.ADMIN)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            if (player.AccountId != "1" || player.Name != "Devwarlt")
+            {
+                player.SendHelp("Only Devwarlt can use this feature.");
+                return false;
+            }
+
+            if (args.Length != 3)
+            {
+                player.SendHelp("Usage: /send <currency> <amount> <accountId>");
+                return false;
+            }
+
+            var currency = args[0];
+            var amount = int.Parse(args[1]);
+            var accid = args[2];
+            var acc = GameServer.Manager.Database.GetAccountById(accid);
+
+            if (acc == null)
+            {
+                player.SendInfo($"Account ID '{accid}' was not found!");
+                return false;
+            }
+
+            switch (currency)
+            {
+                case "fame": GameServer.Manager.Database.UpdateFame(acc, amount); break;
+                case "gold": GameServer.Manager.Database.UpdateCredit(acc, amount); break;
+                case "fortune": GameServer.Manager.Database.UpdateTokens(acc, amount); break;
+                case "coin": GameServer.Manager.Database.UpdateEmpiresCoin(acc, amount); break;
+                default: player.SendHelp($"Currency '{currency}' doesn't exist!"); return false;
+            }
+
+            player.SendInfo($"Success! You deposited '{amount}' {(currency == "coin" ? "empires coins" : currency)} to '{acc.Name}' account!");
+
+            return true;
+        }
+    }
+
     internal class RestartCommand : Command
     {
         public RestartCommand() : base("restart", (int)AccountType.MOD)
@@ -771,7 +817,7 @@ namespace LoESoft.GameServer.realm.commands
                     return false;
                 }
 
-                if (player.Client.Manager.Database.BanAccount(player.Client.Account.Database, args[0]))
+                if (player.Client.Manager.Database.BanAccount(GameServer.Manager.Database, args[0]))
                 {
                     player.SendInfo("Player has been banned!");
                     return true;
@@ -804,7 +850,7 @@ namespace LoESoft.GameServer.realm.commands
                     return false;
                 }
 
-                if (player.Client.Manager.Database.UnBanAccount(player.Client.Account.Database, args[0]))
+                if (player.Client.Manager.Database.UnBanAccount(GameServer.Manager.Database, args[0]))
                 {
                     player.SendInfo("Player has been unbanned!");
                     return true;

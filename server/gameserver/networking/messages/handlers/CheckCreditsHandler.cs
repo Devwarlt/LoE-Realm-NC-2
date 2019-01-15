@@ -15,7 +15,7 @@ namespace LoESoft.GameServer.networking.handlers
 
         private void Handle(Client client)
         {
-            client.Account.Flush();
+            client.Account.FlushAsync();
             client.Account.Reload();
             Manager.Logic.AddPendingAction(t =>
             {

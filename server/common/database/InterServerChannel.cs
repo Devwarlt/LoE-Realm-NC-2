@@ -1,7 +1,7 @@
 ﻿#region
 
-using BookSleeve;
 using Newtonsoft.Json;
+using StackExchange.Redis;
 using System;
 using System.Text;
 
@@ -26,40 +26,39 @@ namespace LoESoft.Core
         public string InstanceId { get; private set; }
         public Database Database { get; private set; }
 
-        private RedisSubscriberConnection conn;
-
         public InterServerChannel(Database db, string instId)
         {
             Database = db;
-            conn = db.Connection.GetOpenSubscriberChannel();
             InstanceId = instId;
         }
 
         private struct Message<T> where T : struct
         {
-            public string InstId { get; set; }
-            public string TargetInst { get; set; }
-            public T Content { get; set; }
+            public string InstId;
+            public string TargetInst;
+            public T Content;
         }
 
         public void Publish<T>(string channel, T val, string target = null) where T : struct
         {
-            Message<T> message = new Message<T>()
+            var message = new Message<T>()
             {
                 InstId = InstanceId,
                 TargetInst = target,
                 Content = val
             };
-            try
-            { Database.Connection.Publish(channel, JsonConvert.SerializeObject(message)); }
-            catch { }
+
+            var jsonMsg = JsonConvert.SerializeObject(message);
+
+            Database.Sub.PublishAsync(channel, jsonMsg, CommandFlags.FireAndForget);
         }
 
         public void AddHandler<T>(string channel, EventHandler<InterServerEventArgs<T>> handler) where T : struct
         {
-            conn.Subscribe(channel, (s, buff) =>
+            Database.Sub.Subscribe(channel, (s, buff) =>
             {
                 var message = JsonConvert.DeserializeObject<Message<T>>(Encoding.UTF8.GetString(buff));
+
                 if (message.TargetInst != null &&
                     message.TargetInst != InstanceId)
                     return;

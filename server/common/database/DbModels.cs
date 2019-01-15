@@ -1,13 +1,14 @@
 ﻿#region
 
-using BookSleeve;
 using LoESoft.Core.config;
+using log4net;
 using Newtonsoft.Json;
+using StackExchange.Redis;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -17,151 +18,198 @@ namespace LoESoft.Core
 
     public abstract class RedisObject
     {
-        private ConcurrentDictionary<string, KeyValuePair<byte[], bool>> fields;
+        private static readonly ILog Log = LogManager.GetLogger(typeof(RedisObject));
 
-        protected void Init(Database db, string key)
+        //Note do not modify returning buffer
+        private Dictionary<RedisValue, KeyValuePair<byte[], bool>> _entries;
+
+        protected void Init(IDatabase db, string key, string field = null)
         {
             Key = key;
             Database = db;
 
-            if (Database.Connection.State == RedisConnectionBase.ConnectionState.Closing || Database.Connection.State == RedisConnectionBase.ConnectionState.Closed)
-                Database.Connection = Database.Gateway.GetConnection();
-
-            fields =
-                new ConcurrentDictionary<string, KeyValuePair<byte[], bool>>(
-                    Database
-                    .Connection
-                    .Hashes
-                    .GetAll(0, key)
-                    .Exec()
+            if (field == null)
+                _entries = db.HashGetAll(key)
                     .ToDictionary(
-                        x => x.Key,
-                        x => new KeyValuePair<byte[], bool>(x.Value, false)
-                    )
-                );
+                        x => x.Name,
+                        x => new KeyValuePair<byte[], bool>(x.Value, false));
+            else
+            {
+                var entry = new HashEntry[] { new HashEntry(field, db.HashGet(key, field)) };
+                _entries = entry.ToDictionary(x => x.Name,
+                    x => new KeyValuePair<byte[], bool>(x.Value, false));
+            }
         }
 
-        public Database Database { get; private set; }
+        public IDatabase Database { get; private set; }
         public string Key { get; private set; }
-        public IEnumerable<string> AllKeys => fields.Keys;
-        public bool IsNull => fields.Count == 0;
 
-        protected T GetValue<T>(string key, T def = default(T))
+        public IEnumerable<RedisValue> AllKeys
         {
-            if (!fields.TryGetValue(key, out KeyValuePair<byte[], bool> val))
+            get { return _entries.Keys; }
+        }
+
+        public bool IsNull
+        {
+            get { return _entries.Count == 0; }
+        }
+
+        protected byte[] GetValueRaw(RedisValue key)
+        {
+            if (!_entries.TryGetValue(key, out KeyValuePair<byte[], bool> val))
+                return null;
+
+            if (val.Key == null)
+                return null;
+
+            return (byte[])val.Key.Clone();
+        }
+
+        protected T GetValue<T>(RedisValue key, T def = default(T))
+        {
+            KeyValuePair<byte[], bool> val;
+            if (!_entries.TryGetValue(key, out val) || val.Key == null)
                 return def;
+
             if (typeof(T) == typeof(int))
                 return (T)(object)int.Parse(Encoding.UTF8.GetString(val.Key));
-            else if (typeof(T) == typeof(ushort))
+
+            if (typeof(T) == typeof(uint))
+                return (T)(object)uint.Parse(Encoding.UTF8.GetString(val.Key));
+
+            if (typeof(T) == typeof(ushort))
                 return (T)(object)ushort.Parse(Encoding.UTF8.GetString(val.Key));
-            else if (typeof(T) == typeof(bool))
+
+            if (typeof(T) == typeof(bool))
                 return (T)(object)(val.Key[0] != 0);
-            else if (typeof(T) == typeof(DateTime))
+
+            if (typeof(T) == typeof(DateTime))
                 return (T)(object)DateTime.FromBinary(BitConverter.ToInt64(val.Key, 0));
-            else if (typeof(T) == typeof(byte[]))
+
+            if (typeof(T) == typeof(byte[]))
                 return (T)(object)val.Key;
+
+            if (typeof(T) == typeof(ushort[]))
+            {
+                var ret = new ushort[val.Key.Length / 2];
+                Buffer.BlockCopy(val.Key, 0, ret, 0, val.Key.Length);
+                return (T)(object)ret;
+            }
+
+            if (typeof(T) == typeof(int[]) ||
+                typeof(T) == typeof(uint[]))
+            {
+                var ret = new int[val.Key.Length / 4];
+                Buffer.BlockCopy(val.Key, 0, ret, 0, val.Key.Length);
+                return (T)(object)ret;
+            }
+
+            if (typeof(T) == typeof(string))
+                return (T)(object)Encoding.UTF8.GetString(val.Key);
+
+            throw new NotSupportedException();
+        }
+
+        protected void SetValue<T>(RedisValue key, T val)
+        {
+            byte[] buff;
+            if (typeof(T) == typeof(int) || typeof(T) == typeof(uint) ||
+                typeof(T) == typeof(ushort) || typeof(T) == typeof(string))
+                buff = Encoding.UTF8.GetBytes(val.ToString());
+            else if (typeof(T) == typeof(bool))
+                buff = new byte[] { (byte)((bool)(object)val ? 1 : 0) };
+            else if (typeof(T) == typeof(DateTime))
+                buff = BitConverter.GetBytes(((DateTime)(object)val).ToBinary());
+            else if (typeof(T) == typeof(byte[]))
+                buff = (byte[])(object)val;
             else if (typeof(T) == typeof(ushort[]))
             {
-                ushort[] ret = new ushort[val.Key.Length / 2];
-                Buffer.BlockCopy(val.Key, 0, ret, 0, val.Key.Length);
-                return (T)(object)ret;
+                var v = (ushort[])(object)val;
+                buff = new byte[v.Length * 2];
+                Buffer.BlockCopy(v, 0, buff, 0, buff.Length);
             }
-            else if (typeof(T) == typeof(int[]))
+            else if (typeof(T) == typeof(int[]) ||
+                     typeof(T) == typeof(uint[]))
             {
-                int[] ret = new int[val.Key.Length / 4];
-                Buffer.BlockCopy(val.Key, 0, ret, 0, val.Key.Length);
-                return (T)(object)ret;
+                var v = (int[])(object)val;
+                buff = new byte[v.Length * 4];
+                Buffer.BlockCopy(v, 0, buff, 0, buff.Length);
             }
-            else if (typeof(T) == typeof(string))
-                return (T)(object)Encoding.UTF8.GetString(val.Key);
             else
                 throw new NotSupportedException();
+
+            if (!_entries.ContainsKey(Key) || _entries[Key].Key == null || !buff.SequenceEqual(_entries[Key].Key))
+                _entries[key] = new KeyValuePair<byte[], bool>(buff, true);
         }
 
-        protected void SetValue<T>(string key, T val)
+        private List<HashEntry> _update;
+
+        public Task FlushAsync(ITransaction transaction = null)
         {
+            ReadyFlush();
+            return transaction == null ?
+                Database.HashSetAsync(Key, _update.ToArray()) :
+                transaction.HashSetAsync(Key, _update.ToArray());
+        }
+
+        private void ReadyFlush()
+        {
+            if (_update == null)
+                _update = new List<HashEntry>();
+            _update.Clear();
+
+            foreach (var name in _entries.Keys)
+                if (_entries[name].Value)
+                    _update.Add(new HashEntry(name, _entries[name].Key));
+
+            foreach (var update in _update)
+                _entries[update.Name] = new KeyValuePair<byte[], bool>(_entries[update.Name].Key, false);
+        }
+
+        public async Task ReloadAsync(ITransaction trans = null, string field = null)
+        {
+            if (field != null && _entries != null)
+            {
+                var tf = trans != null ?
+                    trans.HashGetAsync(Key, field) :
+                    Database.HashGetAsync(Key, field);
+
+                try
+                {
+                    await tf;
+                    _entries[field] = new KeyValuePair<byte[], bool>(
+                        tf.Result, false);
+                }
+                catch { }
+                return;
+            }
+
+            var t = trans != null ?
+                trans.HashGetAllAsync(Key) :
+                Database.HashGetAllAsync(Key);
+
             try
             {
-                byte[] buff;
-                if (typeof(T) == typeof(int) || typeof(T) == typeof(ushort) ||
-                    typeof(T) == typeof(string))
-                    buff = Encoding.UTF8.GetBytes(val.ToString());
-                else if (typeof(T) == typeof(bool))
-                    buff = new byte[] { (byte)((bool)(object)val ? 1 : 0) };
-                else if (typeof(T) == typeof(DateTime))
-                    buff = BitConverter.GetBytes(((DateTime)(object)val).ToBinary());
-                else if (typeof(T) == typeof(byte[]))
-                    buff = (byte[])(object)val;
-                else if (typeof(T) == typeof(ushort[]))
-                {
-                    var v = (ushort[])(object)val;
-                    buff = new byte[v.Length * 2];
-                    Buffer.BlockCopy(v, 0, buff, 0, buff.Length);
-                }
-                else if (typeof(T) == typeof(int[]))
-                {
-                    var v = (int[])(object)val;
-                    buff = new byte[v.Length * 4];
-                    Buffer.BlockCopy(v, 0, buff, 0, buff.Length);
-                }
-                else
-                    throw new NotSupportedException();
-
-                fields[key] = new KeyValuePair<byte[], bool>(buff, true);
+                await t;
+                _entries = t.Result.ToDictionary(
+                    x => x.Name, x => new KeyValuePair<byte[], bool>(x.Value, false));
             }
-            catch (NullReferenceException)
+            catch { }
+        }
+
+        public void Reload(string field = null)
+        {
+            if (field != null && _entries != null)
             {
-                if (Database.Connection.State == RedisConnectionBase.ConnectionState.Closing
-                    || Database.Connection.State == RedisConnectionBase.ConnectionState.Closed)
-                    Database.Connection = Database.Gateway.GetConnection();
+                _entries[field] = new KeyValuePair<byte[], bool>(
+                    Database.HashGet(Key, field), false);
+                return;
             }
-        }
 
-        private Dictionary<string, byte[]> update;
-
-        public void Flush()
-        {
-            if (update == null)
-                update = new Dictionary<string, byte[]>();
-            else
-                update.Clear();
-
-            foreach (var i in fields)
-                if (i.Value.Value)
-                    update.Add(i.Key, i.Value.Key);
-
-            Database.Connection.Hashes.Set(0, Key, update);
-        }
-
-        public void Flush(RedisConnection conn = null)
-        {
-            if (update == null)
-                update = new Dictionary<string, byte[]>();
-            else
-                update.Clear();
-            foreach (var i in fields)
-                if (i.Value.Value)
-                    update.Add(i.Key, i.Value.Key);
-            (conn ?? Database.Connection).Hashes.Set(0, Key, update);
-        }
-
-        public void Reload()    //Discard all updates
-        {
-            if (update != null)
-                update.Clear();
-
-            fields =
-                new ConcurrentDictionary<string, KeyValuePair<byte[], bool>>(
-                    Database
-                    .Connection
-                    .Hashes
-                    .GetAll(0, Key)
-                    .Exec()
-                    .ToDictionary(
-                        x => x.Key,
-                        x => new KeyValuePair<byte[], bool>(x.Value, false)
-                    )
-                );
+            _entries = Database.HashGetAll(Key)
+                .ToDictionary(
+                    x => x.Name,
+                    x => new KeyValuePair<byte[], bool>(x.Value, false));
         }
     }
 
@@ -169,13 +217,14 @@ namespace LoESoft.Core
 
     public class DbLoginInfo
     {
-        private Database Db { get; set; }
+        private IDatabase db;
 
-        internal DbLoginInfo(Database db, string uuid)
+        internal DbLoginInfo(IDatabase db, string uuid)
         {
-            Db = db;
+            this.db = db;
             UUID = uuid;
-            var json = db.Connection.Hashes.GetString(0, "logins", uuid.ToUpperInvariant()).Exec();
+
+            var json = (string)db.HashGet("logins", uuid.ToUpperInvariant());
             if (json == null)
                 IsNull = true;
             else
@@ -194,13 +243,13 @@ namespace LoESoft.Core
 
         public void Flush()
         {
-            Db.Connection.Hashes.Set(0, "logins", UUID.ToUpperInvariant(), JsonConvert.SerializeObject(this));
+            db.HashSet("logins", UUID.ToUpperInvariant(), JsonConvert.SerializeObject(this));
         }
     }
 
     public class DbAccount : RedisObject
     {
-        internal DbAccount(Database db, string accId)
+        internal DbAccount(IDatabase db, string accId)
         {
             AccountId = accId;
             Init(db, "account." + accId);
@@ -745,7 +794,7 @@ namespace LoESoft.Core
         public DbAccount AccountId { get; private set; }
         public int Id { get; private set; }
 
-        internal DbGuild(Database db, int id)
+        internal DbGuild(IDatabase db, int id)
         {
             Id = id;
             Init(db, "guild." + id);
@@ -807,14 +856,14 @@ namespace LoESoft.Core
 
     public class DbNews
     {
-        public DbNews(Database db, int count)
+        public DbNews(IDatabase db, int count)
         {
-            News = db.Connection.SortedSets.Range(0, "news", 0, 10, false).Exec()
+            News = db.SortedSetRangeByRankWithScores("news", 0, 10)
                 .Select(x =>
                 {
-                    var ret = JsonConvert.DeserializeObject<DbNewsEntry>(
-                        Encoding.UTF8.GetString(x.Key));
-                    ret.Date = new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(x.Value);
+                    DbNewsEntry ret = JsonConvert.DeserializeObject<DbNewsEntry>(
+                        Encoding.UTF8.GetString(x.Element));
+                    ret.Date = new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(x.Score);
                     return ret;
                 }).ToArray();
         }
@@ -842,53 +891,80 @@ namespace LoESoft.Core
 
     public struct DbLegendEntry
     {
-        public int TotalFame { get; set; }
-        public int AccId { get; set; }
-        public int ChrId { get; set; }
-    }
+        public readonly int AccId;
+        public readonly int ChrId;
 
-    public enum DbLegendTimeSpan
-    {
-        All,
-        Month,
-        Week
+        public DbLegendEntry(int accId, int chrId)
+        {
+            AccId = accId;
+            ChrId = chrId;
+        }
     }
 
     public class DbLegend
     {
-        public DbLegend(Database db, DbLegendTimeSpan timeSpan, int count)
-        {
-            double begin;
-            if (timeSpan == DbLegendTimeSpan.Week)
-                begin = DateTime.Now.Subtract(TimeSpan.FromDays(7)).ToUnixTimestamp();
-            else if (timeSpan == DbLegendTimeSpan.Month)
-                begin = DateTime.Now.AddMonths(-1).ToUnixTimestamp();
-            else
-                begin = 0;
+        private const int MaxListings = 20;
+        private const int MaxGlowingRank = 10;
 
-            Entries = db.Connection.SortedSets.Range(0, "legends", begin, double.PositiveInfinity, false, count: count).Exec()
-                .Select(x => new DbLegendEntry()
-                {
-                    TotalFame = BitConverter.ToInt32(x.Key, 0),
-                    AccId = BitConverter.ToInt32(x.Key, 4),
-                    ChrId = BitConverter.ToInt32(x.Key, 8)
-                })
-                .OrderByDescending(x => x.TotalFame)
+        private static readonly Dictionary<string, TimeSpan> TimeSpans = new Dictionary<string, TimeSpan>()
+        {
+            { "week", TimeSpan.FromDays(7) },
+            { "month", TimeSpan.FromDays(30) },
+            { "all", TimeSpan.MaxValue }
+        };
+
+        public static DbLegendEntry[] Get(IDatabase db, string timeSpan)
+        {
+            if (!TimeSpans.ContainsKey(timeSpan))
+                return new DbLegendEntry[0];
+
+            var listings = db.SortedSetRangeByRank($"legends.{timeSpan}:byFame", 0, MaxListings - 1, Order.Descending);
+
+            return listings
+                .Select(e => new DbLegendEntry(
+                    BitConverter.ToInt32(e, 0),
+                    BitConverter.ToInt32(e, 4)))
                 .ToArray();
         }
 
-        public static void Insert(Database db, DateTime time, DbLegendEntry entry)
+        public static void Insert(IDatabase db, int accId, int chrId, int totalFame)
         {
-            double t = time.ToUnixTimestamp();
-            byte[] buff = new byte[12];
-            Buffer.BlockCopy(BitConverter.GetBytes(entry.TotalFame), 0, buff, 0, 4);
-            Buffer.BlockCopy(BitConverter.GetBytes(entry.AccId), 0, buff, 4, 4);
-            Buffer.BlockCopy(BitConverter.GetBytes(entry.ChrId), 0, buff, 8, 4);
-            db.Connection.SortedSets.Add(0, "legends", buff, t);
-        }
+            var buff = new byte[8];
+            Buffer.BlockCopy(BitConverter.GetBytes(accId), 0, buff, 0, 4);
+            Buffer.BlockCopy(BitConverter.GetBytes(chrId), 0, buff, 4, 4);
 
-        private DbLegendEntry[] Entries { get; set; }
-        public DbLegendEntry[] GetEntries => Entries;
+            // add entry to each legends list
+            var trans = db.CreateTransaction();
+            foreach (var span in TimeSpans)
+            {
+                trans.SortedSetAddAsync($"legends:{span.Key}:byFame",
+                    buff, totalFame, CommandFlags.FireAndForget);
+
+                if (span.Value == TimeSpan.MaxValue)
+                    continue;
+
+                double t = DateTime.UtcNow.Add(span.Value).ToUnixTimestamp();
+                trans.SortedSetAddAsync($"legends:{span.Key}:byTimeOfDeath",
+                    buff, t, CommandFlags.FireAndForget);
+            }
+            trans.ExecuteAsync();
+
+            // add legend if character falls within MaxGlowingRank
+            foreach (var span in TimeSpans)
+            {
+                db.SortedSetRankAsync($"legends.{span.Key}.byFame", buff, Order.Descending)
+                    .ContinueWith(r =>
+                    {
+                        if (r.Result >= MaxGlowingRank)
+                            return;
+
+                        db.HashSetAsync("legend", accId, "",
+                            flags: CommandFlags.FireAndForget);
+                    });
+            }
+
+            db.StringSetAsync("legends.updateTime", DateTime.UtcNow.ToUnixTimestamp(), flags: CommandFlags.FireAndForget);
+        }
     }
 
     public class DailyCalendar : RedisObject

@@ -1,16 +1,12 @@
 ﻿#region
 
-using LoESoft.Core.config;
 using LoESoft.Core.models;
-using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
 using LoESoft.GameServer.realm.mapsetpiece;
 using LoESoft.GameServer.realm.terrain;
 using LoESoft.GameServer.realm.world;
 using System;
-using System.Threading.Tasks;
-using static LoESoft.GameServer.networking.Client;
 
 #endregion
 
@@ -54,16 +50,20 @@ namespace LoESoft.GameServer.realm
             {
                 var terrain = i.WmapTerrain;
                 var idx = (int)terrain - 1;
-                var enemyCount = i.Density;
+                var enemyCount = i.Density * 3;
+
                 enemyMaxCounts[idx] = i.Density;
                 enemyCounts[idx] = 0;
+
                 for (var j = 0; j < enemyCount; j++)
                 {
                     var objType = GetRandomObjType(i.Entities);
+
                     if (objType == 0)
                         continue;
 
                     enemyCounts[idx] += HandleSpawn(GameServer.Manager.GameData.ObjectDescs[objType], terrain, w, h);
+
                     if (enemyCounts[idx] >= enemyCount)
                         break;
                 }
@@ -71,79 +71,6 @@ namespace LoESoft.GameServer.realm
         }
 
         private bool Done = false;
-
-        public void InitCloseRealm()
-        {
-            if (!Done)
-            {
-                ClosingStarted = true;
-
-                foreach (var i in world.Players.Values)
-                {
-                    SendMsg(i, "I HAVE CLOSED THIS REALM!", "#Oryx the Mad God");
-                    SendMsg(i, "YOU WILL NOT LIVE TO SEE THE LIGHT OF DAY!", "#Oryx the Mad God");
-                }
-
-                world.Timers.Add(new WorldTimer(20000, (ww, tt) => AnnounceRealmClose()));
-            }
-            else
-                return;
-        }
-
-        public void AnnounceRealmClose()
-        {
-            foreach (var i in GameServer.Manager.ClientManager.Values)
-                i.Client.Player?.SendInfo($"Oryx is preparing to close realm '{world.Name}' in 1 minute.");
-
-            Done = true;
-
-            world.Timers.Add(new WorldTimer(100000, (ww, tt) => GameServer.Manager.CloseWorld(world)));
-            world.Timers.Add(new WorldTimer(120000, (ww, tt) => CloseRealm()));
-
-            GameServer.Manager.GetWorld((int)WorldID.NEXUS_ID).Timers.Add(new WorldTimer(130000, (w, t) =>
-                Task.Factory.StartNew(() =>
-                    GameWorld.AutoName(1, true))
-                    .ContinueWith(_ => GameServer.Manager.AddWorld(_.Result)
-                , TaskScheduler.Default)
-            ));
-        }
-
-        public void CloseRealm()
-        {
-            World ocWorld = null;
-            world.Timers.Add(new WorldTimer(2000, (w, t) =>
-            {
-                ocWorld = GameServer.Manager.AddWorld(new WineCellar());
-                ocWorld.Manager = GameServer.Manager;
-            }));
-            world.Timers.Add(new WorldTimer(8000, (w, t) =>
-            {
-                foreach (var i in world.Players.Values)
-                {
-                    if (ocWorld == null)
-                        GameServer.Manager.TryDisconnect(i.Client, DisconnectReason.RECONNECT_TO_CASTLE);
-                    i.Client.SendMessage(new RECONNECT
-                    {
-                        Host = "",
-                        Port = Settings.GAMESERVER.PORT,
-                        GameId = ocWorld.Id,
-                        Name = ocWorld.Name,
-                        Key = ocWorld.PortalKey
-                    });
-                }
-            }));
-            foreach (var i in world.Players.Values)
-            {
-                SendMsg(i, "MY MINIONS HAVE FAILED ME!", "#Oryx the Mad God");
-                SendMsg(i, "BUT NOW YOU SHALL FEEL MY WRATH!", "#Oryx the Mad God");
-                SendMsg(i, "COME MEET YOUR DOOM AT THE WALLS OF MY WINE CELLAR!", "#Oryx the Mad God");
-                i.Client.SendMessage(new SHOWEFFECT
-                {
-                    EffectType = EffectType.Jitter
-                });
-            }
-            world.Timers.Add(new WorldTimer(10000, (w, t) => GameServer.Manager.RemoveWorld(w)));
-        }
 
         public void OnPlayerEntered(Player player)
         {

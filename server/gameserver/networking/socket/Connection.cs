@@ -1,5 +1,4 @@
-﻿using BookSleeve;
-using LoESoft.Core.models;
+﻿using LoESoft.Core.models;
 using LoESoft.GameServer.networking.outgoing;
 using System;
 
@@ -271,11 +270,15 @@ namespace LoESoft.GameServer.networking
 
         public bool Reconnect(RECONNECT msg)
         {
-            Log.Info($"[({(int)DisconnectReason.RECONNECT}) {DisconnectReason.RECONNECT.ToString()}] Reconnect player '{Account.Name} (Account ID: {Account.AccountId})' to {msg.Name}.");
+            try
+            {
+                Log.Info($"[({(int)DisconnectReason.RECONNECT}) {DisconnectReason.RECONNECT.ToString()}] Reconnect player '{Account.Name} (Account ID: {Account.AccountId})' to {msg.Name}.");
 
-            Save();
+                Save();
 
-            SendMessage(msg);
+                SendMessage(msg);
+            }
+            catch (NullReferenceException) { }
 
             return true;
         }
@@ -290,12 +293,6 @@ namespace LoESoft.GameServer.networking
                     Manager.Database.SaveCharacter(Account, Character, false);
                 if (Account != null)
                     Manager.Database.ReleaseLock(Account);
-            }
-            catch (InvalidOperationException)
-            {
-                if (Manager.Database.Connection.State == RedisConnectionBase.ConnectionState.Closing
-                    || Manager.Database.Connection.State == RedisConnectionBase.ConnectionState.Closed)
-                    Manager.Database.Connection = Manager.Database.Gateway.GetConnection();
             }
             catch (Exception ex)
             { Log.Error(ex.ToString()); }

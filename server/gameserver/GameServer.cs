@@ -72,7 +72,7 @@ namespace LoESoft.GameServer
                 AutoRestart = Settings.NETWORKING.RESTART.ENABLE_RESTART;
 
                 Manager.Initialize();
-                new Thread(() => Manager.Run()) { IsBackground = true }.Start();
+                Manager.Run();
 
                 Log._("Message", Message.Messages.Count);
 
@@ -112,7 +112,7 @@ namespace LoESoft.GameServer
                 server?.Stop();
                 policy?.Stop();
                 Manager?.Stop();
-                Manager?.Database.Connection.Dispose();
+                Manager?.Database.Dispose();
                 Shutdown?.Dispose();
 
                 Log.Warn("Terminated GameServer.");
@@ -121,7 +121,7 @@ namespace LoESoft.GameServer
 
                 Environment.Exit(0);
             }
-            catch (OutOfMemoryException) { ForceShutdown(); }
+            catch (Exception e) { ForceShutdown(e); }
         }
 
         private static int ToMiliseconds(int minutes) => minutes * 60 * 1000;
@@ -130,18 +130,14 @@ namespace LoESoft.GameServer
 
         public async static void ForceShutdown(Exception ex = null)
         {
-            Task task = Task.Delay(1000);
+            if (ex != null)
+                log.Error(ex);
 
-            await task;
-
-            task.Dispose();
+            await Task.Delay(1000);
 
             Process.Start(Settings.GAMESERVER.FILE);
 
             Environment.Exit(0);
-
-            if (ex != null)
-                Log.Error(ex.ToString());
         }
 
         public static void SafeRestart()
