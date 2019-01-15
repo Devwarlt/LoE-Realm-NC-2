@@ -67,7 +67,7 @@ namespace LoESoft.AppEngine
             while (Console.ReadKey(true).Key != ConsoleKey.Escape)
                 ;
 
-            Database.Connection.Dispose();
+            Database.Dispose();
 
             AppEngineManager._shutdown = true;
 

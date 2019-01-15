@@ -5,7 +5,6 @@ using log4net;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
-using System.Timers;
 
 #endregion
 

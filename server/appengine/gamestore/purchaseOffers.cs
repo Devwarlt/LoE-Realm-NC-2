@@ -38,7 +38,7 @@ namespace LoESoft.AppEngine.gamestore
 
         private bool Validate(DbAccount acc, int currency, int total)
         {
-            switch ((Currency) currency)
+            switch ((Currency)currency)
             {
                 case Currency.GOLD:
                     return Credits(acc) >= total;
@@ -65,13 +65,13 @@ namespace LoESoft.AppEngine.gamestore
         {
             List<string> names = new List<string>();
             foreach (int i in objectType)
-                names.Add($"{GameData.ObjectTypeToId[(ushort) i]}");
+                names.Add($"{GameData.ObjectTypeToId[(ushort)i]}");
             return string.Join(", ", names.ToArray());
         }
 
         private string GetCurrency(int currency)
         {
-            switch ((Currency) currency)
+            switch ((Currency)currency)
             {
                 case Currency.GOLD:
                     return "credits";
@@ -96,7 +96,7 @@ namespace LoESoft.AppEngine.gamestore
 
         private void Deduct(DbAccount acc, int currency, int total, List<int> objectType)
         {
-            switch ((Currency) currency)
+            switch ((Currency)currency)
             {
                 case Currency.GOLD:
                     {
@@ -140,7 +140,7 @@ namespace LoESoft.AppEngine.gamestore
                 items.Add(item);
 
             acc.Gifts = items.ToArray();
-            acc.Flush();
+            acc.FlushAsync();
             acc.Reload();
         }
 
@@ -190,19 +190,19 @@ namespace LoESoft.AppEngine.gamestore
 
                     foreach (Offer k in items)
                     {
-                        if (k.CurrencyType == (int) Currency.GOLD)
+                        if (k.CurrencyType == (int)Currency.GOLD)
                             for (int l = 0; l < k.Quantity; l++)
                                 credits.Add(k.ObjectType);
-                        if (k.CurrencyType == (int) Currency.FAME)
+                        if (k.CurrencyType == (int)Currency.FAME)
                             for (int l = 0; l < k.Quantity; l++)
                                 fame.Add(k.ObjectType);
-                        if (k.CurrencyType == (int) Currency.GUILD_FAME)
+                        if (k.CurrencyType == (int)Currency.GUILD_FAME)
                             for (int l = 0; l < k.Quantity; l++)
                                 guild_fame.Add(k.ObjectType);
-                        if (k.CurrencyType == (int) Currency.FORTUNE_TOKENS)
+                        if (k.CurrencyType == (int)Currency.FORTUNE_TOKENS)
                             for (int l = 0; l < k.Quantity; l++)
                                 fortune_tokens.Add(k.ObjectType);
-                        if (k.CurrencyType == (int) Currency.EMPIRES_COIN)
+                        if (k.CurrencyType == (int)Currency.EMPIRES_COIN)
                             for (int l = 0; l < k.Quantity; l++)
                                 empires_coin.Add(k.ObjectType);
                     }

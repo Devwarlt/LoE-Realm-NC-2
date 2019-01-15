@@ -120,7 +120,7 @@ namespace LoESoft.AppEngine.dailyLogin
                 CalendarDb.LastTime = DateTime.Today;
             }
 
-            CalendarDb.Flush();
+            CalendarDb.FlushAsync();
 
             WriteLine(GetXML(CalendarDb));
         }

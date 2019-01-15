@@ -112,7 +112,7 @@ namespace LoESoft.GameServer
                 server?.Stop();
                 policy?.Stop();
                 Manager?.Stop();
-                Manager?.Database.Connection.Dispose();
+                Manager?.Database.Dispose();
                 Shutdown?.Dispose();
 
                 Log.Warn("Terminated GameServer.");

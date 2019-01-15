@@ -178,7 +178,7 @@ namespace LoESoft.AppEngine.account
 
                     acc.Gifts = giftsList.ToArray();
 
-                    acc.Flush();
+                    acc.FlushAsync();
                     acc.Reload();
                 }
                 else

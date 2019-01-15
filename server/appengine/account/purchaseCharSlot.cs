@@ -35,7 +35,7 @@ namespace LoESoft.AppEngine.account
                         }
                         Database.UpdateCredit(acc, -100); //should be rebuilded
                         acc.MaxCharSlot++;
-                        acc.Flush();
+                        acc.FlushAsync();
                     }
                     WriteLine("<Success />");
                 }

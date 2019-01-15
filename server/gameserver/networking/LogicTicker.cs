@@ -38,6 +38,11 @@ namespace LoESoft.GameServer.realm
             do
             {
                 t.TotalElapsedMs = watch.ElapsedMilliseconds;
+
+                var delay = Math.Max(0, COOLDOWN_DELAY - (int)(watch.ElapsedMilliseconds - t.TotalElapsedMs));
+
+                await Task.Delay(delay);
+
                 t.TickDelta = looptime / COOLDOWN_DELAY;
                 t.TickCount += t.TickDelta;
                 t.ElapsedMsDelta = t.TickDelta * COOLDOWN_DELAY;
@@ -45,67 +50,49 @@ namespace LoESoft.GameServer.realm
                 if (_manager.Terminating)
                     break;
 
-                TickActions(t);
+                _manager.InterServer.Tick(t);
+
+                try
+                {
+                    if (TradeManager.TradingPlayers.Count != 0)
+                        TradeManager.TradingPlayers.Where(_ => _.Owner == null)
+                        .Select(i => TradeManager.TradingPlayers.Remove(i)).ToArray();
+                }
+                catch { }
+
+                try
+                {
+                    if (TradeManager.CurrentRequests.Count != 0)
+                        TradeManager.CurrentRequests.Where(_ => _.Key.Owner == null || _.Value.Owner == null)
+                        .Select(i => TradeManager.CurrentRequests.Remove(i)).ToArray();
+                }
+                catch { }
+
+                CurrentTime.TickDelta += t.TickDelta;
+
+                if (_logic == null || _logic.IsCompleted)
+                {
+                    t.TickDelta = CurrentTime.TickDelta;
+                    t.ElapsedMsDelta = t.TickDelta * COOLDOWN_DELAY;
+
+                    CurrentTime.TickDelta = 0;
+                    CurrentTime.TotalElapsedMs = t.TotalElapsedMs;
+
+                    _logic = Task.Factory.StartNew(() =>
+                    {
+                        foreach (var world in _manager.Worlds.Values.Distinct())
+                            world.Tick(t);
+                    }).ContinueWith(task
+                    => GameServer.log.Error(task.Exception.InnerException),
+                    TaskContinuationOptions.OnlyOnFaulted);
+                }
+
+                foreach (var client in _manager.ClientManager.Values.Select(client => client.Client).ToList())
+                    if (client.Player?.Owner != null)
+                        client.Player.Flush();
 
                 looptime += (int)(watch.ElapsedMilliseconds - t.TotalElapsedMs) - t.ElapsedMsDelta;
-
-                await Task.Delay(Math.Max(0, COOLDOWN_DELAY - (int)(watch.ElapsedMilliseconds - t.TotalElapsedMs)));
             } while (true);
-        }
-
-        private void TickActions(RealmTime t)
-        {
-            var clients = _manager.ClientManager.Values.Select(client => client.Client).ToList();
-
-            _manager.InterServer.Tick(t);
-
-            TickTrade(t);
-
-            foreach (var client in clients)
-                if (client.Player?.Owner != null)
-                    client.Player.Flush();
-        }
-
-        private void TickTrade(RealmTime t)
-        {
-            try
-            {
-                if (TradeManager.TradingPlayers.Count != 0)
-                    TradeManager.TradingPlayers.Where(_ => _.Owner == null)
-                    .Select(i => TradeManager.TradingPlayers.Remove(i)).ToArray();
-            }
-            catch { }
-
-            try
-            {
-                if (TradeManager.CurrentRequests.Count != 0)
-                    TradeManager.CurrentRequests.Where(_ => _.Key.Owner == null || _.Value.Owner == null)
-                    .Select(i => TradeManager.CurrentRequests.Remove(i)).ToArray();
-            }
-            catch { }
-
-            TickWorlds(t);
-        }
-
-        private void TickWorlds(RealmTime t)
-        {
-            CurrentTime.TickDelta += t.TickDelta;
-
-            if (_logic == null || _logic.IsCompleted)
-            {
-                t.TickDelta = CurrentTime.TickDelta;
-                t.ElapsedMsDelta = t.TickDelta * COOLDOWN_DELAY;
-
-                CurrentTime.TickDelta = 0;
-
-                _logic = Task.Factory.StartNew(() =>
-                {
-                    foreach (var world in _manager.Worlds.Values.Distinct())
-                        world.Tick(t);
-                }).ContinueWith(task
-                => GameServer.log.Error(task.Exception.InnerException),
-                TaskContinuationOptions.OnlyOnFaulted);
-            }
         }
 
         public void AddPendingAction(Action<RealmTime> callback, PendingPriority priority = PendingPriority.Normal)

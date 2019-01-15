@@ -55,9 +55,9 @@ namespace LoESoft.GameServer.networking.handlers
 
             ClaimedDays.Add(ClaimKey + 1);
             CalendarDb.ClaimedDays = ClaimedDays.ToArray();
-            CalendarDb.Flush();
+            CalendarDb.FlushAsync();
 
-            client.Account.Flush();
+            client.Account.FlushAsync();
             client.Account.Reload();
         }
     }

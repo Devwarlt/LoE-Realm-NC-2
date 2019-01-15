@@ -174,7 +174,7 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                                         gifts.Add(GameServer.Manager.GameData.IdToObjectType[currentTask.RewardDatas[i].ObjectId]);
 
                                 player.Client.Account.Gifts = gifts.ToArray();
-                                player.Client.Account.Flush();
+                                player.Client.Account.FlushAsync();
                                 player.Client.Account.Reload();
                                 player.ActualTask = null;
                                 player.SaveToCharacter();
@@ -216,7 +216,7 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                     #endregion
                     #region "Event: max"
                     case "max":
-                        var eventmax = new DateTime(2019, 1, 15, 12, 59, 59);
+                        var eventmax = new DateTime(2019, 1, 17, 12, 59, 59);
 
                         if (DateTime.UtcNow > eventmax)
                             callback = "The event already over, try again later.";
@@ -239,7 +239,7 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                     #endregion
                     #region "Event: vip"
                     case "vip":
-                        var eventvip = new DateTime(2019, 1, 15, 12, 59, 59);
+                        var eventvip = new DateTime(2019, 1, 17, 12, 59, 59);
 
                         if (DateTime.UtcNow > eventvip)
                             callback = "The event already over, try again later.";
@@ -277,7 +277,7 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                                 acc.AccountLifetime = DateTime.Now;
                                 acc.AccountLifetime = acc.AccountLifetime.AddDays(days);
                                 acc.AccountType = (int)AccountType.VIP;
-                                acc.Flush();
+                                acc.FlushAsync();
                                 acc.Reload();
 
                                 player.UpdateCount++;

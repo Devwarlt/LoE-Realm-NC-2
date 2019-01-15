@@ -24,7 +24,7 @@ namespace LoESoft.GameServer.realm.world
 
         public Vault(bool isLimbo, Client psr = null)
         {
-            Id = (int) WorldID.VAULT_ID;
+            Id = (int)WorldID.VAULT_ID;
             Name = "Vault";
             Background = 2;
             this.psr = psr;
@@ -91,11 +91,11 @@ namespace LoESoft.GameServer.realm.world
                 gifts.Shuffle();
                 for (int i = 0; i < gifts.Count(); i++)
                 {
-                    if (GameServer.Manager.GameData.Items.ContainsKey((ushort) gifts[i]))
+                    if (GameServer.Manager.GameData.Items.ContainsKey((ushort)gifts[i]))
                     {
                         if (c.Items.Count < 8)
                         {
-                            c.Items.Add(GameServer.Manager.GameData.Items[(ushort) gifts[i]]);
+                            c.Items.Add(GameServer.Manager.GameData.Items[(ushort)gifts[i]]);
                             wasLastElse = false;
                         }
                         else
@@ -105,7 +105,7 @@ namespace LoESoft.GameServer.realm.world
                             {
                                 Items = new List<Item>(8)
                             };
-                            c.Items.Add(GameServer.Manager.GameData.Items[(ushort) gifts[i]]);
+                            c.Items.Add(GameServer.Manager.GameData.Items[(ushort)gifts[i]]);
                             wasLastElse = true;
                         }
                     }
@@ -134,7 +134,7 @@ namespace LoESoft.GameServer.realm.world
                 if (vaultChestPosition.Count == 0)
                     break;
                 Container con = new Container(0x0504, null, false);
-                var inv = dbVault[i].Select(_ => _ == -1 ? null : (GameServer.Manager.GameData.Items.ContainsKey((ushort) _) ? GameServer.Manager.GameData.Items[(ushort) _] : null)).ToArray();
+                var inv = dbVault[i].Select(_ => _ == -1 ? null : (GameServer.Manager.GameData.Items.ContainsKey((ushort)_) ? GameServer.Manager.GameData.Items[(ushort)_] : null)).ToArray();
                 for (int j = 0; j < 8; j++)
                     con.Inventory[j] = inv[j];
                 con.Move(vaultChestPosition[0].X + 0.5f, vaultChestPosition[0].Y + 0.5f);
@@ -163,7 +163,7 @@ namespace LoESoft.GameServer.realm.world
         {
             Container con = new Container(0x0504, null, false);
             int index = GameServer.Manager.Database.CreateChest(dbVault);
-            var inv = dbVault[index].Select(_ => _ == -1 ? null : (GameServer.Manager.GameData.Items.ContainsKey((ushort) _) ? GameServer.Manager.GameData.Items[(ushort) _] : null)).ToArray();
+            var inv = dbVault[index].Select(_ => _ == -1 ? null : (GameServer.Manager.GameData.Items.ContainsKey((ushort)_) ? GameServer.Manager.GameData.Items[(ushort)_] : null)).ToArray();
             for (int j = 0; j < 8; j++)
                 con.Inventory[j] = inv[j];
             con.Move(original.X, original.Y);
@@ -186,7 +186,7 @@ namespace LoESoft.GameServer.realm.world
                     if (i.Key.Item1.UpdateCount > i.Value)
                     {
                         dbVault[i.Key.Item2] = i.Key.Item1.Inventory.Take(8).Select(_ => _ == null ? -1 : _.ObjectType).ToArray();
-                        dbVault.Flush();
+                        dbVault.FlushAsync();
                         _vaultChests[i.Key] = i.Key.Item1.UpdateCount;
                     }
                 }

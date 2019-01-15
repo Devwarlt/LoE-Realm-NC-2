@@ -81,14 +81,15 @@ namespace LoESoft.GameServer.networking
                         break;
                     }
 
-                Thread.Sleep(1 * 1000);
+                Thread.Sleep(5 * 1000);
 
                 if (timeout <= 0)
                 {
                     completed = true;
 
                     RemoveAccountInUse();
-                    break;
+
+                    return;
                 }
             } while (!completed);
         }

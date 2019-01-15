@@ -420,16 +420,15 @@ namespace LoESoft.GameServer.realm.entity.player
                 _pongTime = time.TotalElapsedMs;
             }
 
-            if (time.TotalElapsedMs - _pongTime > DcThreshold)
+            var pong = time.TotalElapsedMs - _pongTime;
+
+            if (pong > DcThreshold * Settings.GAMESERVER.TICKETS_PER_SECOND)
             {
                 if (!HasConditionEffect(ConditionEffectIndex.Invincible))
                     ApplyConditionEffect(ConditionEffectIndex.Invincible);
 
                 if (DcThresholdCounter <= 10)
-                {
-                    Client.SendMessage(new PING() { Serial = (int)time.TotalElapsedMs });
                     DcThresholdCounter++;
-                }
                 else
                 {
                     if (Owner == null)
@@ -459,10 +458,16 @@ namespace LoESoft.GameServer.realm.entity.player
             else
             {
                 if (HasConditionEffect(ConditionEffects.Invincible))
+                {
                     ApplyConditionEffect(ConditionEffectIndex.Invincible, 0);
+
+                    DcThresholdCounter = 0;
+                }
             }
 
-            if (time.TotalElapsedMs - _pingTime < PingPeriod)
+            var ping = time.TotalElapsedMs - _pingTime;
+
+            if (ping < PingPeriod * Settings.GAMESERVER.TICKETS_PER_SECOND)
                 return true;
 
             _pingTime = time.TotalElapsedMs;
@@ -491,22 +496,7 @@ namespace LoESoft.GameServer.realm.entity.player
             return true;
         }
 
-        public void Pong(RealmTime time, PONG pong)
-        {
-            try
-            {
-                _cnt++;
-
-                _sum += time.TotalElapsedMs - pong.Time;
-                TimeMap = _sum / _cnt;
-
-                _latSum += (time.TotalElapsedMs - pong.Serial) / 2;
-                Latency = (int)_latSum / _cnt;
-
-                _pongTime = time.TotalElapsedMs;
-            }
-            catch (Exception) { }
-        }
+        public void Pong(RealmTime time, PONG pong) => _pongTime = time.TotalElapsedMs;
 
         public void AwaitUpdateAck(long serverTime) => _updateAckTimeout.Enqueue(serverTime + DcThreshold);
 

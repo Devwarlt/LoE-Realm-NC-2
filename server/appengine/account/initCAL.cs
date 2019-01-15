@@ -22,7 +22,7 @@ namespace LoESoft.AppEngine.account
                     {
                         var ca = new DbClassAvailability(acc);
                         ca.Init(GameData);
-                        ca.Flush();
+                        ca.FlushAsync();
                         WriteLine("<Success />");
                     }
                     else

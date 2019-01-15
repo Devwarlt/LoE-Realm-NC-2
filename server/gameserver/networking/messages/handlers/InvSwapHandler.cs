@@ -154,7 +154,7 @@ namespace LoESoft.GameServer.networking.handlers
                     giftsList.Remove(con1.Inventory[message.SlotObject1.SlotId].ObjectType);
                     int[] result = giftsList.ToArray();
                     client.Account.Gifts = result;
-                    client.Account.Flush();
+                    client.Account.FlushAsync();
 
                     con1.Inventory[message.SlotObject1.SlotId] = null;
                     con2.Inventory[message.SlotObject2.SlotId] = item1;

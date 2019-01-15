@@ -17,22 +17,26 @@ namespace LoESoft.AppEngine.@char
             try
             {
                 DbAccount acc;
+
                 var status = Database.Verify(Query["guid"], Query["password"], out acc);
+
                 if (status == LoginStatus.OK || status == LoginStatus.AccountNotExists)
                 {
                     if (status == LoginStatus.AccountNotExists)
                         acc = Database.CreateGuestAccount(Query["guid"]);
+
                     if (acc.Banned)
                     {
                         using (StreamWriter wtr = new StreamWriter(Context.Response.OutputStream))
                             wtr.WriteLine("<Error>Account under maintenance</Error>");
+
                         Context.Response.Close();
                     }
 
                     var ca = new DbClassAvailability(acc);
                     if (ca.IsNull)
                         ca.Init(GameData);
-                    ca.Flush();
+                    ca.FlushAsync();
 
                     var list = CharList.FromDb(Database, acc);
                     list.Servers = GetServerList();
