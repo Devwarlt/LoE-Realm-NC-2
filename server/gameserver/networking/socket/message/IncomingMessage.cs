@@ -125,11 +125,7 @@ namespace LoESoft.GameServer.networking
         {
             // Burst of bytes are not ready yet, then keep them in a loop until dispatch properly
             if (e.BytesTransferred < (e.UserToken as IncomingToken).Length)
-            {
-                // temporarily
-                Manager.TryDisconnect(client, DisconnectReason.BYTES_NOT_READY);
                 return;
-            }
 
             var msg = (e.UserToken as IncomingToken).Message;
             var cont = client.IsReady();
