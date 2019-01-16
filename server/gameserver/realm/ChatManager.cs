@@ -127,24 +127,5 @@ namespace LoESoft.GameServer.realm
                 player.Client.SendMessage(_text);
             }
         }
-
-        public void Tell(Player player, string BOT_NAME, string callback)
-        {
-            TEXT _text = new TEXT
-            {
-                ObjectId = -1,
-                BubbleTime = 10,
-                Stars = 70,
-                Name = BOT_NAME,
-                Admin = 0,
-                Recipient = player.Name,
-                Text = callback.ToSafeText(),
-                CleanText = "",
-                NameColor = 0x123456,
-                TextColor = 0x123456
-            };
-
-            player.Client.SendMessage(_text);
-        }
     }
 }

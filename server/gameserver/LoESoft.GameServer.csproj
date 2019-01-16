@@ -338,6 +338,7 @@
     <Compile Include="logic\transitions\PlayerWithinTransition.cs" />
     <Compile Include="logic\transitions\HpLessTransition.cs" />
     <Compile Include="logic\transitions\TimedTransition.cs" />
+    <Compile Include="networking\LogicTicker.cs" />
     <Compile Include="networking\messages\handlers\ClaimDailyReward.cs" />
     <Compile Include="networking\messages\handlers\hack\ICheatHandler.cs" />
     <Compile Include="networking\messages\handlers\hack\DexterityCheatHandler.cs" />
@@ -522,7 +523,6 @@
     <Compile Include="realm\entity\player\Player.Init.cs" />
     <Compile Include="realm\entity\Entity.Projectile.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\special\AbyssIdol_LavaBomb.cs" />
-    <Compile Include="networking\LogicTicker.cs" />
     <Compile Include="realm\world\RealmManager.cs" />
     <Compile Include="realm\world\RealmPortalMonitor.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\AbyssDeath.cs" />
@@ -784,6 +784,7 @@
     <EmbeddedResource Include="realm\world\maps\json\dungeons\undead_lair\udl.json" />
     <EmbeddedResource Include="realm\world\maps\json\SND.json" />
     <EmbeddedResource Include="realm\world\maps\json\nexus_summer.json" />
+    <EmbeddedResource Include="realm\world\maps\json\loe_wine_cellar.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="realm\world\maps\json\dungeons\spider_den\" />

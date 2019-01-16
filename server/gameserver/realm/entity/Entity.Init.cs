@@ -521,20 +521,21 @@ namespace LoESoft.GameServer.realm
         {
             if (this is Projectile || Owner == null)
                 return;
+
             if (playerOwner != null)
-            {
                 if (this.Dist(playerOwner) > 20)
                     Move(playerOwner.X, playerOwner.Y);
-            }
+
             if (CurrentState != null && Owner != null)
-            {
                 if (!HasConditionEffect(ConditionEffectIndex.Stasis))
                     TickState(time);
-            }
+
             if (posHistory != null)
                 posHistory[posIdx++] = new Position { X = X, Y = Y };
+
             if (effects == null)
                 return;
+
             ProcessConditionEffects(time);
         }
 
@@ -651,7 +652,7 @@ namespace LoESoft.GameServer.realm
                 ProjectileId = ProjectileId++,
                 Container = (short)container,
                 Damage = dmg,
-                BeginTime = GameServer.Manager.Logic.CurrentTime.TotalElapsedMs,
+                BeginTime = GameServer.Manager.Logic.GameTime.TotalElapsedMs,
                 BeginPos = pos,
                 Angle = angle,
                 X = pos.X,

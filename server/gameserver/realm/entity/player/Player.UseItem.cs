@@ -5,11 +5,11 @@ using LoESoft.Core.config;
 using LoESoft.GameServer.networking;
 using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.networking.outgoing;
+using LoESoft.GameServer.realm.world;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using static LoESoft.GameServer.networking.Client;
-using LoESoft.GameServer.realm.world;
 
 #endregion
 
@@ -1416,12 +1416,6 @@ namespace LoESoft.GameServer.realm.entity.player
                     case ActivateEffects.PetSkin:
                     case ActivateEffects.Unlock:
                         {
-                            if (Owner.Id != (int)WorldID.VAULT_ID)
-                            {
-                                SendInfo("You can only use this item in the Vault!");
-                                return true;
-                            }
-
                             if (eff.Slot == null)
                             {
                                 SendInfo($"There is no unlock action for this item.");
@@ -1439,7 +1433,6 @@ namespace LoESoft.GameServer.realm.entity.player
 
                                 case "vault":
                                     message = "Vault Chest";
-                                    //GameServer.Manager.Database.AddChest(Client.Account);
                                     (Owner as Vault).AddChest(this);
                                     break;
 
@@ -1580,7 +1573,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                     tmr.Reset();
 
-                    GameServer.Manager.Logic.AddPendingAction(_ => w.Timers.Add(tmr), PendingPriority.Creation);
+                    w.Timers.Add(tmr);
                 });
                 Owner?.Timers.Add(tmr);
             }

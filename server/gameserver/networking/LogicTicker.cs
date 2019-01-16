@@ -16,15 +16,13 @@ namespace LoESoft.GameServer.realm
         private RealmManager _manager { get; set; }
         private Task _logic { get; set; }
 
-        public static int COOLDOWN_DELAY => 1000 / Settings.GAMESERVER.TICKETS_PER_SECOND;
-
-        public RealmTime CurrentTime { get; private set; }
+        public RealmTime GameTime { get; private set; }
 
         public LogicTicker(RealmManager manager)
         {
             _manager = manager;
 
-            CurrentTime = new RealmTime();
+            GameTime = new RealmTime();
         }
 
         public async void TickLoop()
@@ -34,18 +32,19 @@ namespace LoESoft.GameServer.realm
             var looptime = 0;
             var t = new RealmTime();
             var watch = Stopwatch.StartNew();
+            var cooldown = 1000 / Settings.GAMESERVER.TICKETS_PER_SECOND;
 
             do
             {
                 t.TotalElapsedMs = watch.ElapsedMilliseconds;
 
-                var delay = Math.Max(0, COOLDOWN_DELAY - (int)(watch.ElapsedMilliseconds - t.TotalElapsedMs));
+                var delay = Math.Max(0, cooldown - (int)(watch.ElapsedMilliseconds - t.TotalElapsedMs));
 
                 await Task.Delay(delay);
 
-                t.TickDelta = looptime / COOLDOWN_DELAY;
+                t.TickDelta = looptime / cooldown;
                 t.TickCount += t.TickDelta;
-                t.ElapsedMsDelta = t.TickDelta * COOLDOWN_DELAY;
+                t.ElapsedMsDelta = t.TickDelta * cooldown;
 
                 if (_manager.Terminating)
                     break;
@@ -68,15 +67,15 @@ namespace LoESoft.GameServer.realm
                 }
                 catch { }
 
-                CurrentTime.TickDelta += t.TickDelta;
+                GameTime.TickDelta += t.TickDelta;
 
                 if (_logic == null || _logic.IsCompleted)
                 {
-                    t.TickDelta = CurrentTime.TickDelta;
-                    t.ElapsedMsDelta = t.TickDelta * COOLDOWN_DELAY;
+                    t.TickDelta = GameTime.TickDelta;
+                    t.ElapsedMsDelta = t.TickDelta * cooldown;
 
-                    CurrentTime.TickDelta = 0;
-                    CurrentTime.TotalElapsedMs = t.TotalElapsedMs;
+                    GameTime.TickDelta = 0;
+                    GameTime.TotalElapsedMs = t.TotalElapsedMs;
 
                     _logic = Task.Factory.StartNew(() =>
                     {
@@ -87,15 +86,8 @@ namespace LoESoft.GameServer.realm
                     TaskContinuationOptions.OnlyOnFaulted);
                 }
 
-                foreach (var client in _manager.ClientManager.Values.Select(client => client.Client).ToList())
-                    if (client.Player?.Owner != null)
-                        client.Player.Flush();
-
                 looptime += (int)(watch.ElapsedMilliseconds - t.TotalElapsedMs) - t.ElapsedMsDelta;
             } while (true);
         }
-
-        public void AddPendingAction(Action<RealmTime> callback, PendingPriority priority = PendingPriority.Normal)
-            => callback.Invoke(CurrentTime);
     }
 }

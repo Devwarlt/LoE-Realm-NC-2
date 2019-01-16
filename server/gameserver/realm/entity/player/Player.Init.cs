@@ -2,7 +2,6 @@
 
 using LoESoft.Core.config;
 using LoESoft.Core.database;
-using LoESoft.Core.models;
 using LoESoft.GameServer.logic;
 using LoESoft.GameServer.logic.skills.Pets;
 using LoESoft.GameServer.networking;
@@ -12,7 +11,6 @@ using LoESoft.GameServer.realm.terrain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Xml.Linq;
 using static LoESoft.GameServer.networking.Client;
 
@@ -191,47 +189,54 @@ namespace LoESoft.GameServer.realm.entity.player
         private void AnnounceDeath(string killer)
         {
             var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
-            var rip = Name + " died to " + killer + "( " + playerDesc.ObjectId + ", " + Fame + " Fame )";
+            var maxed = 0;
+
+            if (Stats[0] == playerDesc.MaxHitPoints) maxed++;
+            if (Stats[1] == playerDesc.MaxMagicPoints) maxed++;
+            if (Stats[2] == playerDesc.MaxAttack) maxed++;
+            if (Stats[3] == playerDesc.MaxDefense) maxed++;
+            if (Stats[4] == playerDesc.MaxSpeed) maxed++;
+            if (Stats[5] == playerDesc.MaxHpRegen) maxed++;
+            if (Stats[6] == playerDesc.MaxMpRegen) maxed++;
+            if (Stats[7] == playerDesc.MaxDexterity) maxed++;
+
+            var notification = $"{Name} died to {killer} as {maxed}/8 {playerDesc.ObjectId.ToLower()} with {Fame} fame base.";
+
             if (Fame >= 2000 && !Client.Account.Admin)
-            {
-                foreach (var w in GameServer.Manager.Worlds.Values)
-                    foreach (var p in w.Players.Values)
-                        p.SendDeathAnnounce(rip);
-                return;
-            }
+                foreach (var cdata in GameServer.Manager.ClientManager.Values)
+                    cdata.Client.Player?.GazerDM(notification);
             else
-            {
                 foreach (var i in Owner.Players.Values)
-                {
-                    i.SendDeathAnnounce(rip);
-                }
-            }
+                    i.GazerDM(notification);
         }
 
         public void Death(string killer, ObjectDesc desc = null, Entity entity = null)
         {
             if (dying)
                 return;
+
             dying = true;
-            switch (Owner.Name)
+
+            if (Owner.Name == "Arena")
             {
-                case "Arena":
-                    {
-                        Client.SendMessage(new ARENA_DEATH
-                        {
-                            RestartPrice = 100
-                        });
-                        HP = (int)ObjectDesc.MaxHP;
-                        ApplyConditionEffect(new ConditionEffect
-                        {
-                            Effect = ConditionEffectIndex.Paused,
-                            DurationMS = -1
-                        });
-                        return;
-                    }
+                Client.SendMessage(new ARENA_DEATH
+                {
+                    RestartPrice = 100
+                });
+
+                HP = (int)ObjectDesc.MaxHP;
+
+                ApplyConditionEffect(new ConditionEffect
+                {
+                    Effect = ConditionEffectIndex.Paused,
+                    DurationMS = -1
+                });
+                return;
             }
+
             if (Client.State == ProtocolState.Disconnected || resurrecting)
                 return;
+
             if (CheckResurrection())
                 return;
 
@@ -240,69 +245,31 @@ namespace LoESoft.GameServer.realm.entity.player
                 GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHARACTER_IS_DEAD);
                 return;
             }
+
             GenerateGravestone();
-            if ((entity is Player))
-            {
-                AnnounceDeath((entity as Player).Name + " the " + entity.ObjectDesc.ObjectId);
-            }
-            else
-            {
-                AnnounceDeath(killer);
-            }
+            AnnounceDeath(killer);
+
             if (desc != null)
                 if (desc.DisplayId != null)
                     killer = desc.DisplayId;
                 else
                     killer = desc.ObjectId;
-            switch (killer)
+
+            Client.Character.Dead = true;
+
+            GameServer.Manager.Database.Death(GameServer.Manager.GameData, Client.Account, Client.Character, FameCounter.Stats, killer);
+
+            Client.SendMessage(new DEATH
             {
-                case "":
-                case "Unknown":
-                    break;
+                AccountId = AccountId,
+                CharId = Client.Character.CharId,
+                Killer = killer,
+                zombieId = -1,
+                zombieType = -1
+            });
 
-                default:
-                    Owner.BroadcastMessage(new TEXT
-                    {
-                        BubbleTime = 0,
-                        Stars = -1,
-                        Name = "",
-                        Text = "{\"key\":\"server.death\",\"tokens\":{\"player\":\"" + Name + "\",\"level\":\"" + Level + "\",\"enemy\":\"" + killer + "\"}}",
-                        NameColor = 0x123456,
-                        TextColor = 0x123456
-                    }, null);
-                    break;
-            }
-
-            try
-            {
-                Client.Character.Dead = true;
-
-                SaveToCharacter();
-
-                GameServer.Manager.Database.SaveCharacter(Client.Account, Client.Character, true);
-                GameServer.Manager.Database.Death(GameServer.Manager.GameData, Client.Account, Client.Character, FameCounter.Stats, killer);
-
-                if (Owner.Id != -6)
-                {
-                    DEATH _death = new DEATH
-                    {
-                        AccountId = AccountId,
-                        CharId = Client.Character.CharId,
-                        Killer = killer,
-                        zombieId = -1,
-                        zombieType = -1
-                    };
-
-                    Client.SendMessage(_death);
-
-                    Owner.Timers.Add(new WorldTimer(1000, (w, t) => GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHARACTER_IS_DEAD)));
-
-                    Owner.LeaveWorld(this);
-                }
-                else
-                    GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHARACTER_IS_DEAD_ERROR);
-            }
-            catch (Exception) { }
+            Owner.Timers.Add(new WorldTimer(1000, (w, t) => GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHARACTER_IS_DEAD)));
+            Owner.LeaveWorld(this);
         }
 
         public override void Init(World owner)
@@ -694,7 +661,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
         public override void Tick(RealmTime time)
         {
-            if (Client == null)
+            if (Client == null/* || GameServer.Manager.Logic.IsSaving*/)
                 return;
 
             if (!KeepAlive(time) || Client.State == ProtocolState.Disconnected)

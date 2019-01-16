@@ -111,8 +111,6 @@ namespace LoESoft.GameServer.realm.entity.player
         private int[] setTypeBoosts;
         private int updateLastSeen;
         public Enemy Quest { get; private set; }
-        private bool worldBroadcast = true;
-        private readonly Queue<Tuple<Message, Predicate<Player>>> pendingPackets = new Queue<Tuple<Message, Predicate<Player>>>();
         public TradeManager HandleTrade { get; private set; }
         public int UpdatesSend { get; private set; }
         public int UpdatesReceived { get; set; }

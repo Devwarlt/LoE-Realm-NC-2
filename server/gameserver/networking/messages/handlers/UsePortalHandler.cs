@@ -20,7 +20,7 @@ namespace LoESoft.GameServer.networking.handlers
     {
         public override MessageID ID => MessageID.USEPORTAL;
 
-        protected override void HandleMessage(Client client, USEPORTAL message) => Manager.Logic.AddPendingAction(t => Handle(client, client.Player, message), PendingPriority.Networking);
+        protected override void HandleMessage(Client client, USEPORTAL message) => Handle(client, client.Player, message);
 
         private readonly List<string> Blacklist = new List<string>
         {

@@ -11,7 +11,7 @@ namespace LoESoft.GameServer.networking.handlers
     {
         public override MessageID ID => MessageID.PONG;
 
-        protected override void HandleMessage(Client client, PONG message) => Manager.Logic.AddPendingAction(t => Handle(client, message, t));
+        protected override void HandleMessage(Client client, PONG message) => Handle(client, message, Manager.Logic.GameTime);
 
         private void Handle(Client client, PONG message, RealmTime t) => client.Player.Pong(t, message);
     }

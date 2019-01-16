@@ -561,13 +561,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
         public void BroadcastSync(Message packet) => BroadcastSync(packet, _ => true);
 
-        public void BroadcastSync(Message packet, Predicate<Player> cond)
-        {
-            if (worldBroadcast)
-                Owner.BroadcastMessageSync(packet, cond);
-            else
-                pendingPackets.Enqueue(Tuple.Create(packet, cond));
-        }
+        public void BroadcastSync(Message packet, Predicate<Player> cond) => Owner.BroadcastMessageSync(packet, cond);
 
         private void BroadcastSync(IEnumerable<Message> packets)
         {
@@ -579,17 +573,6 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             foreach (var i in packets)
                 BroadcastSync(i, cond);
-        }
-
-        public void Flush()
-        {
-            if (Owner != null)
-            {
-                foreach (var i in Owner.Players.Values)
-                    foreach (var j in pendingPackets.Where(j => j.Item2(i)))
-                        i.Client.SendMessage(j.Item1);
-            }
-            pendingPackets.Clear();
         }
 
         public void ChangeTrade(RealmTime time, CHANGETRADE pkt) => HandleTrade?.TradeChanged(this, pkt.Offers);

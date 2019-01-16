@@ -12,7 +12,7 @@ namespace LoESoft.GameServer.networking.handlers
     {
         public override MessageID ID => MessageID.ENEMYHIT;
 
-        protected override void HandleMessage(Client client, ENEMYHIT message) => Manager.Logic.AddPendingAction(t => Handle(client.Player, t, message));
+        protected override void HandleMessage(Client client, ENEMYHIT message) => Handle(client.Player, Manager.Logic.GameTime, message);
 
         private void Handle(Player player, RealmTime time, ENEMYHIT message)
         {

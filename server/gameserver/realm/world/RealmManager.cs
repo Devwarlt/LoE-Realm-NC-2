@@ -45,7 +45,11 @@ namespace LoESoft.GameServer.realm
         public CommandManager Commands { get; private set; }
         public EmbeddedData GameData { get; private set; }
         public string InstanceId { get; private set; }
+
+        //public GameTicker Logic { get; private set; }
         public LogicTicker Logic { get; private set; }
+
+        public bool IsReady { get; private set; }
         public int MaxClients { get; private set; }
         public RealmPortalMonitor Monitor { get; private set; }
         public Database Database { get; private set; }
@@ -103,10 +107,13 @@ namespace LoESoft.GameServer.realm
         public void Run()
         {
             Logic = new LogicTicker(this);
-
             var logic = new Task(() => Logic.TickLoop(), TaskCreationOptions.LongRunning);
             logic.ContinueWith(GameServer.Restart, TaskContinuationOptions.OnlyOnFaulted);
             logic.Start();
+            //Logic = new GameTicker(this);
+            //Logic.Init();
+            //Logic.Start();
+            IsReady = true;
         }
 
         public void Stop()
@@ -117,6 +124,7 @@ namespace LoESoft.GameServer.realm
                 TryDisconnect(cData.Client, DisconnectReason.STOPPING_REALM_MANAGER);
 
             GameData.Dispose();
+            //Logic.Dispose();
         }
 
         #endregion

@@ -131,9 +131,11 @@ namespace LoESoft.GameServer
         public async static void ForceShutdown(Exception ex = null)
         {
             if (ex != null)
+            {
                 log.Error(ex);
 
-            await Task.Delay(1000);
+                await Task.Delay(2 * 1000);
+            }
 
             Process.Start(Settings.GAMESERVER.FILE);
 
@@ -244,7 +246,7 @@ namespace LoESoft.GameServer
         public static void Stop(Task task = null)
         {
             if (task != null)
-                Log.Error(task.Exception.ToString());
+                log.Error(task.Exception.InnerException);
 
             Shutdown.Set();
         }

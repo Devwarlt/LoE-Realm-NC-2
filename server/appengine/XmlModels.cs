@@ -257,6 +257,7 @@ namespace LoESoft.AppEngine
 
         public int Credits { get; private set; }
         public int NextCharSlotPrice { get; private set; }
+        public int CharSlotCurrency { get; private set; }
         public uint BeginnerPackageTimeLeft { get; private set; }
 
         public int[] Gifts { get; private set; }
@@ -283,7 +284,8 @@ namespace LoESoft.AppEngine
                 MapEditor = acc.AccountType == (int)Core.config.AccountType.DEVELOPER,
                 VerifiedEmail = acc.Verified,
                 Credits = acc.Credits,
-                NextCharSlotPrice = 100, // need adjusts
+                NextCharSlotPrice = 250,
+                CharSlotCurrency = 0, // 0 gold, 1 fame
                 BeginnerPackageTimeLeft = 604800,
                 Gifts = acc.Gifts,
                 PetYardType = acc.PetYardType,
@@ -310,6 +312,7 @@ namespace LoESoft.AppEngine
                 new XElement("Credits", Credits),
                 new XElement("FortuneToken", FortuneTokens),
                 new XElement("NextCharSlotPrice", NextCharSlotPrice),
+                new XElement("CharSlotCurrency", CharSlotCurrency),
                 new XElement("BeginnerPackageTimeLeft", BeginnerPackageTimeLeft),
                 new XElement("Originating", "None"),
                 new XElement("cleanPasswordStatus", 1),

@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -625,7 +624,7 @@ namespace LoESoft.Core
             return ret;
         }
 
-        public Task<bool> SaveCharacter(DbAccount acc, DbChar character, bool lockAcc)
+        public bool SaveCharacter(DbAccount acc, DbChar character, bool lockAcc)
         {
             var trans = _db.CreateTransaction();
 
@@ -638,7 +637,7 @@ namespace LoESoft.Core
             stats.Update(character);
             stats.FlushAsync(trans);
 
-            return trans.ExecuteAsync();
+            return trans.Execute();
         }
 
         public void DeleteCharacter(DbAccount acc, int charId)

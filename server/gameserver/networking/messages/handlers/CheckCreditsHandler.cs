@@ -1,7 +1,6 @@
 ﻿#region
 
 using LoESoft.GameServer.networking.incoming;
-using LoESoft.GameServer.realm;
 
 #endregion
 
@@ -17,11 +16,8 @@ namespace LoESoft.GameServer.networking.handlers
         {
             client.Account.FlushAsync();
             client.Account.Reload();
-            Manager.Logic.AddPendingAction(t =>
-            {
-                client.Player.Credits = client.Player.Client.Account.Credits;
-                client.Player.UpdateCount++;
-            }, PendingPriority.Networking);
+            client.Player.Credits = client.Player.Client.Account.Credits;
+            client.Player.UpdateCount++;
         }
     }
 }

@@ -1,0 +1,153 @@
+{
+  "width": 128,
+  "height": 128,
+  "data": "eNrt3YtygjAQBVBBrbXv9IF9qdXa///FOpSp2AayK9kQspcdZzoakeMlhGhHRiP1S9Za9JYZY00j4fX+b5U3PvcU/9jSciLkn3rxH9dZWZl4/nln/7SstnXH4u+W/ziC/G3PH27/HxOf281PF/H83VpyHv35axaBv97TQ/s5+Z/vi7ad7paH1tOjY128/vOq3NtJaQl/DP450Z8L+vvr//Oy/OfP6//9Hf95fs7xbxjjH9cvO/7nyv2u9eZB/aed1bbNE32st70uWK/i9k88buckgJ86+++Wfy6wnVJ+1/ynefxPI/+s4bMb9/lfX9sZsv+7j9A6Pv/U679E/vDDb7nvylH25dpaN9a67bHgb/bf/frNr9bU5Cb5/O+x/6vwP1S3w/JY6R9r9+nMH3744Ycf/u7nP0/WitNfCOQ/JH8GP/zww6/Ev0D+8OP8B/l78T9bK17/XLW/6fv/Qrk/gx9++OFnn/8g/2H7C+z/8P/xv1irb/9rsPPfOP3h5j/ww6/db2pyg/wT9xfY/+GHH/5yebNWCv7///+ny2/P/12535a/qcmNQr/2/OGHH3744U/dv6xurvGfUynm3/x+GGV+7fnDP1T/Avlb/AX2f/X+Vcv4Tx31DPKHPwG/zt+/gB9++PX6466Vp9+/o/jXteK/0pLUau2oU53LVn/b939NWyaR5ppQvl7rQzD/GSOBVQT5D7f/Z0L9X9MRH3744Yc/7es/2cdof/6NmH9zon/b+qyt0/856Py3ZTXrfx4Nlf8s4vypc8K0+n/Wwb/bl8T1D772Ff76F1z/rirKdrrfqUPrr6rS8VNawg8/379A/vD35KePfzw/Z/xztZT106/TwRn/6Ot17ymx+GWu/xXSH+P1X479Eufkx60evPs3Iv6NZYbTdf4T5/V/3OnT57/Dy5+21pTz9/n9h+rlG9KF2Ts=",
+  "dict": [
+    {
+      "objs": [ { "id": "Wine Walls" } ],
+      "ground": "Forest Dirt"
+    },
+    { "ground": "Forest Dirt" },
+    {
+      "objs": [ { "id": "Earthy Bush Small" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Earthy Bush Large" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "shtrs Ice Adept" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Djinn" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "regions": [ { "id": "Spawn" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Human Skeleton" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Ent God" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Beholder" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Statue of Oryx" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Air Elemental" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "shtrs Dirt Wall Destructible" } ],
+      "ground": "Purple Stone"
+    },
+    {
+      "objs": [ { "id": "Destructible Castle Wall" } ],
+      "ground": "Purple Stone"
+    },
+    {
+      "objs": [ { "id": "Lab Destructible Wall" } ],
+      "ground": "Hot Lava"
+    },
+    { "ground": "Purple Stone Dark" },
+    {
+      "objs": [ { "id": "Frog King" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "shtrs Titanum" } ],
+      "ground": "Purple Stone"
+    },
+    {
+      "objs": [ { "id": "Pool of Blood" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "shtrs Ice Mage" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Magic Blue Flame" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Empty Wine Wall" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Jungle Grass" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Human Skull" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Destructible Earth Wall" } ],
+      "ground": "Purple Stone"
+    },
+    {
+      "objs": [ { "id": "Destructible Grey Wall" } ],
+      "ground": "Purple Stone"
+    },
+    {
+      "objs": [ { "id": "Oryx the Mad God 2" } ],
+      "ground": "Purple Stone Dark"
+    },
+    {
+      "objs": [ { "id": "Destructible Purple Wall" } ],
+      "ground": "Purple Stone"
+    },
+    {
+      "objs": [ { "id": "Water Elemental" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "shtrs Fire Adept" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Iron Deathspike" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Flying Brain" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Fire Elemental" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "shtrs Fire Mage" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Medusa" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Earth Elemental" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "Slime God" } ],
+      "ground": "Forest Dirt"
+    },
+    {
+      "objs": [ { "id": "White Demon" } ],
+      "ground": "Forest Dirt"
+    }
+  ]
+}

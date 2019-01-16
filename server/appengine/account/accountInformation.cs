@@ -113,19 +113,19 @@ namespace LoESoft.AppEngine.account
                 int days = isVip ? (accountLifetime - DateTime.Now).Days : 0;
                 switch (accountType)
                 {
-                    case (int) AccountType.FREE_ACCOUNT:
+                    case (int)AccountType.FREE_ACCOUNT:
                         return "Free Account";
 
-                    case (int) AccountType.VIP_ACCOUNT:
+                    case (int)AccountType.VIP_ACCOUNT:
                         return $"Vip Account\n<i>Your Vip Account end {(days > 1 ? $"in <b>{days} days</b>" : $"<b>today</b>")} at {string.Format(new DateProvider(), "{0}", accountLifetime)}.</i>";
 
-                    case (int) AccountType.LEGENDS_OF_LOE_ACCOUNT:
+                    case (int)AccountType.LEGENDS_OF_LOE_ACCOUNT:
                         return "Legends of LoE Account";
 
-                    case (int) AccountType.TUTOR_ACCOUNT:
+                    case (int)AccountType.TUTOR_ACCOUNT:
                         return "Tutor Account";
 
-                    case (int) AccountType.LOESOFT_ACCOUNT:
+                    case (int)AccountType.LOESOFT_ACCOUNT:
                         return "LoESoft Account";
                 }
                 return null;
@@ -138,23 +138,23 @@ namespace LoESoft.AppEngine.account
                 string rank = null;
                 switch (guildRank)
                 {
-                    case (int) GuildRank.INITIATE:
+                    case (int)GuildRank.INITIATE:
                         rank = "Initiate";
                         break;
 
-                    case (int) GuildRank.MEMBER:
+                    case (int)GuildRank.MEMBER:
                         rank = "Member";
                         break;
 
-                    case (int) GuildRank.OFFICER:
+                    case (int)GuildRank.OFFICER:
                         rank = "Officer";
                         break;
 
-                    case (int) GuildRank.LEADER:
+                    case (int)GuildRank.LEADER:
                         rank = "Leader";
                         break;
 
-                    case (int) GuildRank.FOUNDER:
+                    case (int)GuildRank.FOUNDER:
                         rank = "Founder";
                         break;
                 }

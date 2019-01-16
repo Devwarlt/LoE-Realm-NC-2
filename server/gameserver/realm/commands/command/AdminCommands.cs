@@ -712,6 +712,8 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
+            player.SendInfo($"Success! You deposited '{amount}' {(currency == "coin" ? "empires coins" : currency)} to '{acc.Name}' account!");
+
             switch (currency)
             {
                 case "fame": GameServer.Manager.Database.UpdateFame(acc, amount); break;
@@ -720,8 +722,6 @@ namespace LoESoft.GameServer.realm.commands
                 case "coin": GameServer.Manager.Database.UpdateEmpiresCoin(acc, amount); break;
                 default: player.SendHelp($"Currency '{currency}' doesn't exist!"); return false;
             }
-
-            player.SendInfo($"Success! You deposited '{amount}' {(currency == "coin" ? "empires coins" : currency)} to '{acc.Name}' account!");
 
             return true;
         }

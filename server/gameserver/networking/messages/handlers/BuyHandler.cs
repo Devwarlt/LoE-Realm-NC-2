@@ -1,7 +1,6 @@
 ﻿#region
 
 using LoESoft.GameServer.networking.incoming;
-using LoESoft.GameServer.realm;
 using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
 
@@ -13,7 +12,7 @@ namespace LoESoft.GameServer.networking.handlers
     {
         public override MessageID ID => MessageID.BUY;
 
-        protected override void HandleMessage(Client client, BUY message) => Manager.Logic.AddPendingAction(t => Handle(client.Player, message.ObjectId, message.Quantity), PendingPriority.Networking);
+        protected override void HandleMessage(Client client, BUY message) => Handle(client.Player, message.ObjectId, message.Quantity);
 
         private void Handle(Player player, int objectId, int quantity)
         {
