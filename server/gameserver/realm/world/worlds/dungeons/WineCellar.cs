@@ -10,6 +10,6 @@
             Dungeon = true;
         }
 
-        protected override void Init() => LoadMap("winecellar", MapType.Wmap);
+        protected override void Init() => LoadMap("loe_wine_cellar", MapType.Json);
     }
 }
