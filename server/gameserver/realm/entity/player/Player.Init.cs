@@ -256,9 +256,6 @@ namespace LoESoft.GameServer.realm.entity.player
                     killer = desc.ObjectId;
 
             Client.Character.Dead = true;
-
-            GameServer.Manager.Database.Death(GameServer.Manager.GameData, Client.Account, Client.Character, FameCounter.Stats, killer);
-
             Client.SendMessage(new DEATH
             {
                 AccountId = AccountId,
@@ -268,7 +265,10 @@ namespace LoESoft.GameServer.realm.entity.player
                 zombieType = -1
             });
 
-            Owner.Timers.Add(new WorldTimer(1000, (w, t) => GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHARACTER_IS_DEAD)));
+            GameServer.Manager.Database.SaveCharacter(Client.Account, Client.Character, true);
+            GameServer.Manager.Database.Death(GameServer.Manager.GameData, Client.Account, Client.Character, FameCounter.Stats, killer);
+            GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHARACTER_IS_DEAD);
+
             Owner.LeaveWorld(this);
         }
 
@@ -607,9 +607,9 @@ namespace LoESoft.GameServer.realm.entity.player
                 double newexp = Experience;
 
                 if (XpBoosted)
-                    newexp += (int)(exp * 2 * Settings.EVENT_RATE);
+                    newexp += (int)(exp * 2 * Settings.GetEventRate());
                 else
-                    newexp += (int)(exp * Settings.EVENT_RATE);
+                    newexp += (int)(exp * Settings.GetEventRate());
 
                 if (newexp >= int.MaxValue)
                 {
@@ -626,7 +626,7 @@ namespace LoESoft.GameServer.realm.entity.player
                     try
                     {
                         double tempexp = i.Experience;
-                        tempexp += (int)((i.XpBoosted ? exp * 2 : exp) * Settings.EVENT_RATE);
+                        tempexp += (int)((i.XpBoosted ? exp * 2 : exp) * Settings.GetEventRate());
 
                         if (tempexp >= int.MaxValue)
                         {

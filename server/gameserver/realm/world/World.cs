@@ -342,7 +342,7 @@ namespace LoESoft.GameServer.realm
         {
             if (entity is Player player)
             {
-                if (Settings.EVENT_RATE > 1 && !player.Client.EventNotification)
+                if (Settings.GetEventRate() != 1 && !player.Client.EventNotification)
                 {
                     player.SendInfo(Settings.EVENT_MESSAGE);
                     player.Client.EventNotification = true;

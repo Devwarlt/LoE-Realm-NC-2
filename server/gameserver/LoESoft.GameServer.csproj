@@ -472,6 +472,7 @@
     <Compile Include="realm\ChatManager.cs" />
     <Compile Include="realm\entity\player\Player.IO.cs" />
     <Compile Include="realm\entity\player\Player.Tasks.cs" />
+    <Compile Include="realm\mapsetpiece\setpieces\Crystal.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\MountainTemple.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\LordOfTheLostLands.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\LuckyDjinn.cs" />

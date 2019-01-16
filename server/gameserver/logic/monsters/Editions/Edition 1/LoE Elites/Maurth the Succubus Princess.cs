@@ -78,7 +78,7 @@ namespace LoESoft.GameServer.logic
                         new BlueBag(Potions.POTION_OF_DEFENSE),
                         new BlueBag(Potions.POTION_OF_DEXTERITY)
                         ),
-                    new WhiteBag("The Succubus Bloodstone")
+                    new WhiteBag(new string[] { "The Succubus Bloodstone", "Crossbow of the Frozen North", "Galatic Axe", "Phantom Light-X" })
                     )
             )
         ;

@@ -263,13 +263,28 @@ namespace LoESoft.GameServer.logic
                         new TimedTransition(3000, "Daisy_attack")
                         )
                     ),
-                new Threshold(0.015,
-                    new TierLoot(2, ItemType.Potion, 0.07)
+                new Drops(
+                    new BlueBag(
+                        new string[]
+                        {
+                            Potions.POTION_OF_ATTACK,
+                            Potions.POTION_OF_DEFENSE,
+                            Potions.POTION_OF_SPEED,
+                            Potions.POTION_OF_DEXTERITY,
+                            Potions.POTION_OF_VITALITY,
+                            Potions.POTION_OF_WISDOM
+                        },
+                        new bool[] {
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true
+                        })
                     ),
-                new Threshold(0.03,
-                    new ItemLoot("Crystal Wand", 0.05),
-                    new ItemLoot("Crystal Sword", 0.06)
-                    )
+                new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4, EggType.TIER_5, EggType.TIER_6 }),
+                new WhiteBag(new string[] { "Crystal Wand", "Crystal Sword" })
             )
 
             .Init("Crystal Prisoner Clone",

@@ -16,7 +16,7 @@ namespace LoESoft.GameServer.realm
             new RealmEvent("Maurth the Succubus Princess", 0.25, false, new Maurth(), "Haha!! My Maurth the Succubus Princess will SUCC the Life out of you!"),
             new RealmEvent("Undertaker the Great Juggernaut", 0.15, true, new Undertaker(), "You Humans are fools! My Undertaker the Great Juggernaut will take care to crush your spines!"),
             new RealmEvent("Dyno Bot", 0.3, false, new DynoBot(), "BEWARE FOOLS! My Dyno Bot mutes, kicks and bans!"),
-            new RealmEvent("The Lost Spirit", 0.15, false, new LostSpirit(), "The ancient soul of my father still presides within this realm.. and now he has awoken.. YOU ARE DOOMED MORTAL!"),
+            //new RealmEvent("The Lost Spirit", 0.15, false, new LostSpirit(), "The ancient soul of my father still presides within this realm.. and now he has awoken.. YOU ARE DOOMED MORTAL!"),
             new RealmEvent("Lucky Ent God", 1, true, new LuckyEntGod(), "Lucky Ent God has been spawned!"),
             new RealmEvent("Lucky Djinn", 1, true, new LuckyDjinn(), "Lucky Djinn has been spawned!"),
             new RealmEvent("Lord of the Lost Lands", 1, true, new LordOfTheLostLands(), "Cower in fear of my Lord of the Lost Lands!"),

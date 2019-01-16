@@ -1567,8 +1567,17 @@ namespace LoESoft.GameServer.logic
                         new CyanBag("The Robe of Twilight"),
                         new CyanBag("The Forgotten Ring")
                         ),
-                    new WhiteBag(new string[] { "Tablet of the King's Avatar", "Bracer of the Guardian", "The Twilight Gemstone", "The Forgotten Crown", "Ice Crown" })
-                    )
+                    new WhiteBag(new string[]
+                    {
+                        "Tablet of the King's Avatar",
+                        "Bracer of the Guardian",
+                        "The Twilight Gemstone",
+                        "The Forgotten Crown",
+                        "Ice Crown",
+                        "Shattered War-axe",
+                        "Shattered Armor"
+                    })
+                )
             )
 
             .Init("shtrs shadowmans",

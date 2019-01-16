@@ -495,21 +495,7 @@ namespace LoESoft.GameServer.logic.loot
             BagType = BagType.Blue;
             Lootstate = lootState;
 
-            double probability = 0;
-
-            var candidates = enemy.DamageCounter.GetPlayerData().ToList();
-            var rng = rnd.NextDouble();
-            var playersCount = candidates.Count;
-            var enemyHP = (int)enemy.ObjectDesc.MaxHP;
-
-            if (playersCount == 1)
-                probability = .0001;
-            else if (playersCount > 1 && playersCount <= 3)
-                probability = .0001 + .0001 * playersCount;
-            else
-                probability = .0002 + .000005 * playersCount;
-
-            var whitebag = new ILootDef[] { new Drops(new ItemLoot(itemName, probability * (eventChest ? .8 : 1), false, true)) };
+            var whitebag = new ILootDef[] { new Drops(new ItemLoot(itemName, LootBagRate.WHITE_BAG * (eventChest ? .8 : 1), false, true)) };
             whitebag[0].Populate(enemy, playerData, rnd, Lootstate, lootDefs);
         }
     }
@@ -706,7 +692,7 @@ namespace LoESoft.GameServer.logic.loot
             else
                 bagProbability = this.probability;
 
-            this.probability = GetProbability * bagProbability * Settings.EVENT_RATE;
+            this.probability = GetProbability * bagProbability * Settings.GetEventRate();
 
             switch (type)
             {

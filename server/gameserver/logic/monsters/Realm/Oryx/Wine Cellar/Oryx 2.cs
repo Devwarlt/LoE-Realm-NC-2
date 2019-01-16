@@ -125,8 +125,20 @@ namespace LoESoft.GameServer.logic
                     ),
                 new CyanBag(ItemType.Ring, 5),
                 new OnlyOne(
-                    new BlueBag(new[] { Potions.POTION_OF_DEFENSE, Potions.POTION_OF_ATTACK, Potions.POTION_OF_WISDOM, Potions.POTION_OF_VITALITY }, new bool[] { false, false, false, false })
+                    new CyanBag(ItemType.Weapon, 10),
+                    new CyanBag(ItemType.Weapon, 11),
+                    new CyanBag(ItemType.Weapon, 12)
                     ),
+                new OnlyOne(
+                    new CyanBag(ItemType.Armor, 11),
+                    new CyanBag(ItemType.Armor, 12),
+                    new CyanBag(ItemType.Armor, 13)
+                    ),
+                new OnlyOne(
+                    new CyanBag(ItemType.Ability, 5),
+                    new CyanBag(ItemType.Ability, 6)
+                    ),
+                new CyanBag(ItemType.Ring, 5),
                 new OnlyOne(
                     new BlueBag(new[] { Potions.POTION_OF_DEFENSE, Potions.POTION_OF_ATTACK, Potions.POTION_OF_WISDOM, Potions.POTION_OF_VITALITY }, new bool[] { false, false, false, false })
                     ),
@@ -142,7 +154,10 @@ namespace LoESoft.GameServer.logic
                 new OnlyOne(
                     new BlueBag(new[] { Potions.POTION_OF_DEFENSE, Potions.POTION_OF_ATTACK, Potions.POTION_OF_WISDOM, Potions.POTION_OF_VITALITY }, new bool[] { false, false, false, false })
                     ),
-                new WhiteBag(new[] { "Sword of the Mad God", "Onyx Shield of the Mad God", "Almandine Armor of Anger", "Almandine Ring of Wrath" })
+                new OnlyOne(
+                    new BlueBag(new[] { Potions.POTION_OF_DEFENSE, Potions.POTION_OF_ATTACK, Potions.POTION_OF_WISDOM, Potions.POTION_OF_VITALITY }, new bool[] { false, false, false, false })
+                    ),
+                new WhiteBag(new[] { "Ancient Stone Sword", "Sword of the Mad God", "Onyx Shield of the Mad God", "Almandine Armor of Anger", "Almandine Ring of Wrath" })
                 )
             )
         ;
