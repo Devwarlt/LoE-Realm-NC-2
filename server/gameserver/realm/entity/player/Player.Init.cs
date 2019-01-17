@@ -267,9 +267,12 @@ namespace LoESoft.GameServer.realm.entity.player
 
             GameServer.Manager.Database.SaveCharacter(Client.Account, Client.Character, true);
             GameServer.Manager.Database.Death(GameServer.Manager.GameData, Client.Account, Client.Character, FameCounter.Stats, killer);
-            GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHARACTER_IS_DEAD);
 
             Owner.LeaveWorld(this);
+
+            try
+            { GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHARACTER_IS_DEAD); }
+            catch { }
         }
 
         public override void Init(World owner)

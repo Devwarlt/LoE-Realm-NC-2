@@ -27,8 +27,6 @@ namespace LoESoft.GameServer.realm
 
         public async void TickLoop()
         {
-            Thread.CurrentThread.Priority = ThreadPriority.Highest;
-
             var looptime = 0;
             var t = new RealmTime();
             var watch = Stopwatch.StartNew();
