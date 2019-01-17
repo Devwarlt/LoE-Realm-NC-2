@@ -652,7 +652,6 @@
     <Compile Include="Vector2.cs" />
     <Compile Include="wRandom.cs" />
     <Compile Include="networking\messages\handlers\AoEAckHandler.cs" />
-    <Compile Include="networking\ISManager.cs" />
     <Compile Include="realm\world\worlds\Vault.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\EyeOfTheDragon.cs" />
     <Compile Include="realm\entity\Entity.ActivateBoost.cs" />

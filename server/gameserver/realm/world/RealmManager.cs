@@ -41,15 +41,10 @@ namespace LoESoft.GameServer.realm
         public Random Random { get; }
         public BehaviorDb Behaviors { get; private set; }
         public ChatManager Chat { get; private set; }
-        public ISManager InterServer { get; private set; }
         public CommandManager Commands { get; private set; }
         public EmbeddedData GameData { get; private set; }
         public string InstanceId { get; private set; }
-
-        //public GameTicker Logic { get; private set; }
         public LogicTicker Logic { get; private set; }
-
-        public bool IsReady { get; private set; }
         public int MaxClients { get; private set; }
         public RealmPortalMonitor Monitor { get; private set; }
         public Database Database { get; private set; }
@@ -94,7 +89,6 @@ namespace LoESoft.GameServer.realm
 
             AddWorld(GameWorld.AutoName(1, true));
 
-            InterServer = new ISManager(this);
             Chat = new ChatManager(this);
             Commands = new CommandManager(this);
 
@@ -110,10 +104,6 @@ namespace LoESoft.GameServer.realm
             var logic = new Task(() => Logic.TickLoop(), TaskCreationOptions.LongRunning);
             logic.ContinueWith(GameServer.Restart, TaskContinuationOptions.OnlyOnFaulted);
             logic.Start();
-            //Logic = new GameTicker(this);
-            //Logic.Init();
-            //Logic.Start();
-            IsReady = true;
         }
 
         public void Stop()
@@ -124,7 +114,6 @@ namespace LoESoft.GameServer.realm
                 TryDisconnect(cData.Client, DisconnectReason.STOPPING_REALM_MANAGER);
 
             GameData.Dispose();
-            //Logic.Dispose();
         }
 
         #endregion

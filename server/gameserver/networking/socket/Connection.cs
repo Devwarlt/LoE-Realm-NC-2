@@ -277,8 +277,6 @@ namespace LoESoft.GameServer.networking
                 Save();
 
                 SendMessage(msg);
-
-                GameServer.Manager.TryDisconnect(this, DisconnectReason.RECONNECT);
             }
             catch (NullReferenceException) { }
 

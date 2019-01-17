@@ -11,10 +11,6 @@ namespace LoESoft.GameServer.realm
 {
     public class ChatManager
     {
-        private const char TELL = 't';
-        private const char GUILD = 'g';
-        private const char ANNOUNCE = 'a';
-
         private struct Message
         {
             public char Type;
@@ -41,7 +37,6 @@ namespace LoESoft.GameServer.realm
         public ChatManager(RealmManager manager)
         {
             this.manager = manager;
-            //manager.InterServer.AddHandler<Message>(ISManager.CHAT, HandleChat);
         }
 
         public static Dictionary<string, Tuple<DateTime, string>> ChatDataCache = new Dictionary<string, Tuple<DateTime, string>>(); // store only latest player message
@@ -56,9 +51,9 @@ namespace LoESoft.GameServer.realm
             else
                 ChatDataCache[player.Name] = Tuple.Create(DateTime.Now, chatText);
 
-            ChatColor color = new ChatColor(player.Stars, player.AccountType);
+            var color = new ChatColor(player.Stars, player.AccountType);
 
-            TEXT _text = new TEXT
+            player.Owner.BroadcastMessage(new TEXT
             {
                 Name = player.Name,
                 ObjectId = player.Id,
@@ -70,20 +65,7 @@ namespace LoESoft.GameServer.realm
                 CleanText = chatText,
                 NameColor = color.GetColor(),
                 TextColor = 0x123456
-            };
-
-            player.Owner.BroadcastMessage(_text, null);
-        }
-
-        public void Announce(string text)
-        {
-            Message _message = new Message
-            {
-                Type = ANNOUNCE,
-                Inst = manager.InstanceId,
-                Text = text
-            };
-            manager.InterServer.Publish(ISManager.CHAT, _message);
+            }, null);
         }
 
         public void Oryx(World world, string text)

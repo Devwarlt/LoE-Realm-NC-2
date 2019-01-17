@@ -132,10 +132,14 @@ namespace LoESoft.GameServer.logic
                 new Drops(
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
-                        new PurpleBag(ItemType.Weapon, 9),
-                        new PurpleBag(ItemType.Ability, 4),
+                        new PurpleBag(ItemType.Weapon, 9)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new OnlyOne(
                         new PurpleBag(ItemType.Armor, 8),
-                        new PurpleBag(ItemType.Armor, 9),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new OnlyOne(
                         new PurpleBag(ItemType.Ring, 3),
                         new PurpleBag(ItemType.Ring, 4)
                         ),
@@ -190,23 +194,29 @@ namespace LoESoft.GameServer.logic
                 new Drops(
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
-                        new PurpleBag(ItemType.Weapon, 9),
-                        new PurpleBag(ItemType.Ability, 4),
+                        new PurpleBag(ItemType.Weapon, 9)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new OnlyOne(
                         new PurpleBag(ItemType.Armor, 8),
-                        new PurpleBag(ItemType.Armor, 9),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new OnlyOne(
                         new PurpleBag(ItemType.Ring, 3),
                         new PurpleBag(ItemType.Ring, 4)
                         ),
                     new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4, EggType.TIER_5 }),
                     new OnlyOne(
                         new CyanBag(ItemType.Weapon, 10),
-                        new CyanBag(ItemType.Weapon, 11),
+                        new CyanBag(ItemType.Weapon, 11)
+                        ),
+                    new OnlyOne(
                         new CyanBag(ItemType.Armor, 10),
                         new CyanBag(ItemType.Armor, 11),
-                        new CyanBag(ItemType.Armor, 12),
-                        new CyanBag(ItemType.Ability, 5),
-                        new CyanBag(ItemType.Ring, 5)
+                        new CyanBag(ItemType.Armor, 12)
                         ),
+                    new CyanBag(ItemType.Ability, 5),
+                    new CyanBag(ItemType.Ring, 5),
                     new OnlyOne(
                         new BlueBag(Potions.POTION_OF_ATTACK),
                         new BlueBag(Potions.POTION_OF_DEFENSE),
@@ -263,23 +273,29 @@ namespace LoESoft.GameServer.logic
                 new Drops(
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
-                        new PurpleBag(ItemType.Weapon, 9),
-                        new PurpleBag(ItemType.Ability, 4),
+                        new PurpleBag(ItemType.Weapon, 9)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new OnlyOne(
                         new PurpleBag(ItemType.Armor, 8),
-                        new PurpleBag(ItemType.Armor, 9),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new OnlyOne(
                         new PurpleBag(ItemType.Ring, 3),
                         new PurpleBag(ItemType.Ring, 4)
                         ),
                     new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4, EggType.TIER_5 }),
                     new OnlyOne(
                         new CyanBag(ItemType.Weapon, 10),
-                        new CyanBag(ItemType.Weapon, 11),
+                        new CyanBag(ItemType.Weapon, 11)
+                        ),
+                    new OnlyOne(
                         new CyanBag(ItemType.Armor, 10),
                         new CyanBag(ItemType.Armor, 11),
-                        new CyanBag(ItemType.Armor, 12),
-                        new CyanBag(ItemType.Ability, 5),
-                        new CyanBag(ItemType.Ring, 5)
+                        new CyanBag(ItemType.Armor, 12)
                         ),
+                    new CyanBag(ItemType.Ability, 5),
+                    new CyanBag(ItemType.Ring, 5),
                     new OnlyOne(
                         new BlueBag(Potions.POTION_OF_ATTACK),
                         new BlueBag(Potions.POTION_OF_DEFENSE),
@@ -336,10 +352,14 @@ namespace LoESoft.GameServer.logic
                 new Drops(
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
-                        new PurpleBag(ItemType.Weapon, 9),
-                        new PurpleBag(ItemType.Ability, 4),
+                        new PurpleBag(ItemType.Weapon, 9)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new OnlyOne(
                         new PurpleBag(ItemType.Armor, 8),
-                        new PurpleBag(ItemType.Armor, 9),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new OnlyOne(
                         new PurpleBag(ItemType.Ring, 3),
                         new PurpleBag(ItemType.Ring, 4)
                         ),
@@ -347,16 +367,16 @@ namespace LoESoft.GameServer.logic
                     new OnlyOne(
                         new CyanBag(ItemType.Weapon, 10),
                         new CyanBag(ItemType.Weapon, 11),
-                        new CyanBag(ItemType.Weapon, 12),
-                        new CyanBag(ItemType.Weapon, 13),
+                        new CyanBag(ItemType.Weapon, 12)
+                        ),
+                    new OnlyOne(
                         new CyanBag(ItemType.Armor, 10),
                         new CyanBag(ItemType.Armor, 11),
                         new CyanBag(ItemType.Armor, 12),
-                        new CyanBag(ItemType.Armor, 13),
-                        new CyanBag(ItemType.Armor, 14),
-                        new CyanBag(ItemType.Ability, 5),
-                        new CyanBag(ItemType.Ring, 5)
+                        new CyanBag(ItemType.Armor, 13)
                         ),
+                    new CyanBag(ItemType.Ability, 5),
+                    new CyanBag(ItemType.Ring, 5),
                     new OnlyOne(
                         new BlueBag(Potions.POTION_OF_ATTACK),
                         new BlueBag(Potions.POTION_OF_DEFENSE),
@@ -412,10 +432,14 @@ namespace LoESoft.GameServer.logic
                 new Drops(
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
-                        new PurpleBag(ItemType.Weapon, 9),
-                        new PurpleBag(ItemType.Ability, 4),
+                        new PurpleBag(ItemType.Weapon, 9)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new OnlyOne(
                         new PurpleBag(ItemType.Armor, 8),
-                        new PurpleBag(ItemType.Armor, 9),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new OnlyOne(
                         new PurpleBag(ItemType.Ring, 3),
                         new PurpleBag(ItemType.Ring, 4)
                         ),
@@ -423,14 +447,16 @@ namespace LoESoft.GameServer.logic
                     new OnlyOne(
                         new CyanBag(ItemType.Weapon, 10),
                         new CyanBag(ItemType.Weapon, 11),
-                        new CyanBag(ItemType.Weapon, 12),
+                        new CyanBag(ItemType.Weapon, 12)
+                        ),
+                    new OnlyOne(
                         new CyanBag(ItemType.Armor, 10),
                         new CyanBag(ItemType.Armor, 11),
                         new CyanBag(ItemType.Armor, 12),
-                        new CyanBag(ItemType.Armor, 13),
-                        new CyanBag(ItemType.Ability, 5),
-                        new CyanBag(ItemType.Ring, 5)
+                        new CyanBag(ItemType.Armor, 13)
                         ),
+                    new CyanBag(ItemType.Ability, 5),
+                    new CyanBag(ItemType.Ring, 5),
                     new OnlyOne(
                         new BlueBag(Potions.POTION_OF_ATTACK),
                         new BlueBag(Potions.POTION_OF_DEFENSE),
@@ -486,23 +512,29 @@ namespace LoESoft.GameServer.logic
                 new Drops(
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
-                        new PurpleBag(ItemType.Weapon, 9),
-                        new PurpleBag(ItemType.Ability, 4),
+                        new PurpleBag(ItemType.Weapon, 9)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new OnlyOne(
                         new PurpleBag(ItemType.Armor, 8),
-                        new PurpleBag(ItemType.Armor, 9),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new OnlyOne(
                         new PurpleBag(ItemType.Ring, 3),
                         new PurpleBag(ItemType.Ring, 4)
                         ),
                     new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4, EggType.TIER_5 }),
                     new OnlyOne(
                         new CyanBag(ItemType.Weapon, 10),
-                        new CyanBag(ItemType.Weapon, 11),
+                        new CyanBag(ItemType.Weapon, 11)
+                        ),
+                    new OnlyOne(
                         new CyanBag(ItemType.Armor, 10),
                         new CyanBag(ItemType.Armor, 11),
-                        new CyanBag(ItemType.Armor, 12),
-                        new CyanBag(ItemType.Ability, 5),
-                        new CyanBag(ItemType.Ring, 5)
+                        new CyanBag(ItemType.Armor, 12)
                         ),
+                    new CyanBag(ItemType.Ability, 5),
+                    new CyanBag(ItemType.Ring, 5),
                     new OnlyOne(
                         new BlueBag(Potions.POTION_OF_ATTACK),
                         new BlueBag(Potions.POTION_OF_DEFENSE),

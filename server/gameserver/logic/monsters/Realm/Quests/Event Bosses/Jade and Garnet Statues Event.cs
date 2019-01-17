@@ -159,13 +159,15 @@ namespace LoESoft.GameServer.logic
                     new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4 }),
                     new OnlyOne(
                         new CyanBag(ItemType.Weapon, 10),
-                        new CyanBag(ItemType.Weapon, 11),
+                        new CyanBag(ItemType.Weapon, 11)
+                        ),
+                    new OnlyOne(
                         new CyanBag(ItemType.Armor, 10),
                         new CyanBag(ItemType.Armor, 11),
-                        new CyanBag(ItemType.Armor, 12),
-                        new CyanBag(ItemType.Ability, 5),
-                        new CyanBag(ItemType.Ring, 5)
+                        new CyanBag(ItemType.Armor, 12)
                         ),
+                    new CyanBag(ItemType.Ability, 5),
+                    new CyanBag(ItemType.Ring, 5),
                     new OnlyOne(
                         new BlueBag(Potions.POTION_OF_ATTACK, true),
                         new BlueBag(Potions.POTION_OF_DEFENSE, true),
@@ -174,7 +176,7 @@ namespace LoESoft.GameServer.logic
                         new BlueBag(Potions.POTION_OF_VITALITY, true),
                         new BlueBag(Potions.POTION_OF_WISDOM, true)
                         ),
-                    new WhiteBag("Wand of the Fallen")
+                    new WhiteBag(new[] { "Wand of the Fallen", "Kageboshi" })
                     )
             )
 
@@ -329,13 +331,15 @@ namespace LoESoft.GameServer.logic
                     new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4 }),
                     new OnlyOne(
                         new CyanBag(ItemType.Weapon, 10),
-                        new CyanBag(ItemType.Weapon, 11),
+                        new CyanBag(ItemType.Weapon, 11)
+                        ),
+                    new OnlyOne(
                         new CyanBag(ItemType.Armor, 10),
                         new CyanBag(ItemType.Armor, 11),
-                        new CyanBag(ItemType.Armor, 12),
-                        new CyanBag(ItemType.Ability, 5),
-                        new CyanBag(ItemType.Ring, 5)
+                        new CyanBag(ItemType.Armor, 12)
                         ),
+                    new CyanBag(ItemType.Ability, 5),
+                    new CyanBag(ItemType.Ring, 5),
                     new OnlyOne(
                         new BlueBag(Potions.POTION_OF_ATTACK, true),
                         new BlueBag(Potions.POTION_OF_DEFENSE, true),
@@ -344,7 +348,7 @@ namespace LoESoft.GameServer.logic
                         new BlueBag(Potions.POTION_OF_VITALITY, true),
                         new BlueBag(Potions.POTION_OF_WISDOM, true)
                         ),
-                    new WhiteBag("Wand of the Fallen")
+                    new WhiteBag(new[] { "Wand of the Fallen", "Kageboshi" })
                     )
             )
 
@@ -406,13 +410,12 @@ namespace LoESoft.GameServer.logic
                 new State(
                     //new DropPortalOnDeath("Mountain Temple Portal", 0.4),
                     new State("Wait",
-                        new AddCond(ConditionEffectIndex.Invincible),
-                        new PlayerWithinTransition(6, "toss")
+                        new AddCond(ConditionEffectIndex.Invincible)
                         ),
                     new State("toss",
                         new TossObject("Garnet Statue", 5, 0, int.MaxValue - 1, 0, false, true),
                         new TossObject("Jade Statue", 5, 180, int.MaxValue - 1, 0, false, true),
-                        new TimedTransition(5000, "ActivateG&J")
+                        new PlayerWithinTransition(24, "ActivateG&J")
                         ),
                     new State("ActivateG&J",
                         new EntityOrder(100, "Garnet Statue", "Activate"),

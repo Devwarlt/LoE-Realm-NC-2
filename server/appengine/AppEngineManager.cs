@@ -123,7 +123,6 @@ namespace LoESoft.AppEngine
             listener.Stop();
 
             AppEngine.GameData?.Dispose();
-            AppEngine.Manager?.Dispose();
 
             Log.Warn("Terminated WebServer.");
 

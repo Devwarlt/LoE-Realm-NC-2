@@ -152,27 +152,37 @@ namespace LoESoft.GameServer.logic
                 ),
                 new Drops(
                     new OnlyOne(
-                        new PinkBag(ItemType.Weapon, 8),
-                        new PinkBag(ItemType.Weapon, 9),
-                        new PinkBag(ItemType.Ability, 4),
-                        new PinkBag(ItemType.Armor, 8),
-                        new PinkBag(ItemType.Armor, 9),
-                        new PinkBag(ItemType.Ring, 3),
-                        new PinkBag(ItemType.Ring, 4)
+                        new PurpleBag(ItemType.Weapon, 8),
+                        new PurpleBag(ItemType.Weapon, 9)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Armor, 8),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Ring, 3),
+                        new PurpleBag(ItemType.Ring, 4)
                         ),
                     new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4, EggType.TIER_5 }),
                     new OnlyOne(
-                        new PurpleBag(ItemType.Weapon, 10),
-                        new PurpleBag(ItemType.Weapon, 11),
-                        new PurpleBag(ItemType.Weapon, 12),
-                        new PurpleBag(ItemType.Armor, 10),
-                        new PurpleBag(ItemType.Armor, 11),
-                        new PurpleBag(ItemType.Armor, 12),
-                        new PurpleBag(ItemType.Armor, 13),
-                        new PurpleBag(ItemType.Ability, 5),
-                        new PurpleBag(ItemType.Ability, 6),
-                        new PurpleBag(ItemType.Ring, 5),
-                        new PurpleBag(ItemType.Ring, 6)
+                        new CyanBag(ItemType.Weapon, 10),
+                        new CyanBag(ItemType.Weapon, 11),
+                        new CyanBag(ItemType.Weapon, 12)
+                        ),
+                    new OnlyOne(
+                        new CyanBag(ItemType.Armor, 10),
+                        new CyanBag(ItemType.Armor, 11),
+                        new CyanBag(ItemType.Armor, 12),
+                        new CyanBag(ItemType.Armor, 13)
+                        ),
+                    new OnlyOne(
+                        new CyanBag(ItemType.Ability, 5),
+                        new CyanBag(ItemType.Ability, 6)
+                        ),
+                    new OnlyOne(
+                        new CyanBag(ItemType.Ring, 5),
+                        new CyanBag(ItemType.Ring, 6)
                         ),
                     new OnlyOne(
                         new CyanBag("Sword of Splendor"),
@@ -187,58 +197,50 @@ namespace LoESoft.GameServer.logic
                         new CyanBag("Dominion Armor"),
                         new CyanBag("Wyrmhide Armor")
                         ),
+                    new WhiteBag(new[]
+                    {
+                        "Helm of the Juggernaut",
+                        "Enchanted Ice Blade",
+                        "Staff of Iceblast",
+                        "Eternal Snowflake Wand",
+                        "Arctic Bow",
+                        "Frost Drake Hide Armor",
+                        "Frost Elementalist Robe",
+                        "Ice Crown",
+                        "Frost Citadel Armor"
+                    }),
+                    new CyanBag(new[]
+                    {
+                        "The Rusher Skin",
+                        "Penguin Knight Skin",
+                        "Frimar Knight Skin",
+                        "Blizzard Sorcerer Skin"
+                    }),
+                    new MostDamagers(6, new BlueBag(GreaterPotions.GREATER_POTION_OF_LIFE, true)),
+                    new MostDamagers(9, new BlueBag(GreaterPotions.GREATER_POTION_OF_MANA, true)),
                     new OnlyOne(
-                        new WhiteBag("Enchanted Ice Blade"),
-                        new WhiteBag("Staff of Iceblast"),
-                        new WhiteBag("Eternal Snowflake Wand"),
-                        new WhiteBag("Arctic Bow"),
-                        new WhiteBag("Frost Drake Hide Armor"),
-                        new WhiteBag("Frost Elementalist Robe"),
-                        new WhiteBag("Ice Crown"),
-                        new WhiteBag("Frost Citadel Armor"),
-                        new WhiteBag("Penguin Knight Skin"),
-                        new WhiteBag("Frimar Knight Skin"),
-                        new WhiteBag("Blizzard Sorcerer Skin")
-                        ),
-                    new WhiteBag("Helm of the Juggernaut"),
-                    new WhiteBag("The Rusher Skin"),
-                    new BlueBag(Potions.POTION_OF_LIFE, true),
-                    new BlueBag(Potions.POTION_OF_MANA, true),
-                    new OnlyOne(
-                        new BlueBag(GreaterPotions.GREATER_POTION_OF_LIFE),
-                        new BlueBag(GreaterPotions.GREATER_POTION_OF_MANA)
-                        ),
-                    new OnlyOne(
-                        new BlueBag(GreaterPotions.GREATER_POTION_OF_LIFE),
-                        new BlueBag(GreaterPotions.GREATER_POTION_OF_MANA)
-                        ),
-                    new OnlyOne(
-                        new BlueBag(GreaterPotions.GREATER_POTION_OF_LIFE),
-                        new BlueBag(GreaterPotions.GREATER_POTION_OF_MANA)
-                        ),
-                    new OnlyOne(
-                        new BlueBag(Potions.POTION_OF_ATTACK),
-                        new BlueBag(Potions.POTION_OF_DEFENSE),
-                        new BlueBag(Potions.POTION_OF_SPEED),
-                        new BlueBag(Potions.POTION_OF_DEXTERITY),
-                        new BlueBag(Potions.POTION_OF_VITALITY),
-                        new BlueBag(Potions.POTION_OF_WISDOM)
+                        new BlueBag(Potions.POTION_OF_ATTACK, true),
+                        new BlueBag(Potions.POTION_OF_DEFENSE, true),
+                        new BlueBag(Potions.POTION_OF_SPEED, true),
+                        new BlueBag(Potions.POTION_OF_DEXTERITY, true),
+                        new BlueBag(Potions.POTION_OF_VITALITY, true),
+                        new BlueBag(Potions.POTION_OF_WISDOM, true)
                         ),
                     new OnlyOne(
-                        new BlueBag(Potions.POTION_OF_ATTACK),
-                        new BlueBag(Potions.POTION_OF_DEFENSE),
-                        new BlueBag(Potions.POTION_OF_SPEED),
-                        new BlueBag(Potions.POTION_OF_DEXTERITY),
-                        new BlueBag(Potions.POTION_OF_VITALITY),
-                        new BlueBag(Potions.POTION_OF_WISDOM)
+                        new BlueBag(Potions.POTION_OF_ATTACK, true),
+                        new BlueBag(Potions.POTION_OF_DEFENSE, true),
+                        new BlueBag(Potions.POTION_OF_SPEED, true),
+                        new BlueBag(Potions.POTION_OF_DEXTERITY, true),
+                        new BlueBag(Potions.POTION_OF_VITALITY, true),
+                        new BlueBag(Potions.POTION_OF_WISDOM, true)
                         ),
                     new OnlyOne(
-                        new BlueBag(Potions.POTION_OF_ATTACK),
-                        new BlueBag(Potions.POTION_OF_DEFENSE),
-                        new BlueBag(Potions.POTION_OF_SPEED),
-                        new BlueBag(Potions.POTION_OF_DEXTERITY),
-                        new BlueBag(Potions.POTION_OF_VITALITY),
-                        new BlueBag(Potions.POTION_OF_WISDOM)
+                        new BlueBag(Potions.POTION_OF_ATTACK, true),
+                        new BlueBag(Potions.POTION_OF_DEFENSE, true),
+                        new BlueBag(Potions.POTION_OF_SPEED, true),
+                        new BlueBag(Potions.POTION_OF_DEXTERITY, true),
+                        new BlueBag(Potions.POTION_OF_VITALITY, true),
+                        new BlueBag(Potions.POTION_OF_WISDOM, true)
                         )
                     )
             )

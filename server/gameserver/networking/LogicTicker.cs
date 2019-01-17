@@ -4,7 +4,6 @@ using LoESoft.Core.config;
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 #endregion
@@ -46,8 +45,6 @@ namespace LoESoft.GameServer.realm
 
                 if (_manager.Terminating)
                     break;
-
-                _manager.InterServer.Tick(t);
 
                 try
                 {

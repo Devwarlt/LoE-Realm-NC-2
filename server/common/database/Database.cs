@@ -33,7 +33,7 @@ namespace LoESoft.Core
             var port = Settings.REDIS_DATABASE.PORT;
             var password = Settings.REDIS_DATABASE.PASSWORD;
 
-            var conString = Settings.REDIS_DATABASE.HOST + ":" + Settings.REDIS_DATABASE.PORT + ",syncTimeout=" + Settings.RESTART_DELAY_MINUTES * 60 * 1000;
+            var conString = Settings.REDIS_DATABASE.HOST + ":" + Settings.REDIS_DATABASE.PORT + ",syncTimeout=" + Settings.RESTART_DELAY_MINUTES * 60 * 1000 * 2;
 
             if (password != null && !password.Equals(""))
                 conString += ",password=" + password;

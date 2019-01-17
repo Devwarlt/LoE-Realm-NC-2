@@ -86,9 +86,32 @@ namespace LoESoft.GameServer.logic
                 )
             ),
             new Drops(
-                new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4 }),
+                new MostDamagers(3, new BlueBag(Potions.POTION_OF_LIFE, true)),
+                new MostDamagers(6, new BlueBag(Potions.POTION_OF_LIFE, true)),
+                new MostDamagers(9, new BlueBag(Potions.POTION_OF_LIFE, true)),
+                new BlueBag(new[] { Potions.POTION_OF_ATTACK, Potions.POTION_OF_DEFENSE, Potions.POTION_OF_SPEED }, new[] { false, false, false }),
+                new CyanBag("Wine Cellar Incantation"),
+                new PurpleBag(ItemType.Weapon, 9),
+                new CyanBag(ItemType.Weapon, 10),
+                new PurpleBag(ItemType.Armor, 9),
+                new CyanBag(ItemType.Armor, 10),
+                new PurpleBag(ItemType.Ring, 4),
+                new OnlyOne(
+                    new CyanBag("Wand of Geb"),
+                    new CyanBag("Book of Geb"),
+                    new CyanBag("Shendyt of Geb"),
+                    new CyanBag("Geb's Ring of Wisdom")
+                    ),
+                new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4, EggType.TIER_5 }),
                 new BlueBag(new[] { Potions.POTION_OF_VITALITY, Potions.POTION_OF_WISDOM }, new[] { true, true }),
-                new WhiteBag("Helm of the Juggernaut")
+                new WhiteBag(new[]
+                {
+                    "Helm of the Juggernaut",
+                    "Ring of the Pyramid",
+                    "Ring of the Sphinx",
+                    "Ring of the Nile",
+                    "Tome of Holy Protection"
+                })
                 )
             )
 

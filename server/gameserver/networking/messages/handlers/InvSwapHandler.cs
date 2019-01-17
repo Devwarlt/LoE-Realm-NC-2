@@ -164,10 +164,8 @@ namespace LoESoft.GameServer.networking.handlers
             }
 
             if (en1 is Player && en2 is Player & en1.Id != en2.Id)
-            {
-                Manager.Chat.Announce($"{en1.Name} just tried to steal items from {en2.Name}'s inventory!");
                 return;
-            };
+
             con1.Inventory[message.SlotObject1.SlotId] = item2;
             con2.Inventory[message.SlotObject2.SlotId] = item1;
 

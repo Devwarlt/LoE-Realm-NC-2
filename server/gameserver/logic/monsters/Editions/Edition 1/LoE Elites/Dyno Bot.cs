@@ -101,16 +101,32 @@ namespace LoESoft.GameServer.logic
                 new Drops(
                     new BlueBag(Potions.POTION_OF_DEXTERITY),
                     new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 9),
+                        new PurpleBag(ItemType.Weapon, 10)
+                        ),
+                    new OnlyOne(
                         new CyanBag(ItemType.Weapon, 10),
                         new CyanBag(ItemType.Weapon, 11)
+                        ),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Ability, 2),
+                        new PurpleBag(ItemType.Ability, 3)
+                        ),
+                    new OnlyOne(
+                        new CyanBag(ItemType.Ability, 4),
+                        new CyanBag(ItemType.Ability, 5)
+                        ),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Armor, 9),
+                        new PurpleBag(ItemType.Armor, 10)
                         ),
                     new OnlyOne(
                         new CyanBag(ItemType.Armor, 11),
                         new CyanBag(ItemType.Armor, 12)
                         ),
                     new OnlyOne(
-                        new CyanBag(ItemType.Ability, 4),
-                        new CyanBag(ItemType.Ability, 5)
+                        new PurpleBag(ItemType.Ring, 2),
+                        new PurpleBag(ItemType.Ring, 3)
                         ),
                     new OnlyOne(
                         new CyanBag(ItemType.Ring, 4),

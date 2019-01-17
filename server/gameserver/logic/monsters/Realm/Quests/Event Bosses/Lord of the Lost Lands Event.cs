@@ -108,38 +108,48 @@ namespace LoESoft.GameServer.logic
                         )
                     ),
                 new Drops(
-                    new MostDamagers(2, new BlueBag(Potions.POTION_OF_MANA, true)),
-                    new CyanBag(ItemType.Armor, 13),
-                    new CyanBag(ItemType.Weapon, 12),
-                    new CyanBag(ItemType.Ability, 6),
+                    new MostDamagers(3, new BlueBag(Potions.POTION_OF_MANA, true)),
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
-                        new PurpleBag(ItemType.Weapon, 9),
-                        new PurpleBag(ItemType.Armor, 8),
-                        new PurpleBag(ItemType.Armor, 9),
-                        new PurpleBag(ItemType.Ability, 4),
-                        new PurpleBag(ItemType.Ring, 3),
-                        new PurpleBag(ItemType.Ring, 4)
+                        new PurpleBag(ItemType.Weapon, 9)
                         ),
-                    new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4 }),
                     new OnlyOne(
                         new CyanBag(ItemType.Weapon, 10),
                         new CyanBag(ItemType.Weapon, 11),
+                        new CyanBag(ItemType.Weapon, 12)
+                        ),
+                    new OnlyOne(
                         new CyanBag(ItemType.Armor, 10),
                         new CyanBag(ItemType.Armor, 11),
                         new CyanBag(ItemType.Armor, 12),
+                        new CyanBag(ItemType.Armor, 13)
+                        ),
+                    new CyanBag(ItemType.Ability, 5),
+                    new CyanBag(ItemType.Ring, 5),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Armor, 8),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new OnlyOne(
                         new CyanBag(ItemType.Ability, 5),
-                        new CyanBag(ItemType.Ring, 5)
+                        new CyanBag(ItemType.Ability, 6)
                         ),
                     new OnlyOne(
-                        new BlueBag(Potions.POTION_OF_ATTACK),
-                        new BlueBag(Potions.POTION_OF_DEFENSE),
-                        new BlueBag(Potions.POTION_OF_SPEED),
-                        new BlueBag(Potions.POTION_OF_DEXTERITY),
-                        new BlueBag(Potions.POTION_OF_VITALITY),
-                        new BlueBag(Potions.POTION_OF_WISDOM)
+                        new PurpleBag(ItemType.Ring, 3),
+                        new PurpleBag(ItemType.Ring, 4)
                         ),
-                    new WhiteBag(new string[] { "Shield of Ogmur", "Staff of Esben", "Skullish Remains of Esben" })
+                    new CyanBag(ItemType.Ring, 5),
+                    new EggBasket(new[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4, EggType.TIER_5, EggType.TIER_6, EggType.TIER_7 }),
+                    new OnlyOne(
+                        new BlueBag(Potions.POTION_OF_ATTACK, true),
+                        new BlueBag(Potions.POTION_OF_DEFENSE, true),
+                        new BlueBag(Potions.POTION_OF_SPEED, true),
+                        new BlueBag(Potions.POTION_OF_DEXTERITY, true),
+                        new BlueBag(Potions.POTION_OF_VITALITY, true),
+                        new BlueBag(Potions.POTION_OF_WISDOM, true)
+                        ),
+                    new WhiteBag(new[] { "Shield of Ogmur", "Staff of Esben", "Skullish Remains of Esben" })
                     )
             )
 

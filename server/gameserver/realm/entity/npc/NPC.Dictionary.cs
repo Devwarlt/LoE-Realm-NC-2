@@ -27,7 +27,7 @@ namespace LoESoft.GameServer.logic
             Database.Add("NPC Gazer", Gazer);
 
             // Process all NPCs creating new instance for each one
-            foreach (KeyValuePair<string, NPC> i in Database)
+            foreach (var i in Database)
                 i.Value.Config(Entity.Resolve(i.Key), null, false);
         }
     }
@@ -35,7 +35,14 @@ namespace LoESoft.GameServer.logic
     partial class BehaviorDb
     {
         private _ NPCCache = () => Behav()
-            .Init("NPC Gazer", new State(new NPCEngine(NPCStars: 70)))
+            .Init("NPC Gazer",
+                new State(
+                    new State("Handle",
+                        new Wander(1),
+                        new NPCEngine(NPCStars: 70)
+                        )
+                    )
+            )
         ;
     }
 }
