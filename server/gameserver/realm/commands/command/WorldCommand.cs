@@ -252,40 +252,45 @@ namespace LoESoft.GameServer.realm.commands
                 }
             }
 
-            foreach (var cData in GameServer.Manager.ClientManager.Values)
+            try
             {
-                if (cData.Client.Account.NameChosen && cData.Client.Account.Name.EqualsIgnoreCase(playername))
+                foreach (var cData in GameServer.Manager.ClientManager.Values)
                 {
-                    player.Client.SendMessage(new TEXT()
+                    if (cData.Client.Account.NameChosen && cData.Client.Account.Name.EqualsIgnoreCase(playername))
                     {
-                        ObjectId = player.Id,
-                        BubbleTime = 10,
-                        Stars = player.Stars,
-                        Name = player.Name,
-                        Admin = 0,
-                        Recipient = cData.Client.Account.Name,
-                        Text = msg.ToSafeText(),
-                        CleanText = "",
-                        TextColor = 0x123456,
-                        NameColor = 0x123456
-                    });
+                        player.Client.SendMessage(new TEXT()
+                        {
+                            ObjectId = player.Id,
+                            BubbleTime = 10,
+                            Stars = player.Stars,
+                            Name = player.Name,
+                            Admin = 0,
+                            Recipient = cData.Client.Account.Name,
+                            Text = msg.ToSafeText(),
+                            CleanText = "",
+                            TextColor = 0x123456,
+                            NameColor = 0x123456
+                        });
 
-                    cData.Client.SendMessage(new TEXT()
-                    {
-                        ObjectId = cData.Client.Player.Owner.Id,
-                        BubbleTime = 10,
-                        Stars = player.Stars,
-                        Name = player.Name,
-                        Admin = 0,
-                        Recipient = cData.Client.Account.Name,
-                        Text = msg.ToSafeText(),
-                        CleanText = "",
-                        TextColor = 0x123456,
-                        NameColor = 0x123456
-                    });
-                    return true;
+                        cData.Client.SendMessage(new TEXT()
+                        {
+                            ObjectId = cData.Client.Player.Owner.Id,
+                            BubbleTime = 10,
+                            Stars = player.Stars,
+                            Name = player.Name,
+                            Admin = 0,
+                            Recipient = cData.Client.Account.Name,
+                            Text = msg.ToSafeText(),
+                            CleanText = "",
+                            TextColor = 0x123456,
+                            NameColor = 0x123456
+                        });
+                        return true;
+                    }
                 }
             }
+            catch { }
+
             player.SendInfo($"{playername} not found.");
             return false;
         }

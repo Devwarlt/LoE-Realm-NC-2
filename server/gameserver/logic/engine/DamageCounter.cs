@@ -42,6 +42,7 @@ namespace LoESoft.GameServer.logic
         {
             if (!hitters.TryGetValue(player, out int totalDmg))
                 totalDmg = 0;
+
             totalDmg += dmg;
             hitters[player] = totalDmg;
 
@@ -124,7 +125,7 @@ namespace LoESoft.GameServer.logic
 
                     bool killer = (Parent ?? this).LastHitter == i.Item1;
 
-                    if (i.Item1.EnemyKilled(enemy, i.Item1.AccountPerks.Experience(i.Item1.Level, (int) playerXp), killer) && !killer)
+                    if (i.Item1.EnemyKilled(enemy, i.Item1.AccountPerks.Experience(i.Item1.Level, (int)playerXp), killer) && !killer)
                         lvUps++;
                 }
 
@@ -140,11 +141,11 @@ namespace LoESoft.GameServer.logic
             if (hp == 0)
                 return 0;
             else if (hp > 0 && hp <= 100)
-                return (float) hp / 10;
+                return (float)hp / 10;
             else if (hp > 100 && hp <= 1000)
-                return (float) (hp / 10) * 1.25f;
+                return (float)(hp / 10) * 1.25f;
             else if (hp > 1000 && hp <= 10000)
-                return (float) (hp / 10) * 1.5f;
+                return (float)(hp / 10) * 1.5f;
             else
                 return 2000;
         }

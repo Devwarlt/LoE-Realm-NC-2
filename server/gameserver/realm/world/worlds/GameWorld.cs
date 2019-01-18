@@ -78,7 +78,7 @@ namespace LoESoft.GameServer.realm.world
                         {
                             if (Overseer != null)
                             {
-                                if (Overseer.ActualRunningEvents.Count <= 5)
+                                if (Overseer.ActualRunningEvents.Count < 5)
                                 {
                                     var revent = Overseer.RealmEventCache[Overseer.rand.Next(0, Overseer.RealmEventCache.Count)];
                                     var success = true;
@@ -116,7 +116,7 @@ namespace LoESoft.GameServer.realm.world
                     {
                         do
                         {
-                            await Task.Delay(30 * 60 * 1000);
+                            await Task.Delay(10 * 60 * 1000);
 
                             foreach (var i in Players.Values)
                             {
@@ -125,14 +125,23 @@ namespace LoESoft.GameServer.realm.world
                             }
 
                             foreach (var i in GameServer.Manager.ClientManager.Values)
-                                i.Client.Player?.GazerDM($"Oryx is preparing to close realm '{Name}' in 1 minute.");
+                                i.Client.Player?.GazerDM($"Oryx is preparing to close realm '{Name}' in 15 seconds.");
 
-                            await Task.Delay(1 * 60 * 1000);
+                            await Task.Delay(15 * 1000);
 
                             var wc = GameServer.Manager.AddWorld(new WineCellar());
                             wc.Manager = GameServer.Manager;
 
-                            Timers.Add(new WorldTimer(8000, (w, t) =>
+                            foreach (var i in Players.Values)
+                            {
+                                Overseer.SendMsg(i, "MY MINIONS HAVE FAILED ME!", "#Oryx the Mad God");
+                                Overseer.SendMsg(i, "BUT NOW YOU SHALL FEEL MY WRATH!", "#Oryx the Mad God");
+                                Overseer.SendMsg(i, "COME MEET YOUR DOOM AT THE WALLS OF MY WINE CELLAR!", "#Oryx the Mad God");
+
+                                i.Client.SendMessage(new SHOWEFFECT { EffectType = EffectType.Jitter });
+                            }
+
+                            Timers.Add(new WorldTimer(5000, (w, t) =>
                             {
                                 foreach (var i in Players.Values)
                                 {
@@ -149,15 +158,6 @@ namespace LoESoft.GameServer.realm.world
                                     });
                                 }
                             }));
-
-                            foreach (var i in Players.Values)
-                            {
-                                Overseer.SendMsg(i, "MY MINIONS HAVE FAILED ME!", "#Oryx the Mad God");
-                                Overseer.SendMsg(i, "BUT NOW YOU SHALL FEEL MY WRATH!", "#Oryx the Mad God");
-                                Overseer.SendMsg(i, "COME MEET YOUR DOOM AT THE WALLS OF MY WINE CELLAR!", "#Oryx the Mad God");
-
-                                i.Client.SendMessage(new SHOWEFFECT { EffectType = EffectType.Jitter });
-                            }
                         } while (true);
                     }, TaskCreationOptions.LongRunning);
                     AutoOryx.ContinueWith(task => GameServer.log.Error(task.Exception.InnerException),

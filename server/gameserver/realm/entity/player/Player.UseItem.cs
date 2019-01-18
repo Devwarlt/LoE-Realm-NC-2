@@ -179,7 +179,9 @@ namespace LoESoft.GameServer.realm.entity.player
 
                     case ActivateEffects.VampireBlast:
                         {
-                            List<Message> pkts = new List<Message>
+                            try
+                            {
+                                var pkts = new List<Message>
                             {
                                 new SHOWEFFECT
                                 {
@@ -198,38 +200,45 @@ namespace LoESoft.GameServer.realm.entity.player
                                 }
                             };
 
-                            int totalDmg = 0;
-                            List<Enemy> enemies = new List<Enemy>();
-                            Owner?.Aoe(target, eff.Radius, false, enemy =>
-                            {
-                                enemies.Add(enemy as Enemy);
-                                totalDmg += (enemy as Enemy).Damage(this, time, eff.TotalDamage, false);
-                            });
-                            List<Player> players = new List<Player>();
-                            this.Aoe(eff.Radius, true, player =>
-                            {
-                                players?.Add(player as Player);
-                                ActivateHealHp(player as Player, totalDmg, pkts);
-                            });
+                                var totalDmg = 0;
+                                var enemies = new List<Enemy>();
 
-                            if (enemies.Count > 0)
-                            {
-                                Random rand = new Random();
-                                for (int i = 0; i < 5; i++)
+                                Owner?.Aoe(target, eff.Radius, false, enemy =>
                                 {
-                                    Enemy a = enemies[rand.Next(0, enemies.Count)];
-                                    Player b = players[rand.Next(0, players.Count)];
-                                    pkts.Add(new SHOWEFFECT
-                                    {
-                                        EffectType = EffectType.Flow,
-                                        TargetId = b.Id,
-                                        PosA = new Position { X = a.X, Y = a.Y },
-                                        Color = new ARGB(0xffffffff)
-                                    });
-                                }
-                            }
+                                    enemies.Add(enemy as Enemy);
+                                    totalDmg += (enemy as Enemy).Damage(this, time, eff.TotalDamage, false);
+                                });
 
-                            BroadcastSync(pkts, p => this.Dist(p) < 25);
+                                var players = new List<Player>();
+
+                                this.Aoe(eff.Radius, true, player =>
+                                {
+                                    players?.Add(player as Player);
+                                    ActivateHealHp(player as Player, totalDmg, pkts);
+                                });
+
+                                if (enemies.Count > 0)
+                                {
+                                    var rand = new Random();
+
+                                    for (int i = 0; i < 5; i++)
+                                    {
+                                        var a = enemies[rand.Next(0, enemies.Count)];
+                                        var b = players[rand.Next(0, players.Count)];
+
+                                        pkts.Add(new SHOWEFFECT
+                                        {
+                                            EffectType = EffectType.Flow,
+                                            TargetId = b.Id,
+                                            PosA = new Position { X = a.X, Y = a.Y },
+                                            Color = new ARGB(0xffffffff)
+                                        });
+                                    }
+                                }
+
+                                BroadcastSync(pkts, p => this.Dist(p) < 25);
+                            }
+                            catch { }
                         }
                         break;
 
@@ -242,6 +251,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                 TargetId = Id,
                                 PosA = target
                             }, p => this.Dist(p) < 25);
+
                             Owner?.Timers.Add(new WorldTimer(1500, (world, t) =>
                             {
                                 Trap trap = new Trap(
@@ -258,7 +268,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                     case ActivateEffects.StasisBlast:
                         {
-                            List<Message> pkts = new List<Message>
+                            var pkts = new List<Message>
                             {
                                 new SHOWEFFECT
                                 {
@@ -460,6 +470,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                     }
                             return true;
                         }
+
                     case ActivateEffects.RemoveNegativeConditions:
                         {
                             this?.Aoe(eff.Range / 2, true, player => ApplyConditionEffect(NegativeEffs));
@@ -628,6 +639,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                 return true;
                             }
                         }
+
                     case ActivateEffects.Dye:
                         {
                             SendHelp("Feature temporarly disabled until further notice from LoESoft Games.");
@@ -649,6 +661,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                             //SaveToCharacter();
                         }
+
                     case ActivateEffects.ShurikenAbility:
                         {
                             if (!ninjaShoot)
@@ -712,6 +725,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                 return true;
                             }
                         }
+
                     case ActivateEffects.Pet:
                         {
                             if (Database.Names.Contains(Name))
@@ -924,6 +938,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                 return true;
                             }
                         }
+
                     case ActivateEffects.CreatePet:
                         {
                             /// <summary>
@@ -1055,6 +1070,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                     }
                             return true;
                         }
+
                     // TODO ?
                     case ActivateEffects.StatBoostSelf:
                         {
@@ -1105,6 +1121,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                             return false;
                         }
+
                     case ActivateEffects.StatBoostAura:
                         {
                             int idx = -1;
@@ -1412,6 +1429,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                     }
                             return true;
                         }
+
                     case ActivateEffects.PermaPet:
                     case ActivateEffects.PetSkin:
                     case ActivateEffects.Unlock:

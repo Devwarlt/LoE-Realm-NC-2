@@ -197,7 +197,7 @@ namespace LoESoft.GameServer
                     try
                     {
                         foreach (var cData in Manager.ClientManager.Values)
-                            cData.Client.Player.SendInfo(message);
+                            cData.Client.Player?.SendInfo(message);
                     }
                     catch (Exception ex) { ForceShutdown(ex); }
 
