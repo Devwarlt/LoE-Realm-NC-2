@@ -10,7 +10,7 @@ namespace LoESoft.AppEngine.dailyLogin
     {
         public static DateTime StartDate = new DateTime(2019, 1, 14, 0, 0, 0, Settings.DateTimeKind);
         public static DateTime EndDate = new DateTime(2019, 1, 25, 0, 0, 0, Settings.DateTimeKind);
-        public static bool DISABLE_CALENDAR = false;
+        public static bool DISABLE_CALENDAR = true;
 
         public static List<FetchCalendarDay> MonthCalendarList = new List<FetchCalendarDay>()
         {
