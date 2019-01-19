@@ -39,10 +39,7 @@ namespace LoESoft.GameServer.networking.handlers
             _cheatHandler.Handler();
 
             var _projectile = player.PlayerShootProjectile(message.BulletId, item.Projectiles[0], item.ObjectType, GameServer.Manager.Logic.GameTime.TotalElapsedMs, message.Position, message.Angle);
-
-            player.Owner.EnterWorld(_projectile);
-
-            var _allyShoot = new ALLYSHOOT
+            var allyshot = new ALLYSHOOT
             {
                 Angle = message.Angle,
                 BulletId = message.BulletId,
@@ -50,7 +47,13 @@ namespace LoESoft.GameServer.networking.handlers
                 OwnerId = player.Id
             };
 
-            player.BroadcastSync(_allyShoot, p => p != player && p.Dist(player) <= 12);
+            player.Owner.EnterWorld(_projectile);
+
+            if (ability)
+                player.BroadcastSync(allyshot, p => p.Dist(player) <= 14);
+            else
+                player.BroadcastSync(allyshot, p => p != player && p.Dist(player) <= 14);
+
             player.FameCounter.Shoot(_projectile);
         }
     }

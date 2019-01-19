@@ -122,7 +122,7 @@ namespace LoESoft.GameServer.logic.loot
                                             BubbleTime = 0,
                                             Stars = -1,
                                             Name = "@ANNOUNCEMENT",
-                                            Text = $" {dat.Item1.Name} dropped a white bag item '{i.Item.DisplayId}' with {chance * 100}% chance!",
+                                            Text = $" {dat.Item1.Name} dropped a white bag item '{i.Item.DisplayId}' with {Math.Round(chance * 100, 2)}% chance!",
                                             NameColor = 0x123456,
                                             TextColor = 0x123456
                                         });

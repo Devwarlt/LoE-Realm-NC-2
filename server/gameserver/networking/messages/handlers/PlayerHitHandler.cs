@@ -20,12 +20,7 @@ namespace LoESoft.GameServer.networking.handlers
             if (player == null)
                 return;
 
-            var entity = player.Owner.GetEntity(message.ObjectId);
-
-            if (entity == null)
-                return;
-
-            var prj = entity.Owner.Projectiles.Keys.FirstOrDefault(projectile =>
+            var prj = player.Owner.Projectiles.Keys.FirstOrDefault(projectile =>
             projectile.ProjectileOwner.Id == message.ObjectId && projectile.ProjectileId == message.BulletId);
 
             if (prj == null || prj == default(Projectile))
@@ -38,7 +33,7 @@ namespace LoESoft.GameServer.networking.handlers
                     else
                         player.ApplyConditionEffect(effect);
 
-            player.ForceHit(prj, entity);
+            player.ForceHit(prj);
         }
     }
 }

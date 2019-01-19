@@ -285,8 +285,6 @@ namespace LoESoft.GameServer.networking.handlers
                 if (world.IsLimbo)
                     world = world.GetInstance(client);
 
-                //world.AllowConnection.WaitOne();
-
                 client.Random = new wRandom(world.Seed);
                 client.TargetWorld = world.Id;
                 client.SendMessage(new MAPINFO

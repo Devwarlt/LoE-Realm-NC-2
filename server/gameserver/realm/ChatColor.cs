@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using LoESoft.Core.config;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LoESoft.GameServer.realm
@@ -21,37 +22,38 @@ namespace LoESoft.GameServer.realm
             _accountType = accountType;
         }
 
-        public int GetColor()
+        public (int name, int text) GetColor()
         {
-            if (_accountType > 2)
+            if (_accountType >= (int)AccountType.MOD)
             {
-                int color = -1;
-                if (specialColors.TryGetValue(_accountType, out color))
+                if (specialColors.TryGetValue(_accountType, out (int, int) color))
                     return color;
             }
-            else
+            else if (_accountType == (int)AccountType.VIP)
             {
-                foreach (KeyValuePair<IEnumerable<int>, int> i in regularColors)
+                foreach (var i in regularColors)
                     if (i.Key.Contains(_stars))
                         return i.Value;
             }
-            return 0x123456;
+
+            return (0x123456, 0x123456);
         }
 
-        private readonly Dictionary<IEnumerable<int>, int> regularColors = new Dictionary<IEnumerable<int>, int>
+        private readonly Dictionary<IEnumerable<int>, (int, int)> regularColors = new Dictionary<IEnumerable<int>, (int, int)>
         {
-            { Enumerable.Range(0, 13), 0x8997DD },
-            { Enumerable.Range(14, 27), 0x304CDA },
-            { Enumerable.Range(28, 41), 0xC0262C },
-            { Enumerable.Range(42, 55), 0xF6921D },
-            { Enumerable.Range(56, 69), 0xFFFF00 },
-            { Enumerable.Range(70, 70), 0xFFFFFF }
+            { Enumerable.Range(0, 13), (0x8997dd, 0xe7eaf8) },
+            { Enumerable.Range(14, 27), (0x304cda, 0xd5dbf7) },
+            { Enumerable.Range(28, 41), (0xc0262c, 0xf2d3d4) },
+            { Enumerable.Range(42, 55), (0xf6921d , 0xfde9d1) },
+            { Enumerable.Range(56, 69), (0xffff00, 0xffffcc) },
+            { Enumerable.Range(70, 70), (0xcccccc, 0xffffff) }
         };
 
-        private readonly Dictionary<int, int> specialColors = new Dictionary<int, int>
+        private readonly Dictionary<int, (int, int)> specialColors = new Dictionary<int, (int, int)>
         {
-            { 3, 0x6CFFB1 },
-            { 4, 0xE52B50 }
+            { (int)AccountType.MOD, (0xdc1f1f, 0xf8d2d2) },
+            { (int)AccountType.DEVELOPER, (0x8e28eb, 0xe8d4fb) },
+            { (int)AccountType.ADMIN, (0x9acd32, 0xeaf5d6) }
         };
     }
 }

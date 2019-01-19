@@ -210,7 +210,7 @@ namespace LoESoft.GameServer.realm.entity.player
                     i.GazerDM(notification);
         }
 
-        public void Death(string killer, ObjectDesc desc = null, Entity entity = null)
+        public void Death(string killer, ObjectDesc desc = null, Entity entity = null, string displayid = null, string objectid = null)
         {
             if (dying)
                 return;
@@ -247,13 +247,13 @@ namespace LoESoft.GameServer.realm.entity.player
             }
 
             GenerateGravestone();
-            AnnounceDeath(killer);
 
             if (desc != null)
-                if (desc.DisplayId != null)
-                    killer = desc.DisplayId;
-                else
-                    killer = desc.ObjectId;
+                killer = desc.DisplayId ?? desc.ObjectId;
+            else
+                killer = displayid ?? objectid;
+
+            AnnounceDeath(killer);
 
             Client.Character.Dead = true;
             Client.SendMessage(new DEATH
@@ -333,23 +333,11 @@ namespace LoESoft.GameServer.realm.entity.player
 
             if (Settings.SERVER_MODE == Settings.ServerMode.Local)
                 if ((AccountType)AccountType == Core.config.AccountType.ADMIN)
-                {
-                    var invincible = new ConditionEffect
-                    {
-                        Effect = ConditionEffectIndex.Invincible,
-                        DurationMS = -1
-                    };
-
-                    ApplyConditionEffect(invincible);
-
-                    var invulnerable = new ConditionEffect
+                    ApplyConditionEffect((ConditionEffect)new ConditionEffect
                     {
                         Effect = ConditionEffectIndex.Invulnerable,
                         DurationMS = -1
-                    };
-
-                    ApplyConditionEffect(invulnerable);
-                }
+                    });
 
             ApplyConditionEffect(AccountPerks.SetAccountTypeIcon());
 
@@ -359,6 +347,25 @@ namespace LoESoft.GameServer.realm.entity.player
 
             if (ActualTask != null)
                 Task = GameTask.Tasks[ActualTask];
+
+            var requireflush = false;
+
+            if (Client.Account.Credits < 0)
+            {
+                SendInfo("Your account realm gold amount has been wiped to 0 due negative bug.");
+                Client.Account.Credits = 0;
+                requireflush = true;
+            }
+
+            if (Client.Account.Fame < 0)
+            {
+                SendInfo("Your account fame amount has been wiped to 0 due negative bug.");
+                Client.Account.Fame = 0;
+                requireflush = true;
+            }
+
+            if (requireflush)
+                Client.Account.FlushAsync();
         }
 
         public void Teleport(RealmTime time, TELEPORT packet)
@@ -460,14 +467,16 @@ namespace LoESoft.GameServer.realm.entity.player
                 if (enemy.Quest)
                     score += 250;
 
-                if (enemy.ObjectId == "Maurth the Succubus Princess")
-                    score += 100000;
+                if (Realm.AllRealmEvents.Contains(enemy.ObjectId))
+                    score += 1000000;
+                else
+                {
+                    score += enemy.MaxHitPoints;
+                    score += enemy.Defense * enemy.Level;
+                }
 
                 if (enemy.ObjectId == "Undertaker the Great Juggernaut")
-                    score += 500000;
-
-                score += enemy.MaxHitPoints;
-                score += enemy.Defense * enemy.Level;
+                    score += 5000000;
             }
             catch { }
 
@@ -479,12 +488,11 @@ namespace LoESoft.GameServer.realm.entity.player
             if (time.TickCount % 5 != 0)
                 return;
 
-            int newQuestId = -1;
-            int questId = Quest == null ? -1 : Quest.Id;
+            var newQuestId = -1;
+            var questId = Quest == null ? -1 : Quest.Id;
+            var candidates = new HashSet<Enemy>();
 
-            HashSet<Enemy> candidates = new HashSet<Enemy>();
-
-            foreach (Enemy i in Owner.Quests.Values
+            foreach (var i in Owner.Quests.Values
                 .OrderBy(j => MathsUtils.DistSqr(j.X, j.Y, X, Y))
                 .Where(k => k.ObjectDesc != null && k.ObjectDesc.Quest))
             {
@@ -502,7 +510,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
             if (candidates.Count != 0)
             {
-                Enemy newQuest = candidates.OrderByDescending(i => QuestPriority(i.ObjectDesc)).Take(3).ToList()[0];
+                var newQuest = candidates.OrderByDescending(i => QuestPriority(i.ObjectDesc)).Take(3).ToList()[0];
 
                 newQuestId = newQuest.Id;
                 Quest = newQuest;
@@ -531,14 +539,14 @@ namespace LoESoft.GameServer.realm.entity.player
             if (newFame == Fame)
                 return;
 
-            Fame = (int)newFame;
-
             Owner.BroadcastMessage(new NOTIFICATION
             {
                 ObjectId = Id,
                 Color = new ARGB(0xFF8C00),
-                Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"+" + (Fame - (int)newFame) + " Fame!\"}}",
+                Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"+" + ((int)newFame - Fame) + " Fame!\"}}",
             }, null);
+
+            Fame = (int)newFame;
 
             int newGoal;
             var stats = FameCounter.ClassStats[ObjectType];

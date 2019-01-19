@@ -96,27 +96,16 @@ namespace LoESoft.GameServer.realm
 
         public void DisableWorldTick() => _continueTick.Reset();
 
-        //public bool CanConnect { get; set; }
-        //public ManualResetEvent AllowConnection { get; set; } = new ManualResetEvent(false);
-
         private async void WorldTick()
         {
             await Task.Delay(1000 / Settings.GAMESERVER.TICKETS_PER_SECOND); // 200 ms (5 TPS)
 
             _continueTick.WaitOne();
 
-            //if (Players.Count == 0 && Id != (int)WorldID.NEXUS_ID)
-            //{
-            //    DisableWorldTick();
-            //    IsTickRunning = false;
-            //}
-            //else
-            //{
             IsTickRunning = true;
 
             try { Tick(GameServer.Manager.Logic.GameTime); }
             catch { }
-            //}
 
             WorldTick();
         }
@@ -172,12 +161,6 @@ namespace LoESoft.GameServer.realm
             if (Projectiles.Count != 0)
                 foreach (var projectile in Projectiles.Keys.Where(projectile => projectile != null))
                     projectile.Tick(time);
-
-            //if (!CanConnect)
-            //{
-            //    CanConnect = true;
-            //    AllowConnection.Set();
-            //}
 
             if (Players.Count != 0 || !canBeClosed || !IsDungeon())
                 return;

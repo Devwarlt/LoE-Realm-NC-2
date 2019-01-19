@@ -18,15 +18,9 @@ namespace LoESoft.GameServer.networking.messages.handlers.hack
         public float MaxAttackFrequency { get; set; }
         public float WeaponRateOfFire { get; set; }
 
-        public DexterityCheatHandler()
-        {
-        }
+        private bool ByPass => Player.AccountType == (int)AccountType.DEVELOPER;
 
-        private bool ByPass
-        { get { return Player.AccountType == (int)AccountType.DEVELOPER; } }
-
-        CheatID ICheatHandler.ID
-        { get { return CheatID.DEXTERITY; } }
+        CheatID ICheatHandler.ID => CheatID.DEXTERITY;
 
         public void Handler()
         {
@@ -41,15 +35,6 @@ namespace LoESoft.GameServer.networking.messages.handlers.hack
                 || MaxAttackFrequency != StatsManager.MaxAttackFrequency
                 || WeaponRateOfFire != Item.RateOfFire) && !ByPass)
             {
-                GameServer.log.Info($"Dexterity Cheat Handler ID '{Player.MaxHackEntries++}':" +
-                    $"\n\t- Player: {Player.Name} (ID: {Player.AccountId})," +
-                    $"\n\t- World: {Player.Owner.Name}," +
-                    $"\n\t- Item: {Item.DisplayId} (type: 0x{Item.ObjectType:x4})," +
-                    $"\n\t- Attack amount: {AttackAmount} (valid: {Item.NumProjectiles})," +
-                    $"\n\t- Min attack frequency: {MinAttackFrequency} (valid: {StatsManager.MinAttackFrequency})," +
-                    $"\n\t- Max attack frequency: {MaxAttackFrequency} (valid: {StatsManager.MaxAttackFrequency})," +
-                    $"\n\t- Weapon rate of fire: {WeaponRateOfFire} (valid: {Item.RateOfFire}).");
-
                 GameServer.Manager.TryDisconnect(Player.Client, Client.DisconnectReason.DEXTERITY_HACK_MOD);
                 return;
             }

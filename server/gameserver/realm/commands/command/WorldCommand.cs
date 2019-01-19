@@ -5,8 +5,11 @@ using LoESoft.GameServer.logic;
 using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.entity.player;
+using LoESoft.GameServer.realm.world;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 #endregion
 
@@ -293,6 +296,297 @@ namespace LoESoft.GameServer.realm.commands
 
             player.SendInfo($"{playername} not found.");
             return false;
+        }
+    }
+
+    internal class GlobalChat : Command
+    {
+        public GlobalChat() : base("gchat", (int)AccountType.VIP)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            if (args.Length == 0)
+            {
+                player.SendHelp("Usage: /gchat <saytext>");
+                return false;
+            }
+
+            var saytext = string.Join(" ", args);
+
+            if (player.Stars >= 20 || player.AccountType != (int)AccountType.REGULAR)
+                foreach (var cData in GameServer.Manager.ClientManager.Values)
+                    cData.Client?.SendMessage(new TEXT()
+                    {
+                        BubbleTime = 10,
+                        Stars = player.Stars,
+                        Name = player.Name,
+                        Text = " " + saytext,
+                        NameColor = 0xFFFFFF,
+                        TextColor = 0xFFFFFF
+                    });
+            else
+            {
+                player.SendHelp("You need at least 20 stars to unlock the global chat feature, try again later.");
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    internal class RealmCommand : Command
+    {
+        public RealmCommand()
+            : base("realm", (int)AccountType.REGULAR)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            var world = GameServer.Manager.Monitor.GetRandomRealm();
+
+            if (player.Owner is IRealm)
+                if ((player.Owner as GameWorld).IsRealmClosed)
+                {
+                    player.SendInfo("Too late! You cannot join realm when its closing.");
+                    return false;
+                }
+
+            if (!player.Client.RealmClockInitialized)
+            {
+                if (player.AccountType == (int)AccountType.REGULAR)
+                {
+                    player.Client.LastRealmRegularEntry = DateTime.Now;
+                    player.Client.RealmRegularClock.Elapsed += delegate { player.Client.CanRealm = true; };
+                    player.Client.RealmRegularClock.Start();
+                    player.Client.RealmClockInitialized = true;
+                }
+                else
+                {
+                    player.Client.LastRealmVIPEntry = DateTime.Now;
+                    player.Client.RealmVIPClock.Elapsed += delegate { player.Client.CanRealm = true; };
+                    player.Client.RealmVIPClock.Start();
+                    player.Client.RealmClockInitialized = true;
+                }
+            }
+
+            if (!player.Client.CanRealm)
+            {
+                var free = player.AccountType == (int)AccountType.REGULAR;
+                var delay = free ? 30 : 10;
+                var over = (free ? player.Client.LastRealmRegularEntry : player.Client.LastRealmVIPEntry)
+                    .AddSeconds(delay);
+                var seconds = (over - DateTime.Now).TotalSeconds;
+
+                if (seconds >= 1)
+                {
+                    player.Client.Player.SendHelp($"You need to wait {seconds} second{(seconds > 1 ? "s" : "")} to use this command again.");
+                    return false;
+                }
+                else
+                    player.Client.CanRealm = true;
+            }
+
+            if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
+                player.Client.Reconnect(new RECONNECT()
+                {
+                    Host = "",
+                    Port = Settings.GAMESERVER.PORT,
+                    GameId = world.Id,
+                    Name = world.Name,
+                    Key = world.PortalKey,
+                });
+            else
+            {
+                player.SendHelp("You need at least 10 stars to unlock the realm instant access feature, try again later.");
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    internal class VaultCommand : Command
+    {
+        public VaultCommand() : base("vault", (int)AccountType.REGULAR)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            if (player.Owner is Vault)
+            {
+                player.SendInfo("You are already at vault.");
+                return false;
+            }
+
+            if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
+                player.Client.Reconnect(new RECONNECT()
+                {
+                    Host = "",
+                    Port = Settings.GAMESERVER.PORT,
+                    GameId = GameServer.Manager.PlayerVault(player.Client).Id,
+                    Name = GameServer.Manager.PlayerVault(player.Client).Name,
+                    Key = GameServer.Manager.PlayerVault(player.Client).PortalKey
+                });
+            else
+            {
+                player.SendHelp("You need at least 10 stars to unlock the vault instant access feature, try again later.");
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    internal class GlandCommand : Command
+    {
+        public GlandCommand() : base("glands", (int)AccountType.REGULAR)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            if (!(player.Owner is IRealm))
+            {
+                player.SendInfo("You can only use this command at realm.");
+                return false;
+            }
+
+            if (!player.Client.GlandsClockInitialized)
+            {
+                if (player.AccountType == (int)AccountType.REGULAR)
+                {
+                    player.Client.LastGlandsRegularEntry = DateTime.Now;
+                    player.Client.GlandsRegularClock.Elapsed += delegate { player.Client.CanGlands = true; };
+                    player.Client.GlandsRegularClock.Start();
+                    player.Client.GlandsClockInitialized = true;
+                }
+                else
+                {
+                    player.Client.LastGlandsVIPEntry = DateTime.Now;
+                    player.Client.GlandsVIPClock.Elapsed += delegate { player.Client.CanGlands = true; };
+                    player.Client.GlandsVIPClock.Start();
+                    player.Client.GlandsClockInitialized = true;
+                }
+            }
+
+            if (!player.Client.CanGlands)
+            {
+                var free = player.AccountType == (int)AccountType.REGULAR;
+                var delay = free ? 30 : 10;
+                var over = (free ? player.Client.LastGlandsRegularEntry : player.Client.LastGlandsVIPEntry)
+                    .AddSeconds(delay);
+                var seconds = (over - DateTime.Now).TotalSeconds;
+
+                if (seconds >= 1)
+                {
+                    player.Client.Player.SendHelp($"You need to wait {seconds} second{(seconds > 1 ? "s" : "")} to use this command again.");
+                    return false;
+                }
+                else
+                    player.Client.CanGlands = true;
+            }
+
+            if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
+            {
+                player.Move(1478.5f, 1086.5f);
+                player.Owner.BroadcastMessage(new GOTO
+                {
+                    ObjectId = player.Id,
+                    Position = new Position
+                    {
+                        X = player.X,
+                        Y = player.Y
+                    }
+                }, null);
+                player.UpdateCount++;
+            }
+            else
+            {
+                player.SendHelp("You need at least 10 stars to unlock the god lands instant access feature, try again later.");
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    internal class OnlineCommand : Command
+    {
+        public OnlineCommand() : base("online", (int)AccountType.REGULAR)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            var sb = new StringBuilder("Online at this moment: ");
+            var playersonline = 0;
+
+            foreach (var w in GameServer.Manager.Worlds)
+            {
+                var world = w.Value;
+
+                if (w.Key != 0)
+                {
+                    var copy = world.Players.Values.ToArray();
+
+                    if (copy.Length != 0)
+                    {
+                        for (int i = 0; i < copy.Length; i++)
+                        {
+                            sb.Append(copy[i].Name);
+                            sb.Append(", ");
+                            playersonline++;
+                        }
+                    }
+                }
+            }
+
+            if (player.AccountType >= (int)AccountType.MOD)
+            {
+                string fixedString = sb.ToString().TrimEnd(',', ' ');
+
+                player.SendInfo(fixedString + ".");
+            }
+
+            player.SendInfo($"There {(playersonline > 1 ? "are" : "is")} {playersonline} player{(playersonline > 1 ? "s" : "")} online.");
+
+            return true;
+        }
+    }
+
+    internal class ListCommands : Command
+    {
+        public ListCommands() : base("commands", (int)AccountType.REGULAR)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            var cmds = new Dictionary<string, Command>();
+            var t = typeof(Command);
+
+            foreach (var i in t.Assembly.GetTypes())
+                if (t.IsAssignableFrom(i) && i != t)
+                {
+                    var instance = (Command)Activator.CreateInstance(i);
+                    cmds.Add(instance.CommandName, instance);
+                }
+
+            var sb = new StringBuilder("");
+            var copy = cmds.Values.ToArray();
+
+            for (var i = 0; i < copy.Length; i++)
+            {
+                if (player.AccountType >= copy[i].PermissionLevel)
+                    sb.Append((i != 0 ? ", " : "") + copy[i].CommandName);
+            }
+
+            player.SendInfo(sb.ToString());
+            return true;
         }
     }
 }

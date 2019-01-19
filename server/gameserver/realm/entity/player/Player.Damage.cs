@@ -9,16 +9,41 @@ namespace LoESoft.GameServer.realm.entity.player
 {
     partial class Player
     {
-        public void ForceHit(Projectile projectile, Entity entity)
+        public void ForceHit(Projectile projectile)
         {
-            if (entity == null)
-                return;
-
             if (HitByProjectile(projectile, GameServer.Manager.Logic.GameTime))
             {
-                Damage(projectile.Damage, entity, projectile.ProjDesc.ArmorPiercing);
+                try
+                {
+                    if (HasConditionEffect(ConditionEffectIndex.Paused) ||
+                        HasConditionEffect(ConditionEffectIndex.Stasis) ||
+                        HasConditionEffect(ConditionEffectIndex.Invincible) ||
+                        HasConditionEffect(ConditionEffectIndex.Invulnerable))
+                        return;
 
-                if (Projectile.IsValidType(projectile, entity))
+                    var dmg = (int)StatsManager.GetDefenseDamage(projectile.Damage, projectile.ProjDesc.ArmorPiercing);
+                    HP -= dmg;
+
+                    Owner.BroadcastMessage(new DAMAGE
+                    {
+                        TargetId = Id,
+                        Effects = 0,
+                        Damage = (ushort)dmg,
+                        Killed = HP <= 0,
+                        BulletId = 0,
+                        ObjectId = projectile.EntityId
+                    }, this);
+
+                    UpdateCount++;
+
+                    Client.Character.HP = HP;
+
+                    if (HP <= 0)
+                        Death(null, null, null, projectile.DisplayId, projectile.ObjectId);
+                }
+                catch (Exception) { }
+
+                if (Projectile.IsValidType(projectile.ProjDesc))
                     projectile.Destroy();
             }
         }
@@ -60,6 +85,8 @@ namespace LoESoft.GameServer.realm.entity.player
                     dmg = (int)StatsManager.GetDefenseDamage(dmg, NoDef);
                     HP -= dmg;
 
+                    var id = chr.Id;
+
                     Owner.BroadcastMessage(new DAMAGE
                     {
                         TargetId = Id,
@@ -67,7 +94,7 @@ namespace LoESoft.GameServer.realm.entity.player
                         Damage = (ushort)dmg,
                         Killed = HP <= 0,
                         BulletId = 0,
-                        ObjectId = chr.Id
+                        ObjectId = id
                     }, this);
 
                     UpdateCount++;

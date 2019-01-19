@@ -18,7 +18,7 @@ namespace LoESoft.Core.config
 
         public static readonly ServerMode SERVER_MODE = ServerMode.Production;
         public static readonly bool ENABLE_RESTART_SYSTEM = SERVER_MODE == ServerMode.Production;
-        public static readonly int RESTART_DELAY_MINUTES = 60;
+        public static readonly int RESTART_DELAY_MINUTES = 90;
         public static readonly int RESTART_APPENGINE_DELAY_MINUTES = 30;
         public static readonly DateTimeKind DateTimeKind = DateTimeKind.Utc;
 

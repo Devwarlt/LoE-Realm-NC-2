@@ -19,25 +19,30 @@ namespace LoESoft.GameServer.realm.entity.player
     {
         public bool Activate(RealmTime time, Item item, USEITEM pkt)
         {
-            bool endMethod = false;
+            var endMethod = false;
+            var target = pkt.ItemUsePos;
 
-            Position target = pkt.ItemUsePos;
             MP -= item.MpCost;
 
             if (!(Owner?.GetEntity(pkt.SlotObject.ObjectId) is IContainer con))
                 return true;
+
             if (CheatEngineDetectSlot(item, pkt, con))
                 CheatEngineDetect(item, pkt);
+
             if (item.IsBackpack)
                 Backpack();
+
             if (item.XpBooster) //XpBooster(item);
                 return true;
+
             if (item.LootDropBooster) //LootDropBooster(item);
                 return true;
+
             if (item.LootTierBooster) //LootTierBooster(item);
                 return true;
 
-            Random rnd = new Random();
+            var rnd = new Random();
 
             foreach (ActivateEffect eff in item.ActivateEffects)
             {
@@ -45,13 +50,13 @@ namespace LoESoft.GameServer.realm.entity.player
                 {
                     case ActivateEffects.BulletNova:
                         {
-                            Projectile[] prjs = new Projectile[20];
-                            ProjectileDesc prjDesc = item.Projectiles[0];
+                            var prjs = new Projectile[20];
+                            var prjDesc = item.Projectiles[0];
                             var batch = new Message[21];
 
                             for (var i = 0; i < 20; i++)
                             {
-                                Projectile proj = CreateProjectile(prjDesc, item.ObjectType, Random.Next(prjDesc.MinDamage, prjDesc.MaxDamage), time.TotalElapsedMs, target, (float)(i * (Math.PI * 2) / 20));
+                                var proj = CreateProjectile(prjDesc, item.ObjectType, Random.Next(prjDesc.MinDamage, prjDesc.MaxDamage), time.TotalElapsedMs, target, (float)(i * (Math.PI * 2) / 20));
 
                                 Owner.Projectiles.TryAdd(proj, null);
 
@@ -78,7 +83,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                 Color = new ARGB(0xFFFF00AA)
                             };
 
-                            foreach (Player plr in Owner?.Players.Values.Where(p => p?.DistSqr(this) < RadiusSqr))
+                            foreach (var plr in Owner?.Players.Values.Where(p => p?.DistSqr(this) < RadiusSqr))
                                 plr?.Client.SendMessage(batch);
                         }
                         break;
@@ -410,10 +415,13 @@ namespace LoESoft.GameServer.realm.entity.player
                                     Color = new ARGB(0xffddff00),
                                     TargetId = Id,
                                     PosA = target
-                                }, p => this?.Dist(p) < 25);
-                                Placeholder x = new Placeholder(1500);
+                                }, p => this?.Dist(p) < 14);
+
+                                var x = new Placeholder(1500);
+
                                 x.Move(target.X, target.Y);
                                 Owner?.EnterWorld(x);
+
                                 try
                                 {
                                     Owner.Timers.Add(new WorldTimer(1500, (world, t) =>
@@ -425,8 +433,8 @@ namespace LoESoft.GameServer.realm.entity.player
                                             TargetId = x.Id,
                                             PosA = new Position { X = eff.Radius }
                                         }, null);
-                                        world.Aoe(target, eff.Radius, false,
-                                            enemy => PoisonEnemy(enemy as Enemy, eff));
+
+                                        world.Aoe(target, eff.Radius, false, enemy => PoisonEnemy(enemy as Enemy, eff));
                                     }));
                                 }
                                 catch (Exception) { }
@@ -1545,6 +1553,9 @@ namespace LoESoft.GameServer.realm.entity.player
 
         private void PoisonEnemy(Enemy enemy, ActivateEffect eff)
         {
+            if (enemy.IsPet)
+                return;
+
             if (enemy.ObjectDesc.Pet)
                 return;
 
@@ -1559,31 +1570,28 @@ namespace LoESoft.GameServer.realm.entity.player
                             DurationMS = (int) eff.EffectDuration
                         }
                     });
-                int remainingDmg = (int)StatsManager.GetDefenseDamage(enemy, eff.TotalDamage, enemy.ObjectDesc.Defense);
-                int perDmg = remainingDmg * 1000 / eff.DurationMS;
-                WorldTimer tmr = null;
-                int x = 0;
-                tmr = new WorldTimer(100, (w, t) =>
-                {
-                    if (enemy.Owner == null)
-                        return;
-                    w.BroadcastMessage(new SHOWEFFECT
-                    {
-                        EffectType = EffectType.Poison,
-                        TargetId = enemy.Id,
-                        Color = new ARGB(0xffddff00)
-                    }, null);
+                var remainingDmg = (int)StatsManager.GetDefenseDamage(enemy, eff.TotalDamage, enemy.ObjectDesc.Defense);
+                var perDmg = remainingDmg * 1000 / eff.DurationMS;
 
-                    if (x % 10 == 0)
+                WorldTimer tmr = null;
+                var x = 0;
+
+                tmr = new WorldTimer(250, (w, t) =>
+                {
+                    if (enemy.Owner == null || w == null)
+                        return;
+
+                    if (x % 4 == 0) // make sure to change this if timer delay is changed
                     {
-                        int thisDmg;
-                        if (remainingDmg < perDmg)
+                        var thisDmg = perDmg;
+
+                        if (remainingDmg < thisDmg)
                             thisDmg = remainingDmg;
-                        else
-                            thisDmg = perDmg;
 
                         enemy.Damage(this, t, thisDmg, true);
+
                         remainingDmg -= thisDmg;
+
                         if (remainingDmg <= 0)
                             return;
                     }
@@ -1595,7 +1603,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 });
                 Owner?.Timers.Add(tmr);
             }
-            catch (Exception) { }
+            catch { }
         }
 
         private bool CheatEngineDetectSlot(Item item, USEITEM pkt, IContainer con) => pkt?.SlotObject.SlotId != 255 && pkt?.SlotObject.SlotId != 254 && con?.Inventory[pkt.SlotObject.SlotId] != item;

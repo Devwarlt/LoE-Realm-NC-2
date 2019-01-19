@@ -32,6 +32,7 @@ namespace LoESoft.GameServer.realm.world
             this.mapId = mapId;
         }
 
+        public bool IsRealmClosed { get; set; }
         public Realm Overseer { get; set; }
         private Task AutoEvents { get; set; }
         private Task AutoOryx { get; set; }
@@ -74,6 +75,9 @@ namespace LoESoft.GameServer.realm.world
 
                     AutoEvents = new Task(async () =>
                     {
+                        foreach (var realmevent in Overseer.RealmEventCache)
+                            Realm.AllRealmEvents.Add(realmevent.Name);
+
                         do
                         {
                             if (Overseer != null)
@@ -129,6 +133,8 @@ namespace LoESoft.GameServer.realm.world
 
                             await Task.Delay(15 * 1000);
 
+                            IsRealmClosed = true;
+
                             var wc = GameServer.Manager.AddWorld(new WineCellar());
 
                             foreach (var i in Players.Values)
@@ -156,6 +162,8 @@ namespace LoESoft.GameServer.realm.world
                                         Key = wc.PortalKey
                                     });
                                 }
+
+                                IsRealmClosed = false;
                             }));
                         } while (true);
                     }, TaskCreationOptions.LongRunning);

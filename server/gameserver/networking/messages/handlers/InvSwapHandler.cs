@@ -29,16 +29,17 @@ namespace LoESoft.GameServer.networking.handlers
                 client.InvSwapClock.Start();
                 client.InvSwapClockInitialized = true;
             }
+
             if (!client.CanInvSwap)
             {
                 client.Player.SendHelp("You cannot swap items that fast.");
                 return;
             }
 
-            Entity en1 = client.Player.Owner.GetEntity(message.SlotObject1.ObjectId);
-            Entity en2 = client.Player.Owner.GetEntity(message.SlotObject2.ObjectId);
-            IContainer con1 = en1 as IContainer;
-            IContainer con2 = en2 as IContainer;
+            var en1 = client.Player.Owner.GetEntity(message.SlotObject1.ObjectId);
+            var en2 = client.Player.Owner.GetEntity(message.SlotObject2.ObjectId);
+            var con1 = en1 as IContainer;
+            var con2 = en2 as IContainer;
 
             if (message.SlotObject1.SlotId == 254 || message.SlotObject1.SlotId == 255 ||
                 message.SlotObject2.SlotId == 254 || message.SlotObject2.SlotId == 255)

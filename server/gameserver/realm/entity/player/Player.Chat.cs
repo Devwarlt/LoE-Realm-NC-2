@@ -54,7 +54,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 Name = "NPC Gazer",
                 Admin = 0,
                 Recipient = Name,
-                Text = text.ToSafeText(),
+                Text = text,
                 CleanText = "",
                 NameColor = 0x123456,
                 TextColor = 0x123456

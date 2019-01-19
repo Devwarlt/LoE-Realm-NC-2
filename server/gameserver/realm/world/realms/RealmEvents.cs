@@ -27,6 +27,7 @@ namespace LoESoft.GameServer.realm
 
         public List<string> UniqueEvents { get; set; } = new List<string>();
         public List<string> ActualRunningEvents { get; set; } = new List<string>();
+        public static List<string> AllRealmEvents { get; } = new List<string>();
 
         public void HandleRealmEvent(Enemy enemy, Player killer)
         {

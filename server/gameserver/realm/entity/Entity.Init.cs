@@ -656,7 +656,10 @@ namespace LoESoft.GameServer.realm
                 BeginPos = pos,
                 Angle = angle,
                 X = pos.X,
-                Y = pos.Y
+                Y = pos.Y,
+                EntityId = Id,
+                ObjectId = ObjectDesc.ObjectId,
+                DisplayId = ObjectDesc.DisplayId
             };
 
             var projectile = Owner.Projectiles.Keys.FirstOrDefault(proj

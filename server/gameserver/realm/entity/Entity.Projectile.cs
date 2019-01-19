@@ -18,10 +18,15 @@ namespace LoESoft.GameServer.realm.entity
         public Position BeginPos { get; set; }
         public float Angle { get; set; }
         public ProjectileDesc ProjDesc { get; set; }
+        public int EntityId { get; set; }
+        public string ObjectId { get; set; }
+        public string DisplayId { get; set; }
 
-        private const long SafeLifetimeMS = 1000; // to avoid instantly project dispose
+        private const long SafeLifetimeMS = 30000; // to avoid instantly projectile dispose
 
         public void Destroy() => Owner.LeaveWorld(this);
+
+        public static bool IsValidType(ProjectileDesc desc) => !desc.MultiHit && !desc.PassesCover;
 
         public static bool IsValidType(Projectile projectile, Entity entity) =>
             (entity is Enemy

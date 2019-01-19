@@ -8,7 +8,6 @@ using LoESoft.GameServer.realm.world;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using static LoESoft.GameServer.networking.Client;
 
@@ -64,112 +63,6 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
-    internal class GlobalChat : Command
-    {
-        public GlobalChat() : base("gchat", (int)AccountType.VIP)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (args.Length == 0)
-            {
-                player.SendHelp("Usage: /gchat <saytext>");
-                return false;
-            }
-
-            var saytext = string.Join(" ", args);
-
-            if (player.Stars >= 20 || player.AccountType != (int)AccountType.REGULAR)
-                foreach (var cData in GameServer.Manager.ClientManager.Values)
-                    cData.Client?.SendMessage(new TEXT()
-                    {
-                        BubbleTime = 10,
-                        Stars = player.Stars,
-                        Name = player.Name,
-                        Text = " " + saytext,
-                        NameColor = 0xFFFFFF,
-                        TextColor = 0xFFFFFF
-                    });
-            else
-            {
-                player.SendHelp("You need at least 20 stars to unlock the global chat feature, try again later.");
-                return false;
-            }
-
-            return true;
-        }
-    }
-
-    internal class RealmCommand : Command
-    {
-        public RealmCommand()
-            : base("realm", (int)AccountType.REGULAR)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            var world = GameServer.Manager.Monitor.GetRandomRealm();
-
-            if (player.Owner is IRealm)
-            {
-                player.SendInfo("You already at realm.");
-                return false;
-            }
-
-            if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
-                player.Client.Reconnect(new RECONNECT()
-                {
-                    Host = "",
-                    Port = Settings.GAMESERVER.PORT,
-                    GameId = world.Id,
-                    Name = world.Name,
-                    Key = world.PortalKey,
-                });
-            else
-            {
-                player.SendHelp("You need at least 10 stars to unlock the realm instant access feature, try again later.");
-                return false;
-            }
-
-            return true;
-        }
-    }
-
-    internal class VaultCommand : Command
-    {
-        public VaultCommand() : base("vault", (int)AccountType.REGULAR)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (player.Owner is Vault)
-            {
-                player.SendInfo("You are already at vault.");
-                return false;
-            }
-
-            if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
-                player.Client.Reconnect(new RECONNECT()
-                {
-                    Host = "",
-                    Port = Settings.GAMESERVER.PORT,
-                    GameId = GameServer.Manager.PlayerVault(player.Client).Id,
-                    Name = GameServer.Manager.PlayerVault(player.Client).Name,
-                    Key = GameServer.Manager.PlayerVault(player.Client).PortalKey
-                });
-            else
-            {
-                player.SendHelp("You need at least 10 stars to unlock the vault instant access feature, try again later.");
-                return false;
-            }
-
-            return true;
-        }
-    }
-
     internal class VisitCommand : Command
     {
         public VisitCommand() : base("visit", (int)AccountType.MOD)
@@ -218,44 +111,6 @@ namespace LoESoft.GameServer.realm.commands
 
             player.SendError($"An error occurred: player {args[0]} couldn't be found.");
             return false;
-        }
-    }
-
-    internal class GlandCommand : Command
-    {
-        public GlandCommand() : base("glands", (int)AccountType.REGULAR)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (!(player.Owner is IRealm))
-            {
-                player.SendInfo("You can only use this command at realm.");
-                return false;
-            }
-
-            if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
-            {
-                player.Move(1478.5f, 1086.5f);
-                player.Owner.BroadcastMessage(new GOTO
-                {
-                    ObjectId = player.Id,
-                    Position = new Position
-                    {
-                        X = player.X,
-                        Y = player.Y
-                    }
-                }, null);
-                player.UpdateCount++;
-            }
-            else
-            {
-                player.SendHelp("You need at least 10 stars to unlock the god lands instant access feature, try again later.");
-                return false;
-            }
-
-            return true;
         }
     }
 
@@ -602,50 +457,6 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
-    internal class OnlineCommand : Command
-    {
-        public OnlineCommand() : base("online", (int)AccountType.REGULAR)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            var sb = new StringBuilder("Online at this moment: ");
-            var playersonline = 0;
-
-            foreach (var w in GameServer.Manager.Worlds)
-            {
-                var world = w.Value;
-
-                if (w.Key != 0)
-                {
-                    var copy = world.Players.Values.ToArray();
-
-                    if (copy.Length != 0)
-                    {
-                        for (int i = 0; i < copy.Length; i++)
-                        {
-                            sb.Append(copy[i].Name);
-                            sb.Append(", ");
-                            playersonline++;
-                        }
-                    }
-                }
-            }
-
-            if (player.AccountType >= (int)AccountType.MOD)
-            {
-                string fixedString = sb.ToString().TrimEnd(',', ' ');
-
-                player.SendInfo(fixedString + ".");
-            }
-
-            player.SendInfo($"There {(playersonline > 1 ? "are" : "is")} {playersonline} player{(playersonline > 1 ? "s" : "")} online.");
-
-            return true;
-        }
-    }
-
     internal class Announcement : Command
     {
         public Announcement() : base("announce", (int)AccountType.MOD)
@@ -695,7 +506,7 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            if (args[0] == null)
+            if (string.IsNullOrWhiteSpace(args[0]))
             {
                 player.SendHelp("Usage: /getid <player>");
                 return false;
@@ -798,38 +609,6 @@ namespace LoESoft.GameServer.realm.commands
 
             GameServer.SafeRestart();
 
-            return true;
-        }
-    }
-
-    internal class ListCommands : Command
-    {
-        public ListCommands() : base("commands", (int)AccountType.REGULAR)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            var cmds = new Dictionary<string, Command>();
-            var t = typeof(Command);
-
-            foreach (var i in t.Assembly.GetTypes())
-                if (t.IsAssignableFrom(i) && i != t)
-                {
-                    var instance = (Command)Activator.CreateInstance(i);
-                    cmds.Add(instance.CommandName, instance);
-                }
-
-            var sb = new StringBuilder("");
-            var copy = cmds.Values.ToArray();
-
-            for (var i = 0; i < copy.Length; i++)
-            {
-                if (player.AccountType >= copy[i].PermissionLevel)
-                    sb.Append((i != 0 ? ", " : "") + copy[i].CommandName);
-            }
-
-            player.SendInfo(sb.ToString());
             return true;
         }
     }
