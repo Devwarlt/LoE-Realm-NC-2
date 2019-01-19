@@ -23,6 +23,7 @@ namespace LoESoft.GameServer.realm.entity
         private float bleeding;
         private Position? pos;
         private bool Npc { get; set; }
+
         //public bool CheckDeath { get; set; }
         private bool Done { get; set; }
 
@@ -106,7 +107,7 @@ namespace LoESoft.GameServer.realm.entity
                 int def = ObjectDesc.Defense;
                 if (noDef)
                     def = 0;
-                dmg = (int) StatsManager.GetDefenseDamage(this, dmg, def);
+                dmg = (int)StatsManager.GetDefenseDamage(this, dmg, def);
                 int effDmg = dmg;
                 if (effDmg > HP)
                     effDmg = HP;
@@ -119,7 +120,7 @@ namespace LoESoft.GameServer.realm.entity
                     {
                         TargetId = Id,
                         Effects = 0,
-                        Damage = (ushort) dmg,
+                        Damage = (ushort)dmg,
                         Killed = HP <= 0,
                         BulletId = 0,
                         ObjectId = from.Id
@@ -133,7 +134,7 @@ namespace LoESoft.GameServer.realm.entity
                     {
                         TargetId = Id,
                         Effects = 0,
-                        Damage = (ushort) dmg,
+                        Damage = (ushort)dmg,
                         Killed = HP <= 0,
                         BulletId = 0,
                         ObjectId = -1
@@ -161,7 +162,7 @@ namespace LoESoft.GameServer.realm.entity
                 !HasConditionEffect(ConditionEffectIndex.Stasis))
             {
                 var prevHp = HP;
-                var dmg = (int) StatsManager.GetDefenseDamage(this, projectile.Damage, projectile.ProjDesc.ArmorPiercing ? 0 : ObjectDesc.Defense);
+                var dmg = (int)StatsManager.GetDefenseDamage(this, projectile.Damage, projectile.ProjDesc.ArmorPiercing ? 0 : ObjectDesc.Defense);
                 if (!HasConditionEffect(ConditionEffectIndex.Invulnerable))
                     HP -= dmg;
                 foreach (ConditionEffect effect in projectile.ProjDesc.Effects.Where(effect => (effect.Effect != ConditionEffectIndex.Stunned || !ObjectDesc.StunImmune) && (effect.Effect != ConditionEffectIndex.Paralyzed || !ObjectDesc.ParalyzedImmune) && (effect.Effect != ConditionEffectIndex.Dazed || !ObjectDesc.DazedImmune)))
@@ -171,7 +172,7 @@ namespace LoESoft.GameServer.realm.entity
                 {
                     TargetId = Id,
                     Effects = projectile.ConditionEffects,
-                    Damage = (ushort) dmg,
+                    Damage = (ushort)dmg,
                     Killed = HP <= 0,
                     BulletId = projectile.ProjectileId,
                     ObjectId = projectile.ProjectileOwner.Id
@@ -279,8 +280,8 @@ namespace LoESoft.GameServer.realm.entity
             {
                 if (bleeding > 1)
                 {
-                    HP -= (int) bleeding;
-                    bleeding -= (int) bleeding;
+                    HP -= (int)bleeding;
+                    bleeding -= (int)bleeding;
                     UpdateCount++;
                 }
                 bleeding += 28 * (time.ElapsedMsDelta / 1000f);

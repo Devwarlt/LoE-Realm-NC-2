@@ -85,7 +85,7 @@ namespace LoESoft.Core
                 GuildFame = -1,
                 VaultCount = 1,
                 MaxCharSlot = Settings.STARTUP.MAX_CHAR_SLOTS,
-                RegTime = DateTime.Now,
+                RegTime = DateTime.UtcNow,
                 Guest = true,
                 Fame = Settings.STARTUP.FAME,
                 TotalFame = Settings.STARTUP.TOTAL_FAME,
@@ -280,7 +280,7 @@ namespace LoESoft.Core
                 GuildFame = 0,
                 VaultCount = 1,
                 MaxCharSlot = Settings.STARTUP.MAX_CHAR_SLOTS,
-                RegTime = DateTime.Now,
+                RegTime = DateTime.UtcNow,
                 Guest = isGuest,
                 Fame = Settings.STARTUP.FAME,
                 TotalFame = Settings.STARTUP.TOTAL_FAME,
@@ -448,7 +448,7 @@ namespace LoESoft.Core
 
         public void UpdateAccountLifetime(DbAccount acc, AccountType accType, int amount)
         {
-            acc.AccountLifetime = DateTime.Now;
+            acc.AccountLifetime = DateTime.UtcNow;
             acc.AccountLifetime = acc.AccountLifetime.AddDays(amount);
             acc.AccountType = (int)accType;
             Update(acc);
@@ -550,8 +550,8 @@ namespace LoESoft.Core
                 Pet = 0,
                 FameStats = new byte[0],
                 TaskStats = string.Empty,
-                CreateTime = DateTime.Now,
-                LastSeen = DateTime.Now
+                CreateTime = DateTime.UtcNow,
+                LastSeen = DateTime.UtcNow
             };
             character.FlushAsync();
             _db.SetAdd("alive." + acc.AccountId, BitConverter.GetBytes(newId));
@@ -617,7 +617,7 @@ namespace LoESoft.Core
                 TotalFame = finalFame,
                 Killer = killer,
                 FirstBorn = firstBorn,
-                DeathTime = DateTime.Now
+                DeathTime = DateTime.UtcNow
             };
             death.FlushAsync();
 

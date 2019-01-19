@@ -65,7 +65,7 @@ namespace LoESoft.GameServer.networking
 
                 if (InvalidBytesTransferred == MaxInvalidBytesTransferred)
                 {
-                    Manager.TryDisconnect(client, DisconnectReason.INVALID_MESSAGE_LENGTH);
+                    GameServer.Manager.TryDisconnect(client, DisconnectReason.INVALID_MESSAGE_LENGTH);
                     return;
                 }
             }
@@ -78,7 +78,7 @@ namespace LoESoft.GameServer.networking
                 && e.Buffer[3] == 0xb2
                 && e.Buffer[4] == 0x95)
             {
-                var c = Encoding.ASCII.GetBytes($"{Manager.MaxClients}:{GameServer.Manager.ClientManager.Count}");
+                var c = Encoding.ASCII.GetBytes($"{GameServer.Manager.MaxClients}:{GameServer.Manager.ClientManager.Count}");
                 socket.Send(c);
                 return;
             }
@@ -108,6 +108,12 @@ namespace LoESoft.GameServer.networking
             int len = (e.UserToken as IncomingToken).Length =
                 IPAddress.NetworkToHostOrder(BitConverter.ToInt32(e.Buffer, 0)) - 5;
 
+            if (len < 0)
+            {
+                e.Dispose();
+                return;
+            }
+
             try
             {
                 (e.UserToken as IncomingToken).Message = Message.Messages[(MessageID)e.Buffer[4]].CreateInstance();
@@ -136,14 +142,14 @@ namespace LoESoft.GameServer.networking
 
                 if (cont)
                 {
-                    if (Manager.Terminating)
+                    if (GameServer.Manager.Terminating)
                     {
-                        Manager.TryDisconnect(client, DisconnectReason.STOPPING_REALM_MANAGER);
+                        GameServer.Manager.TryDisconnect(client, DisconnectReason.STOPPING_REALM_MANAGER);
                         return;
                     }
 
                     if (client.State == ProtocolState.Disconnected)
-                        Manager.TryDisconnect(client, DisconnectReason.NETWORK_TICKER_DISCONNECT);
+                        GameServer.Manager.TryDisconnect(client, DisconnectReason.NETWORK_TICKER_DISCONNECT);
                     else
                         try
                         {

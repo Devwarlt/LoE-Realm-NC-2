@@ -274,7 +274,7 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
 
                                 player.Owner.BroadcastMessage(_outgoing, null);
 
-                                acc.AccountLifetime = DateTime.Now;
+                                acc.AccountLifetime = DateTime.UtcNow;
                                 acc.AccountLifetime = acc.AccountLifetime.AddDays(days);
                                 acc.AccountType = (int)AccountType.VIP;
                                 acc.FlushAsync();

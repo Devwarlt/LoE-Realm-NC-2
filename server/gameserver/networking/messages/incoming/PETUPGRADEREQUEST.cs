@@ -31,7 +31,7 @@ namespace LoESoft.GameServer.networking.incoming
             PetId2 = rdr.ReadInt32();
             ObjectId = rdr.ReadInt32();
             ObjectSlot = ObjectSlot.Read(rdr);
-            Currency = (CurrencyType) rdr.ReadByte();
+            Currency = (CurrencyType)rdr.ReadByte();
         }
 
         protected override void Write(NWriter wtr)
@@ -41,7 +41,7 @@ namespace LoESoft.GameServer.networking.incoming
             wtr.Write(PetId2);
             wtr.Write(ObjectId);
             ObjectSlot.Write(wtr);
-            wtr.Write((byte) Currency);
+            wtr.Write((byte)Currency);
         }
     }
 }

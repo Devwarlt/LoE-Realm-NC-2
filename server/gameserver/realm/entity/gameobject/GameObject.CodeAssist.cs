@@ -49,13 +49,13 @@ namespace LoESoft.GameServer.realm.entity
                 if (Vulnerable && HP <= 0 && ObjectDesc != null && Owner != null)
                 {
                     if (ObjectDesc.EnemyOccupySquare || ObjectDesc.OccupySquare)
-                        Owner.Obstacles[(int) (X - 0.5), (int) (Y - 0.5)] = 0;
+                        Owner.Obstacles[(int)(X - 0.5), (int)(Y - 0.5)] = 0;
 
-                    if (Owner.Map[(int) (X - 0.5), (int) (Y - 0.5)].ObjType == ObjectType)
+                    if (Owner.Map[(int)(X - 0.5), (int)(Y - 0.5)].ObjType == ObjectType)
                     {
-                        WmapTile tile = Owner.Map[(int) (X - 0.5), (int) (Y - 0.5)].Clone();
+                        WmapTile tile = Owner.Map[(int)(X - 0.5), (int)(Y - 0.5)].Clone();
                         tile.ObjType = 0;
-                        Owner.Map[(int) (X - 0.5), (int) (Y - 0.5)] = tile;
+                        Owner.Map[(int)(X - 0.5), (int)(Y - 0.5)] = tile;
                     }
 
                     Owner.LeaveWorld(this);

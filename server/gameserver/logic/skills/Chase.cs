@@ -24,9 +24,9 @@ namespace LoESoft.GameServer.logic.behaviors
             Cooldown coolDown = new Cooldown()
             )
         {
-            this.speed = (float) speed / 10;
-            this.sightRange = (float) sightRange;
-            this.range = (float) range;
+            this.speed = (float)speed / 10;
+            this.sightRange = (float)sightRange;
+            this.range = (float)range;
             this.duration = duration;
             this.coolDown = coolDown.Normalize(duration == 0 ? 0 : 1000);
         }
@@ -38,7 +38,7 @@ namespace LoESoft.GameServer.logic.behaviors
             if (state == null)
                 s = new FollowState();
             else
-                s = (FollowState) state;
+                s = (FollowState)state;
 
             Status = CycleStatus.NotStarted;
 

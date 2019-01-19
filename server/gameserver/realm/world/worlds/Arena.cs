@@ -10,7 +10,7 @@ namespace LoESoft.GameServer.realm.world
     {
         public Arena()
         {
-            Id = (int) WorldID.ARENA;
+            Id = (int)WorldID.ARENA;
             Name = "Arena";
             Background = 0;
             Difficulty = 5;

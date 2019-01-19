@@ -1,7 +1,7 @@
 ﻿#region
 
-using System;
 using LoESoft.Core;
+using System;
 
 #endregion
 
@@ -36,6 +36,7 @@ namespace LoESoft.GameServer.networking.outgoing
                 case MARKET_SUCCESS:
                     wtr.WriteUTF(Message);
                     break;
+
                 case MARKET_REQUEST_RESULT:
                     wtr.Write(Items.Length);
                     foreach (var playerShopItem in Items)

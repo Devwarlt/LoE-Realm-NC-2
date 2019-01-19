@@ -168,9 +168,9 @@ namespace LoESoft.Core
                 ushort type;
                 XAttribute typeAttr = elem.Attribute("type");
                 if (typeAttr == null)
-                    type = (ushort) assign.Assign(id, elem);
+                    type = (ushort)assign.Assign(id, elem);
                 else
-                    type = (ushort) Utils.FromString(typeAttr.Value);
+                    type = (ushort)Utils.FromString(typeAttr.Value);
                 setTypeSkins[type] = new SetTypeSkin(elem, type);
                 XAttribute extAttr = elem.Attribute("ext");
                 if (extAttr != null && bool.TryParse(extAttr.Value, out bool ext) && ext)
@@ -319,9 +319,9 @@ namespace LoESoft.Core
                 ushort type;
                 XAttribute typeAttr = e.Attribute("type");
                 if (typeAttr == null)
-                    type = (ushort) assign.Assign(id, e);
+                    type = (ushort)assign.Assign(id, e);
                 else
-                    type = (ushort) Utils.FromString(typeAttr.Value);
+                    type = (ushort)Utils.FromString(typeAttr.Value);
 
                 if (cls == "PetBehavior" || cls == "PetAbility")
                     continue;
@@ -399,9 +399,9 @@ namespace LoESoft.Core
                 ushort type;
                 XAttribute typeAttr = e.Attribute("type");
                 if (typeAttr == null)
-                    type = (ushort) assign.Assign(id, e);
+                    type = (ushort)assign.Assign(id, e);
                 else
-                    type = (ushort) Utils.FromString(typeAttr.Value);
+                    type = (ushort)Utils.FromString(typeAttr.Value);
 
                 if (type2id_tile.ContainsKey(type))
                     Log.Warn($"'{id}' and '{type2id_tile[type]}' has the same ID of 0x{type:x4}!");

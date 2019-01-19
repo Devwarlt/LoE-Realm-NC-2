@@ -62,6 +62,7 @@ namespace LoESoft.GameServer.networking
             GOTO_ACK_TIMEOUT = 50,
             TOO_MANY_UPDATE_ACKS = 51,
             TOO_MANY_GOTO_ACKS = 52,
+            TEST_MAP_NOT_ADDED = 53,
 
             // Unregistered DisconnectReason '53',
             // Unregistered DisconnectReason '54',
@@ -290,9 +291,10 @@ namespace LoESoft.GameServer.networking
                 Player?.SaveToCharacter();
 
                 if (Character != null)
-                    Manager.Database.SaveCharacter(Account, Character, false);
+                    GameServer.Manager.Database.SaveCharacter(Account, Character, false);
+
                 if (Account != null)
-                    Manager.Database.ReleaseLock(Account);
+                    GameServer.Manager.Database.ReleaseLock(Account);
             }
             catch (Exception ex)
             { Log.Error(ex.ToString()); }

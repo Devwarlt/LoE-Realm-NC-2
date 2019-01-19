@@ -20,7 +20,7 @@ namespace LoESoft.GameServer.logic.behaviors
         protected override void OnStateEntry(Entity host, RealmTime time, ref object state)
         {
             base.OnStateEntry(host, time, ref state);
-            WmapTile tile = host.Owner.Map[(int) host.X + 1, (int) host.Y].Clone();
+            WmapTile tile = host.Owner.Map[(int)host.X + 1, (int)host.Y].Clone();
             if (tile.ObjType != 0)
                 direction = 140;
             else
@@ -31,7 +31,7 @@ namespace LoESoft.GameServer.logic.behaviors
         {
             if (state == null)
                 return;
-            int cool = (int) state;
+            int cool = (int)state;
             Status = CycleStatus.NotStarted;
 
             if (cool <= 0)
@@ -41,12 +41,12 @@ namespace LoESoft.GameServer.logic.behaviors
 
                 Entity player = host.GetNearestEntity(range, null);
 
-                WmapTile tile = host.Owner.Map[(int) host.X + 1, (int) host.Y].Clone();
+                WmapTile tile = host.Owner.Map[(int)host.X + 1, (int)host.Y].Clone();
 
                 if (tile.ObjType != 0)
-                    direction = (float?) (180 * Math.PI / 180);
+                    direction = (float?)(180 * Math.PI / 180);
                 else
-                    direction = (float?) (0 * Math.PI / 180);
+                    direction = (float?)(0 * Math.PI / 180);
 
                 if (player != null || defaultAngle != null || direction != null)
                 {
@@ -69,7 +69,7 @@ namespace LoESoft.GameServer.logic.behaviors
                     {
                         Projectile prj = host.CreateProjectile(
                             desc, host.ObjectType, dmg, time.TotalElapsedMs,
-                            prjPos, (float) (startAngle + shootAngle * i));
+                            prjPos, (float)(startAngle + shootAngle * i));
                         host.Owner.EnterWorld(prj);
                         if (i == 0)
                             prjId = prj.ProjectileId;
@@ -80,11 +80,11 @@ namespace LoESoft.GameServer.logic.behaviors
                         BulletId = prjId,
                         OwnerId = host.Id,
                         Position = prjPos,
-                        Angle = (float) startAngle,
-                        Damage = (short) dmg,
-                        BulletType = (byte) (desc.BulletType),
-                        AngleInc = (float) shootAngle,
-                        NumShots = (byte) shoots,
+                        Angle = (float)startAngle,
+                        Damage = (short)dmg,
+                        BulletType = (byte)(desc.BulletType),
+                        AngleInc = (float)shootAngle,
+                        NumShots = (byte)shoots,
                     }, null);
                 }
                 cool = coolDown.Next(Random);

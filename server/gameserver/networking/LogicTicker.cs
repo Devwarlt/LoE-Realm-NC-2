@@ -12,39 +12,30 @@ namespace LoESoft.GameServer.realm
 {
     public class LogicTicker
     {
-        private RealmManager _manager { get; set; }
         private Task _logic { get; set; }
 
         public RealmTime GameTime { get; private set; }
 
-        public LogicTicker(RealmManager manager)
-        {
-            _manager = manager;
-
-            GameTime = new RealmTime();
-        }
+        public LogicTicker() => GameTime = new RealmTime();
 
         public async void TickLoop()
         {
             var looptime = 0;
-            var t = new RealmTime();
             var watch = Stopwatch.StartNew();
             var cooldown = 1000 / Settings.GAMESERVER.TICKETS_PER_SECOND;
 
             do
             {
-                t.TotalElapsedMs = watch.ElapsedMilliseconds;
-
-                var delay = Math.Max(0, cooldown - (int)(watch.ElapsedMilliseconds - t.TotalElapsedMs));
-
-                await Task.Delay(delay);
-
-                t.TickDelta = looptime / cooldown;
-                t.TickCount += t.TickDelta;
-                t.ElapsedMsDelta = t.TickDelta * cooldown;
-
-                if (_manager.Terminating)
+                if (GameServer.Manager.Terminating)
                     break;
+
+                GameTime.TotalElapsedMs = watch.ElapsedMilliseconds;
+
+                await Task.Delay(Math.Max(0, cooldown - (int)(watch.ElapsedMilliseconds - GameTime.TotalElapsedMs)));
+
+                GameTime.TickDelta = looptime / cooldown;
+                GameTime.TickCount += GameTime.TickDelta;
+                GameTime.ElapsedMsDelta = GameTime.TickDelta * cooldown;
 
                 try
                 {
@@ -62,26 +53,7 @@ namespace LoESoft.GameServer.realm
                 }
                 catch { }
 
-                GameTime.TickDelta += t.TickDelta;
-
-                if (_logic == null || _logic.IsCompleted)
-                {
-                    t.TickDelta = GameTime.TickDelta;
-                    t.ElapsedMsDelta = t.TickDelta * cooldown;
-
-                    GameTime.TickDelta = 0;
-                    GameTime.TotalElapsedMs = t.TotalElapsedMs;
-
-                    _logic = Task.Factory.StartNew(() =>
-                    {
-                        foreach (var world in _manager.Worlds.Values.Distinct())
-                            world.Tick(t);
-                    }).ContinueWith(task
-                    => GameServer.log.Error(task.Exception.InnerException),
-                    TaskContinuationOptions.OnlyOnFaulted);
-                }
-
-                looptime += (int)(watch.ElapsedMilliseconds - t.TotalElapsedMs) - t.ElapsedMsDelta;
+                looptime += (int)(watch.ElapsedMilliseconds - GameTime.TotalElapsedMs) - GameTime.ElapsedMsDelta;
             } while (true);
         }
     }

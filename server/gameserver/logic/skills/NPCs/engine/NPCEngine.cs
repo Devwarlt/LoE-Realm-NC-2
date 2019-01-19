@@ -45,9 +45,9 @@ namespace LoESoft.GameServer.logic.behaviors
             int NPCStars = 0
             )
         {
-            _playerWelcomeMessages = playerWelcomeMessages != null ? playerWelcomeMessages : new List<string> { "hi", "hello", "hey", "good morning", "good afternoon", "good evening" };
-            _playerLeaveMessages = playerLeaveMessages != null ? playerLeaveMessages : new List<string> { "bye", "see ya", "goodbye", "see you", "see you soon", "goodnight" };
-            _NPCLeaveMessages = NPCLeaveMessages != null ? NPCLeaveMessages : new List<string> { "Farewell, {PLAYER}!", "Good bye, then...", "Cheers!", "See you soon, {PLAYER}!" };
+            _playerWelcomeMessages = playerWelcomeMessages ?? new List<string> { "hi", "hello", "hey", "good morning", "good afternoon", "good evening" };
+            _playerLeaveMessages = playerLeaveMessages ?? new List<string> { "bye", "see ya", "goodbye", "see you", "see you soon", "goodnight" };
+            _NPCLeaveMessages = NPCLeaveMessages ?? new List<string> { "Farewell, {PLAYER}!", "Good bye, then...", "Cheers!", "See you soon, {PLAYER}!" };
             _randomNPCLeaveMessages = randomNPCLeaveMessages;
             _range = range;
             _NPCStars = NPCStars;

@@ -97,9 +97,9 @@ namespace LoESoft.GameServer.realm.entity.player
                 stats[StatsType.BREATH_STAT] = OxygenBar;
 
             stats[StatsType.XP_BOOSTED_STAT] = XpBoosted ? 1 : 0;
-            stats[StatsType.XP_TIMER_STAT] = (int) XpBoostTimeLeft;
-            stats[StatsType.LD_TIMER_STAT] = (int) LootDropBoostTimeLeft;
-            stats[StatsType.LT_TIMER_STAT] = (int) LootTierBoostTimeLeft;
+            stats[StatsType.XP_TIMER_STAT] = (int)XpBoostTimeLeft;
+            stats[StatsType.LD_TIMER_STAT] = (int)LootDropBoostTimeLeft;
+            stats[StatsType.LT_TIMER_STAT] = (int)LootTierBoostTimeLeft;
 
             stats[StatsType.ACCOUNT_TYPE] = AccountType;
             stats[StatsType.ADMIN] = Admin;

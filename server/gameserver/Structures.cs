@@ -121,10 +121,10 @@ namespace LoESoft.GameServer
 
         public ARGB(uint argb)
         {
-            A = (byte) ((argb & 0xff000000) >> 24);
-            R = (byte) ((argb & 0x00ff0000) >> 16);
-            G = (byte) ((argb & 0x0000ff00) >> 8);
-            B = (byte) ((argb & 0x000000ff) >> 0);
+            A = (byte)((argb & 0xff000000) >> 24);
+            R = (byte)((argb & 0x00ff0000) >> 16);
+            G = (byte)((argb & 0x0000ff00) >> 8);
+            B = (byte)((argb & 0x000000ff) >> 0);
         }
 
         public static ARGB Read(NReader rdr)
@@ -160,7 +160,7 @@ namespace LoESoft.GameServer
             {
                 ObjectId = rdr.ReadInt32(),
                 SlotId = rdr.ReadByte(),
-                ObjectType = (ushort) rdr.ReadInt16()
+                ObjectType = (ushort)rdr.ReadInt16()
             };
             return ret;
         }
@@ -247,7 +247,7 @@ namespace LoESoft.GameServer
         {
             ObjectDef ret = new ObjectDef
             {
-                ObjectType = (ushort) rdr.ReadInt16(),
+                ObjectType = (ushort)rdr.ReadInt16(),
                 Stats = ObjectStatusData.Read(rdr)
             };
             return ret;
@@ -291,14 +291,14 @@ namespace LoESoft.GameServer
             {
                 wtr.Write(Id);
                 Position.Write(wtr);
-                wtr.Write((ushort) Stats.Length);
+                wtr.Write((ushort)Stats.Length);
                 foreach (KeyValuePair<StatsType, object> i in Stats)
                 {
                     wtr.Write(i.Key);
                     if (i.Key.IsUTF() && i.Value != null)
                         wtr.WriteUTF(i.Value.ToString());
                     else
-                        wtr.Write((int) i.Value);
+                        wtr.Write((int)i.Value);
                 }
             }
             catch (Exception) { }

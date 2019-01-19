@@ -32,13 +32,6 @@ namespace LoESoft.GameServer.realm
             public string Text;
         }
 
-        private RealmManager manager;
-
-        public ChatManager(RealmManager manager)
-        {
-            this.manager = manager;
-        }
-
         public static Dictionary<string, Tuple<DateTime, string>> ChatDataCache = new Dictionary<string, Tuple<DateTime, string>>(); // store only latest player message
 
         public void Say(Player player, string chatText)
@@ -47,9 +40,9 @@ namespace LoESoft.GameServer.realm
                 return;
 
             if (!ChatDataCache.ContainsKey(player.Name))
-                ChatDataCache.Add(player.Name, Tuple.Create(DateTime.Now, chatText));
+                ChatDataCache.Add(player.Name, Tuple.Create(DateTime.UtcNow, chatText));
             else
-                ChatDataCache[player.Name] = Tuple.Create(DateTime.Now, chatText);
+                ChatDataCache[player.Name] = Tuple.Create(DateTime.UtcNow, chatText);
 
             var color = new ChatColor(player.Stars, player.AccountType);
 

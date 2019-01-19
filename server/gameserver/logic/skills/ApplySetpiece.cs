@@ -21,9 +21,9 @@ namespace LoESoft.GameServer.logic.behaviors
 
         protected override void OnStateEntry(Entity host, RealmTime time, ref object state)
         {
-            var piece = (MapSetPiece) Activator.CreateInstance(Type.GetType(
+            var piece = (MapSetPiece)Activator.CreateInstance(Type.GetType(
                 "LoESoft.GameServer.realm.mapsetpiece." + name, true, true));
-            piece.RenderSetPiece(host.Owner, new IntPoint((int) host.X, (int) host.Y));
+            piece.RenderSetPiece(host.Owner, new IntPoint((int)host.X, (int)host.Y));
         }
 
         protected override void TickCore(Entity host, RealmTime time, ref object state)

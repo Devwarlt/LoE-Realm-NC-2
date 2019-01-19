@@ -22,7 +22,7 @@ namespace LoESoft.GameServer.realm.entity
 
             var boost = 0;
             for (int i = 0; i < _amounts.Count; i++)
-                boost += (int) (_amounts[_amounts.Count - 1 - i] * Math.Pow(.5, i));
+                boost += (int)(_amounts[_amounts.Count - 1 - i] * Math.Pow(.5, i));
 
             return boost;
         }

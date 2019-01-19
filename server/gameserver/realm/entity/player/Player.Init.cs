@@ -519,27 +519,35 @@ namespace LoESoft.GameServer.realm.entity.player
 
         private void CalculateFame()
         {
-            double newFame = 0.0;
-
+            var newFame = 0d;
             newFame += Math.Max(0, Math.Min(20000, Experience)) * 0.001;
             newFame += Math.Max(0, Math.Min(45200, Experience) - 20000) * 0.002;
             newFame += Math.Max(0, Math.Min(80000, Experience) - 45200) * 0.003;
             newFame += Math.Max(0, Math.Min(101200, Experience) - 80000) * 0.002;
             newFame += Math.Max(0, Experience - 101200) * 0.0005;
             newFame += Math.Min(Math.Floor((double)FameCounter.Stats.MinutesActive / 6), 30);
-
             newFame = Math.Floor(newFame);
 
             if (newFame == Fame)
                 return;
 
             Fame = (int)newFame;
+
+            Owner.BroadcastMessage(new NOTIFICATION
+            {
+                ObjectId = Id,
+                Color = new ARGB(0xFF8C00),
+                Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"+" + (Fame - (int)newFame) + " Fame!\"}}",
+            }, null);
+
             int newGoal;
             var stats = FameCounter.ClassStats[ObjectType];
+
             if (stats.BestFame > Fame)
                 newGoal = GetFameGoal(stats.BestFame);
             else
                 newGoal = GetFameGoal(Fame);
+
             if (newGoal > FameGoal && AccountType < (int)Core.config.AccountType.MOD)
             {
                 Owner.BroadcastMessage(new NOTIFICATION
@@ -550,6 +558,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 }, null);
                 Stars = GetStars();
             }
+
             FameGoal = (AccountType >= (int)Core.config.AccountType.MOD) ? 0 : newGoal;
             UpdateCount++;
         }
@@ -582,16 +591,19 @@ namespace LoESoft.GameServer.realm.entity.player
                 UpdateCount++;
 
                 var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
+
                 if (Level == 20)
                 {
                     foreach (var i in Owner.Players.Values)
-                        i.SendInfo(Name + " achieved level 20" + " as a " + playerDesc.ObjectId);
+                        i.SendInfo(Name + " achieved level 20" + " as " + playerDesc.ObjectId);
                     XpBoosted = false;
                     XpBoostTimeLeft = 0;
                 }
+
                 Quest = null;
                 return true;
             }
+
             CalculateFame();
             return false;
         }
@@ -664,7 +676,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
         public override void Tick(RealmTime time)
         {
-            if (Client == null/* || GameServer.Manager.Logic.IsSaving*/)
+            if (Client == null)
                 return;
 
             if (!KeepAlive(time) || Client.State == ProtocolState.Disconnected)

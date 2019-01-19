@@ -24,7 +24,7 @@ namespace LoESoft.GameServer.logic.transitions
             if (state == null)
                 cool = randomized ? Random.Next(coolDown) : coolDown;
             else
-                cool = (int) state;
+                cool = (int)state;
 
             bool ret = false;
             if (cool <= 0)

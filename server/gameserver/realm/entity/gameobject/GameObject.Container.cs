@@ -29,7 +29,7 @@ namespace LoESoft.GameServer.realm.entity
         }
 
         public Container(XElement node)
-            : base((ushort) Utils.FromString(node.Attribute("type").Value), null, false, false, false)
+            : base((ushort)Utils.FromString(node.Attribute("type").Value), null, false, false, false)
         {
             SlotTypes = Utils.FromCommaSepString32(node.Element("SlotTypes").Value);
             XElement eq = node.Element("Equipment");
@@ -37,7 +37,7 @@ namespace LoESoft.GameServer.realm.entity
             {
                 Item[] inv =
                     Utils.FromCommaSepString16(eq.Value)
-                        .Select(_ => _ == -1 ? null : GameServer.Manager.GameData.Items[(ushort) _])
+                        .Select(_ => _ == -1 ? null : GameServer.Manager.GameData.Items[(ushort)_])
                         .ToArray();
                 Array.Resize(ref inv, 8);
                 Inventory = inv;

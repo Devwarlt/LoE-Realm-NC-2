@@ -54,7 +54,7 @@ public static class Utils
 
     public static uint NextUInt32(this Random rand)
     {
-        return (uint) (rand.Next(1 << 30)) << 2 | (uint) (rand.Next(1 << 2));
+        return (uint)(rand.Next(1 << 30)) << 2 | (uint)(rand.Next(1 << 2));
     }
 
     public static void Swap<T>(ref T a, ref T b)
@@ -66,7 +66,7 @@ public static class Utils
 
     public static int ToUnixTimestamp(this DateTime dt)
     {
-        return (int) (dt.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
+        return (int)(dt.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
     }
 
     public static bool IsValidEmail(string email)
@@ -110,7 +110,7 @@ public static class Utils
 
     public static T Convert<T>(this string value)
     {
-        return (T) TypeDescriptor.GetConverter(typeof(T)).ConvertFrom(value);
+        return (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFrom(value);
     }
 
     public static T[] FromCSV<T>(this string csv)
@@ -219,11 +219,11 @@ public static class Utils
     public static T[] CommaToArray<T>(this string x)
     {
         if (typeof(T) == typeof(ushort))
-            return x.Split(',').Select(_ => (T) (object) (ushort) FromString(_.Trim())).ToArray();
+            return x.Split(',').Select(_ => (T)(object)(ushort)FromString(_.Trim())).ToArray();
         else if (typeof(T) == typeof(string))
-            return x.Split(',').Select(_ => (T) (object) _).ToArray();
+            return x.Split(',').Select(_ => (T)(object)_).ToArray();
         else  //assume int
-            return x.Split(',').Select(_ => (T) (object) FromString(_.Trim())).ToArray();
+            return x.Split(',').Select(_ => (T)(object)FromString(_.Trim())).ToArray();
     }
 
     public static List<int> StringListToIntList(List<string> strList)
@@ -253,7 +253,7 @@ public static class Utils
     {
         if (IsNullOrWhiteSpace(x))
             return new short[0];
-        return x.Split(',').Select(_ => (short) FromString(_.Trim())).ToArray();
+        return x.Split(',').Select(_ => (short)FromString(_.Trim())).ToArray();
     }
 
     public static void Shuffle<T>(this IList<T> list)
@@ -284,7 +284,7 @@ public static class Utils
 
     public static T GetEnumByName<T>(string value)
     {
-        return (T) Enum.Parse(typeof(T), value, true);
+        return (T)Enum.Parse(typeof(T), value, true);
     }
 
     public static string GetEnumName<T>(object value)

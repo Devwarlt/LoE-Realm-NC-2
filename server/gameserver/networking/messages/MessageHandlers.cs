@@ -1,5 +1,4 @@
 ﻿using LoESoft.GameServer.networking.incoming;
-using LoESoft.GameServer.realm;
 using log4net;
 
 namespace LoESoft.GameServer.networking
@@ -9,7 +8,6 @@ namespace LoESoft.GameServer.networking
         protected ILog log4net;
 
         public Client Client { get; private set; }
-        public RealmManager Manager => Client.Manager;
 
         public abstract MessageID ID { get; }
 

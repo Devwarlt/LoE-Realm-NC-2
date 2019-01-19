@@ -35,12 +35,12 @@ namespace LoESoft.GameServer.logic.behaviors
             bool? orbitClockwise = false
             )
         {
-            this.speed = (float) speed;
-            this.radius = (float) radius;
-            this.sightRange = (float) sightRange;
-            this.target = target == null ? null : (ushort?) BehaviorDb.InitGameData.IdToObjectType[target];
-            this.speedVariance = (float) (speedVariance ?? speed * 0.1);
-            this.radiusVariance = (float) (radiusVariance ?? speed * 0.1);
+            this.speed = (float)speed;
+            this.radius = (float)radius;
+            this.sightRange = (float)sightRange;
+            this.target = target == null ? null : (ushort?)BehaviorDb.InitGameData.IdToObjectType[target];
+            this.speedVariance = (float)(speedVariance ?? speed * 0.1);
+            this.radiusVariance = (float)(radiusVariance ?? speed * 0.1);
             this.orbitClockwise = orbitClockwise;
         }
 
@@ -50,19 +50,19 @@ namespace LoESoft.GameServer.logic.behaviors
             if (orbitClockwise == null)
                 orbitDir = (Random.NextDouble() > .5) ? 1 : -1;
             else
-                orbitDir = ((bool) orbitClockwise) ? 1 : -1;
+                orbitDir = ((bool)orbitClockwise) ? 1 : -1;
 
             state = new OrbitState()
             {
-                Speed = speed + speedVariance * (float) (Random.NextDouble() * 2 - 1),
-                Radius = radius + radiusVariance * (float) (Random.NextDouble() * 2 - 1),
+                Speed = speed + speedVariance * (float)(Random.NextDouble() * 2 - 1),
+                Radius = radius + radiusVariance * (float)(Random.NextDouble() * 2 - 1),
                 Direction = orbitDir
             };
         }
 
         protected override void TickCore(Entity host, RealmTime time, ref object state)
         {
-            OrbitState s = (OrbitState) state;
+            OrbitState s = (OrbitState)state;
 
             Status = CycleStatus.NotStarted;
 
@@ -83,7 +83,7 @@ namespace LoESoft.GameServer.logic.behaviors
 
                 double x = entity.X + Math.Cos(angle) * s.Radius;
                 double y = entity.Y + Math.Sin(angle) * s.Radius;
-                Vector2 vect = new Vector2((float) x, (float) y) - new Vector2(host.X, host.Y);
+                Vector2 vect = new Vector2((float)x, (float)y) - new Vector2(host.X, host.Y);
                 vect.Normalize();
                 vect *= host.EntitySpeed(s.Speed, time);
 

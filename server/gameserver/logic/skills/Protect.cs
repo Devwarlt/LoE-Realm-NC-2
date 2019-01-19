@@ -23,11 +23,11 @@ namespace LoESoft.GameServer.logic.behaviors
             double reprotectRange = 1
             )
         {
-            this.speed = (float) speed / 10;
+            this.speed = (float)speed / 10;
             this.target = BehaviorDb.InitGameData.IdToObjectType[target];
-            this.sightRange = (float) sightRange;
-            this.protectRange = (float) protectRange;
-            this.reprotectRange = (float) reprotectRange;
+            this.sightRange = (float)sightRange;
+            this.protectRange = (float)protectRange;
+            this.reprotectRange = (float)reprotectRange;
         }
 
         protected override void TickCore(Entity host, RealmTime time, ref object state)
@@ -36,7 +36,7 @@ namespace LoESoft.GameServer.logic.behaviors
             if (state == null)
                 s = ProtectState.DontKnowWhere;
             else
-                s = (ProtectState) state;
+                s = (ProtectState)state;
 
             Status = CycleStatus.NotStarted;
 

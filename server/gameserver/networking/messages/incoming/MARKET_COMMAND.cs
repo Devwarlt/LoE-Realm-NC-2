@@ -1,7 +1,7 @@
 ﻿#region
 
-using System;
 using LoESoft.Core;
+using System;
 
 #endregion
 
@@ -28,20 +28,21 @@ namespace LoESoft.GameServer.networking.incoming
         {
             CommandId = rdr.ReadInt32();
 
-            switch(CommandId)
+            switch (CommandId)
             {
                 case (int)Command.ADD_OFFER:
                     NewOffers = new MarketOffer[rdr.ReadInt32()];
-                    for(int i = 0; i < NewOffers.Length; i++)
+                    for (int i = 0; i < NewOffers.Length; i++)
                         NewOffers[i] = MarketOffer.Read(rdr);
                     break;
+
                 case (int)Command.REMOVE_OFFER:
                     OfferId = rdr.ReadUInt32();
                     break;
+
                 case (int)Command.REQUEST_MY_ITEMS:
                 default:
                     break;
-
             }
         }
 

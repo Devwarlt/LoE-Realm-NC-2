@@ -37,12 +37,7 @@ namespace LoESoft.GameServer.logic
 
         .Init("Oryx the Mad God 2",
             new State(
-                new State("Init",
-                    new AddCond(ConditionEffectIndex.Invulnerable),
-                    new EntitiesNotExistsTransition(200, "Attack", "Air Elemental", "Earth Elemental", "Fire Elemental", "Water Elemental")
-                    ),
                 new State("Attack",
-                    new RemCond(ConditionEffectIndex.Invulnerable),
                     new Chase(1, 15, 3),
                     new Wander(),
                     new Shoot(25, index: 0, shoots: 8, shootAngle: 45, coolDown: 1500, coolDownOffset: 1500),

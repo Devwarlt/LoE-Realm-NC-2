@@ -659,11 +659,15 @@ namespace LoESoft.GameServer.realm
                 Y = pos.Y
             };
 
-            if (Owner.Projectiles.TryGetValue(new KeyValuePair<int, byte>(Id, _projectile.ProjectileId), out Projectile _projectileSample))
-                if (_projectileSample != null)
-                    Owner.RemoveProjectileFromId(Id, _projectileSample.ProjectileId);
+            var projectile = Owner.Projectiles.Keys.FirstOrDefault(proj
+                => proj.ProjectileOwner.Id == Id &&
+                proj.ProjectileId == _projectile.ProjectileId);
 
-            Owner.AddProjectileFromId(Id, _projectile.ProjectileId, _projectile);
+            if (projectile != null || projectile != default(Projectile))
+                if (!projectile.ProjDesc.MultiHit)
+                    Owner.Projectiles.TryRemove(projectile, out object val);
+
+            Owner.Projectiles.TryAdd(_projectile, null);
 
             return _projectile;
         }

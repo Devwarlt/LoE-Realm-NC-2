@@ -331,7 +331,7 @@ namespace LoESoft.Core
                     yield return Tuple.Create(i.Item1, i.Item2, i.Item4(character.Fame));
 
             //Well Equiped
-            var bonus = character.Items.Take(4).Where(x => x != -1).Sum(x => data.Items[(ushort) x].FameBonus) / 100.0;
+            var bonus = character.Items.Take(4).Where(x => x != -1).Sum(x => data.Items[(ushort)x].FameBonus) / 100.0;
             if (bonus > 0)
                 yield return Tuple.Create("Well Equipped", "Bonus for equipment", character.Fame * bonus);
 
@@ -370,11 +370,11 @@ namespace LoESoft.Core
                 bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
 
             //Enemy of the Gods
-            if ((double) GodKills / (GodKills + MonsterKills) > 0.1)
+            if ((double)GodKills / (GodKills + MonsterKills) > 0.1)
                 bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
 
             //Slayer of the Gods
-            if ((double) GodKills / (GodKills + MonsterKills) > 0.5)
+            if ((double)GodKills / (GodKills + MonsterKills) > 0.5)
                 bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
 
             //Oryx Slayer
@@ -382,15 +382,15 @@ namespace LoESoft.Core
                 bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
 
             //Accurate
-            if ((double) ShotsThatDamage / Shots > 0.25)
+            if ((double)ShotsThatDamage / Shots > 0.25)
                 bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
 
             //Sharpshooter
-            if ((double) ShotsThatDamage / Shots > 0.5)
+            if ((double)ShotsThatDamage / Shots > 0.5)
                 bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
 
             //Sniper
-            if ((double) ShotsThatDamage / Shots > 0.75)
+            if ((double)ShotsThatDamage / Shots > 0.75)
                 bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
 
             //Explorer
@@ -425,7 +425,7 @@ namespace LoESoft.Core
                 if (chr.Items[i] == -1)
                     continue;
 
-                var b = data.Items[(ushort) chr.Items[i]].FameBonus;
+                var b = data.Items[(ushort)chr.Items[i]].FameBonus;
 
                 if (b > 0)
                     eq += (baseFame + Math.Floor(bonus)) * b / 100;
@@ -441,7 +441,7 @@ namespace LoESoft.Core
             else
                 firstBorn = false;
 
-            return (int) (baseFame + Math.Floor(bonus));
+            return (int)(baseFame + Math.Floor(bonus));
         }
     }
 }

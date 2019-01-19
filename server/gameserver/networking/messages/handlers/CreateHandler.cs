@@ -22,7 +22,7 @@ namespace LoESoft.GameServer.networking.handlers
         {
             int skin = client.Account.OwnedSkins.Contains(message.SkinType) ? message.SkinType : 0;
 
-            CreateStatus status = Manager.Database.CreateCharacter(Manager.GameData, client.Account, (ushort)message.ClassType, skin, out DbChar character);
+            var status = GameServer.Manager.Database.CreateCharacter(GameServer.Manager.GameData, client.Account, (ushort)message.ClassType, skin, out DbChar character);
 
             if (status == CreateStatus.ReachCharLimit)
             {
@@ -30,7 +30,7 @@ namespace LoESoft.GameServer.networking.handlers
                 {
                     ErrorDescription = "Failed to Load character."
                 });
-                Manager.TryDisconnect(client, DisconnectReason.FAILED_TO_LOAD_CHARACTER);
+                GameServer.Manager.TryDisconnect(client, DisconnectReason.FAILED_TO_LOAD_CHARACTER);
                 return;
             }
             client.Character = character;
@@ -40,7 +40,7 @@ namespace LoESoft.GameServer.networking.handlers
                 client.SendMessage(new CREATE_SUCCESS
                 {
                     CharacterID = client.Character.CharId,
-                    ObjectID = Manager.Worlds[client.TargetWorld].EnterWorld(client.Player = new Player(client))
+                    ObjectID = GameServer.Manager.Worlds[client.TargetWorld].EnterWorld(client.Player = new Player(client))
                 });
 
                 client.State = ProtocolState.Ready;

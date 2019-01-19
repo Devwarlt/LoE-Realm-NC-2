@@ -20,7 +20,7 @@ namespace LoESoft.GameServer.networking.outgoing
 
         protected override void Read(NReader rdr)
         {
-            EffectType = (EffectType) rdr.ReadByte();
+            EffectType = (EffectType)rdr.ReadByte();
             TargetId = rdr.ReadInt32();
             PosA = Position.Read(rdr);
             PosB = Position.Read(rdr);
@@ -29,7 +29,7 @@ namespace LoESoft.GameServer.networking.outgoing
 
         protected override void Write(NWriter wtr)
         {
-            wtr.Write((byte) EffectType);
+            wtr.Write((byte)EffectType);
             wtr.Write(TargetId);
             PosA.Write(wtr);
             PosB.Write(wtr);

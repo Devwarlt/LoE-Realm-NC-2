@@ -43,7 +43,7 @@ namespace LoESoft.GameServer.networking.handlers
                                 if (player.Client.Account.AccountType >= (int)LoESoft.Core.config.AccountType.DEVELOPER)
                                     player.SendInfo(string.Format("Cheat engine detected for player {0},\nItem should be a Health Potion, but its {1}.",
                                         client.Player.Name, item.ObjectId));
-                            Manager.TryDisconnect(client, DisconnectReason.HP_POTION_CHEAT_ENGINE);
+                            GameServer.Manager.TryDisconnect(client, DisconnectReason.HP_POTION_CHEAT_ENGINE);
                             return;
                         }
 
@@ -151,7 +151,7 @@ namespace LoESoft.GameServer.networking.handlers
 
                                 int currentCredits = client.Player.Credits - client.Player.HpPotionPrice;
 
-                                Manager.Database.UpdateCredit(client.Account, -client.Player.HpPotionPrice);
+                                GameServer.Manager.Database.UpdateCredit(client.Account, -client.Player.HpPotionPrice);
 
                                 client.Player.Credits = client.Account.Credits = currentCredits;
                                 client.Character.HP += 100;
@@ -169,7 +169,7 @@ namespace LoESoft.GameServer.networking.handlers
                                 client.Player.Name, item.ObjectId);
                             foreach (Player player in client.Player.Owner.Players.Values.Where(player => player.Client.Account.AccountType >= (int)LoESoft.Core.config.AccountType.DEVELOPER))
                                 player.SendInfo($"Cheat engine detected for player {client.Player.Name},\nItem should be a Magic Potion, but its {item.ObjectId}.");
-                            Manager.TryDisconnect(client, DisconnectReason.MP_POTION_CHEAT_ENGINE);
+                            GameServer.Manager.TryDisconnect(client, DisconnectReason.MP_POTION_CHEAT_ENGINE);
                             return;
                         }
 
@@ -278,7 +278,7 @@ namespace LoESoft.GameServer.networking.handlers
 
                                 int currentCredits = client.Player.Credits - client.Player.MpPotionPrice;
 
-                                Manager.Database.UpdateCredit(client.Account, -client.Player.MpPotionPrice);
+                                GameServer.Manager.Database.UpdateCredit(client.Account, -client.Player.MpPotionPrice);
 
                                 client.Player.Credits = client.Account.Credits = currentCredits;
                                 client.Character.MP += 100;
@@ -293,7 +293,7 @@ namespace LoESoft.GameServer.networking.handlers
                 }
                 if (item != null)
                 {
-                    if (!client.Player.Activate(Manager.Logic.GameTime, item, message))
+                    if (!client.Player.Activate(GameServer.Manager.Logic.GameTime, item, message))
                     {
                         if (item.Consumable)
                         {

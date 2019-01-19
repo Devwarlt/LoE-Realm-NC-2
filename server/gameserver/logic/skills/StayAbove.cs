@@ -18,7 +18,7 @@ namespace LoESoft.GameServer.logic.behaviors
             int altitude
             )
         {
-            this.speed = (float) speed / 10;
+            this.speed = (float)speed / 10;
             this.altitude = altitude;
         }
 
@@ -30,7 +30,7 @@ namespace LoESoft.GameServer.logic.behaviors
                 return;
 
             Wmap map = host.Owner.Map;
-            WmapTile tile = map[(int) host.X, (int) host.Y];
+            WmapTile tile = map[(int)host.X, (int)host.Y];
             if (tile.Elevation != 0 && tile.Elevation < altitude)
             {
                 Vector2 vect;

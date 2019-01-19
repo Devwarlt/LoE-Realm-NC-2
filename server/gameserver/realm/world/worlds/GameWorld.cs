@@ -116,7 +116,7 @@ namespace LoESoft.GameServer.realm.world
                     {
                         do
                         {
-                            await Task.Delay(10 * 60 * 1000);
+                            await Task.Delay(15 * 60 * 1000);
 
                             foreach (var i in Players.Values)
                             {
@@ -130,7 +130,6 @@ namespace LoESoft.GameServer.realm.world
                             await Task.Delay(15 * 1000);
 
                             var wc = GameServer.Manager.AddWorld(new WineCellar());
-                            wc.Manager = GameServer.Manager;
 
                             foreach (var i in Players.Values)
                             {

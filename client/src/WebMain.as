@@ -11,6 +11,7 @@ import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.net.SharedObject;
 import flash.system.Capabilities;
+import flash.system.Security;
 import flash.text.TextField;
 import flash.text.TextFormat;
 
@@ -109,6 +110,7 @@ public class WebMain extends Sprite {
     private function setup():void {
         this.setEnvironment();
         this.hackParameters();
+        Security.allowDomain("*");
         this.createContext();
         new AssetLoader().load();
         stage.scaleMode = StageScaleMode.EXACT_FIT;

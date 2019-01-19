@@ -43,6 +43,7 @@ namespace LoESoft.GameServer.realm
         public ChatManager Chat { get; private set; }
         public CommandManager Commands { get; private set; }
         public EmbeddedData GameData { get; private set; }
+        public NPCs NPCs { get; private set; }
         public string InstanceId { get; private set; }
         public LogicTicker Logic { get; private set; }
         public int MaxClients { get; private set; }
@@ -72,7 +73,7 @@ namespace LoESoft.GameServer.realm
         public void Initialize()
         {
             GameData = new EmbeddedData();
-            Behaviors = new BehaviorDb(this);
+            Behaviors = new BehaviorDb();
 
             Player.HandleQuests(GameData);
             Merchant.HandleMerchant(GameData);
@@ -85,22 +86,21 @@ namespace LoESoft.GameServer.realm
             AddWorld((int)WorldID.DRASTA_CITADEL_ID, new DrastaCitadel());
             AddWorld((int)WorldID.DREAM_ISLAND, new DreamIsland());
 
-            Monitor = new RealmPortalMonitor(this);
+            Monitor = new RealmPortalMonitor();
 
-            AddWorld(GameWorld.AutoName(1, true));
+            AddWorld(GameWorld.AutoName(1, true)); // realm
 
-            Chat = new ChatManager(this);
-            Commands = new CommandManager(this);
-
-            var npcs = new NPCs();
-            npcs.Initialize(this);
+            Chat = new ChatManager();
+            Commands = new CommandManager();
+            NPCs = new NPCs();
 
             Log.Info($"\t- {NPCs.Database.Count}\tNPC{(NPCs.Database.Count > 1 ? "s" : "")}.");
         }
 
         public void Run()
         {
-            Logic = new LogicTicker(this);
+            Logic = new LogicTicker();
+
             var logic = new Task(() => Logic.TickLoop(), TaskCreationOptions.LongRunning);
             logic.ContinueWith(GameServer.Restart, TaskContinuationOptions.OnlyOnFaulted);
             logic.Start();
@@ -138,7 +138,7 @@ namespace LoESoft.GameServer.realm
                         ID = client.Account.AccountId,
                         Client = client,
                         DNS = client.Socket.RemoteEndPoint.ToString().Split(':')[0],
-                        Registered = DateTime.Now
+                        Registered = DateTime.UtcNow
                     };
 
                     if (_cData.Client.Account.Banned)
@@ -208,8 +208,6 @@ namespace LoESoft.GameServer.realm
 
         public World AddWorld(int id, World world)
         {
-            if (world.Manager != null)
-                throw new InvalidOperationException("World already added.");
             world.Id = id;
             Worlds[id] = world;
             OnWorldAdded(world);
@@ -218,8 +216,6 @@ namespace LoESoft.GameServer.realm
 
         public World AddWorld(World world)
         {
-            if (world.Manager != null)
-                throw new InvalidOperationException("World already added.");
             world.Id = Interlocked.Increment(ref nextWorldId);
             Worlds[world.Id] = world;
             OnWorldAdded(world);
@@ -228,8 +224,6 @@ namespace LoESoft.GameServer.realm
 
         public bool RemoveWorld(World world)
         {
-            if (world.Manager == null)
-                throw new InvalidOperationException("World is not added.");
             if (Worlds.TryRemove(world.Id, out World dummy))
             {
                 try
@@ -258,15 +252,11 @@ namespace LoESoft.GameServer.realm
             return ret;
         }
 
-        public bool RemoveVault(string accountId)
-        {
-            return Vaults.TryRemove(accountId, out Vault dummy);
-        }
+        public bool RemoveVault(string accountId) => Vaults.TryRemove(accountId, out Vault dummy);
 
         private void OnWorldAdded(World world)
         {
-            if (world.Manager == null)
-                world.Manager = this;
+            world.BeginInit();
 
             if (world is GameWorld)
                 Monitor.WorldAdded(world);
@@ -274,7 +264,6 @@ namespace LoESoft.GameServer.realm
 
         private void OnWorldRemoved(World world)
         {
-            world.Manager = null;
             if (world is GameWorld)
                 Monitor.WorldRemoved(world);
         }

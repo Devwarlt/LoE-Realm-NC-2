@@ -15,7 +15,7 @@ namespace LoESoft.GameServer.logic
         private _ MountainsGods = () => Behav()
             .Init("White Demon",
                 new State(
-                    new TransformOnDeath("Abyss of Demons Portal", probability:.17),
+                    new TransformOnDeath("Abyss of Demons Portal", probability: .17),
                     new Prioritize(
                         new StayAbove(10, 200),
                         new Chase(10, range: 7),

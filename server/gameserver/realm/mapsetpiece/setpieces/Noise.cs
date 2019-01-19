@@ -40,7 +40,7 @@ namespace LoESoft.RealmTerrain
         {
             Random rand = new Random(seed);
             for (int i = 0; i < p.Length; i++)
-                p[i] = (byte) rand.Next();
+                p[i] = (byte)rand.Next();
             for (int i = 0; i < 512; i++)
                 perm[i] = p[i & 255];
         }
@@ -48,7 +48,7 @@ namespace LoESoft.RealmTerrain
         // This method is a *lot* faster than using (int)Math.floor(x)
         private int fastfloor(double x)
         {
-            return x > 0 ? (int) x : (int) x - 1;
+            return x > 0 ? (int)x : (int)x - 1;
         }
 
         private double dot(int[] g, double x, double y, double z)
@@ -195,7 +195,7 @@ namespace LoESoft.RealmTerrain
             }
             // Add contributions from each corner to get the final noise value.
             // The result is scaled to stay just inside [-1, 1] - now [0, 1]
-            return (32.0f * (float) (n0 + n1 + n2 + n3) + 1) * 0.5f;
+            return (32.0f * (float)(n0 + n1 + n2 + n3) + 1) * 0.5f;
         }
     }
 }

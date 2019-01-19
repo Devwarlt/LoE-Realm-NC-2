@@ -188,7 +188,7 @@ namespace LoESoft.GameServer.realm.terrain
         {
             return new WmapTile
             {
-                UpdateCount = (byte) (UpdateCount + 1),
+                UpdateCount = (byte)(UpdateCount + 1),
                 TileId = TileId,
                 Name = Name,
                 ObjType = ObjType,
@@ -223,7 +223,17 @@ namespace LoESoft.GameServer.realm.terrain
 
         public WmapTile this[int x, int y]
         {
-            get { try { return tiles[x, y]; } catch { return new WmapTile(); } }
+            get
+            {
+                try
+                {
+                    if (x >= 0 && x < Width && y >= 0 && y < Height)
+                        return tiles[x, y];
+                    else
+                        return new WmapTile();
+                }
+                catch { return new WmapTile(); }
+            }
             set { tiles[x, y] = value; }
         }
 
@@ -245,10 +255,10 @@ namespace LoESoft.GameServer.realm.terrain
                     };
                     tile.TileDesc = data.Tiles[tile.TileId];
                     var obj = rdr.ReadString();
-                    tile.ObjType = string.IsNullOrEmpty(obj) ? (ushort) 0 : data.IdToObjectType[obj];
+                    tile.ObjType = string.IsNullOrEmpty(obj) ? (ushort)0 : data.IdToObjectType[obj];
                     tile.Name = rdr.ReadString();
-                    tile.Terrain = (WmapTerrain) rdr.ReadByte();
-                    tile.Region = (TileRegion) rdr.ReadByte();
+                    tile.Terrain = (WmapTerrain)rdr.ReadByte();
+                    tile.Region = (TileRegion)rdr.ReadByte();
                     if (ver == 1)
                         tile.Elevation = rdr.ReadByte();
                     data.ObjectDescs.TryGetValue(tile.ObjType, out tile.ObjDesc);
@@ -302,7 +312,7 @@ namespace LoESoft.GameServer.realm.terrain
             return objId == 1846 || objId == 1847 || objId == 1848;
         }
 
-        public IEnumerable<Entity> InstantiateEntities(RealmManager manager)
+        public IEnumerable<Entity> InstantiateEntities()
         {
             foreach (Tuple<IntPoint, ushort, string> i in entities)
             {
@@ -323,12 +333,12 @@ namespace LoESoft.GameServer.realm.terrain
                                 break;
 
                             case "eff":
-                                entity.ConditionEffects = (ConditionEffects) Utils.FromString(kv[1]);
+                                entity.ConditionEffects = (ConditionEffects)Utils.FromString(kv[1]);
                                 break;
 
                             case "conn":
                                 (entity as ConnectedObject).Connection =
-                                    ConnectionInfo.Infos[(uint) Utils.FromString(kv[1])];
+                                    ConnectionInfo.Infos[(uint)Utils.FromString(kv[1])];
                                 break;
                             //case "mtype":
                             //    (entity as Merchants).custom = true;
@@ -343,7 +353,7 @@ namespace LoESoft.GameServer.realm.terrain
                                 break;
 
                             case "mcur":
-                                (entity as SellableObject).Currency = (CurrencyType) Utils.FromString(kv[1]);
+                                (entity as SellableObject).Currency = (CurrencyType)Utils.FromString(kv[1]);
                                 break;
 
                             case "stars":

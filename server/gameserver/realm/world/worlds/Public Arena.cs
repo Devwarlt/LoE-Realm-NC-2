@@ -146,7 +146,7 @@ namespace LoESoft.GameServer.realm.world
 
         public bool OutOfBounds(float x, float y) =>
             (Map.Height >= y && Map.Width >= x && x > -1 && y > 0) ?
-                Map[(int) x, (int) y].Region == TileRegion.Outside_Arena :
+                Map[(int)x, (int)y].Region == TileRegion.Outside_Arena :
                 true;
 
         protected void CheckOutOfBounds()

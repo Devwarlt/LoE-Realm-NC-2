@@ -26,7 +26,7 @@ namespace LoESoft.GameServer.logic.behaviors
             Cooldown coolDown = new Cooldown()
             )
         {
-            this.range = (float) range;
+            this.range = (float)range;
             this.amount = amount;
             this.group = group;
             this.coolDown = coolDown.Normalize();
@@ -39,7 +39,7 @@ namespace LoESoft.GameServer.logic.behaviors
 
         protected override void TickCore(Entity host, RealmTime time, ref object state)
         {
-            int cool = (int) state;
+            int cool = (int)state;
 
             if (cool <= 0)
             {

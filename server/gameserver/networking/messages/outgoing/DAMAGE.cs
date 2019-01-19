@@ -26,7 +26,7 @@ namespace LoESoft.GameServer.networking.outgoing
             byte c = rdr.ReadByte();
             Effects = 0;
             for (int i = 0; i < c; i++)
-                Effects |= (ConditionEffects) (1 << rdr.ReadByte());
+                Effects |= (ConditionEffects)(1 << rdr.ReadByte());
             Damage = rdr.ReadUInt16();
             Killed = rdr.ReadBoolean();
             BulletId = rdr.ReadByte();
@@ -38,9 +38,9 @@ namespace LoESoft.GameServer.networking.outgoing
             wtr.Write(TargetId);
             List<byte> eff = new List<byte>();
             for (byte i = 1; i < 255; i++)
-                if ((Effects & (ConditionEffects) (1 << i)) != 0)
+                if ((Effects & (ConditionEffects)(1 << i)) != 0)
                     eff.Add(i);
-            wtr.Write((byte) eff.Count);
+            wtr.Write((byte)eff.Count);
             foreach (byte i in eff)
                 wtr.Write(i);
             wtr.Write(Damage);

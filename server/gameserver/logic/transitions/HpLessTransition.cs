@@ -54,7 +54,7 @@ namespace LoESoft.GameServer.logic.transitions
 
                 if (Skip)
                 {
-                    int Damage = (int) (StoreHP - threshold * host.ObjectDesc.MaxHP);
+                    int Damage = (int)(StoreHP - threshold * host.ObjectDesc.MaxHP);
                     InvalidHP = Enemy.HP;
                     ManageHP(StoreHP, Damage);
                     return true;
@@ -63,7 +63,7 @@ namespace LoESoft.GameServer.logic.transitions
                 {
                     if (((host as Enemy).HP / host.ObjectDesc.MaxHP) < threshold)
                     {
-                        (host as Enemy).HP = StoreHP - (int) (StoreHP - threshold * host.ObjectDesc.MaxHP);
+                        (host as Enemy).HP = StoreHP - (int)(StoreHP - threshold * host.ObjectDesc.MaxHP);
                         return true;
                     }
                 }

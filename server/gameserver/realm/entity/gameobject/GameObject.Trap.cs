@@ -27,7 +27,7 @@ namespace LoESoft.GameServer.realm.entity
             this.radius = radius;
             this.dmg = dmg;
             effect = eff;
-            duration = (int) (effDuration * 1000);
+            duration = (int)(effDuration * 1000);
         }
 
         public override void Tick(RealmTime time)

@@ -76,7 +76,7 @@ namespace LoESoft.GameServer
 
                 Log._("Message", Message.Messages.Count);
 
-                var server = new Server(Manager);
+                var server = new Server();
                 var policy = new PolicyServer();
 
                 Console.CancelKeyPress += (sender, e) => e.Cancel = true;
@@ -234,7 +234,7 @@ namespace LoESoft.GameServer
                 }
                 catch (Exception ex) { ForceShutdown(ex); }
 
-                Thread.Sleep(60 * 1000);
+                Thread.Sleep(1 * 1000);
 
                 Process.Start(Settings.GAMESERVER.FILE);
 

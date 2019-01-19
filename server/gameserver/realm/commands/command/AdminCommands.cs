@@ -24,6 +24,12 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
+            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            {
+                player.SendInfo("You cannot use this feature along Production mode.");
+                return false;
+            }
+
             Entity prtal = Entity.Resolve("Undead Lair Portal");
             prtal.Move(player.X, player.Y);
             player.Owner.EnterWorld(prtal);
@@ -104,7 +110,7 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            var world = player.Client.Manager.Monitor.GetRandomRealm();
+            var world = GameServer.Manager.Monitor.GetRandomRealm();
 
             if (player.Owner is IRealm)
             {
@@ -231,7 +237,7 @@ namespace LoESoft.GameServer.realm.commands
 
             if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
             {
-                player.Move(1000f, 1000f);
+                player.Move(1478.5f, 1086.5f);
                 player.Owner.BroadcastMessage(new GOTO
                 {
                     ObjectId = player.Id,
@@ -319,13 +325,13 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class PosCmd : Command
     {
-        public PosCmd() : base("p", (int)AccountType.DEVELOPER)
+        public PosCmd() : base("pos", (int)AccountType.DEVELOPER)
         {
         }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            player.SendInfo("X: " + (int)player.X + " - Y: " + (int)player.Y);
+            player.SendInfo("X: " + player.X + " - Y: " + player.Y);
             return true;
         }
     }
@@ -340,7 +346,7 @@ namespace LoESoft.GameServer.realm.commands
         {
             if (Settings.SERVER_MODE == Settings.ServerMode.Production)
             {
-                player.SendInfo("You cannot use this feature along Production build.");
+                player.SendInfo("You cannot use this feature along Production mode.");
                 return false;
             }
 
@@ -403,7 +409,7 @@ namespace LoESoft.GameServer.realm.commands
         {
             if (Settings.SERVER_MODE == Settings.ServerMode.Production)
             {
-                player.SendInfo("You cannot use this feature along Production build.");
+                player.SendInfo("You cannot use this feature along Production mode.");
                 return false;
             }
 
@@ -681,6 +687,33 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
+    internal class GetAccountIdCommand : Command
+    {
+        public GetAccountIdCommand() : base("getid", (int)AccountType.MOD)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            if (args[0] == null)
+            {
+                player.SendHelp("Usage: /getid <player>");
+                return false;
+            }
+
+            var account = GameServer.Manager.Database.GetAccountByUUID(args[0]);
+
+            if (account == null)
+            {
+                player.SendInfo($"Player '{args[0]}' not found!");
+                return false;
+            }
+
+            player.SendInfo($"Account ID of player '{account.Name}' is: {account.AccountId}.");
+            return true;
+        }
+    }
+
     internal class SendCurrencyCommand : Command
     {
         public SendCurrencyCommand() : base("send", (int)AccountType.ADMIN)
@@ -817,7 +850,7 @@ namespace LoESoft.GameServer.realm.commands
                     return false;
                 }
 
-                if (player.Client.Manager.Database.BanAccount(GameServer.Manager.Database, args[0]))
+                if (GameServer.Manager.Database.BanAccount(GameServer.Manager.Database, args[0]))
                 {
                     player.SendInfo("Player has been banned!");
                     return true;
@@ -850,7 +883,7 @@ namespace LoESoft.GameServer.realm.commands
                     return false;
                 }
 
-                if (player.Client.Manager.Database.UnBanAccount(GameServer.Manager.Database, args[0]))
+                if (GameServer.Manager.Database.UnBanAccount(GameServer.Manager.Database, args[0]))
                 {
                     player.SendInfo("Player has been unbanned!");
                     return true;

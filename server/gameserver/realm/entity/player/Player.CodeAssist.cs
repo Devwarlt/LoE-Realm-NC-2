@@ -254,7 +254,7 @@ namespace LoESoft.GameServer.realm.entity.player
             chr.LootDropTimer = (int)LootDropBoostTimeLeft;
             chr.LootTierTimer = (int)LootTierBoostTimeLeft;
             chr.FameStats = FameCounter.Stats.Write();
-            chr.LastSeen = DateTime.Now;
+            chr.LastSeen = DateTime.UtcNow;
         }
 
         private bool CheckResurrection()
@@ -416,17 +416,14 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             if (_pingTime == -1)
             {
-                _pingTime = time.TotalElapsedMs - PingPeriod;
+                _pingTime = 0;
                 _pongTime = time.TotalElapsedMs;
             }
 
             var pong = time.TotalElapsedMs - _pongTime;
 
-            if (pong > DcThreshold * Settings.GAMESERVER.TICKETS_PER_SECOND)
+            if (pong > DcThreshold)
             {
-                if (!HasConditionEffect(ConditionEffectIndex.Invincible))
-                    ApplyConditionEffect(ConditionEffectIndex.Invincible);
-
                 if (DcThresholdCounter <= 10)
                     DcThresholdCounter++;
                 else
@@ -436,6 +433,12 @@ namespace LoESoft.GameServer.realm.entity.player
 
                     if (!_once)
                     {
+                        if (!Client.Socket.Connected || Client.State == ProtocolState.Disconnected)
+                        {
+                            GameServer.Manager.TryDisconnect(Client, DisconnectReason.CONNECTION_LOST);
+                            return false;
+                        }
+
                         _once = true;
 
                         SendHelp("You dropped your connection with the server! Reconnecting...");
@@ -456,18 +459,11 @@ namespace LoESoft.GameServer.realm.entity.player
                 }
             }
             else
-            {
-                if (HasConditionEffect(ConditionEffects.Invincible))
-                {
-                    ApplyConditionEffect(ConditionEffectIndex.Invincible, 0);
-
-                    DcThresholdCounter = 0;
-                }
-            }
+                DcThresholdCounter = 0;
 
             var ping = time.TotalElapsedMs - _pingTime;
 
-            if (ping < PingPeriod * Settings.GAMESERVER.TICKETS_PER_SECOND)
+            if (ping < PingPeriod)
                 return true;
 
             _pingTime = time.TotalElapsedMs;

@@ -19,8 +19,8 @@ namespace LoESoft.GameServer.logic.behaviors
             Cooldown coolDown = new Cooldown()
             )
         {
-            this.speed = (float) speed / 10;
-            this.range = (float) range;
+            this.speed = (float)speed / 10;
+            this.range = (float)range;
             this.coolDown = coolDown.Normalize(1);
         }
 
@@ -31,7 +31,7 @@ namespace LoESoft.GameServer.logic.behaviors
 
         protected override void TickCore(Entity host, RealmTime time, ref object state)
         {
-            BuzzStorage storage = (BuzzStorage) state;
+            BuzzStorage storage = (BuzzStorage)state;
 
             Status = CycleStatus.NotStarted;
 

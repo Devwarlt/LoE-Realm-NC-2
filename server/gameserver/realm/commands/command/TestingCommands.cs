@@ -1,5 +1,4 @@
 ﻿using LoESoft.Core.config;
-using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
 using System;
 using System.Collections.Generic;
@@ -16,11 +15,11 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-     //       if (Settings.SERVER_MODE == Settings.ServerMode.Production)
-      //      {
-       //         player.SendInfo("You cannot use this feature along Production mode.");
-       //         return false;
-      //      }
+            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            {
+                player.SendInfo("You cannot use this feature along Production mode.");
+                return false;
+            }
 
             if (!AllowTestingCommands)
             {
@@ -54,12 +53,12 @@ namespace LoESoft.GameServer.realm.commands
                 case "projectiles":
                     {
                         if (cmd == "ids")
-                            foreach (KeyValuePair<int, byte> i in player.Owner.Projectiles.Keys)
-                                player.SendInfo($"[Projectiles] [Player ID: {i.Key} / Projectile ID: {i.Value}]");
+                            foreach (var i in player.Owner.Projectiles.Keys)
+                                player.SendInfo($"[Projectiles] [Player ID: {i.ProjectileOwner.Id} / Projectile ID: {i.ProjectileId}]");
 
                         if (cmd == "all")
-                            foreach (KeyValuePair<KeyValuePair<int, byte>, Projectile> i in player.Owner.Projectiles)
-                                player.SendInfo($"[Projectiles] [Player ID: {i.Key.Key} / Projectile ID: {i.Key.Value} / Damage: {i.Value}]");
+                            foreach (var i in player.Owner.Projectiles.Keys)
+                                player.SendInfo($"[Projectiles] [Player ID: {i.ProjectileOwner.Id} / Projectile ID: {i.ProjectileId} / Damage: {i.Damage}]");
                     }
                     break;
 

@@ -20,21 +20,21 @@ namespace LoESoft.GameServer.logic.behaviors
             Cooldown coolDown = new Cooldown()
             )
         {
-            this.speed = (float) speed / 10;
+            this.speed = (float)speed / 10;
             this.range = range;
             this.coolDown = coolDown.Normalize(4000);
         }
 
         protected override void TickCore(Entity host, RealmTime time, ref object state)
         {
-            ChargeState s = (state == null) ? new ChargeState() : (ChargeState) state;
+            ChargeState s = (state == null) ? new ChargeState() : (ChargeState)state;
 
             Status = CycleStatus.NotStarted;
 
             if (host.HasConditionEffect(ConditionEffectIndex.Paralyzed))
                 return;
 
-            Player player = (Player) host.GetNearestEntity(range, null);
+            Player player = (Player)host.GetNearestEntity(range, null);
 
             if (player == null)
                 return;
@@ -50,7 +50,7 @@ namespace LoESoft.GameServer.logic.behaviors
                         s.Direction = new Vector2(player.X - host.X, player.Y - host.Y);
                         float dist = s.Direction.Length;
                         s.Direction.Normalize();
-                        s.RemainingTime = (int) (dist / host.EntitySpeed(speed, time) * 1000);
+                        s.RemainingTime = (int)(dist / host.EntitySpeed(speed, time) * 1000);
                         Status = CycleStatus.InProgress;
                     }
                 }

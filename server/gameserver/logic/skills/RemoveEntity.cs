@@ -17,7 +17,7 @@ namespace LoESoft.GameServer.logic.behaviors
             string children
             )
         {
-            this.dist = (float) dist;
+            this.dist = (float)dist;
             this.children = children;
         }
 

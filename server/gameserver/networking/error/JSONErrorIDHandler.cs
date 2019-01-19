@@ -28,7 +28,7 @@ namespace LoESoft.GameServer.networking.error
 
         private static List<JSONError> GetJSONError(ErrorIDs errorID)
         {
-            using (StreamReader rdr = new StreamReader($"networking/error/e{(int) errorID}.json"))
+            using (StreamReader rdr = new StreamReader($"networking/error/e{(int)errorID}.json"))
             {
                 string JSONData = rdr.ReadToEnd();
                 List<JSONError> error = JsonConvert.DeserializeObject<List<JSONError>>(JSONData);
@@ -38,7 +38,7 @@ namespace LoESoft.GameServer.networking.error
 
         private static List<JSONError> GetJSONError(ErrorIDs errorID, string[] labels, string[] arguments)
         {
-            using (StreamReader rdr = new StreamReader($"networking/error/e{(int) errorID}.json"))
+            using (StreamReader rdr = new StreamReader($"networking/error/e{(int)errorID}.json"))
             {
                 string JSONData = rdr.ReadToEnd();
 

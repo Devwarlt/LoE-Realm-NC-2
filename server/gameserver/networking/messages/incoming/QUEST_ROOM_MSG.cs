@@ -1,7 +1,7 @@
 ﻿#region
 
-using System;
 using LoESoft.Core;
+using System;
 
 #endregion
 

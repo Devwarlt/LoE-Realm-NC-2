@@ -13,24 +13,19 @@ namespace LoESoft.GameServer.realm
 {
     public class RealmPortalMonitor
     {
-        private readonly RealmManager manager;
         private readonly Nexus nexus;
         private readonly Random rand = new Random();
         private readonly object worldLock = new object();
         public Dictionary<World, Portal> portals = new Dictionary<World, Portal>();
 
-        public RealmPortalMonitor(RealmManager manager)
+        public RealmPortalMonitor()
         {
-            this.manager = manager;
-
-            nexus = manager.Worlds[(int)WorldID.NEXUS_ID] as Nexus;
+            nexus = GameServer.Manager.Worlds[(int)WorldID.NEXUS_ID] as Nexus;
 
             lock (worldLock)
-                foreach (var i in manager.Worlds)
-                {
+                foreach (var i in GameServer.Manager.Worlds)
                     if (i.Value is GameWorld)
                         WorldAdded(i.Value);
-                }
         }
 
         private Position GetRandPosition()
@@ -62,8 +57,8 @@ namespace LoESoft.GameServer.realm
         {
             lock (worldLock)
             {
-                Position pos = GetRandPosition();
-                Portal portal = new Portal(0x0712, null)
+                var pos = GetRandPosition();
+                var portal = new Portal(0x0712, null)
                 {
                     Size = 80,
                     WorldInstance = world,
@@ -81,7 +76,7 @@ namespace LoESoft.GameServer.realm
             {
                 if (portals.ContainsKey(world))
                 {
-                    Portal portal = portals[world];
+                    var portal = portals[world];
                     nexus.LeaveWorld(portal);
                     RealmManager.Realms.Add(portal.PortalName);
                     RealmManager.CurrentRealmNames.Remove(portal.PortalName);
@@ -94,7 +89,7 @@ namespace LoESoft.GameServer.realm
         {
             lock (worldLock)
             {
-                Portal portal = portals[world];
+                var portal = portals[world];
                 nexus.LeaveWorld(portal);
                 portals.Remove(world);
             }
@@ -104,8 +99,8 @@ namespace LoESoft.GameServer.realm
         {
             lock (worldLock)
             {
-                Position pos = GetRandPosition();
-                Portal portal = new Portal(0x71c, null)
+                var pos = GetRandPosition();
+                var portal = new Portal(0x71c, null)
                 {
                     Size = 150,
                     WorldInstance = world,
@@ -121,9 +116,11 @@ namespace LoESoft.GameServer.realm
         {
             lock (worldLock)
             {
-                World[] worlds = portals.Keys.ToArray();
+                var worlds = portals.Keys.ToArray();
+
                 if (worlds.Length == 0)
-                    return manager.Worlds[(int)WorldID.NEXUS_ID];
+                    return GameServer.Manager.Worlds[(int)WorldID.NEXUS_ID];
+
                 return worlds[Environment.TickCount % worlds.Length];
             }
         }

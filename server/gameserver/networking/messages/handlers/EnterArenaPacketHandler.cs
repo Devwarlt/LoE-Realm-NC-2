@@ -18,19 +18,14 @@ namespace LoESoft.GameServer.networking.handlers
         private void Handle(Client client, ENTER_ARENA message)
         {
             if (message.Currency == 1)
-            {
                 if (client.Account.Fame >= 500)
+                    GameServer.Manager.Database.UpdateFame(client.Account, -500);
+                else
                 {
-                    Manager.Database.UpdateFame(client.Account, -500);
+                    if (client.Account.Credits >= 50)
+                        GameServer.Manager.Database.UpdateCredit(client.Account, -50);
                 }
-            }
-            else
-            {
-                if (client.Account.Credits >= 50)
-                {
-                    Manager.Database.UpdateCredit(client.Account, -50);
-                }
-            }
+
             client.Player.UpdateCount++;
             client.Player.SaveToCharacter();
 

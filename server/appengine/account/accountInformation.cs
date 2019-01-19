@@ -109,8 +109,8 @@ namespace LoESoft.AppEngine.account
 
             public string formatAccountType()
             {
-                bool isVip = accountLifetime > DateTime.Now;
-                int days = isVip ? (accountLifetime - DateTime.Now).Days : 0;
+                bool isVip = accountLifetime > DateTime.UtcNow;
+                int days = isVip ? (accountLifetime - DateTime.UtcNow).Days : 0;
                 switch (accountType)
                 {
                     case (int)AccountType.FREE_ACCOUNT:

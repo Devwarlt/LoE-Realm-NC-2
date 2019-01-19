@@ -72,7 +72,7 @@ namespace LoESoft.Core
                 }
                 ret = values[key] = ifNull;
             }
-            return (T) Convert.ChangeType(ret, typeof(T));
+            return (T)Convert.ChangeType(ret, typeof(T));
         }
 
         public void SetValue(string key, string val)

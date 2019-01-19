@@ -18,7 +18,7 @@ namespace LoESoft.GameServer.logic
         // Do not change it!
         public static readonly Dictionary<string, NPC> Database = new Dictionary<string, NPC>();
 
-        public void Initialize(RealmManager manager)
+        public NPCs()
         {
             // Initialize NPCs bellow
             Gazer = new Gazer();
@@ -35,14 +35,7 @@ namespace LoESoft.GameServer.logic
     partial class BehaviorDb
     {
         private _ NPCCache = () => Behav()
-            .Init("NPC Gazer",
-                new State(
-                    new State("Handle",
-                        new Wander(1),
-                        new NPCEngine(NPCStars: 70)
-                        )
-                    )
-            )
+            .Init("NPC Gazer", new State(new State("Handle", new Wander(0.125), new NPCEngine(NPCStars: 70))))
         ;
     }
 }

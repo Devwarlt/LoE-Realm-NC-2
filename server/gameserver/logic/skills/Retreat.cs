@@ -18,8 +18,8 @@ namespace LoESoft.GameServer.logic.behaviors
             double range = 8
             )
         {
-            this.speed = (float) speed / 10;
-            this.range = (float) range;
+            this.speed = (float)speed / 10;
+            this.range = (float)range;
         }
 
         protected override void TickCore(Entity host, RealmTime time, ref object state)
@@ -28,14 +28,14 @@ namespace LoESoft.GameServer.logic.behaviors
             if (state == null)
                 cooldown = 1000;
             else
-                cooldown = (int) state;
+                cooldown = (int)state;
 
             Status = CycleStatus.NotStarted;
 
             if (host.HasConditionEffect(ConditionEffectIndex.Paralyzed))
                 return;
 
-            Player player = (Player) host.GetNearestEntity(range, null);
+            Player player = (Player)host.GetNearestEntity(range, null);
             if (player != null)
             {
                 Vector2 vect;

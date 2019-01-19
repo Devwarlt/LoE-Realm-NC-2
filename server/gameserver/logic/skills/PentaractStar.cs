@@ -30,7 +30,7 @@ namespace LoESoft.GameServer.logic.behaviors
 
         protected override void TickCore(Entity host, RealmTime time, ref object state)
         {
-            int cool = (int) state;
+            int cool = (int)state;
 
             if (cool <= 0)
             {

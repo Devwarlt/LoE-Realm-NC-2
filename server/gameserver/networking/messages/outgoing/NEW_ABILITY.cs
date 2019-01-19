@@ -16,12 +16,12 @@ namespace LoESoft.GameServer.networking.outgoing
 
         protected override void Read(NReader rdr)
         {
-            Type = (Ability) rdr.ReadInt32();
+            Type = (Ability)rdr.ReadInt32();
         }
 
         protected override void Write(NWriter wtr)
         {
-            wtr.Write((int) Type);
+            wtr.Write((int)Type);
         }
     }
 }

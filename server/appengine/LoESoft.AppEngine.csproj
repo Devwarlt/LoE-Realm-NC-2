@@ -198,6 +198,7 @@
     <Compile Include="account\purchasePackage.cs" />
     <Compile Include="account\purchaseMysteryBox.cs" />
     <Compile Include="RequestHandlers.cs" />
+    <Compile Include="security\crossdomain.cs" />
     <Compile Include="security\securityProtocols.cs" />
     <Compile Include="sfx\Sfx.cs" />
     <Compile Include="account\verify.cs" />

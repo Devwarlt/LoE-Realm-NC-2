@@ -35,9 +35,7 @@ namespace LoESoft.GameServer.realm.world
         private void UpdatePortals()
         {
             foreach (var i in GameServer.Manager.Monitor.portals)
-            {
                 foreach (var j in RealmManager.CurrentRealmNames)
-                {
                     if (i.Value.Name.StartsWith(j))
                     {
                         if (i.Value.Name == j)
@@ -46,8 +44,6 @@ namespace LoESoft.GameServer.realm.world
                         i.Value.UpdateCount++;
                         break;
                     }
-                }
-            }
         }
     }
 }

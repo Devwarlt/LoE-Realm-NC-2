@@ -31,7 +31,7 @@ namespace LoESoft.GameServer.networking.outgoing
             wtr.Write(TickId);
             wtr.Write(TickTime);
 
-            wtr.Write((ushort) Statuses.Length);
+            wtr.Write((ushort)Statuses.Length);
             foreach (ObjectStatusData i in Statuses)
                 i.Write(wtr);
         }

@@ -4,7 +4,7 @@
     {
         public ClothBazaar()
         {
-            Id = (int) WorldID.MARKET;
+            Id = (int)WorldID.MARKET;
             Name = "Cloth Bazaar";
             Background = 2;
             AllowTeleport = false;

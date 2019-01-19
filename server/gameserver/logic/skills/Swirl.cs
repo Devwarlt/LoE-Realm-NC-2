@@ -22,9 +22,9 @@ namespace LoESoft.GameServer.logic.behaviors
             bool targeted = true
             )
         {
-            this.speed = (float) speed / 10;
-            this.radius = (float) radius;
-            this.acquireRange = (float) acquireRange;
+            this.speed = (float)speed / 10;
+            this.radius = (float)radius;
+            this.acquireRange = (float)acquireRange;
             this.targeted = targeted;
         }
 
@@ -39,14 +39,14 @@ namespace LoESoft.GameServer.logic.behaviors
 
         protected override void TickCore(Entity host, RealmTime time, ref object state)
         {
-            SwirlState s = (SwirlState) state;
+            SwirlState s = (SwirlState)state;
 
             Status = CycleStatus.NotStarted;
 
             if (host.HasConditionEffect(ConditionEffectIndex.Paralyzed))
                 return;
 
-            int period = (int) (1000 * radius / host.EntitySpeed(speed, time) * (2 * Math.PI));
+            int period = (int)(1000 * radius / host.EntitySpeed(speed, time) * (2 * Math.PI));
 
             if (!s.Acquired && s.RemainingTime <= 0 && targeted)
             {
@@ -57,7 +57,7 @@ namespace LoESoft.GameServer.logic.behaviors
                     float hx = (host.X + entity.X) / 2;
                     float hy = (host.Y + entity.Y) / 2;
                     double c = Math.Sqrt(Math.Abs(radius * radius - l * l) / 4);
-                    s.Center = new Vector2((float) (hx + c * (host.Y - entity.Y) / l), (float) (hy + c * (entity.X - host.X) / l));
+                    s.Center = new Vector2((float)(hx + c * (host.Y - entity.Y) / l), (float)(hy + c * (entity.X - host.X) / l));
 
                     s.RemainingTime = period;
                     s.Acquired = true;
@@ -97,9 +97,9 @@ namespace LoESoft.GameServer.logic.behaviors
 
             double x = s.Center.X + Math.Cos(angle) * radius;
             double y = s.Center.Y + Math.Sin(angle) * radius;
-            Vector2 vect = new Vector2((float) x, (float) y) - new Vector2(host.X, host.Y);
+            Vector2 vect = new Vector2((float)x, (float)y) - new Vector2(host.X, host.Y);
             vect.Normalize();
-            vect *= (float) spd;
+            vect *= (float)spd;
 
             host.ValidateAndMove(host.X + vect.X, host.Y + vect.Y);
             host.UpdateCount++;

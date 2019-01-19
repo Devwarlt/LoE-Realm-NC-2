@@ -22,7 +22,7 @@ namespace LoESoft.GameServer.logic.behaviors
             string ground = "Shallow Water"
             )
         {
-            this.speed = (float) speed / 10;
+            this.speed = (float)speed / 10;
             this.avoidGround = avoidGround;
             this.ground = ground;
         }
@@ -34,7 +34,7 @@ namespace LoESoft.GameServer.logic.behaviors
             if (state == null)
                 storage = new WanderStorage();
             else
-                storage = (WanderStorage) state;
+                storage = (WanderStorage)state;
 
             Status = CycleStatus.NotStarted;
 
@@ -58,7 +58,7 @@ namespace LoESoft.GameServer.logic.behaviors
                 EmbeddedData data = GameServer.Manager.GameData;
                 float x = host.X + storage.Direction.X * dist;
                 float y = host.Y + storage.Direction.Y * dist;
-                WmapTile tile = host.Owner.Map[(int) x, (int) y];
+                WmapTile tile = host.Owner.Map[(int)x, (int)y];
                 if (tile.TileId == data.IdToTileType[ground])
                 {
                     host.UpdateCount++;

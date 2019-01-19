@@ -9,10 +9,18 @@ namespace LoESoft.GameServer.realm.entity.player
 {
     partial class Player
     {
-        public void ForceHit(int dmg, Entity chr, bool NoDef)
+        public void ForceHit(Projectile projectile, Entity entity)
         {
-            if (chr != null)
-                Damage(dmg, chr, NoDef);
+            if (entity == null)
+                return;
+
+            if (HitByProjectile(projectile, GameServer.Manager.Logic.GameTime))
+            {
+                Damage(projectile.Damage, entity, projectile.ProjDesc.ArmorPiercing);
+
+                if (Projectile.IsValidType(projectile, entity))
+                    projectile.Destroy();
+            }
         }
 
         public void Damage(int dmg, Entity chr, bool NoDef, bool manaDrain = false)
@@ -78,7 +86,8 @@ namespace LoESoft.GameServer.realm.entity.player
             if (projectile.ProjectileOwner is Player ||
                 HasConditionEffect(ConditionEffectIndex.Paused) ||
                 HasConditionEffect(ConditionEffectIndex.Stasis) ||
-                HasConditionEffect(ConditionEffectIndex.Invincible))
+                HasConditionEffect(ConditionEffectIndex.Invincible) ||
+                HasConditionEffect(ConditionEffects.Invulnerable))
                 return false;
 
             return base.HitByProjectile(projectile, time);

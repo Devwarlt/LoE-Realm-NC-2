@@ -66,7 +66,7 @@ namespace LoESoft.GameServer.realm
         {
             if (entity.Owner == null)
                 yield break;
-            foreach (Entity i in entity.Owner.EnemiesCollision.HitTest(entity.X, entity.Y, (float) dist))
+            foreach (Entity i in entity.Owner.EnemiesCollision.HitTest(entity.X, entity.Y, (float)dist))
             {
                 double d = i.Dist(entity);
                 if (d < dist)
@@ -80,7 +80,7 @@ namespace LoESoft.GameServer.realm
             if (entity.Owner == null)
                 yield break;
             if (objType == null)
-                foreach (Entity i in entity.Owner.PlayersCollision.HitTest(entity.X, entity.Y, (float) dist))
+                foreach (Entity i in entity.Owner.PlayersCollision.HitTest(entity.X, entity.Y, (float)dist))
                 {
                     if (!(i as IPlayer).IsVisibleToEnemy())
                         continue;
@@ -89,7 +89,7 @@ namespace LoESoft.GameServer.realm
                         yield return i;
                 }
             else
-                foreach (Entity i in entity.Owner.EnemiesCollision.HitTest(entity.X, entity.Y, (float) dist))
+                foreach (Entity i in entity.Owner.EnemiesCollision.HitTest(entity.X, entity.Y, (float)dist))
                 {
                     if (i.ObjectType != objType.Value)
                         continue;
@@ -106,7 +106,7 @@ namespace LoESoft.GameServer.realm
                 return null;
             Entity ret = null;
             if (players)
-                foreach (Entity i in entity.Owner.PlayersCollision.HitTest(entity.X, entity.Y, (float) dist))
+                foreach (Entity i in entity.Owner.PlayersCollision.HitTest(entity.X, entity.Y, (float)dist))
                 {
                     if (!(i as IPlayer).IsVisibleToEnemy() ||
                         i == entity)
@@ -121,7 +121,7 @@ namespace LoESoft.GameServer.realm
                     }
                 }
             else
-                foreach (Entity i in entity.Owner.EnemiesCollision.HitTest(entity.X, entity.Y, (float) dist))
+                foreach (Entity i in entity.Owner.EnemiesCollision.HitTest(entity.X, entity.Y, (float)dist))
                 {
                     if (i == entity)
                         continue;
@@ -146,7 +146,7 @@ namespace LoESoft.GameServer.realm
         {
             if (entity.Owner == null)
                 yield break;
-            foreach (Entity i in entity.Owner.EnemiesCollision.HitTest(entity.X, entity.Y, (float) dist))
+            foreach (Entity i in entity.Owner.EnemiesCollision.HitTest(entity.X, entity.Y, (float)dist))
             {
                 if (i.ObjectDesc == null || i.ObjectDesc.Group != group)
                     continue;
@@ -162,7 +162,7 @@ namespace LoESoft.GameServer.realm
                 return 0;
             int ret = 0;
             if (objType == null)
-                foreach (Entity i in entity.Owner.PlayersCollision.HitTest(entity.X, entity.Y, (float) dist))
+                foreach (Entity i in entity.Owner.PlayersCollision.HitTest(entity.X, entity.Y, (float)dist))
                 {
                     if (!(i as IPlayer).IsVisibleToEnemy())
                         continue;
@@ -171,7 +171,7 @@ namespace LoESoft.GameServer.realm
                         ret++;
                 }
             else
-                foreach (Entity i in entity.Owner.EnemiesCollision.HitTest(entity.X, entity.Y, (float) dist))
+                foreach (Entity i in entity.Owner.EnemiesCollision.HitTest(entity.X, entity.Y, (float)dist))
                 {
                     if (i.ObjectType != objType.Value)
                         continue;
@@ -187,7 +187,7 @@ namespace LoESoft.GameServer.realm
             if (entity.Owner == null)
                 return 0;
             int ret = 0;
-            foreach (Entity i in entity.Owner.EnemiesCollision.HitTest(entity.X, entity.Y, (float) dist))
+            foreach (Entity i in entity.Owner.EnemiesCollision.HitTest(entity.X, entity.Y, (float)dist))
             {
                 if (i.ObjectDesc == null || i.ObjectDesc.Group != group)
                     continue;

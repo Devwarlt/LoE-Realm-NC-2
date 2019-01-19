@@ -88,7 +88,7 @@ namespace LoESoft.GameServer.realm.mapsetpiece
                 int count = rand.Next(setpiece.Min, setpiece.Max);
 
                 if (setpiece.IsWeeklyEvent)
-                    if (setpiece.DayOfWeek != DateTime.Now.DayOfWeek)
+                    if (setpiece.DayOfWeek != DateTime.UtcNow.DayOfWeek)
                         continue;
 
                 for (int i = 0; i < count; i++)

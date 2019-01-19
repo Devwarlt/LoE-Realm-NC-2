@@ -1,7 +1,6 @@
 ﻿#region
 
 using LoESoft.GameServer.networking.incoming;
-using LoESoft.GameServer.realm.terrain;
 using System;
 
 #endregion
@@ -23,9 +22,11 @@ namespace LoESoft.GameServer.networking.handlers
             {
                 if (client.Player.Owner == null)
                     return;
-                WmapTile tile = client.Player.Owner.Map[(int)message.Position.X, (int)message.Position.Y];
-                ObjectDesc objDesc = tile.ObjType == 0 ? null : Manager.GameData.ObjectDescs[tile.ObjType];
-                TileDesc tileDesc = Manager.GameData.Tiles[tile.TileId];
+
+                var tile = client.Player.Owner.Map[(int)message.Position.X, (int)message.Position.Y];
+                var objDesc = tile.ObjType == 0 ? null : GameServer.Manager.GameData.ObjectDescs[tile.ObjType];
+                var tileDesc = GameServer.Manager.GameData.Tiles[tile.TileId];
+
                 if (tileDesc.Damaging && (objDesc == null || !objDesc.ProtectFromGroundDamage))
                 {
                     int dmg = (int)client.Player.StatsManager.Random.Obf6((uint)tileDesc.MinDamage, (uint)tileDesc.MaxDamage);
@@ -33,6 +34,7 @@ namespace LoESoft.GameServer.networking.handlers
 
                     client.Player.HP -= dmg;
                     client.Player.UpdateCount++;
+
                     if (client.Player.HP <= 0)
                         client.Player.Death(tileDesc.ObjectId);
                 }

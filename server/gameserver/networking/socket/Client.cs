@@ -2,7 +2,6 @@
 
 using LoESoft.Core;
 using LoESoft.Core.config;
-using LoESoft.GameServer.realm;
 using System;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
@@ -38,17 +37,15 @@ namespace LoESoft.GameServer.networking
         public int TargetWorld { get; internal set; }
         public string ConnectedBuild { get; internal set; }
         public Socket Socket { get; internal set; }
-        public RealmManager Manager { get; private set; }
         public RC4 IncomingCipher { get; private set; }
         public RC4 OutgoingCipher { get; private set; }
 
         private NetworkHandler handler;
         private bool disposed;
 
-        public Client(RealmManager manager, Socket skt)
+        public Client(Socket skt)
         {
             Socket = skt;
-            Manager = manager;
 
             IncomingCipher = new RC4(Settings.NETWORKING.INCOMING_CIPHER);
             OutgoingCipher = new RC4(Settings.NETWORKING.OUTGOING_CIPHER);

@@ -1,6 +1,5 @@
 ﻿#region
 
-using LoESoft.Core;
 using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.realm.entity.player;
 using System;
@@ -21,13 +20,13 @@ namespace LoESoft.GameServer.networking.handlers
             if (client?.Player == null)
                 return;
 
-            Player player = client.Player;
+            var player = client.Player;
 
             if (client.Account.Name.Equals(name))
             {
-                Manager.Chat.Guild(player, $"{player.Name} has left the guild.", true);
+                GameServer.Manager.Chat.Guild(player, $"{player.Name} has left the guild.", true);
 
-                if (!Manager.Database.RemoveFromGuild(client.Account))
+                if (!GameServer.Manager.Database.RemoveFromGuild(client.Account))
                 {
                     player.SendError("Guild not found.");
                     return;
@@ -41,7 +40,7 @@ namespace LoESoft.GameServer.networking.handlers
                 return;
             }
 
-            int targetAccId = Convert.ToInt32(Manager.Database.ResolveId(name));
+            var targetAccId = Convert.ToInt32(GameServer.Manager.Database.ResolveId(name));
 
             if (targetAccId == 0)
             {
@@ -49,7 +48,7 @@ namespace LoESoft.GameServer.networking.handlers
                 return;
             }
 
-            Client targetClient = (from newClient in Manager.ClientManager.Values where newClient.Client.Account != null where newClient.Client.Account.AccountId == targetAccId.ToString() select newClient.Client).FirstOrDefault();
+            var targetClient = (from newClient in GameServer.Manager.ClientManager.Values where newClient.Client.Account != null where newClient.Client.Account.AccountId == targetAccId.ToString() select newClient.Client).FirstOrDefault();
 
             if (targetClient != null)
             {
@@ -57,7 +56,7 @@ namespace LoESoft.GameServer.networking.handlers
                 {
                     Player targetPlayer = targetClient.Player;
 
-                    if (!Manager.Database.RemoveFromGuild(targetClient.Account))
+                    if (!GameServer.Manager.Database.RemoveFromGuild(targetClient.Account))
                     {
                         player.SendError("Guild not found.");
                         return;
@@ -68,7 +67,7 @@ namespace LoESoft.GameServer.networking.handlers
 
                     client.Account.FlushAsync();
 
-                    Manager.Chat.Guild(player, $"{targetPlayer.Name} has been kicked from the guild by {player.Name}.", true);
+                    GameServer.Manager.Chat.Guild(player, $"{targetPlayer.Name} has been kicked from the guild by {player.Name}.", true);
                     targetPlayer.SendInfo("You have been kicked from the guild.");
                     return;
                 }
@@ -79,17 +78,17 @@ namespace LoESoft.GameServer.networking.handlers
                 }
             }
 
-            DbAccount targetAccount = Manager.Database.GetAccountById(targetAccId.ToString());
+            var targetAccount = GameServer.Manager.Database.GetAccountById(targetAccId.ToString());
 
             if (client.Account.GuildRank >= 20 && client.Account.GuildId == targetAccount.GuildId && client.Account.GuildRank > targetAccount.GuildRank)
             {
-                if (!Manager.Database.RemoveFromGuild(targetAccount))
+                if (!GameServer.Manager.Database.RemoveFromGuild(targetAccount))
                 {
                     player.SendError("Guild not found.");
                     return;
                 }
 
-                Manager.Chat.Guild(player, $"{targetAccount.Name} has been kicked from the guild by {player.Name}.", true);
+                GameServer.Manager.Chat.Guild(player, $"{targetAccount.Name} has been kicked from the guild by {player.Name}.", true);
                 player.SendInfo("You have been kicked from the guild.");
                 return;
             }

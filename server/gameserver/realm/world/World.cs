@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -45,7 +46,6 @@ namespace LoESoft.GameServer.realm
             Enemies = new ConcurrentDictionary<int, Enemy>();
             Entities = new ConcurrentDictionary<int, Entity>();
             Quests = new ConcurrentDictionary<int, Enemy>();
-            Projectiles = new ConcurrentDictionary<KeyValuePair<int, byte>, Projectile>();
             GameObjects = new ConcurrentDictionary<int, GameObject>();
             Timers = new List<WorldTimer>();
             ClientXml = ExtraXml = Empty<string>.Array;
@@ -78,18 +78,47 @@ namespace LoESoft.GameServer.realm
 
         private ConcurrentDictionary<string, Tuple<float, float>> ReconnectRequests { get; set; } = new ConcurrentDictionary<string, Tuple<float, float>>();
 
-        public RealmManager Manager
+        public void BeginInit()
         {
-            get { return manager; }
-            internal set
-            {
-                manager = value;
-                if (manager == null)
-                    return;
-                Seed = manager.Random.NextUInt32();
-                PortalKey = Utils.RandomBytes(NeedsPortalKey ? 16 : 0);
-                Init();
-            }
+            Seed = GameServer.Manager.Random.NextUInt32();
+            PortalKey = Utils.RandomBytes(NeedsPortalKey ? 16 : 0);
+
+            var worldtick = new Task(() => WorldTick());
+            worldtick.Start();
+
+            Init();
+        }
+
+        public bool IsTickRunning { get; set; }
+        private ManualResetEvent _continueTick { get; set; } = new ManualResetEvent(true);
+
+        public void EnableWorldTick() => _continueTick.Set();
+
+        public void DisableWorldTick() => _continueTick.Reset();
+
+        //public bool CanConnect { get; set; }
+        //public ManualResetEvent AllowConnection { get; set; } = new ManualResetEvent(false);
+
+        private async void WorldTick()
+        {
+            await Task.Delay(1000 / Settings.GAMESERVER.TICKETS_PER_SECOND); // 200 ms (5 TPS)
+
+            _continueTick.WaitOne();
+
+            //if (Players.Count == 0 && Id != (int)WorldID.NEXUS_ID)
+            //{
+            //    DisableWorldTick();
+            //    IsTickRunning = false;
+            //}
+            //else
+            //{
+            IsTickRunning = true;
+
+            try { Tick(GameServer.Manager.Logic.GameTime); }
+            catch { }
+            //}
+
+            WorldTick();
         }
 
         public virtual void Tick(RealmTime time)
@@ -114,49 +143,41 @@ namespace LoESoft.GameServer.realm
                     catch { }
 
             if (Players.Count != 0)
-                Players.Values.Select(player => { player.Tick(time); return player; }).ToList();
+                foreach (var player in Players.Values)
+                    player.Tick(time);
 
             if (EnemiesCollision != null)
             {
                 var collisions = EnemiesCollision.GetActiveChunks(PlayersCollision).ToList();
 
                 if (collisions.Count != 0)
-                    collisions.Select(enemy =>
-                    {
-                        enemy.Tick(time);
-                        return enemy;
-                    }).ToList();
+                    foreach (var collision in collisions)
+                        collision.Tick(time);
 
                 if (GameObjects.Count != 0)
-                    GameObjects.Where(x => x.Value is Decoy).Select(objects =>
-                    {
-                        objects.Value.Tick(time);
-                        return objects;
-                    }).ToList();
+                    foreach (var gameobject in GameObjects.Values.Where(x => x is Decoy))
+                        gameobject.Tick(time);
             }
             else
             {
                 if (Enemies.Count != 0)
-                    Enemies.Values.Where(enemy => enemy != null).Select(enemy =>
-                    {
+                    foreach (var enemy in Enemies.Values.Where(enemy => enemy != null))
                         enemy.Tick(time);
-                        return enemy;
-                    }).ToList();
 
                 if (GameObjects.Count != 0)
-                    GameObjects.Values.Where(objects => objects != null).Select(objects =>
-                    {
-                        objects.Tick(time);
-                        return objects;
-                    }).ToList();
+                    foreach (var gameobject in GameObjects.Values.Where(objects => objects != null))
+                        gameobject.Tick(time);
             }
 
             if (Projectiles.Count != 0)
-                Projectiles.Values.Where(projectile => projectile != null).Select(projectile =>
-                {
+                foreach (var projectile in Projectiles.Keys.Where(projectile => projectile != null))
                     projectile.Tick(time);
-                    return projectile;
-                }).ToList();
+
+            //if (!CanConnect)
+            //{
+            //    CanConnect = true;
+            //    AllowConnection.Set();
+            //}
 
             if (Players.Count != 0 || !canBeClosed || !IsDungeon())
                 return;
@@ -168,7 +189,6 @@ namespace LoESoft.GameServer.realm
         }
 
         private int entityInc;
-        private RealmManager manager;
         private bool canBeClosed;
         public string ExtraVar = "Default";
         public bool IsLimbo { get; protected set; }
@@ -183,7 +203,6 @@ namespace LoESoft.GameServer.realm
         public ConcurrentDictionary<int, Entity> Entities { get; private set; }
         public ConcurrentDictionary<int, Player> Players { get; private set; }
         public ConcurrentDictionary<int, Enemy> Enemies { get; private set; }
-        public ConcurrentDictionary<KeyValuePair<int, byte>, Projectile> Projectiles { get; set; }
         public ConcurrentDictionary<int, GameObject> GameObjects { get; private set; }
         public List<WorldTimer> Timers { get; }
         public int Background { get; protected set; }
@@ -201,14 +220,9 @@ namespace LoESoft.GameServer.realm
         public int MaxPlayers { get; protected set; }
         public Wmap Map { get; private set; }
         public ConcurrentDictionary<int, Enemy> Quests { get; }
+        public ConcurrentDictionary<Projectile, object> Projectiles { get; set; } = new ConcurrentDictionary<Projectile, object>();
 
         public virtual World GetInstance(Client psr) => null;
-
-        public Projectile GetProjectileFromId(int hostId, byte bulletId) => Projectiles[new KeyValuePair<int, byte>(hostId, bulletId)];
-
-        public void AddProjectileFromId(int hostId, byte bulletId, Projectile proj) => Projectiles[new KeyValuePair<int, byte>(hostId, bulletId)] = proj;
-
-        public void RemoveProjectileFromId(int hostId, byte bulletId) => Projectiles[new KeyValuePair<int, byte>(hostId, bulletId)] = null;
 
         public bool IsPassable(int x, int y)
         {
@@ -329,11 +343,13 @@ namespace LoESoft.GameServer.realm
             Enemies.Clear();
             Players.Clear();
             Entities.Clear();
-            foreach (var i in Map.InstantiateEntities(GameServer.Manager))
+
+            foreach (var i in Map.InstantiateEntities())
             {
                 if (i.ObjectDesc != null &&
                     (i.ObjectDesc.OccupySquare || i.ObjectDesc.EnemyOccupySquare))
                     Obstacles[(int)(i.X - 0.5), (int)(i.Y - 0.5)] = 2;
+
                 EnterWorld(i);
             }
         }
@@ -471,10 +487,11 @@ namespace LoESoft.GameServer.realm
         private void TryAdd(Projectile projectile)
         {
             projectile.Init(this);
-            AddProjectileFromId(projectile.ProjectileOwner.Id, projectile.ProjectileId, projectile);
+
+            Projectiles.TryAdd(projectile, null);
         }
 
-        private void TryRemove(Projectile projectile) => RemoveProjectileFromId(projectile.ProjectileOwner.Id, projectile.ProjectileId);
+        private void TryRemove(Projectile projectile) => Projectiles.TryRemove(projectile, out object val);
 
         private void TryAdd(GameObject gameObject)
         {

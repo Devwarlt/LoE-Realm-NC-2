@@ -30,7 +30,7 @@ namespace LoESoft.GameServer.logic.behaviors
             )
         {
             this.isMapPosition = isMapPosition;
-            this.speed = (float) speed / 10;
+            this.speed = (float)speed / 10;
             this.once = once;
             this.instant = instant;
             baseX = X;

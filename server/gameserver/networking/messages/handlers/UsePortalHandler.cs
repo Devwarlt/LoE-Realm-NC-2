@@ -127,7 +127,7 @@ namespace LoESoft.GameServer.networking.handlers
                                 {
                                     try
                                     {
-                                        world = Manager.AddWorld((World)Activator.CreateInstance(worldType,
+                                        world = GameServer.Manager.AddWorld((World)Activator.CreateInstance(worldType,
                                         System.Reflection.BindingFlags.CreateInstance, null, null,
                                         CultureInfo.InvariantCulture, null));
                                     }

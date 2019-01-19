@@ -110,7 +110,7 @@ namespace LoESoft.GameServer.logic.loot
                             if (chance <= prob)
                             {
                                 if (dat.Item1.LootTierBoost)
-                                    playerLoot.Add(IncreaseTier(GameServer.Manager, i.Item, consideration));
+                                    playerLoot.Add(IncreaseTier(i.Item, consideration));
                                 else
                                     playerLoot.Add(i.Item);
 
@@ -139,12 +139,12 @@ namespace LoESoft.GameServer.logic.loot
             catch (IndexOutOfRangeException) { return; }
         }
 
-        private Item IncreaseTier(RealmManager manager, Item item, List<LootDef> consideration)
+        private Item IncreaseTier(Item item, List<LootDef> consideration)
         {
             if (item.SlotType == 10)
                 return item;
 
-            var tier = manager.GameData.Items
+            var tier = GameServer.Manager.GameData.Items
                  .Where(i => item.SlotType == i.Value.SlotType)
                  .Where(i => i.Value.Tier >= item.Tier + 3)
                  .Where(i => consideration.Select(_ => _.Item).Contains(i.Value))

@@ -681,13 +681,13 @@ namespace LoESoft.Core
 
         public DateTime CreateTime
         {
-            get { return GetValue("createTime", DateTime.Now); }
+            get { return GetValue("createTime", DateTime.UtcNow); }
             set { SetValue("createTime", value); }
         }
 
         public DateTime LastSeen
         {
-            get { return GetValue("lastSeen", DateTime.Now); }
+            get { return GetValue("lastSeen", DateTime.UtcNow); }
             set { SetValue("lastSeen", value); }
         }
 

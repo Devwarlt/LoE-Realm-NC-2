@@ -53,7 +53,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             {
                                 Projectile proj = CreateProjectile(prjDesc, item.ObjectType, Random.Next(prjDesc.MinDamage, prjDesc.MaxDamage), time.TotalElapsedMs, target, (float)(i * (Math.PI * 2) / 20));
 
-                                Owner.AddProjectileFromId(Id, proj.ProjectileId, proj);
+                                Owner.Projectiles.TryAdd(proj, null);
 
                                 Owner?.EnterWorld(proj);
                                 FameCounter.Shoot(proj);
@@ -1309,14 +1309,14 @@ namespace LoESoft.GameServer.realm.entity.player
                                 return true;
                             }
 
-                            List<Message> _outgoing = new List<Message>();
-                            World _world = GameServer.Manager.GetWorld(Owner.Id);
-                            DbAccount acc = Client.Account;
-                            int days = eff.Amount;
+                            var _outgoing = new List<Message>();
+                            var _world = GameServer.Manager.GetWorld(Owner.Id);
+                            var acc = Client.Account;
+                            var days = eff.Amount;
 
                             SendInfo($"Success! You received {eff.Amount} day{(eff.Amount > 1 ? "s" : "")} as account lifetime to your VIP account type when {item.DisplayId} was consumed!");
 
-                            NOTIFICATION _notification = new NOTIFICATION
+                            var _notification = new NOTIFICATION
                             {
                                 Color = new ARGB(0xFFFFFF),
                                 ObjectId = Id,
@@ -1325,7 +1325,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                             _outgoing.Add(_notification);
 
-                            SHOWEFFECT _showeffect = new SHOWEFFECT
+                            var _showeffect = new SHOWEFFECT
                             {
                                 Color = new ARGB(0xffddff00),
                                 EffectType = EffectType.Nova,
@@ -1336,7 +1336,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                             Owner.BroadcastMessage(_outgoing, null);
 
-                            acc.AccountLifetime = DateTime.Now;
+                            acc.AccountLifetime = DateTime.UtcNow;
                             acc.AccountLifetime = acc.AccountLifetime.AddDays(days);
                             acc.AccountType = (int)Core.config.AccountType.VIP;
                             acc.FlushAsync();
@@ -1346,7 +1346,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                             SendInfo("Reconnecting...");
 
-                            RECONNECT _reconnect = new RECONNECT
+                            var _reconnect = new RECONNECT
                             {
                                 GameId = (int)WorldID.NEXUS_ID, // change to Drasta Citadel in future versions!
                                 Host = string.Empty,

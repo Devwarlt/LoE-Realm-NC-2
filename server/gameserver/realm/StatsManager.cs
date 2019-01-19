@@ -28,7 +28,7 @@ namespace LoESoft.GameServer.realm
 
         public float GetAttackDamage(int min, int max)
         {
-            return Random.Obf6((uint) min, (uint) max) * DamageModifier();
+            return Random.Obf6((uint)min, (uint)max) * DamageModifier();
         }
 
         public readonly static float MinAttackFrequency = 0.0015f;
@@ -254,7 +254,7 @@ namespace LoESoft.GameServer.realm
 
             public static uint Obf1()
             {
-                return (uint) Math.Round(new Random().NextDouble() * (uint.MaxValue - 1) + 1);
+                return (uint)Math.Round(new Random().NextDouble() * (uint.MaxValue - 1) + 1);
             }
 
             public uint Obf2()
@@ -271,7 +271,7 @@ namespace LoESoft.GameServer.realm
             {
                 float _loc3_ = Obf3() / 2147483647;
                 float _loc4_ = Obf3() / 2147483647;
-                float _loc5_ = (float) Math.Sqrt(-2 * (float) Math.Log(_loc3_)) * (float) Math.Cos(2 * _loc4_ * Math.PI);
+                float _loc5_ = (float)Math.Sqrt(-2 * (float)Math.Log(_loc3_)) * (float)Math.Cos(2 * _loc4_ * Math.PI);
                 return param1 + _loc5_ * param2;
             }
 

@@ -30,20 +30,20 @@ namespace LoESoft.GameServer.realm.entity.merchant
             if (ObjectType == 0x01ca) //Merchant
             {
                 int originalPrice = Price;
-                Price = (int) (Price * player.AccountPerks.MerchantDiscount());
+                Price = (int)(Price * player.AccountPerks.MerchantDiscount());
                 if (TryDeduct(player))
                 {
                     for (var i = 4; i < player.Inventory.Length; i++)
                     {
                         try
                         {
-                            GameServer.Manager.GameData.ObjectTypeToElement.TryGetValue((ushort) MType, out XElement ist);
+                            GameServer.Manager.GameData.ObjectTypeToElement.TryGetValue((ushort)MType, out XElement ist);
                             if (player.Inventory[i] == null &&
                                 (player.SlotTypes[i] == 10 ||
                                  player.SlotTypes[i] == Convert.ToInt16(ist.Element("SlotType").Value)))
                             // Exploit fix - No more mnovas as weapons!
                             {
-                                player.Inventory[i] = GameServer.Manager.GameData.Items[(ushort) MType];
+                                player.Inventory[i] = GameServer.Manager.GameData.Items[(ushort)MType];
 
                                 KeyValuePair<string, int> currency = new KeyValuePair<string, int>(null, -1);
 

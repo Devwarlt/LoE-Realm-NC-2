@@ -13,6 +13,7 @@ namespace LoESoft.GameServer.networking.outgoing
         public int Count { get; set; }
 
         public override MessageID ID => MessageID.QUEUE_PING;
+
         public override Message CreateInstance() => new QUEUE_PING();
 
         protected override void Read(NReader rdr)
@@ -21,6 +22,7 @@ namespace LoESoft.GameServer.networking.outgoing
             Position = rdr.ReadInt32();
             Count = rdr.ReadInt32();
         }
+
         protected override void Write(NWriter wtr)
         {
             wtr.Write(Serial);

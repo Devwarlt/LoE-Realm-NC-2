@@ -25,7 +25,7 @@ namespace LoESoft.GameServer.networking.outgoing
             Position = Position.Read(rdr);
             Radius = rdr.ReadSingle();
             Damage = rdr.ReadUInt16();
-            Effects = (ConditionEffectIndex) rdr.ReadByte();
+            Effects = (ConditionEffectIndex)rdr.ReadByte();
             EffectDuration = rdr.ReadSingle();
             OriginType = rdr.ReadInt16();
             Color = ARGB.Read(rdr);
@@ -36,7 +36,7 @@ namespace LoESoft.GameServer.networking.outgoing
             Position.Write(wtr);
             wtr.Write(Radius);
             wtr.Write(Damage);
-            wtr.Write((byte) Effects);
+            wtr.Write((byte)Effects);
             wtr.Write(EffectDuration);
             wtr.Write(OriginType);
             Color.Write(wtr);

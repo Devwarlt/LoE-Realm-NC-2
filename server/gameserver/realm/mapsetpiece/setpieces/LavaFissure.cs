@@ -41,14 +41,14 @@ namespace LoESoft.GameServer.realm.mapsetpiece
             const double SCALE = 5.5;
             for (int x = 0; x < Size; x++) //Lava
             {
-                double t = (double) x / Size * Math.PI;
+                double t = (double)x / Size * Math.PI;
                 double y1 = t / Math.Sqrt(2) - 2 * Math.Sin(t) / (SCALE * Math.Sqrt(2));
                 double y2 = t / Math.Sqrt(2) + Math.Sin(t) / (SCALE * Math.Sqrt(2));
                 y1 /= Math.PI / Math.Sqrt(2);
                 y2 /= Math.PI / Math.Sqrt(2);
 
-                int y1_ = (int) Math.Ceiling(y1 * Size);
-                int y2_ = (int) Math.Floor(y2 * Size);
+                int y1_ = (int)Math.Ceiling(y1 * Size);
+                int y2_ = (int)Math.Floor(y2 * Size);
                 for (int i = y1_; i < y2_; i++)
                     p[x, i] = 1;
             }

@@ -16,7 +16,7 @@
 		<BagType>6</BagType>
 		<FameBonus>6</FameBonus>
 		<feedPower>500</feedPower>
-		<Soulbound/>
+		<Soulbound />
   </Object>
   <Object type="0x510f" id="The Egyptian's Crook" spritePeriod="4" spriteFile="lofiObj5" spriteArray="200-201">
     <Class>Equipment</Class>
@@ -470,7 +470,7 @@
 		<BagType>6</BagType>
 		<FameBonus>6</FameBonus>
 		<feedPower>500</feedPower>
-		<Soulbound/>
+		<Soulbound />
   </Object>
   <Object type="0x5071" id="Quiver of the Frozen North">
     <Class>Equipment</Class>
@@ -500,14 +500,14 @@
 			<MinDamage>100</MinDamage>
 			<MaxDamage>200</MaxDamage>
 			<LifetimeMS>900</LifetimeMS>
-			<MultiHit/>
+			<MultiHit />
 		</Projectile>
 		<BagType>8</BagType>
 		<FameBonus>12</FameBonus>
 		<NumProjectiles>4</NumProjectiles>
 		<OldSound>arrowShoot</OldSound>
 		<feedPower>1000</feedPower>
-		<Soulbound/>
+		<Soulbound />
 		<DisplayId>Crossbow of the Frozen North</DisplayId>
   </Object>
   <Object type="0x5069" id="The Forgotten Monk's Robe">
@@ -576,7 +576,7 @@
 		<OldSound>daggerSwing</OldSound>
 		<FameBonus>6</FameBonus>
 		<feedPower>600</feedPower>
-		<Soulbound/>
+		<Soulbound />
   </Object>
   <Object type="0x5061" id="Spell of Alantis">
     <Class>Equipment</Class>
@@ -661,8 +661,8 @@
 			<MinDamage>400</MinDamage>
 			<MaxDamage>450</MaxDamage>
 			<Boomerang />
-			<MultiHit/>
-			<PassesCover/>
+			<MultiHit />
+			<PassesCover />
 			<LifetimeMS>825</LifetimeMS>
 			<Size>90</Size>
 		</Projectile>

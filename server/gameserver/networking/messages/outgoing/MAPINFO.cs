@@ -60,11 +60,11 @@ namespace LoESoft.GameServer.networking.outgoing
             wtr.Write(AllowTeleport);
             wtr.Write(ShowDisplays);
 
-            wtr.Write((ushort) ClientXML.Length);
+            wtr.Write((ushort)ClientXML.Length);
             foreach (string i in ClientXML)
                 wtr.Write32UTF(i);
 
-            wtr.Write((ushort) ExtraXML.Length);
+            wtr.Write((ushort)ExtraXML.Length);
             foreach (string i in ExtraXML)
                 wtr.Write32UTF(i);
 

@@ -32,7 +32,7 @@ namespace LoESoft.GameServer.logic.behaviors
             )
         {
             this.text = text;
-            this.probability = (float) probability;
+            this.probability = (float)probability;
         }
 
         public Taunt(
@@ -60,7 +60,7 @@ namespace LoESoft.GameServer.logic.behaviors
             )
         {
             this.text = text;
-            this.probability = (float) probability;
+            this.probability = (float)probability;
             this.broadcast = broadcast;
         }
 
@@ -71,7 +71,7 @@ namespace LoESoft.GameServer.logic.behaviors
             )
         {
             this.text = text;
-            this.probability = (float) probability;
+            this.probability = (float)probability;
             this.cooldown = cooldown;
         }
 
@@ -94,7 +94,7 @@ namespace LoESoft.GameServer.logic.behaviors
             )
         {
             this.text = text;
-            this.probability = (float) probability;
+            this.probability = (float)probability;
             this.broadcast = broadcast;
             this.cooldown = cooldown;
         }
@@ -127,7 +127,7 @@ namespace LoESoft.GameServer.logic.behaviors
             if (state == null)
                 c = cooldown.Next(Random);
             else
-                c = (int) state;
+                c = (int)state;
 
             c -= time.ElapsedMsDelta;
             state = c;

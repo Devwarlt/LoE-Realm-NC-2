@@ -16,7 +16,7 @@ namespace LoESoft.GameServer.networking.handlers
                 return;
 
             if (message.Text[0] == '/')
-                GameServer.Manager.Commands.Execute(client.Player, Manager.Logic.GameTime, message.Text);
+                GameServer.Manager.Commands.Execute(client.Player, GameServer.Manager.Logic.GameTime, message.Text);
             else
             {
                 if (!client.Player.NameChosen)

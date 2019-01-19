@@ -145,7 +145,7 @@ namespace LoESoft.GameServer.realm
         {
             if (type > byte.MaxValue)
                 throw new Exception("Not a valid StatData number.");
-            return new StatsType((byte) type);
+            return new StatsType((byte)type);
         }
 
         public static implicit operator StatsType(byte type) => new StatsType(type);
@@ -155,7 +155,7 @@ namespace LoESoft.GameServer.realm
         {
             if (id > byte.MaxValue)
                 throw new Exception("Not a valid StatData number.");
-            return type._type == (byte) id;
+            return type._type == (byte)id;
         }
 
         public static bool operator ==(StatsType type, byte id) => type._type == id;
@@ -165,7 +165,7 @@ namespace LoESoft.GameServer.realm
         {
             if (id > byte.MaxValue)
                 throw new Exception("Not a valid StatData number.");
-            return type._type != (byte) id;
+            return type._type != (byte)id;
         }
 
         public static bool operator !=(StatsType type, byte id) => type._type != id;
@@ -184,7 +184,7 @@ namespace LoESoft.GameServer.realm
         {
             if (!(obj is StatsType))
                 return false;
-            return this == (StatsType) obj;
+            return this == (StatsType)obj;
         }
 
         public override string ToString() => _type.ToString();

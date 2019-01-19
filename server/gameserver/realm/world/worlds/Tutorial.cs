@@ -12,7 +12,7 @@ namespace LoESoft.GameServer.realm.world
 
         public Tutorial(bool isLimbo)
         {
-            Id = (int) WorldID.TUT_ID;
+            Id = (int)WorldID.TUT_ID;
             Name = "Tutorial";
             Background = 0;
             this.isLimbo = isLimbo;

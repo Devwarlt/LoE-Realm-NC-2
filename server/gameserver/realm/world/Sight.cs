@@ -40,12 +40,12 @@ namespace LoESoft.GameServer.realm
                 int distance = 0;
                 while (distance < radius)
                 {
-                    int x = (int) (distance * Math.Cos(angle));
-                    int y = (int) (distance * Math.Sin(angle));
+                    int x = (int)(distance * Math.Cos(angle));
+                    int y = (int)(distance * Math.Sin(angle));
                     if ((x * x + y * y) <= (radius * radius))
                     {
                         RayTiles.Add(new IntPoint(x, y));
-                        GameServer.Manager.GameData.ObjectDescs.TryGetValue(player.Owner.Map[(int) player.X + x, (int) player.Y + y].ObjType, out ObjectDesc desc);
+                        GameServer.Manager.GameData.ObjectDescs.TryGetValue(player.Owner.Map[(int)player.X + x, (int)player.Y + y].ObjType, out ObjectDesc desc);
                         if (desc != null && desc.BlocksSight)
                             break;
                         RayTiles.Add(new IntPoint(x, y));
