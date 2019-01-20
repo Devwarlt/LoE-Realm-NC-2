@@ -8,97 +8,63 @@ namespace LoESoft.GameServer.logic
     {
         private _ DynoBot = () => Behav()
             .Init("Dyno Bot",
-                new State(
-                    new State("default",
-                        new PlayerWithinTransition(8, "taunt")
-                        ),
-                    new State("taunt",
-                        new AddCond(ConditionEffectIndex.Invulnerable),
-                        new Taunt("What's this? I see a heroic adventurer trying to face me..."),
-                        new TimedTransition(4500, "taunt1")
-                        ),
-                    new State("taunt1",
-                        new AddCond(ConditionEffectIndex.Invulnerable),
-                        new Taunt("I am Dyno Bot, the master of all bots."),
-                        new TimedTransition(4500, "taunt2")
-                        ),
-                    new State("taunt2",
-                        new AddCond(ConditionEffectIndex.Invulnerable),
-                        new Taunt("Prepare yourself challenger!"),
-                        new TimedTransition(4500, "7")
-                        ),
-               new State("7",
-                        new AddCond(ConditionEffectIndex.Invulnerable),
-                        new Flashing(0x0083FF, 1, 2),
-                        new Taunt("Prepare to face my wrath!"),
-                        new TimedTransition(4500, "Fight1")
-                        ),
-
-                         new State("Fight1",
-                             new RemCond(ConditionEffectIndex.Invulnerable),
-                            new Shoot(1, 4, index: 1, coolDown: 4575, angleOffset: 160, coolDownOffset: 1400, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 4575, angleOffset: 170, coolDownOffset: 1600, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 4575, angleOffset: 180, coolDownOffset: 1800, shootAngle: 90),
-                            new Shoot(1, 8, index: 1, coolDown: 4575, angleOffset: 180, coolDownOffset: 2000, shootAngle: 45),
-                            new Shoot(1, 4, index: 1, coolDown: 4575, angleOffset: 180, coolDownOffset: 0, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 4575, angleOffset: 170, coolDownOffset: 200, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 4575, angleOffset: 160, coolDownOffset: 400, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 4575, angleOffset: 150, coolDownOffset: 600, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 4575, angleOffset: 140, coolDownOffset: 800, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 4575, angleOffset: 130, coolDownOffset: 1000, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 4575, angleOffset: 120, coolDownOffset: 1200, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 4575, angleOffset: 110, coolDownOffset: 1400, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 4575, angleOffset: 100, coolDownOffset: 1600, shootAngle: 90),
-                         new HpLessTransition(.5, "Fight2")
-                        ),
-                    new State("Fight2",
-                        new AddCond(ConditionEffectIndex.Invulnerable),
-                        new Taunt("You have done well! But can you survive this?"),
-                        new Flashing(0x005db5, 1, 2),
-                        new RemCond(ConditionEffectIndex.Invulnerable),
-                        new AddCond(ConditionEffectIndex.Armored),
-                        new Shoot(25, index: 0, shoots: 4, shootAngle: 10, aim: 0.7, coolDown: 800,
-                            coolDownOffset: 800),
-                        new Shoot(25, index: 1, shoots: 2, shootAngle: 10, aim: 0.7, coolDown: 500,
-                            coolDownOffset: 500),
-                        new HpLessTransition(.3, "LastStand Taunt")
-                                            ),
-                   new State("LastStand Taunt",
-                           new AddCond(ConditionEffectIndex.Invulnerable),
-                        new Flashing(0xFF0000, 2, 2),
-                        new Taunt("Get ready for the last phase!"),
-                        new TimedTransition(4500, "LastStand")
-                        ),
-                         new State("LastStand",
-                             new RemCond(ConditionEffectIndex.Invulnerable),
-                        new AddCond(ConditionEffectIndex.Armored),
-                            new Shoot(1, 4, index: 1, coolDown: 2575, angleOffset: 160, coolDownOffset: 1400, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 2575, angleOffset: 170, coolDownOffset: 1600, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 2575, angleOffset: 180, coolDownOffset: 1800, shootAngle: 90),
-                            new Shoot(1, 8, index: 1, coolDown: 2575, angleOffset: 180, coolDownOffset: 2000, shootAngle: 45),
-                            new Shoot(1, 4, index: 1, coolDown: 2575, angleOffset: 180, coolDownOffset: 0, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 2575, angleOffset: 170, coolDownOffset: 200, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 2575, angleOffset: 160, coolDownOffset: 400, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 2575, angleOffset: 150, coolDownOffset: 600, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 2575, angleOffset: 140, coolDownOffset: 800, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 2575, angleOffset: 130, coolDownOffset: 1000, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 2575, angleOffset: 120, coolDownOffset: 1200, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 2575, angleOffset: 110, coolDownOffset: 1400, shootAngle: 90),
-                            new Shoot(1, 4, index: 1, coolDown: 2575, angleOffset: 100, coolDownOffset: 1600, shootAngle: 90),
-                         new HpLessTransition(.1, "Dying")
-                        ),
-                    new State("Dying",
-                        new AddCond(ConditionEffectIndex.Invulnerable),
-                        new Taunt(1.00, "You have done well to defeat me challenger. Well done..."),
-                        new TimedTransition(3250, "Dead")
-                        ),
-                   new State("Dead",
-                        new AddCond(ConditionEffectIndex.Invulnerable),
-                        new Shoot(7, shoots: 8, aim: 1, coolDown: 5000),
-                        new Suicide()
-                        )
-                    ),
-                new Drops(
+				 new State(
+					new State("default",
+						new AddCond(ConditionEffectIndex.Invincible),
+						new PlayerWithinTransition(8, "1")
+						),
+					new State("1",
+						new AddCond(ConditionEffectIndex.Invincible),
+						new Taunt("I am the Dyno Bot from Discord. My features includes muting, kicking, and banning. Somehow I got lost and ended up in LoE Realm. So now I am the offical bot of LoE Realms."),
+						new TimedTransition(5000, "2")
+						),
+					new State("2",
+						new Flashing(0xFF0000, 2, 2),
+						new Wander(2),
+						new Taunt("You have broken Discord's TOS. Please allow me to ip-ban your account and terminate it."),
+						new RemCond(ConditionEffectIndex.Invincible),
+						new AddCond(ConditionEffectIndex.Armored),
+						new Shoot(8, shoots: 8, index: 0, coolDown: 4550, coolDownOffset: 1500),
+						new Shoot(8, shoots: 10, index: 1, coolDown: 2000, shootAngle: 22),
+						new TimedTransition(6400, "3")
+						),
+					new State("3",
+						new Prioritize(
+							new Chase(5, 8, 1),
+							new Wander(4)
+							),
+						new Shoot(8, shoots: 6, shootAngle: 14, index: 1, coolDown: 3200),
+						new Shoot(8, shoots: 6, aim: 1, shootAngle: 28, index: 1, coolDown: 2440),
+						new Shoot(10, shoots: 5, index: 0, coolDown: 1600),
+						new TimedTransition(6000, "4")
+						),
+					new State("4",
+						new Prioritize(
+							new StayCloseToSpawn(4),
+							new Wander(4)
+							),
+						new Heal(range:0,coolDown: 2000, amount: 400),
+						new Shoot(9, shoots: 7, index: 1, coolDown: new Cooldown(3000, 1000)),
+						new Shoot(10, shoots: 8, shootAngle: 14, index: 0, coolDown: 1500),
+						new TimedTransition(6200, "5")
+						),
+					new State("5",
+						new Flashing(0x00F0FF, 2, 2),
+						new Grenade(5, 300, range: 8, coolDown: 1000),
+						new Taunt("You have been warned in LoE Realm's Discord for spamming and being toxic. Please stop. Thank you for understanding. Regardless, im about to kick you. "),
+						new ReturnToSpawn(speed: 1),
+						new Shoot(8, shoots: 7, index: 1, coolDown: 750, shootAngle: 12),
+						new TimedTransition(8000, "6")
+						),
+					new State("6",
+						new Taunt("You have been warned 3 times now in LoE Realm. Prepared to be banned."),
+						new Wander(3),
+						new Shoot(9, shoots: 14, index: 0, coolDown: 2000),
+						new Shoot(9, shoots: 6, index: 1, aim: 2, coolDown: 1000),
+						new TimedTransition(6000, "2")
+						)
+					),
+				new Drops(
                     new BlueBag(Potions.POTION_OF_DEXTERITY),
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 9),
