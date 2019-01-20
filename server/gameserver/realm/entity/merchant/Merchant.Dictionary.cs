@@ -64,7 +64,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
             #region "Region 1 & 2"
 
             // 200 / 100
-            /*{ 0x236E, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // glife
+            { 0x236E, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // glife
             { 0x236F, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // gmana
             { 0x2368, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // gatt
             { 0x2369, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // gdef
@@ -80,7 +80,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
             { 0xa21, new Tuple<int, CurrencyType>(25, CurrencyType.Fame) }, //spd
             { 0xa4c, new Tuple<int, CurrencyType>(25, CurrencyType.Fame) }, //dex
             { 0xa34, new Tuple<int, CurrencyType>(25, CurrencyType.Fame) }, //vit
-            { 0xa35, new Tuple<int, CurrencyType>(25, CurrencyType.Fame) }, //wis */
+            { 0xa35, new Tuple<int, CurrencyType>(25, CurrencyType.Fame) }, //wis
 
             //{ 1793, new Tuple<int, CurrencyType>(100, CurrencyType.Fame) }, // Undead Lair Key
             //{ 308, new Tuple<int, CurrencyType>(250, CurrencyType.Fame) }, // Halloween Cemetery Key
