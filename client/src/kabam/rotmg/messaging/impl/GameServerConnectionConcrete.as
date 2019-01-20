@@ -1601,7 +1601,10 @@ public class GameServerConnectionConcrete extends GameServerConnection {
                     _arg1.hp_ = _local8;
                     break;
                 case StatData.SIZE_STAT:
-                    _arg1.setSize(_local8);
+                    if (_arg1 is Player)
+                        _arg1.setNewSize(_local8);
+                    else
+                        _arg1.setSize(_local8);
                     break;
                 case StatData.MAX_MP_STAT:
                     _local4.maxMP_ = _local8;

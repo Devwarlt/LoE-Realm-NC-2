@@ -144,6 +144,11 @@ namespace LoESoft.GameServer.realm.world
                                 Overseer.SendMsg(i, "COME MEET YOUR DOOM AT THE WALLS OF MY WINE CELLAR!", "#Oryx the Mad God");
 
                                 i.Client.SendMessage(new SHOWEFFECT { EffectType = EffectType.Jitter });
+                                i.ApplyConditionEffect(new ConditionEffect
+                                {
+                                    DurationMS = 5000,
+                                    Effect = ConditionEffectIndex.Invincible
+                                });
                             }
 
                             Timers.Add(new WorldTimer(5000, (w, t) =>

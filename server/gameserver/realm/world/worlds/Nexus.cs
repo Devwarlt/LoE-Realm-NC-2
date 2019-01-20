@@ -11,7 +11,7 @@ namespace LoESoft.GameServer.realm.world
         public const string LOE_CHICAGO_21 = "loe_chicago_2.1";
         public const string WINTER_RESOURCE = "nexus_winter";
         public const string SUMMER_RESOURCE = "nexus_summer";
-        public const string FILISHA_RESOURCE = "SND";
+        public const string SEBS_NEXUS = "new_nexus"; //TODO
 
         public Nexus()
         {
