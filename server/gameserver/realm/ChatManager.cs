@@ -44,7 +44,7 @@ namespace LoESoft.GameServer.realm
             else
                 ChatDataCache[player.Name] = Tuple.Create(DateTime.Now, chatText);
 
-            var (stars, name, text) = new ChatColor(player.Stars, player.AccountType).GetColor();
+            var (stars, name, text) = player.ChatColors.GetColor();
 
             player.Owner.BroadcastMessage(new TEXT
             {
