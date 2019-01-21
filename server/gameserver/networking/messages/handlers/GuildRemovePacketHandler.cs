@@ -48,7 +48,7 @@ namespace LoESoft.GameServer.networking.handlers
                 return;
             }
 
-            var targetClient = (from newClient in GameServer.Manager.ClientManager.Values where newClient.Client.Account != null where newClient.Client.Account.AccountId == targetAccId.ToString() select newClient.Client).FirstOrDefault();
+            var targetClient = (from newClient in GameServer.Manager.GetManager.Clients.Values where newClient.Account != null where newClient.AccountId == targetAccId.ToString() select newClient).FirstOrDefault();
 
             if (targetClient != null)
             {

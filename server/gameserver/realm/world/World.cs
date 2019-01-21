@@ -54,7 +54,7 @@ namespace LoESoft.GameServer.realm
             ShowDisplays = true;
             MaxPlayers = -1;
             SetMusic("main");
-            Timers.Add(new WorldTimer(120 * 1000, (w, t) =>
+            Timers.Add(new WorldTimer(30 * 1000, (w, t) =>
             {
                 canBeClosed = true;
 
@@ -89,20 +89,9 @@ namespace LoESoft.GameServer.realm
             Init();
         }
 
-        public bool IsTickRunning { get; set; }
-        private ManualResetEvent _continueTick { get; set; } = new ManualResetEvent(true);
-
-        public void EnableWorldTick() => _continueTick.Set();
-
-        public void DisableWorldTick() => _continueTick.Reset();
-
         private async void WorldTick()
         {
             await Task.Delay(1000 / Settings.GAMESERVER.TICKETS_PER_SECOND); // 200 ms (5 TPS)
-
-            _continueTick.WaitOne();
-
-            IsTickRunning = true;
 
             try { Tick(GameServer.Manager.Logic.GameTime); }
             catch { }
@@ -211,16 +200,21 @@ namespace LoESoft.GameServer.realm
         {
             if (!Map.Contains(x, y))
                 return false;
-            WmapTile tile = Map[x, y];
+
+            var tile = Map[x, y];
+
             if (tile.TileDesc.NoWalk)
                 return false;
+
             if (GameServer.Manager.GameData.ObjectDescs.TryGetValue(tile.ObjType, out ObjectDesc desc))
             {
                 if (!desc.Static)
                     return false;
+
                 if (desc.OccupySquare || desc.EnemyOccupySquare || desc.FullOccupy)
                     return false;
             }
+
             return true;
         }
 
@@ -243,8 +237,10 @@ namespace LoESoft.GameServer.realm
             {
                 if (Players.Count > 0)
                     return false;
+
                 Id = 0;
             }
+
             Map = null;
             Players = null;
             Enemies = null;
@@ -265,6 +261,7 @@ namespace LoESoft.GameServer.realm
                 Music = DefaultMusic;
             else
                 Music = music;
+
             BroadcastMessage(new SWITCH_MUSIC
             {
                 Music = Music[new wRandom().Next(0, Music.Length)]
@@ -281,8 +278,10 @@ namespace LoESoft.GameServer.realm
         {
             if (Music.Length == 0)
                 return "null";
+
             if (rand == null)
                 rand = new wRandom();
+
             return Music[rand.Next(0, Music.Length)];
         }
 
@@ -420,6 +419,9 @@ namespace LoESoft.GameServer.realm
 
             player.Init(this);
 
+            if (MaxPlayers != -1)
+                MaxPlayers++;
+
             PlayersCollision.Insert(player);
         }
 
@@ -427,6 +429,9 @@ namespace LoESoft.GameServer.realm
         {
             if (!Players.TryRemove(player.Id, out Player dummy) || !Entities.TryRemove(player.Id, out Entity entity))
                 return;
+
+            if (MaxPlayers != -1)
+                MaxPlayers--;
 
             PlayersCollision.Remove(player);
         }

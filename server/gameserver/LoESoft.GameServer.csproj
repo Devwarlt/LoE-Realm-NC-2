@@ -338,6 +338,7 @@
     <Compile Include="logic\transitions\PlayerWithinTransition.cs" />
     <Compile Include="logic\transitions\HpLessTransition.cs" />
     <Compile Include="logic\transitions\TimedTransition.cs" />
+    <Compile Include="networking\ClientManager.cs" />
     <Compile Include="networking\LogicTicker.cs" />
     <Compile Include="networking\messages\handlers\ClaimDailyReward.cs" />
     <Compile Include="networking\messages\handlers\GoToQuestRoomHandler.cs" />
@@ -795,6 +796,7 @@
     <EmbeddedResource Include="realm\world\maps\json\SND.json" />
     <EmbeddedResource Include="realm\world\maps\json\nexus_summer.json" />
     <EmbeddedResource Include="realm\world\maps\json\loe_wine_cellar.json" />
+    <EmbeddedResource Include="realm\world\maps\json\pub-arena-v1.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="realm\world\maps\json\dungeons\spider_den\" />

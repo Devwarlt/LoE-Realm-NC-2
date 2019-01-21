@@ -2,6 +2,7 @@
 
 using LoESoft.GameServer.realm;
 using LoESoft.GameServer.realm.entity;
+using LoESoft.GameServer.realm.world;
 
 #endregion
 
@@ -34,18 +35,23 @@ namespace LoESoft.GameServer.logic.behaviors
         {
             parent.Death += (sender, e) =>
             {
-                if (e.Host.CurrentState.Is(parent) &&
-                    Random.NextDouble() < probability)
+                if (e.Host.CurrentState.Is(parent) && Random.NextDouble() < probability)
                 {
                     int count = Random.Next(min, max + 1);
+
                     for (int i = 0; i < count; i++)
                     {
-                        Entity entity = Entity.Resolve(target);
+                        var entity = Entity.Resolve(target);
+
+                        if (entity.Name.ToLower().Contains("Portal")
+                        && (e.Host.Owner is IArena || e.Host.Owner.Name == "Wine Cellar"))
+                            return;
 
                         if (returnToSpawn)
                             entity.Move((e.Host as Enemy).SpawnPoint.X, (e.Host as Enemy).SpawnPoint.Y);
                         else
                             entity.Move(e.Host.X, e.Host.Y);
+
                         e.Host.Owner.EnterWorld(entity);
                     }
                 }

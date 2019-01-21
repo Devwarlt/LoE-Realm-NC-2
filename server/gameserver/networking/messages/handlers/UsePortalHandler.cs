@@ -155,6 +155,13 @@ namespace LoESoft.GameServer.networking.handlers
                     if (GameServer.Manager.LastWorld.ContainsKey(player.AccountId))
                         GameServer.Manager.LastWorld.TryRemove(player.AccountId, out World dummy);
 
+                    if (player.Owner is GameWorld)
+                        if ((player.Owner as GameWorld).IsRealmClosed)
+                        {
+                            player.SendError("Realm is closed.");
+                            return;
+                        }
+
                     if (player.Owner is Nexus || player.Owner is GameWorld)
                         GameServer.Manager.LastWorld.TryAdd(player.AccountId, player.Owner);
 

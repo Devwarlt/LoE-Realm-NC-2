@@ -23,11 +23,14 @@ namespace LoESoft.GameServer.networking.handlers
             if (client.Player.Owner == null)
                 return;
 
-            if (!client.InvSwapClockInitialized)
+            if (client.InvSwapEntryMS == -1)
+                client.InvSwapEntryMS = GameServer.Manager.Logic.GameTime.TotalElapsedMs;
+            else
             {
-                client.InvSwapClock.Elapsed += delegate { client.CanInvSwap = true; };
-                client.InvSwapClock.Start();
-                client.InvSwapClockInitialized = true;
+                if (GameServer.Manager.Logic.GameTime.TotalElapsedMs - client.InvSwapEntryMS > 500)
+                    client.CanInvSwap = true;
+                else
+                    client.CanInvSwap = false;
             }
 
             if (!client.CanInvSwap)

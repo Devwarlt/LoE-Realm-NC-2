@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace LoESoft.GameServer.realm.world
 {
-    public class Arena : PublicArena
+    public class Arena : PublicArena, IArena
     {
         public Arena()
         {

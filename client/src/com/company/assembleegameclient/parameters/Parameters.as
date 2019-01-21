@@ -12,7 +12,7 @@ import flash.utils.Dictionary;
 import kabam.rotmg.build.impl.BuildEnvironments;
 
 public class Parameters {
-    public static const IS_DEVELOPER_MODE:Boolean = false;
+    public static const IS_DEVELOPER_MODE:Boolean = true;
     public static const DISCORD_PERMANENTLY_INVITE:String = "https://discord.gg/htpVTFq";
     public static const CONNECTION_SECURITY_PROTOCOL:String = "http";
     public static const CLIENT_NAME:String = "LoE Realm";

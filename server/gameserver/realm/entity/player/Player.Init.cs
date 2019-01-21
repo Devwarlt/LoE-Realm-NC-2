@@ -203,8 +203,8 @@ namespace LoESoft.GameServer.realm.entity.player
             var notification = $"{Name} died to {killer} as {maxed}/8 {playerDesc.ObjectId.ToLower()} with {Fame} fame base.";
 
             if (Fame >= 2000 && !Client.Account.Admin)
-                foreach (var cdata in GameServer.Manager.ClientManager.Values)
-                    cdata.Client.Player?.GazerDM(notification);
+                foreach (var client in GameServer.Manager.GetManager.Clients.Values)
+                    client.Player?.GazerDM(notification);
             else
                 foreach (var i in Owner.Players.Values)
                     i.GazerDM(notification);
@@ -348,24 +348,17 @@ namespace LoESoft.GameServer.realm.entity.player
             if (ActualTask != null)
                 Task = GameTask.Tasks[ActualTask];
 
-            var requireflush = false;
-
             if (Client.Account.Credits < 0)
             {
-                SendInfo("Your account realm gold amount has been wiped to 0 due negative bug.");
-                Client.Account.Credits = 0;
-                requireflush = true;
+                SendInfo("[Patch: negative currency] Gold set to 0.");
+                GameServer.Manager.Database.UpdateCredit(Client.Account, Math.Abs(Client.Account.Credits));
             }
 
             if (Client.Account.Fame < 0)
             {
-                SendInfo("Your account fame amount has been wiped to 0 due negative bug.");
-                Client.Account.Fame = 0;
-                requireflush = true;
+                SendInfo("[Patch: negative currency] Fame set to 0.");
+                GameServer.Manager.Database.UpdateFame(Client.Account, Math.Abs(Client.Account.Fame));
             }
-
-            if (requireflush)
-                Client.Account.FlushAsync();
         }
 
         public void Teleport(RealmTime time, TELEPORT packet)
@@ -525,7 +518,7 @@ namespace LoESoft.GameServer.realm.entity.player
             });
         }
 
-        private void CalculateFame()
+        private void CalculateFame(bool notifyFame = true)
         {
             var newFame = 0d;
             newFame += Math.Max(0, Math.Min(20000, Experience)) * 0.001;
@@ -539,12 +532,13 @@ namespace LoESoft.GameServer.realm.entity.player
             if (newFame == Fame)
                 return;
 
-            Owner.BroadcastMessage(new NOTIFICATION
-            {
-                ObjectId = Id,
-                Color = new ARGB(0xFF8C00),
-                Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"+" + ((int)newFame - Fame) + " Fame!\"}}",
-            }, null);
+            if (notifyFame)
+                Owner.BroadcastMessage(new NOTIFICATION
+                {
+                    ObjectId = Id,
+                    Color = new ARGB(0xFF8C00),
+                    Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"+" + ((int)newFame - Fame) + " Fame!\"}}",
+                }, null);
 
             Fame = (int)newFame;
 
@@ -571,7 +565,7 @@ namespace LoESoft.GameServer.realm.entity.player
             UpdateCount++;
         }
 
-        private bool CheckLevelUp()
+        private bool CheckLevelUp(bool notifyFame = true)
         {
             if (Experience - GetLevelExp(Level) >= ExperienceGoal && Level < 20)
             {
@@ -612,7 +606,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 return true;
             }
 
-            CalculateFame();
+            CalculateFame(notifyFame);
             return false;
         }
 
@@ -660,7 +654,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             i.Experience = (int)tempexp;
 
                         i.UpdateCount++;
-                        i.CheckLevelUp();
+                        i.CheckLevelUp(false);
                     }
                     catch (Exception) { }
                 }

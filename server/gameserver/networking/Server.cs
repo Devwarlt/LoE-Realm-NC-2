@@ -2,7 +2,6 @@
 
 using LoESoft.Core.config;
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -67,10 +66,10 @@ namespace LoESoft.GameServer.networking
 
         public void Stop()
         {
-            foreach (var cData in GameServer.Manager.ClientManager.Values.ToArray())
+            foreach (var client in GameServer.Manager.GetManager.Clients.Values)
             {
-                cData.Client.Save();
-                GameServer.Manager.TryDisconnect(cData.Client, DisconnectReason.STOPING_SERVER);
+                client.Save();
+                GameServer.Manager.TryDisconnect(client, DisconnectReason.STOPING_SERVER);
             }
 
             Socket.Close();
