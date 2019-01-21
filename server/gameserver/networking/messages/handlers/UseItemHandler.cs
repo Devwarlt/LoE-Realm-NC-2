@@ -28,6 +28,9 @@ namespace LoESoft.GameServer.networking.handlers
                 if (container == null)
                     return;
 
+                if (TradeManager.TradingPlayers.Contains(client.Player))
+                    return;
+
                 Item item;
 
                 switch (message.SlotObject.SlotId)
@@ -103,7 +106,7 @@ namespace LoESoft.GameServer.networking.handlers
                                 }
                                 client.Player.Owner.Timers.Add(new WorldTimer(8000, (world, j) =>
                                 {
-                                    switch (client?.Player?.HpPotionPrice)
+                                    switch (client?.Player?.HpPotionPrice) //when player left before Timer
                                     {
                                         case 5:
                                             break;
@@ -230,7 +233,7 @@ namespace LoESoft.GameServer.networking.handlers
 
                                 client?.Player?.Owner?.Timers.Add(new WorldTimer(8000, (world, j) =>
                                 {
-                                    switch (client.Player.MpPotionPrice)
+                                    switch (client?.Player?.MpPotionPrice) //when player left before Timer
                                     {
                                         case 5:
                                             break;

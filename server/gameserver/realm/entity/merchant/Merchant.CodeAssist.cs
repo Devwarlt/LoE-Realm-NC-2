@@ -97,6 +97,8 @@ namespace LoESoft.GameServer.realm.entity.merchant
                         Result = 0,
                         Message = "{\"key\":\"server.inventory_full\"}"
                     });
+
+                    Price = originalPrice;
                 }
                 else
                 {
