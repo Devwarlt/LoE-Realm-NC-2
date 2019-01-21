@@ -15,6 +15,7 @@ namespace LoESoft.GameServer.logic
 
             .Init("Arena Headless Horseman",
                 new State(
+                    new DropPortalOnDeath("Haunted Cemetery Portal", .4, 1),
                     new Spawn("Arena Horseman Anchor", 1, 1),
                     new State("EverythingIsCool",
                         new HpLessTransition(0.1, "End"),
@@ -41,8 +42,7 @@ namespace LoESoft.GameServer.logic
                         new Flashing(0xF0E68C, 1, 1000),
                         new Shoot(15, 3, shootAngle: 25, index: 0, coolDown: 1000),
                         new Shoot(15, index: 1, coolDown: 1000)
-                        ),
-                    new TransformOnDeath("Haunted Cemetery Portal", probability: .4)
+                        )
                     )
             )
 
@@ -116,7 +116,7 @@ namespace LoESoft.GameServer.logic
 
             .Init("Crystal Prisoner",
                 new State(
-                    new TransformOnDeath("Deadwater Docks", probability: 1),
+                    new DropPortalOnDeath("Deadwater Docks", 1, 1),
                     new Spawn("Crystal Prisoner Steed", maxChildren: 3, initialSpawn: 0, coolDown: 200),
                     new State("pause",
                         new AddCond(ConditionEffectIndex.Invulnerable), // ok

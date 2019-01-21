@@ -54,7 +54,7 @@ namespace LoESoft.GameServer.realm
             ShowDisplays = true;
             MaxPlayers = -1;
             SetMusic("main");
-            Timers.Add(new WorldTimer(30 * 1000, (w, t) =>
+            Timers.Add(new WorldTimer(120 * 1000, (w, t) =>
             {
                 canBeClosed = true;
 

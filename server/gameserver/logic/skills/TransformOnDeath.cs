@@ -2,7 +2,6 @@
 
 using LoESoft.GameServer.realm;
 using LoESoft.GameServer.realm.entity;
-using LoESoft.GameServer.realm.world;
 
 #endregion
 
@@ -42,10 +41,6 @@ namespace LoESoft.GameServer.logic.behaviors
                     for (int i = 0; i < count; i++)
                     {
                         var entity = Entity.Resolve(target);
-
-                        if (entity.Name.ToLower().Contains("Portal")
-                        && (e.Host.Owner is IArena || e.Host.Owner.Name == "Wine Cellar"))
-                            return;
 
                         if (returnToSpawn)
                             entity.Move((e.Host as Enemy).SpawnPoint.X, (e.Host as Enemy).SpawnPoint.Y);

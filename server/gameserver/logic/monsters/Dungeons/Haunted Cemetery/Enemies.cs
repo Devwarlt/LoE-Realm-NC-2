@@ -511,7 +511,7 @@ namespace LoESoft.GameServer.logic
                      new EntityNotExistsTransition("Troll 3", 100, "88")
                      ),
                  new State("88",
-                     new TransformOnDeath("Haunted Cemetery Gates Portal"),
+                     new DropPortalOnDeath("Haunted Cemetery Gates Portal", 1, 1, 0, 0, 180),
                      new Suicide()
                      )
                  )
@@ -1254,7 +1254,7 @@ namespace LoESoft.GameServer.logic
                      new EntitiesNotExistsTransition(100, "88", "Arena Ghost Bride", "Arena Possessed Girl")
                      ),
                  new State("88",
-                     new TransformOnDeath("Haunted Cemetery Graves Portal"),
+                     new DropPortalOnDeath("Haunted Cemetery Graves Portal", 1, 1, 0, 0, 180),
                      new Suicide()
                      )
                  )
@@ -1842,7 +1842,7 @@ namespace LoESoft.GameServer.logic
                      new EntitiesNotExistsTransition(100, "88", "Arena Blue Flame", "Arena Grave Caretaker")
                      ),
                  new State("88",
-                     new TransformOnDeath("Haunted Cemetery Final Rest Portal"),
+                     new DropPortalOnDeath("Haunted Cemetery Final Rest Portal", 1, 1, 0, 0, 180),
                      new Suicide()
                      )
                  )
