@@ -29,8 +29,8 @@ namespace LoESoft.GameServer.realm.entity.merchant
         {
             if (ObjectType == 0x01ca) //Merchant
             {
-                int originalPrice = Price;
-                Price = (int)(Price * player.AccountPerks.MerchantDiscount());
+                int originalPrice = this.Price;
+                int Price = (int)(this.Price * player.AccountPerks.MerchantDiscount());
                 if (TryDeduct(player))
                 {
                     for (var i = 4; i < player.Inventory.Length; i++)
@@ -97,8 +97,6 @@ namespace LoESoft.GameServer.realm.entity.merchant
                         Result = 0,
                         Message = "{\"key\":\"server.inventory_full\"}"
                     });
-
-                    Price = originalPrice;
                 }
                 else
                 {
