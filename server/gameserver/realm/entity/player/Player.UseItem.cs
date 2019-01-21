@@ -210,8 +210,11 @@ namespace LoESoft.GameServer.realm.entity.player
 
                                 Owner?.Aoe(target, eff.Radius, false, enemy =>
                                 {
-                                    enemies.Add(enemy as Enemy);
-                                    totalDmg += (enemy as Enemy).Damage(this, time, eff.TotalDamage, false);
+                                    if (!enemy.IsPet)
+                                    {
+                                        enemies.Add(enemy as Enemy);
+                                        totalDmg += (enemy as Enemy).Damage(this, time, eff.TotalDamage, false);
+                                    }
                                 });
 
                                 var players = new List<Player>();
@@ -255,11 +258,11 @@ namespace LoESoft.GameServer.realm.entity.player
                                 Color = new ARGB(0xff9000ff),
                                 TargetId = Id,
                                 PosA = target
-                            }, p => this.Dist(p) < 25);
+                            }, p => Dist(p) < 25);
 
                             Owner?.Timers.Add(new WorldTimer(1500, (world, t) =>
                             {
-                                Trap trap = new Trap(
+                                var trap = new Trap(
                                     this,
                                     eff.Radius,
                                     eff.TotalDamage,
@@ -342,25 +345,34 @@ namespace LoESoft.GameServer.realm.entity.player
                     case ActivateEffects.Lightning:
                         {
                             Enemy start = null;
-                            double angle = Math.Atan2(target.Y - Y, target.X - X);
-                            double diff = Math.PI / 3;
+
+                            var angle = Math.Atan2(target.Y - Y, target.X - X);
+                            var diff = Math.PI / 3;
+
                             Owner?.Aoe(target, 6, false, enemy =>
                             {
                                 if (!(enemy is Enemy))
                                     return;
-                                double x = Math.Atan2(enemy.Y - Y, enemy.X - X);
+
+                                if (enemy.IsPet)
+                                    return;
+
+                                var x = Math.Atan2(enemy.Y - Y, enemy.X - X);
+
                                 if (Math.Abs(angle - x) < diff)
                                 {
                                     start = enemy as Enemy;
                                     diff = Math.Abs(angle - x);
                                 }
                             });
+
                             if (start == null)
                                 return true;
 
-                            Enemy current = start;
-                            Enemy[] targets = new Enemy[eff.MaxTargets];
-                            for (int i = 0; i < targets.Length; i++)
+                            var current = start;
+                            var targets = new Enemy[eff.MaxTargets];
+
+                            for (var i = 0; i < targets.Length; i++)
                             {
                                 targets[i] = current;
 
@@ -370,24 +382,31 @@ namespace LoESoft.GameServer.realm.entity.player
                                         Array.IndexOf(targets, enemy) == -1 &&
                                         this.Dist(enemy) <= 6) is Enemy next))
                                     break;
+
                                 current = next;
                             }
 
-                            List<Message> pkts = new List<Message>();
-                            for (int i = 0; i < targets.Length; i++)
+                            var pkts = new List<Message>();
+
+                            for (var i = 0; i < targets.Length; i++)
                             {
                                 if (targets[i] == null)
                                     break;
+
                                 if (targets[i].HasConditionEffect(ConditionEffectIndex.Invincible))
                                     continue;
-                                Entity prev = i == 0 ? (Entity)this : targets[i - 1];
+
+                                var prev = i == 0 ? (Entity)this : targets[i - 1];
+
                                 targets[i]?.Damage(this, time, eff.TotalDamage, false);
+
                                 if (eff.ConditionEffect != null)
                                     targets[i].ApplyConditionEffect(new ConditionEffect
                                     {
                                         Effect = eff.ConditionEffect.Value,
                                         DurationMS = (int)(eff.EffectDuration * 1000)
                                     });
+
                                 pkts.Add(new SHOWEFFECT
                                 {
                                     EffectType = EffectType.Lightning,

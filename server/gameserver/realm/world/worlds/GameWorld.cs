@@ -122,7 +122,7 @@ namespace LoESoft.GameServer.realm.world
                     {
                         do
                         {
-                            await Task.Delay(20 * 60 * 1000);
+                            await Task.Delay(30 * 60 * 1000);
 
                             foreach (var i in Players.Values)
                             {
