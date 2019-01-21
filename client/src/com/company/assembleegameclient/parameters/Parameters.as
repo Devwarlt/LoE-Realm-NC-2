@@ -12,7 +12,7 @@ import flash.utils.Dictionary;
 import kabam.rotmg.build.impl.BuildEnvironments;
 
 public class Parameters {
-    public static const IS_DEVELOPER_MODE:Boolean = true;
+    public static const IS_DEVELOPER_MODE:Boolean = false;
     public static const DISCORD_PERMANENTLY_INVITE:String = "https://discord.gg/htpVTFq";
     public static const CONNECTION_SECURITY_PROTOCOL:String = "http";
     public static const CLIENT_NAME:String = "LoE Realm";
@@ -21,7 +21,7 @@ public class Parameters {
     public static const ENVIRONMENT_DNS:String = !IS_DEVELOPER_MODE ? "loe-nc.servegame.com" : "localhost";
     public static const ENVIRONMENT_PORT:String = "5555";
     public static const BUILD_VERSION:String = "3";
-    public static const MINOR_VERSION:String = "2.3";
+    public static const MINOR_VERSION:String = "2.4";
     public static const FULL_BUILD:String = "v" + BUILD_VERSION + "." + MINOR_VERSION;
     public static const ENABLE_ENCRYPTION:Boolean = true;
     public static const PORT:int = 2050;
@@ -284,7 +284,7 @@ public class Parameters {
         setDefaultKey("miniMapZoomOut", KeyCodes.MINUS);
         setDefaultKey("miniMapZoomIn", KeyCodes.EQUAL);
         setDefaultKey("resetToDefaultCameraAngle", KeyCodes.Z);
-        setDefaultKey("togglePerformanceStats", KeyCodes.UNSET);
+        setDefaultKey("togglePerformanceStats", KeyCodes.F1);
         setDefaultKey("options", KeyCodes.O);
         setDefaultKey("toggleCentering", KeyCodes.X);
         setDefaultKey("chat", KeyCodes.ENTER);
@@ -320,7 +320,7 @@ public class Parameters {
         setDefault("allowRotation", true);
         setDefault("allowMiniMapRotation", false);
         setDefault("charIdUseMap", {});
-        setDefault("drawShadows", true);
+        setDefault("drawShadows", false);
         setDefault("textBubbles", true);
         setDefault("showTradePopup", true);
         setDefault("paymentMethod", null);
@@ -336,8 +336,8 @@ public class Parameters {
         setDefault("inventorySwap", true);
         setDefault("particleEffect", false);
         setDefault("uiQuality", true);
-        setDefault("disableEnemyParticles", false);
-        setDefault("disableAllyParticles", false);
+        setDefault("disableEnemyParticles", true);
+        setDefault("disableAllyParticles", true);
         setDefault("disablePlayersHitParticles", false);
         setDefault("cursorSelect", "4");
         setDefault("friendListDisplayFlag", false);
@@ -369,7 +369,7 @@ public class Parameters {
         setDefault("friendStarRequirement", 0);
         setDefault("HPBar", true);
         setDefault("newMiniMapColors", false);
-        setDefault("fullscreenMod", true);
+        setDefault("fullscreenMod", false);
         setDefault("mscale", 12);
         setDefault("showTierTag", true);
         setDefaultKey("reconVault", KeyCodes.F7);

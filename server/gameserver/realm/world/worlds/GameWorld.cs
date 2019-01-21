@@ -146,10 +146,10 @@ namespace LoESoft.GameServer.realm.world
                                 Overseer.SendMsg(player, "BUT NOW YOU SHALL FEEL MY WRATH!", "#Oryx the Mad God");
                                 Overseer.SendMsg(player, "COME MEET YOUR DOOM AT THE WALLS OF MY WINE CELLAR!", "#Oryx the Mad God");
 
-                                i.Client.SendMessage(new SHOWEFFECT { EffectType = EffectType.Jitter });
-                                i.ApplyConditionEffect(new ConditionEffect
+                                player.Client.SendMessage(new SHOWEFFECT { EffectType = EffectType.Jitter });
+                                player.ApplyConditionEffect(new ConditionEffect
                                 {
-                                    DurationMS = 5000,
+                                    DurationMS = 15000,
                                     Effect = ConditionEffectIndex.Invincible
                                 });
                             }
@@ -169,6 +169,8 @@ namespace LoESoft.GameServer.realm.world
                             await Task.Delay(5 * 1000);
 
                             IsRealmClosed = false;
+
+                            Overseer.UniqueEvents.Clear();
                         } while (true);
                     }, TaskCreationOptions.LongRunning);
                     AutoOryx.ContinueWith(task => GameServer.log.Error(task.Exception.InnerException),
