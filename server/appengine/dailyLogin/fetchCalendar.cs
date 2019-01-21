@@ -8,10 +8,14 @@ namespace LoESoft.AppEngine.dailyLogin
 {
     public class MonthCalendarUtils
     {
-        public static DateTime StartDate = new DateTime(2019, 1, 14, 0, 0, 0, Settings.DateTimeKind);
-        public static DateTime EndDate = new DateTime(2019, 1, 25, 0, 0, 0, Settings.DateTimeKind);
+        public static DateTime StartDate = new DateTime(2019, 2, 1, 0, 0, 0, Settings.DateTimeKind);
+        public static DateTime EndDate = new DateTime(2019, 2, 28, 23, 59, 59, Settings.DateTimeKind);
         public static bool DISABLE_CALENDAR = true;
 
+        internal static bool IsNextDay(DateTime dateTime) => dateTime != DateTime.Today;
+        internal static bool IsNextCalendar(DateTime dateTime) => dateTime < StartDate;
+
+        #region CalendarList
         public static List<FetchCalendarDay> MonthCalendarList = new List<FetchCalendarDay>()
         {
             new FetchCalendarDay
@@ -60,6 +64,7 @@ namespace LoESoft.AppEngine.dailyLogin
             }
         };
     }
+    #endregion
 
     public class FetchCalendarDay
     {
@@ -75,7 +80,7 @@ namespace LoESoft.AppEngine.dailyLogin
          *  game_net_user_id (int) - ?
          *  ignore (int) - ?
          *  game_net (string) - ?
-         *  giud (string) - Account E-mail
+         *  guid (string) - Account E-mail
          *  play_platform (string) - ?
          *  password (string) - Account Password
          *  gameClientVersion (string) - Client Version
@@ -101,7 +106,7 @@ namespace LoESoft.AppEngine.dailyLogin
 
             var CalendarDb = new DailyCalendar(acc);
 
-            if (CalendarDb.IsNull || IsNextMonth(CalendarDb.LastTime))
+            if (CalendarDb.IsNull || MonthCalendarUtils.IsNextCalendar(CalendarDb.LastTime))
             {
                 CalendarDb = new DailyCalendar(acc)
                 {
@@ -113,7 +118,7 @@ namespace LoESoft.AppEngine.dailyLogin
                 };
             }
 
-            if (IsNextDay(CalendarDb.LastTime))
+            if (MonthCalendarUtils.IsNextDay(CalendarDb.LastTime))
             {
                 CalendarDb.NonConsecutiveDays++;
                 CalendarDb.UnlockableDays++;
@@ -128,7 +133,7 @@ namespace LoESoft.AppEngine.dailyLogin
         internal string GetXML(DailyCalendar calendar)
         {
             var LoginRewards = new XElement("LoginRewards");
-            LoginRewards.Add(new XAttribute("serverTime", new DateTime(0, Settings.DateTimeKind))); //Get Server Time
+            LoginRewards.Add(new XAttribute("serverTime", DateTime.UtcNow));
             LoginRewards.Add(new XAttribute("conCurDay", calendar.ConsecutiveDays));
             LoginRewards.Add(new XAttribute("nonconCurDay", calendar.NonConsecutiveDays));
 
@@ -172,9 +177,5 @@ namespace LoESoft.AppEngine.dailyLogin
 
             return LoginRewards.ToString();
         }
-
-        internal bool IsNextDay(DateTime dateTime) => dateTime != DateTime.Today;
-
-        internal bool IsNextMonth(DateTime dateTime) => (dateTime.Year == MonthCalendarUtils.StartDate.Year && dateTime.Month != MonthCalendarUtils.StartDate.Month) || dateTime.Year != MonthCalendarUtils.StartDate.Year;
     }
 }

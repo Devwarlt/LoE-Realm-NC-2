@@ -634,7 +634,7 @@ namespace LoESoft.GameServer.realm.commands
                     return true;
                 }
 
-                player.SendInfo("Cannon find account!");
+                player.SendInfo("Cannot find an account!");
                 return false;
             }
             catch
@@ -667,7 +667,7 @@ namespace LoESoft.GameServer.realm.commands
                     return true;
                 }
 
-                player.SendInfo("Cannon find account!");
+                player.SendInfo("Cannot find an account!");
                 return false;
             }
             catch
@@ -675,6 +675,37 @@ namespace LoESoft.GameServer.realm.commands
                 player.SendError("Cannot unban!");
                 return false;
             }
+        }
+    }
+
+    internal class SizeCommand : Command
+    {
+        public SizeCommand() : base("size", (int)AccountType.VIP)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            if (args.Length == 0)
+            {
+                player.SendInfo("Usage: /size <value>");
+                return false;
+            }
+
+            var size = int.Parse(args[0]);
+            var minSize = 50;
+            var maxSize = 150;
+
+            if(size >= minSize && size <= maxSize)
+            {
+                player.SendInfo($"Succesfully changed your size ({size})!");
+                player.Client.Character.Size = size;
+                player.Client.Character.FlushAsync();
+                return true;
+            }
+
+            player.SendInfo($"Cannot change your size (min: {minSize}, max: {maxSize}, you wrote: {size})!");
+            return false;
         }
     }
 }

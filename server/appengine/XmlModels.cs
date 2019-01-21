@@ -479,6 +479,7 @@ namespace LoESoft.AppEngine
         public int LDTimer { get; private set; }
         public int LTTimer { get; private set; }
         public bool HasBackpack { get; private set; }
+        public int Size { get; private set; }
 
         public static Character FromDb(DbChar character, bool dead)
         {
@@ -512,7 +513,8 @@ namespace LoESoft.AppEngine
                 XpTimer = character.XPBoostTimer,
                 LDTimer = character.LootDropTimer,
                 LTTimer = character.LootTierTimer,
-                HasBackpack = character.HasBackpack
+                HasBackpack = character.HasBackpack,
+                Size = character.Size
             };
         }
 

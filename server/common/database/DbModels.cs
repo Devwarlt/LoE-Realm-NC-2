@@ -738,6 +738,12 @@ namespace LoESoft.Core
             get { return GetValue("xpBoosted", false); }
             set { SetValue("xpBoosted", value); }
         }
+
+        public int Size
+        {
+            get { return GetValue("size", 80); }
+            set { SetValue("size", value); }
+        }
     }
 
     public class DbDeath : RedisObject

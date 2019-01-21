@@ -128,6 +128,8 @@ namespace LoESoft.GameServer.realm.entity.player
                 }
                 catch (ArgumentOutOfRangeException) { } // just don't return errors, hold this exception without export any value
             }
+
+            stats[StatsType.SIZE_STAT] = Client.Character.Size;
         }
     }
 }
