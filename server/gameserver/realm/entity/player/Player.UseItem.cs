@@ -604,15 +604,16 @@ namespace LoESoft.GameServer.realm.entity.player
                                     SendHelp("Dungeon not implemented yet.");
                                     return true;
                                 }
-                                Entity entity = Resolve(objType);
-                                World w = GameServer.Manager.GetWorld(Owner.Id); //can't use Owner here, as it goes out of scope
-                                int TimeoutTime = GameServer.Manager.GameData.Portals[objType].TimeoutTime;
-                                string DungName = GameServer.Manager.GameData.Portals[objType].DungeonName;
 
-                                ARGB c = new ARGB(0x00FF00);
+                                var entity = Resolve(objType);
+                                var w = GameServer.Manager.GetWorld(Owner.Id); //can't use Owner here, as it goes out of scope
+                                var TimeoutTime = GameServer.Manager.GameData.Portals[objType].TimeoutTime;
+                                var DungName = GameServer.Manager.GameData.Portals[objType].DungeonName;
 
-                                entity?.Move(X, Y);
-                                w?.EnterWorld(entity);
+                                var c = new ARGB(0x00FF00);
+
+                                entity.Move(X, Y);
+                                w.EnterWorld(entity);
 
                                 w.BroadcastMessage(new NOTIFICATION
                                 {
@@ -630,15 +631,15 @@ namespace LoESoft.GameServer.realm.entity.player
                                     NameColor = 0x123456,
                                     TextColor = 0x123456
                                 }, null);
-                                w?.Timers.Add(new WorldTimer(TimeoutTime * 1000,
+
+                                w.Timers.Add(new WorldTimer(TimeoutTime * 1000,
                                     (world, t) => //default portal close time * 1000
                                     {
                                         try
-                                        {
-                                            w?.LeaveWorld(entity);
-                                        }
-                                        catch (Exception) { }
+                                        { world.LeaveWorld(entity); }
+                                        catch { }
                                     }));
+
                                 return false;
                             }
                             else

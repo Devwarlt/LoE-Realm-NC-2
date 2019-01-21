@@ -1,7 +1,6 @@
 ﻿#region
 
 using LoESoft.GameServer.networking.outgoing;
-using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
 using LoESoft.GameServer.realm.terrain;
 using System;
@@ -21,6 +20,99 @@ namespace LoESoft.GameServer.realm.world
         private List<string> entities = new List<string>();
         private Random rng = new Random();
 
+        private readonly Dictionary<int, Action<Player>> WaveReward = new Dictionary<int, Action<Player>>()
+        {
+            { 10, (player) => {
+                player.SendInfo("[Public Arena] Reward of wave 10:");
+                player.SendInfo("- 1,000 EXP");
+                player.SendInfo("- 50 Fame");
+                player.Experience += 1000;
+
+                GameServer.Manager.Database.UpdateFame(player.Client.Account, 50);
+            } },
+            { 20, (player) => {
+                player.SendInfo("[Public Arena] Reward of wave 20:");
+                player.SendInfo("- 5,000 EXP");
+                player.SendInfo("- 100 Fame");
+                player.Experience += 5000;
+
+                GameServer.Manager.Database.UpdateFame(player.Client.Account, 100);
+            } },
+            { 30, (player) => {
+                player.SendInfo("[Public Arena] Reward of wave 30:");
+                player.SendInfo("- 10,000 EXP");
+                player.SendInfo("- 250 Fame");
+                player.Experience += 10000;
+
+                GameServer.Manager.Database.UpdateFame(player.Client.Account, 250);
+            } },
+            { 40, (player) => {
+                player.SendInfo("[Public Arena] Reward of wave 40:");
+                player.SendInfo("- 25,000 EXP");
+                player.SendInfo("- 500 Fame");
+                player.Experience += 25000;
+
+                GameServer.Manager.Database.UpdateFame(player.Client.Account, 500);
+            } },
+            { 50, (player) => {
+                player.SendInfo("[Public Arena] Reward of wave 50:");
+                player.SendInfo("- 50,000 EXP");
+                player.SendInfo("- 1,000 Fame");
+                player.Experience += 50000;
+
+                GameServer.Manager.Database.UpdateFame(player.Client.Account, 1000);
+            } },
+            { 60, (player) => {
+                player.SendInfo("[Public Arena] Reward of wave 60:");
+                player.SendInfo("- 100,000 EXP");
+                player.SendInfo("- 2,500 Fame");
+                player.Experience += 100000;
+
+                GameServer.Manager.Database.UpdateFame(player.Client.Account, 2500);
+            } },
+            { 70, (player) => {
+                player.SendInfo("[Public Arena] Reward of wave 70:");
+                player.SendInfo("- 250,000 EXP");
+                player.SendInfo("- 5,000 Fame");
+                player.Experience += 250000;
+
+                GameServer.Manager.Database.UpdateFame(player.Client.Account, 5000);
+            } },
+            { 80, (player) => {
+                player.SendInfo("[Public Arena] Reward of wave 80:");
+                player.SendInfo("- 500,000 EXP");
+                player.SendInfo("- 10,000 Fame");
+                player.Experience += 500000;
+
+                GameServer.Manager.Database.UpdateFame(player.Client.Account, 10000);
+            } },
+            { 90, (player) => {
+                player.SendInfo("[Public Arena] Reward of wave 90:");
+                player.SendInfo("- 1,000,000 EXP");
+                player.SendInfo("- 25,000 Fame");
+                player.Experience += 1000000;
+
+                GameServer.Manager.Database.UpdateFame(player.Client.Account, 25000);
+            } },
+            { 100, (player) => {
+                player.SendInfo("[Public Arena] Reward of wave 100:");
+                player.SendInfo("- 2,500,000 EXP");
+                player.SendInfo("- 50,000 Fame");
+                player.Experience += 2500000;
+
+                GameServer.Manager.Database.UpdateFame(player.Client.Account, 50000);
+            } }
+        };
+
+        private readonly List<(int fromX, int fromY, int toX, int toY)> AvailablePositions
+            = new List<(int fromX, int fromY, int toX, int toY)>()
+        {
+                (16, 16, 22, 22), // top-left square
+                (41, 16, 47, 22), // top-right square
+                (16, 41, 22, 47), // bottom-left square
+                (41, 41, 47, 47) // bottom-right square
+        };
+
         public PublicArena()
         {
             Name = "Public Arena";
@@ -28,10 +120,10 @@ namespace LoESoft.GameServer.realm.world
             Background = 0;
             Difficulty = 5;
             AllowTeleport = true;
+            MaxPlayers = 20;
         }
 
-        protected override void Init() =>
-            LoadMap("arena", MapType.Wmap);
+        protected override void Init() => LoadMap("pub-arena-v1", MapType.Json);
 
         public override void Tick(RealmTime time)
         {
@@ -39,8 +131,6 @@ namespace LoESoft.GameServer.realm.world
 
             if (Players.Count == 0)
                 return;
-
-            CheckOutOfBounds();
 
             InitArena(time);
         }
@@ -56,7 +146,7 @@ namespace LoESoft.GameServer.realm.world
 
                     ready = false;
 
-                    foreach (KeyValuePair<int, Player> i in Players)
+                    foreach (var i in Players)
                     {
                         if (i.Value.Client == null)
                             continue;
@@ -66,6 +156,9 @@ namespace LoESoft.GameServer.realm.world
                             CurrentRuntime = time.ElapsedMsDelta,
                             Wave = wave
                         });
+
+                        if (WaveReward.ContainsKey(wave))
+                            WaveReward[wave].Invoke(i.Value);
                     }
 
                     waiting = true;
@@ -86,19 +179,23 @@ namespace LoESoft.GameServer.realm.world
 
         private List<string> SeedArena(int currentWave)
         {
-            List<string> newEntities = new List<string>();
+            var newEntities = new List<string>();
 
             if ((currentWave % 2 == 0) && (currentWave < 10))
                 for (int i = 0; i < currentWave / 2; i++)
                     newEntities.Add(EntityWeak[rng.Next(EntityWeak.Count - 1)]);
 
             if (currentWave % 3 == 0)
-                for (int i = 0; i < currentWave / 3; i++)
+                for (int i = 0; i < currentWave / 2; i++)
                     newEntities.Add(EntityNormal[rng.Next(EntityNormal.Count - 1)]);
 
             if ((currentWave % 2 == 0) && (currentWave >= 10))
-                for (int i = 0; i < currentWave / 4; i++)
+                for (int i = 0; i < currentWave / 2; i++)
                     newEntities.Add(EntityGod[rng.Next(EntityGod.Count - 1)]);
+
+            if ((currentWave % 2 == 0) && (currentWave >= 20))
+                for (int i = 0; i < currentWave / 2; i++)
+                    newEntities.Add(DreamMinions[rng.Next(DreamMinions.Count - 1)]);
 
             if ((currentWave % 5 == 0) && (currentWave >= 20))
                 newEntities.Add(EntityQuest[rng.Next(EntityQuest.Count - 1)]);
@@ -117,10 +214,19 @@ namespace LoESoft.GameServer.realm.world
 
                 foreach (string entity in entities)
                 {
-                    Position position = new Position { X = rng.Next(12, Map.Width) - 6, Y = rng.Next(12, Map.Height) - 6 };
-                    Entity enemy = Entity.Resolve(GameServer.Manager.GameData.IdToObjectType[entity]);
+                    var (fromX, fromY, toX, toY) = AvailablePositions[rng.Next(AvailablePositions.Count - 1)];
+                    var position = new Position
+                    {
+                        X = rng.Next(fromX, toX),
+                        Y = rng.Next(fromY, toY)
+                    };
+                    var enemy = Entity.Resolve(GameServer.Manager.GameData.IdToObjectType[entity]);
 
-                    enemy.Move(position.X, position.Y);
+                    if (EntityQuest.Contains(entity))
+                        enemy.Move(32f, 32f);
+                    else
+                        enemy.Move(position.X, position.Y);
+
                     EnterWorld(enemy);
                 }
 
@@ -134,7 +240,7 @@ namespace LoESoft.GameServer.realm.world
         {
             int quantity = Enemies.Count;
 
-            foreach (Enemy enemy in Enemies.Values)
+            foreach (var enemy in Enemies.Values)
                 if (enemy.IsPet)
                     quantity--;
 
@@ -144,14 +250,13 @@ namespace LoESoft.GameServer.realm.world
         private bool IsEmpty() =>
             CheckIfEmpty() == 0;
 
-        public bool OutOfBounds(float x, float y) =>
-            (Map.Height >= y && Map.Width >= x && x > -1 && y > 0) ?
-                Map[(int)x, (int)y].Region == TileRegion.Outside_Arena :
-                true;
+        public bool OutOfBounds(float x, float y)
+            => (y < Map.Height && y > 0 && x < Map.Width && x > 0) ?
+            Map[(int)x, (int)y].Region == TileRegion.Outside_Arena : true;
 
         protected void CheckOutOfBounds()
         {
-            foreach (KeyValuePair<int, Enemy> i in Enemies)
+            foreach (var i in Enemies)
                 if (OutOfBounds(i.Value.X, i.Value.Y))
                     LeaveWorld(i.Value);
         }
@@ -202,19 +307,20 @@ namespace LoESoft.GameServer.realm.world
             "Medusa",
             "Slime God",
             "Sprite God",
-            "White Demon",
-            // Dream Island
+            "White Demon"
+        };
+
+        protected readonly List<string> DreamMinions = new List<string>
+        {
             "Muzzlereaper",
             "Guzzlereaper",
             "Silencer",
-            "Nightmare",
-            "Lost Prisoner Soul",
-            "Eyeguard of Surrender"
+            "Nightmare"
         };
 
         protected readonly List<string> EntityQuest = new List<string>
         {
-            "Crystal Prisoner",
+            "Mysterious Crystal",
             "Grand Sphinx",
             "Stheno the Snake Queen",
             "Frog King",
@@ -223,7 +329,14 @@ namespace LoESoft.GameServer.realm.world
             "Lord of the Lost Lands",
             "Pentaract Tower",
             "Oryx the Mad God 2",
-            "Gigacorn"
+            "Maurth the Succubus Princess",
+            "Eyeguard of Surrender",
+            "Lost Prisoner Soul",
+            "shtrs Defense System",
+            "Undertaker the Great Juggernaut",
+            "Lucky Djinn",
+            "Lucky Ent God",
+            "Dyno Bot"
         };
 
         #endregion "Entities"

@@ -257,9 +257,9 @@ namespace LoESoft.GameServer.realm.commands
 
             try
             {
-                foreach (var cData in GameServer.Manager.ClientManager.Values)
+                foreach (var client in GameServer.Manager.GetManager.Clients.Values)
                 {
-                    if (cData.Client.Account.NameChosen && cData.Client.Account.Name.EqualsIgnoreCase(playername))
+                    if (client.Account.NameChosen && client.Account.Name.EqualsIgnoreCase(playername))
                     {
                         player.Client.SendMessage(new TEXT()
                         {
@@ -268,22 +268,22 @@ namespace LoESoft.GameServer.realm.commands
                             Stars = player.Stars,
                             Name = player.Name,
                             Admin = 0,
-                            Recipient = cData.Client.Account.Name,
-                            Text = msg.ToSafeText(),
+                            Recipient = client.Account.Name,
+                            Text = msg,
                             CleanText = "",
                             TextColor = 0x123456,
                             NameColor = 0x123456
                         });
 
-                        cData.Client.SendMessage(new TEXT()
+                        client.SendMessage(new TEXT()
                         {
-                            ObjectId = cData.Client.Player.Owner.Id,
+                            ObjectId = client.Player.Owner.Id,
                             BubbleTime = 10,
                             Stars = player.Stars,
                             Name = player.Name,
                             Admin = 0,
-                            Recipient = cData.Client.Account.Name,
-                            Text = msg.ToSafeText(),
+                            Recipient = client.Account.Name,
+                            Text = msg,
                             CleanText = "",
                             TextColor = 0x123456,
                             NameColor = 0x123456
@@ -315,9 +315,9 @@ namespace LoESoft.GameServer.realm.commands
 
             var saytext = string.Join(" ", args);
 
-            if (player.Stars >= 20 || player.AccountType != (int)AccountType.REGULAR)
-                foreach (var cData in GameServer.Manager.ClientManager.Values)
-                    cData.Client?.SendMessage(new TEXT()
+            if (player.Stars >= 14 || player.AccountType != (int)AccountType.REGULAR)
+                foreach (var client in GameServer.Manager.GetManager.Clients.Values)
+                    client.SendMessage(new TEXT()
                     {
                         BubbleTime = 10,
                         Stars = player.Stars,
@@ -328,7 +328,7 @@ namespace LoESoft.GameServer.realm.commands
                     });
             else
             {
-                player.SendHelp("You need at least 20 stars to unlock the global chat feature, try again later.");
+                player.SendHelp("You need at least 14 stars to unlock the global chat feature, try again later.");
                 return false;
             }
 
@@ -354,42 +354,44 @@ namespace LoESoft.GameServer.realm.commands
                     return false;
                 }
 
-            if (!player.Client.RealmClockInitialized)
+            var client = player.Client;
+
+            if (player.AccountType == (int)AccountType.REGULAR)
             {
-                if (player.AccountType == (int)AccountType.REGULAR)
-                {
-                    player.Client.LastRealmRegularEntry = DateTime.Now;
-                    player.Client.RealmRegularClock.Elapsed += delegate { player.Client.CanRealm = true; };
-                    player.Client.RealmRegularClock.Start();
-                    player.Client.RealmClockInitialized = true;
-                }
+                if (client.RealmRegularEntryMS == -1)
+                    client.RealmRegularEntryMS = GameServer.Manager.Logic.GameTime.TotalElapsedMs;
                 else
                 {
-                    player.Client.LastRealmVIPEntry = DateTime.Now;
-                    player.Client.RealmVIPClock.Elapsed += delegate { player.Client.CanRealm = true; };
-                    player.Client.RealmVIPClock.Start();
-                    player.Client.RealmClockInitialized = true;
+                    if (GameServer.Manager.Logic.GameTime.TotalElapsedMs - client.RealmRegularEntryMS > 30000)
+                        client.CanRealm = true;
+                    else
+                        client.CanRealm = false;
+                }
+            }
+            else
+            {
+                if (client.RealmVIPEntryMS == -1)
+                    client.RealmVIPEntryMS = GameServer.Manager.Logic.GameTime.TotalElapsedMs;
+                else
+                {
+                    if (GameServer.Manager.Logic.GameTime.TotalElapsedMs - client.RealmVIPEntryMS > 10000)
+                        client.CanRealm = true;
+                    else
+                        client.CanRealm = false;
                 }
             }
 
-            if (!player.Client.CanRealm)
+            if (!client.CanRealm)
             {
-                var free = player.AccountType == (int)AccountType.REGULAR;
-                var delay = free ? 30 : 10;
-                var over = (free ? player.Client.LastRealmRegularEntry : player.Client.LastRealmVIPEntry)
-                    .AddSeconds(delay);
-                var seconds = (over - DateTime.Now).TotalSeconds;
+                var isfree = player.AccountType == (int)AccountType.REGULAR;
+                var elapsed = (isfree ? 30 : 10) - (GameServer.Manager.Logic.GameTime.TotalElapsedMs
+                    - (isfree ? client.RealmRegularEntryMS : client.RealmVIPEntryMS)) / 1000;
 
-                if (seconds >= 1)
-                {
-                    player.Client.Player.SendHelp($"You need to wait {seconds} second{(seconds > 1 ? "s" : "")} to use this command again.");
-                    return false;
-                }
-                else
-                    player.Client.CanRealm = true;
+                player.SendInfo($"{elapsed} second{(elapsed > 1 ? "s" : "")} remains to use '/realm' command.");
+                return false;
             }
 
-            if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
+            if (player.Stars >= 14 || player.AccountType != (int)AccountType.REGULAR)
                 player.Client.Reconnect(new RECONNECT()
                 {
                     Host = "",
@@ -400,7 +402,7 @@ namespace LoESoft.GameServer.realm.commands
                 });
             else
             {
-                player.SendHelp("You need at least 10 stars to unlock the realm instant access feature, try again later.");
+                player.SendHelp("You need at least 14 stars to unlock the realm instant access feature, try again later.");
                 return false;
             }
 
@@ -422,7 +424,7 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
+            if (player.Stars >= 14 || player.AccountType != (int)AccountType.REGULAR)
                 player.Client.Reconnect(new RECONNECT()
                 {
                     Host = "",
@@ -433,7 +435,7 @@ namespace LoESoft.GameServer.realm.commands
                 });
             else
             {
-                player.SendHelp("You need at least 10 stars to unlock the vault instant access feature, try again later.");
+                player.SendHelp("You need at least 14 stars to unlock the vault instant access feature, try again later.");
                 return false;
             }
 
@@ -455,42 +457,44 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            if (!player.Client.GlandsClockInitialized)
+            var client = player.Client;
+
+            if (player.AccountType == (int)AccountType.REGULAR)
             {
-                if (player.AccountType == (int)AccountType.REGULAR)
-                {
-                    player.Client.LastGlandsRegularEntry = DateTime.Now;
-                    player.Client.GlandsRegularClock.Elapsed += delegate { player.Client.CanGlands = true; };
-                    player.Client.GlandsRegularClock.Start();
-                    player.Client.GlandsClockInitialized = true;
-                }
+                if (client.GlandsRegularEntryMS == -1)
+                    client.GlandsRegularEntryMS = GameServer.Manager.Logic.GameTime.TotalElapsedMs;
                 else
                 {
-                    player.Client.LastGlandsVIPEntry = DateTime.Now;
-                    player.Client.GlandsVIPClock.Elapsed += delegate { player.Client.CanGlands = true; };
-                    player.Client.GlandsVIPClock.Start();
-                    player.Client.GlandsClockInitialized = true;
+                    if (GameServer.Manager.Logic.GameTime.TotalElapsedMs - client.GlandsRegularEntryMS > 30000)
+                        client.CanGlands = true;
+                    else
+                        client.CanGlands = false;
+                }
+            }
+            else
+            {
+                if (client.GlandsVIPEntryMS == -1)
+                    client.GlandsVIPEntryMS = GameServer.Manager.Logic.GameTime.TotalElapsedMs;
+                else
+                {
+                    if (GameServer.Manager.Logic.GameTime.TotalElapsedMs - client.GlandsVIPEntryMS > 10000)
+                        client.CanGlands = true;
+                    else
+                        client.CanGlands = false;
                 }
             }
 
-            if (!player.Client.CanGlands)
+            if (!client.CanGlands)
             {
-                var free = player.AccountType == (int)AccountType.REGULAR;
-                var delay = free ? 30 : 10;
-                var over = (free ? player.Client.LastGlandsRegularEntry : player.Client.LastGlandsVIPEntry)
-                    .AddSeconds(delay);
-                var seconds = (over - DateTime.Now).TotalSeconds;
+                var isfree = player.AccountType == (int)AccountType.REGULAR;
+                var elapsed = (isfree ? 30 : 10) - (GameServer.Manager.Logic.GameTime.TotalElapsedMs
+                    - (isfree ? client.GlandsRegularEntryMS : client.GlandsVIPEntryMS)) / 1000;
 
-                if (seconds >= 1)
-                {
-                    player.Client.Player.SendHelp($"You need to wait {seconds} second{(seconds > 1 ? "s" : "")} to use this command again.");
-                    return false;
-                }
-                else
-                    player.Client.CanGlands = true;
+                player.SendInfo($"{elapsed} second{(elapsed > 1 ? "s" : "")} remains to use '/glands' command.");
+                return false;
             }
 
-            if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
+            if (player.Stars >= 14 || player.AccountType != (int)AccountType.REGULAR)
             {
                 player.Move(1478.5f, 1086.5f);
                 player.Owner.BroadcastMessage(new GOTO
@@ -506,7 +510,7 @@ namespace LoESoft.GameServer.realm.commands
             }
             else
             {
-                player.SendHelp("You need at least 10 stars to unlock the god lands instant access feature, try again later.");
+                player.SendHelp("You need at least 14 stars to unlock the god lands instant access feature, try again later.");
                 return false;
             }
 
@@ -525,29 +529,16 @@ namespace LoESoft.GameServer.realm.commands
             var sb = new StringBuilder("Online at this moment: ");
             var playersonline = 0;
 
-            foreach (var w in GameServer.Manager.Worlds)
+            foreach (var name in GameServer.Manager.GetManager.GetPlayersName())
             {
-                var world = w.Value;
-
-                if (w.Key != 0)
-                {
-                    var copy = world.Players.Values.ToArray();
-
-                    if (copy.Length != 0)
-                    {
-                        for (int i = 0; i < copy.Length; i++)
-                        {
-                            sb.Append(copy[i].Name);
-                            sb.Append(", ");
-                            playersonline++;
-                        }
-                    }
-                }
+                sb.Append(name);
+                sb.Append(", ");
+                playersonline++;
             }
 
             if (player.AccountType >= (int)AccountType.MOD)
             {
-                string fixedString = sb.ToString().TrimEnd(',', ' ');
+                var fixedString = sb.ToString().TrimEnd(',', ' ');
 
                 player.SendInfo(fixedString + ".");
             }

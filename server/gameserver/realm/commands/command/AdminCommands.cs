@@ -44,16 +44,16 @@ namespace LoESoft.GameServer.realm.commands
                     Console.Out.WriteLine("F.");
                 }
             }));
-            foreach (var cData in GameServer.Manager.ClientManager.Values)
-                cData.Client?.SendMessage(new TEXT
+            foreach (var client in GameServer.Manager.GetManager.Clients.Values)
+                client?.SendMessage(new TEXT
                 {
                     BubbleTime = 0,
                     Stars = -1,
                     Name = "",
                     Text = "Arena Opened"
                 });
-            foreach (var cData in GameServer.Manager.ClientManager.Values)
-                cData.Client?.SendMessage(new NOTIFICATION
+            foreach (var client in GameServer.Manager.GetManager.Clients.Values)
+                client?.SendMessage(new NOTIFICATION
                 {
                     Color = new ARGB(0xff00ff00),
                     ObjectId = player.Id,
@@ -77,9 +77,9 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            foreach (var i in GameServer.Manager.ClientManager.Values)
+            foreach (var i in GameServer.Manager.GetManager.Clients.Values)
             {
-                var target = i.Client.Player;
+                var target = i.Player;
 
                 if (target.Owner is Vault)
                 {
@@ -129,9 +129,9 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            foreach (var i in GameServer.Manager.ClientManager.Values)
+            foreach (var i in GameServer.Manager.GetManager.Clients.Values)
             {
-                var target = i.Client.Player;
+                var target = i.Player;
 
                 if (target.Name.EqualsIgnoreCase(args[0]))
                 {
@@ -167,7 +167,7 @@ namespace LoESoft.GameServer.realm.commands
                         player.SendInfo($"Player {target.Name} is connecting to {player.Owner.Name}.");
                     }
 
-                    i.Client.SendMessage(msg);
+                    i.SendMessage(msg);
 
                     return true;
                 }
@@ -335,7 +335,7 @@ namespace LoESoft.GameServer.realm.commands
             }
             try
             {
-                foreach (KeyValuePair<int, Player> i in player.Owner.Players)
+                foreach (var i in player.Owner.Players)
                 {
                     if (i.Value.AccountType >= player.AccountType)
                     {
@@ -476,24 +476,23 @@ namespace LoESoft.GameServer.realm.commands
 
             switch ((AccountType)player.AccountType)
             {
-                case AccountType.MOD: rank = "Moderator"; break;
-                case AccountType.DEVELOPER: rank = "Developer"; break;
-                case AccountType.ADMIN: rank = "Administrator"; break;
+                case AccountType.MOD: rank = "Mod"; break;
+                case AccountType.DEVELOPER: rank = "Dev"; break;
+                case AccountType.ADMIN: rank = "Admin"; break;
                 default: break;
             }
 
-            foreach (var cData in GameServer.Manager.ClientManager.Values)
-            {
-                cData.Client.SendMessage(new TEXT
+            foreach (var client in GameServer.Manager.GetManager.Clients.Values)
+                client.SendMessage(new TEXT
                 {
                     BubbleTime = 0,
                     Stars = -1,
                     Name = "@ANNOUNCEMENT",
-                    Text = $" <{rank} {player.Name}> " + saytext,
+                    Text = $" {rank} {player.Name} says: " + saytext,
                     NameColor = 0x123456,
                     TextColor = 0x123456
                 });
-            }
+
             return true;
         }
     }
@@ -512,15 +511,16 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            var account = GameServer.Manager.Database.GetAccountByUUID(args[0]);
+            var id = GameServer.Manager.Database.ResolveId(args[0]);
+            var acc = GameServer.Manager.Database.GetAccountById(id);
 
-            if (account == null)
+            if (id == null)
             {
                 player.SendInfo($"Player '{args[0]}' not found!");
                 return false;
             }
 
-            player.SendInfo($"Account ID of player '{account.Name}' is: {account.AccountId}.");
+            player.SendInfo($"Account ID of player '{acc.Name ?? args[0]}' is: {id}.");
             return true;
         }
     }
@@ -582,7 +582,6 @@ namespace LoESoft.GameServer.realm.commands
             foreach (var w in GameServer.Manager.Worlds)
             {
                 var world = w.Value;
-
                 var rank = string.Empty;
 
                 switch ((AccountType)player.AccountType)

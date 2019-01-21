@@ -58,6 +58,17 @@ namespace LoESoft.GameServer.realm.entity.player
                 try
                 { File.WriteAllText(Path.Combine(GameServer.TaskCachePath, $"tc-char.{AccountId}.{Client.Character.CharId}.json"), JsonConvert.SerializeObject(taskCache)); }
                 catch { }
+            else
+            {
+                try
+                {
+                    var path = Path.Combine(GameServer.TaskCachePath, $"tc-char.{AccountId}.{Client.Character.CharId}.json");
+
+                    if (File.Exists(path))
+                        File.Delete(path);
+                }
+                catch { }
+            }
         }
 
         public List<MonsterCache> ImportMonsterCaches()

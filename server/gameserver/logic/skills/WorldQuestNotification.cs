@@ -22,8 +22,8 @@ namespace LoESoft.GameServer.logic.behaviors
 
             once = true;
 
-            foreach (var cData in GameServer.Manager.ClientManager.Values)
-                cData.Client.SendMessage(new TEXT
+            foreach (var client in GameServer.Manager.GetManager.Clients.Values)
+                client.SendMessage(new TEXT
                 {
                     BubbleTime = 0,
                     Stars = -1,

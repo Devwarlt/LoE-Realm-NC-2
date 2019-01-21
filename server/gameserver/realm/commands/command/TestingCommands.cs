@@ -43,13 +43,6 @@ namespace LoESoft.GameServer.realm.commands
                     }
                     break;
 
-                case "clients":
-                    {
-                        foreach (KeyValuePair<string, ClientData> i in GameServer.Manager.ClientManager)
-                            player.SendInfo($"[Clients] [ID: {i.Key}] Client '{i.Value.Client.Account.Name}' joined network at {i.Value.Registered}.");
-                    }
-                    break;
-
                 case "projectiles":
                     {
                         if (cmd == "ids")
@@ -75,7 +68,7 @@ namespace LoESoft.GameServer.realm.commands
                     break;
 
                 default:
-                    player.SendHelp("Available testing commands: 'chatdata' (my / all), 'clients', 'projectiles' (ids / all) and 'id' (mine / pet).");
+                    player.SendHelp("Available testing commands: 'chatdata' (my / all), 'projectiles' (ids / all) and 'id' (mine / pet).");
                     break;
             }
             return true;

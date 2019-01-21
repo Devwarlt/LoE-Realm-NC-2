@@ -279,9 +279,6 @@ namespace LoESoft.GameServer.networking.handlers
                     return;
                 }
 
-                if (!world.IsTickRunning)
-                    world.EnableWorldTick();
-
                 if (world.IsLimbo)
                     world = world.GetInstance(client);
 

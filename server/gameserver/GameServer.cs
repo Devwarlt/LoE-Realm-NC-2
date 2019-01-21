@@ -150,9 +150,9 @@ namespace LoESoft.GameServer
 
             try
             {
-                Manager.ClientManager.Values.Where(j => j.Client != null).Select(k =>
+                Manager.GetManager.Clients.Values.Where(j => j != null).Select(k =>
                 {
-                    k.Client.Player?.SendInfo(message);
+                    k.Player?.SendInfo(message);
                     return k;
                 }).ToList();
             }
@@ -164,9 +164,9 @@ namespace LoESoft.GameServer
             {
                 AccessDenied = true;
 
-                Manager.ClientManager.Values.Where(j => j.Client != null).Select(k =>
+                Manager.GetManager.Clients.Values.Where(j => j != null).Select(k =>
                 {
-                    Manager.TryDisconnect(k.Client, DisconnectReason.RESTART);
+                    Manager.TryDisconnect(k, DisconnectReason.RESTART);
                     return k;
                 }).ToList();
             }
@@ -196,8 +196,8 @@ namespace LoESoft.GameServer
 
                     try
                     {
-                        foreach (var cData in Manager.ClientManager.Values)
-                            cData.Client.Player?.SendInfo(message);
+                        foreach (var client in Manager.GetManager.Clients.Values)
+                            client.Player?.SendInfo(message);
                     }
                     catch (Exception ex) { ForceShutdown(ex); }
 
@@ -212,9 +212,9 @@ namespace LoESoft.GameServer
 
                 try
                 {
-                    Manager.ClientManager.Values.Where(j => j.Client != null).Select(k =>
+                    Manager.GetManager.Clients.Values.Where(j => j != null).Select(k =>
                     {
-                        k.Client.Player?.SendInfo(message);
+                        k.Player?.SendInfo(message);
                         return k;
                     }).ToList();
                 }
@@ -226,9 +226,9 @@ namespace LoESoft.GameServer
                 {
                     AccessDenied = true;
 
-                    Manager.ClientManager.Values.Where(j => j.Client != null).Select(k =>
+                    Manager.GetManager.Clients.Values.Where(j => j != null).Select(k =>
                     {
-                        Manager.TryDisconnect(k.Client, DisconnectReason.RESTART);
+                        Manager.TryDisconnect(k, DisconnectReason.RESTART);
                         return k;
                     }).ToList();
                 }

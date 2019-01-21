@@ -6,8 +6,8 @@ using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
 using LoESoft.GameServer.realm.mapsetpiece;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
-using static LoESoft.GameServer.networking.Client;
 
 #endregion
 
@@ -27,6 +27,7 @@ namespace LoESoft.GameServer.realm.world
             Name = name;
             Background = 0;
             Difficulty = -1;
+            MaxPlayers = 50;
 
             this.oryxPresent = oryxPresent;
             this.mapId = mapId;
@@ -75,8 +76,9 @@ namespace LoESoft.GameServer.realm.world
 
                     AutoEvents = new Task(async () =>
                     {
-                        foreach (var realmevent in Overseer.RealmEventCache)
-                            Realm.AllRealmEvents.Add(realmevent.Name);
+                        if (Realm.AllRealmEvents.Count == 0)
+                            foreach (var realmevent in Overseer.RealmEventCache)
+                                Realm.AllRealmEvents.Add(realmevent.Name);
 
                         do
                         {
@@ -120,7 +122,7 @@ namespace LoESoft.GameServer.realm.world
                     {
                         do
                         {
-                            await Task.Delay(15 * 60 * 1000);
+                            await Task.Delay(20 * 60 * 1000);
 
                             foreach (var i in Players.Values)
                             {
@@ -128,48 +130,47 @@ namespace LoESoft.GameServer.realm.world
                                 Overseer.SendMsg(i, "YOU WILL NOT LIVE TO SEE THE LIGHT OF DAY!", "#Oryx the Mad God");
                             }
 
-                            foreach (var i in GameServer.Manager.ClientManager.Values)
-                                i.Client.Player?.GazerDM($"Oryx is preparing to close realm '{Name}' in 15 seconds.");
+                            foreach (var i in GameServer.Manager.GetManager.Clients.Values)
+                                i.Player?.GazerDM($"Oryx is preparing to close realm '{Name}' in 15 seconds.");
 
                             await Task.Delay(15 * 1000);
 
                             IsRealmClosed = true;
 
                             var wc = GameServer.Manager.AddWorld(new WineCellar());
+                            var players = Players.Values.Where(player => player != null);
 
-                            foreach (var i in Players.Values)
+                            foreach (var player in players)
                             {
-                                Overseer.SendMsg(i, "MY MINIONS HAVE FAILED ME!", "#Oryx the Mad God");
-                                Overseer.SendMsg(i, "BUT NOW YOU SHALL FEEL MY WRATH!", "#Oryx the Mad God");
-                                Overseer.SendMsg(i, "COME MEET YOUR DOOM AT THE WALLS OF MY WINE CELLAR!", "#Oryx the Mad God");
+                                Overseer.SendMsg(player, "MY MINIONS HAVE FAILED ME!", "#Oryx the Mad God");
+                                Overseer.SendMsg(player, "BUT NOW YOU SHALL FEEL MY WRATH!", "#Oryx the Mad God");
+                                Overseer.SendMsg(player, "COME MEET YOUR DOOM AT THE WALLS OF MY WINE CELLAR!", "#Oryx the Mad God");
 
-                                i.Client.SendMessage(new SHOWEFFECT { EffectType = EffectType.Jitter });
-                                i.ApplyConditionEffect(new ConditionEffect
+                                player.Client.SendMessage(new SHOWEFFECT { EffectType = EffectType.Jitter });
+                                player.ApplyConditionEffect(new ConditionEffect
                                 {
-                                    DurationMS = 5000,
+                                    DurationMS = 15000,
                                     Effect = ConditionEffectIndex.Invincible
                                 });
                             }
 
-                            Timers.Add(new WorldTimer(5000, (w, t) =>
-                            {
-                                foreach (var i in Players.Values)
+                            await Task.Delay(10 * 1000);
+
+                            foreach (var player in players)
+                                player.Client.SendMessage(new RECONNECT
                                 {
-                                    if (wc == null)
-                                        GameServer.Manager.TryDisconnect(i.Client, DisconnectReason.RECONNECT_TO_CASTLE);
+                                    Host = "",
+                                    Port = Settings.GAMESERVER.PORT,
+                                    GameId = wc.Id,
+                                    Name = wc.Name,
+                                    Key = wc.PortalKey
+                                });
 
-                                    i.Client.SendMessage(new RECONNECT
-                                    {
-                                        Host = "",
-                                        Port = Settings.GAMESERVER.PORT,
-                                        GameId = wc.Id,
-                                        Name = wc.Name,
-                                        Key = wc.PortalKey
-                                    });
-                                }
+                            await Task.Delay(5 * 1000);
 
-                                IsRealmClosed = false;
-                            }));
+                            IsRealmClosed = false;
+
+                            Overseer.UniqueEvents.Clear();
                         } while (true);
                     }, TaskCreationOptions.LongRunning);
                     AutoOryx.ContinueWith(task => GameServer.log.Error(task.Exception.InnerException),
@@ -203,6 +204,7 @@ namespace LoESoft.GameServer.realm.world
                 Overseer.Dispose();
 
                 AutoEvents.Dispose();
+                AutoOryx.Dispose();
             }
 
             base.Dispose();

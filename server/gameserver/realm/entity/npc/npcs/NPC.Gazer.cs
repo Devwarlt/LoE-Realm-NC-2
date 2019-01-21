@@ -76,7 +76,7 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                     case "online":
                         {
                             int serverMaxUsage = Settings.NETWORKING.MAX_CONNECTIONS;
-                            int serverCurrentUsage = GameServer.Manager.ClientManager.Count;
+                            int serverCurrentUsage = GameServer.Manager.GetManager.Clients.Count;
                             int worldCurrentUsage = player.Owner.Players.Keys.Count;
                             callback = $"Server: {serverCurrentUsage}/{serverMaxUsage} player{(serverCurrentUsage > 1 ? "s" : "")} | {player.Owner.Name}: {worldCurrentUsage} player{(worldCurrentUsage > 1 ? "s" : "")}.";
                         }
@@ -173,16 +173,17 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                                     for (var j = 0; j < currentTask.RewardDatas[i].Total; j++)
                                         gifts.Add(GameServer.Manager.GameData.IdToObjectType[currentTask.RewardDatas[i].ObjectId]);
 
-                                player.Client.Account.Gifts = gifts.ToArray();
-                                player.Client.Account.FlushAsync();
-                                player.Client.Account.Reload();
-                                player.ActualTask = null;
-                                player.SaveToCharacter();
+                                callback = $"Congratulations {player.Name}! You have finished the task '{player.ActualTask}'.";
 
                                 currentTask.Bonus?.Invoke(player);
                                 currentTask.GetAchievement(player.ActualTask, player);
 
-                                callback = $"Congratulations {player.Name}! You have finished the task '{player.ActualTask}'.";
+                                player.Client.Account.Gifts = gifts.ToArray();
+                                player.Client.Account.FlushAsync();
+                                player.Client.Account.Reload();
+                                player.ActualTask = null;
+                                player.MonsterCaches.Clear();
+                                player.SaveToCharacter();
                             }
                             else
                                 callback = "You didn't finish your task properly, ask me for 'task status' for more details.";

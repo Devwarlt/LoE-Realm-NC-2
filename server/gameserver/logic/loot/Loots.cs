@@ -115,9 +115,9 @@ namespace LoESoft.GameServer.logic.loot
                                     playerLoot.Add(i.Item);
 
                                 if (i.WhiteBag)
-                                    GameServer.Manager.ClientManager.Values.Select(client =>
+                                    GameServer.Manager.GetManager.Clients.Values.Select(client =>
                                     {
-                                        client.Client.SendMessage(new TEXT()
+                                        client.SendMessage(new TEXT()
                                         {
                                             BubbleTime = 0,
                                             Stars = -1,

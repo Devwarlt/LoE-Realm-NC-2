@@ -26,11 +26,14 @@ namespace LoESoft.GameServer.networking.handlers
             if (message.SlotObject.ObjectId != client.Player.Id)
                 return;
 
-            if (!client.InvDropClockInitialized)
+            if (client.InvDropEntryMS == -1)
+                client.InvDropEntryMS = GameServer.Manager.Logic.GameTime.TotalElapsedMs;
+            else
             {
-                client.InvDropClock.Elapsed += delegate { client.CanInvDrop = true; };
-                client.InvDropClock.Start();
-                client.InvDropClockInitialized = true;
+                if (GameServer.Manager.Logic.GameTime.TotalElapsedMs - client.InvDropEntryMS > 500)
+                    client.CanInvDrop = true;
+                else
+                    client.CanInvDrop = false;
             }
 
             if (!client.CanInvDrop)
