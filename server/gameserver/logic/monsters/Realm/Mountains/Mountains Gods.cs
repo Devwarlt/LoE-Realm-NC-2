@@ -24,18 +24,24 @@ namespace LoESoft.GameServer.logic
                     new Shoot(10, shoots: 3, shootAngle: 20, aim: 1, coolDown: 500),
                     new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE)
                     ),
-                new Threshold(.01,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(8, ItemType.Weapon, 0.01),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(9, ItemType.Armor, 0.01),
-                    new TierLoot(3, ItemType.Ring, 0.015),
-                    new TierLoot(4, ItemType.Ring, 0.005)
-                    ),
-                new Threshold(0.07,
-                    new ItemLoot("Potion of Attack", 0.07)
+                new Drops(
+                    new PinkBag(ItemType.Weapon, 6),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 7),
+                        new PurpleBag(ItemType.Weapon, 8)
+                        ),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Armor, 7),
+                        new PurpleBag(ItemType.Armor, 8),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Ring, 3),
+                        new PurpleBag(ItemType.Ring, 4)
+                        ),
+                    new EggBasket(new[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2 }),
+                    new BlueBag(Potions.POTION_OF_ATTACK)
                     )
             )
 
@@ -50,18 +56,24 @@ namespace LoESoft.GameServer.logic
                     new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE),
                     new Reproduce("Sprite Child", 35, 5, 0, 5000)
                     ),
-                new Threshold(.01,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(8, ItemType.Weapon, 0.01),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(9, ItemType.Armor, 0.01),
-                    new TierLoot(4, ItemType.Ring, 0.02),
-                    new TierLoot(4, ItemType.Ability, 0.02)
-                    ),
-                new Threshold(0.07,
-                    new ItemLoot("Potion of Attack", 0.07)
+                new Drops(
+                    new PinkBag(ItemType.Weapon, 6),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 7),
+                        new PurpleBag(ItemType.Weapon, 8)
+                        ),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Armor, 7),
+                        new PurpleBag(ItemType.Armor, 8),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Ring, 3),
+                        new PurpleBag(ItemType.Ring, 4)
+                        ),
+                    new EggBasket(new[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2 }),
+                    new BlueBag(Potions.POTION_OF_ATTACK)
                     )
             )
 
@@ -88,19 +100,24 @@ namespace LoESoft.GameServer.logic
                     new Grenade(4, 150, range: 8, coolDown: 3000),
                     new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE)
                     ),
-                new Threshold(.01,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(8, ItemType.Weapon, 0.01),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(9, ItemType.Armor, 0.01),
-                    new TierLoot(3, ItemType.Ring, 0.015),
-                    new TierLoot(4, ItemType.Ring, 0.005),
-                    new TierLoot(4, ItemType.Ability, 0.02)
-                    ),
-                new Threshold(0.07,
-                    new ItemLoot("Potion of Speed", 0.07)
+                new Drops(
+                    new PinkBag(ItemType.Weapon, 6),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 7),
+                        new PurpleBag(ItemType.Weapon, 8)
+                        ),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Armor, 7),
+                        new PurpleBag(ItemType.Armor, 8),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Ring, 3),
+                        new PurpleBag(ItemType.Ring, 4)
+                        ),
+                    new EggBasket(new[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2 }),
+                    new BlueBag(Potions.POTION_OF_SPEED)
                     )
             )
 
@@ -114,17 +131,20 @@ namespace LoESoft.GameServer.logic
                     new Shoot(12, shoots: 5, shootAngle: 10, aim: 1, coolDown: 1250),
                     new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE)
                     ),
-                new Threshold(.01,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(8, ItemType.Weapon, 0.01),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(9, ItemType.Armor, 0.01),
-                    new TierLoot(4, ItemType.Ability, 0.02)
-                    ),
-                new Threshold(0.07,
-                    new ItemLoot("Potion of Defense", 0.07)
+                new Drops(
+                    new PinkBag(ItemType.Weapon, 6),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 7),
+                        new PurpleBag(ItemType.Weapon, 8)
+                        ),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Armor, 7),
+                        new PurpleBag(ItemType.Armor, 8),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new EggBasket(new[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2 }),
+                    new BlueBag(Potions.POTION_OF_DEFENSE)
                     )
             )
 
@@ -139,18 +159,24 @@ namespace LoESoft.GameServer.logic
                     new Shoot(10, index: 1, aim: 1),
                     new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE)
                     ),
-                new Threshold(.01,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(8, ItemType.Weapon, 0.01),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(9, ItemType.Armor, 0.01),
-                    new TierLoot(3, ItemType.Ring, 0.015),
-                    new TierLoot(4, ItemType.Ring, 0.005)
-                    ),
-                new Threshold(0.07,
-                    new ItemLoot("Potion of Defense", 0.07)
+                new Drops(
+                    new PinkBag(ItemType.Weapon, 6),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 7),
+                        new PurpleBag(ItemType.Weapon, 8)
+                        ),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Armor, 7),
+                        new PurpleBag(ItemType.Armor, 8),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Ring, 3),
+                        new PurpleBag(ItemType.Ring, 4)
+                        ),
+                    new EggBasket(new[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2 }),
+                    new BlueBag(Potions.POTION_OF_DEFENSE)
                     )
             )
 
@@ -165,17 +191,24 @@ namespace LoESoft.GameServer.logic
                     new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE),
                     new DropPortalOnDeath("Mad Lab Portal", percent: .17)
                     ),
-                new Threshold(.01,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(3, ItemType.Ring, 0.015),
-                    new TierLoot(4, ItemType.Ring, 0.005),
-                    new TierLoot(4, ItemType.Ability, 0.02)
-                    ),
-                new Threshold(0.07,
-                    new ItemLoot("Potion of Attack", 0.07)
+                new Drops(
+                    new PinkBag(ItemType.Weapon, 6),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 7),
+                        new PurpleBag(ItemType.Weapon, 8)
+                        ),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Armor, 7),
+                        new PurpleBag(ItemType.Armor, 8),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Ring, 3),
+                        new PurpleBag(ItemType.Ring, 4)
+                        ),
+                    new EggBasket(new[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2 }),
+                    new BlueBag(Potions.POTION_OF_ATTACK)
                     )
             )
 
@@ -190,17 +223,20 @@ namespace LoESoft.GameServer.logic
                     new Shoot(10, index: 1, aim: 1, coolDown: 650),
                     new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE)
                     ),
-                new Threshold(.01,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(8, ItemType.Weapon, 0.01),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(9, ItemType.Armor, 0.01),
-                    new TierLoot(4, ItemType.Ability, 0.02)
-                    ),
-                new Threshold(0.07,
-                    new ItemLoot("Potion of Defense", 0.07)
+                new Drops(
+                    new PinkBag(ItemType.Weapon, 6),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 7),
+                        new PurpleBag(ItemType.Weapon, 8)
+                        ),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Armor, 7),
+                        new PurpleBag(ItemType.Armor, 8),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new EggBasket(new[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2 }),
+                    new BlueBag(Potions.POTION_OF_DEFENSE)
                     )
             )
 
@@ -215,17 +251,17 @@ namespace LoESoft.GameServer.logic
                     new Shoot(12, shoots: 7, shootAngle: 25, aim: 0.5, coolDown: 900),
                     new Reproduce(max: GodParams.MAX_AMOUNT, range: GodParams.RANGE)
                     ),
-                new Threshold(.01,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(3, ItemType.Ring, 0.015),
-                    new TierLoot(4, ItemType.Ring, 0.005),
-                    new TierLoot(4, ItemType.Ability, 0.02)
-                    ),
-                new Threshold(0.07,
-                    new ItemLoot("Potion of Speed", 0.07)
+                new Drops(
+                    new PinkBag(ItemType.Weapon, 6),
+                    new PurpleBag(ItemType.Weapon, 7),
+                    new PurpleBag(ItemType.Armor, 7),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Ring, 3),
+                        new PurpleBag(ItemType.Ring, 4)
+                        ),
+                    new EggBasket(new[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2 }),
+                    new BlueBag(Potions.POTION_OF_SPEED)
                     )
             )
 
@@ -244,19 +280,22 @@ namespace LoESoft.GameServer.logic
                         new TimedTransition(10000, "Waiting")
                         )
                     ),
-                new Threshold(.01,
-                    new TierLoot(5, ItemType.Weapon, 0.16),
-                    new TierLoot(6, ItemType.Weapon, 0.08),
-                    new TierLoot(7, ItemType.Weapon, 0.04),
-                    new TierLoot(5, ItemType.Armor, 0.16),
-                    new TierLoot(6, ItemType.Armor, 0.08),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(3, ItemType.Ring, 0.05),
-                    new TierLoot(3, ItemType.Ability, 0.1),
-                    new ItemLoot("Purple Drake Egg", 0.01)
+                new Drops(
+                    new ItemLoot("Health Potion", .1),
+                    new OnlyOne(
+                        new PinkBag(ItemType.Weapon, 5),
+                        new PinkBag(ItemType.Weapon, 6)
                     ),
-                new Threshold(0.04,
-                    new ItemLoot("Potion of Attack", 0.03)
+                    new OnlyOne(
+                        new PinkBag(ItemType.Armor, 5),
+                        new PinkBag(ItemType.Armor, 6)
+                        ),
+                    new PurpleBag(ItemType.Weapon, 7),
+                    new PurpleBag(ItemType.Armor, 7),
+                    new PurpleBag(ItemType.Ability, 3),
+                    new PurpleBag(ItemType.Ring, 3),
+                    new EggBasket(new[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2 }),
+                    new BlueBag(Potions.POTION_OF_ATTACK)
                     )
             )
 
@@ -277,18 +316,15 @@ namespace LoESoft.GameServer.logic
                         new HpLessTransition(0.2, "Explode")
                         ),
                     new State("Explode",
-                        new Shoot(0, shoots: 10, shootAngle: 36, direction: 0),
+                        new Shoot(0, shoots: 8, shootAngle: 45, direction: 0),
                         new Decay(0)
                         )
                     ),
-                new Threshold(.01,
-                    new TierLoot(6, ItemType.Weapon, 0.01),
-                    new ItemLoot("Health Potion", 0.04),
-                    new ItemLoot("Magic Potion", 0.01),
-                    new ItemLoot("Tincture of Life", 0.01)
-                    ),
-                new Threshold(0.04,
-                    new ItemLoot("Potion of Attack", 0.03)
+                new Drops(
+                    new ItemLoot("Health Potion", .1),
+                    new PinkBag(ItemType.Weapon, 6),
+                    new EggBasket(new[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2 }),
+                    new BlueBag(Potions.POTION_OF_ATTACK)
                     )
             )
 
@@ -309,17 +345,15 @@ namespace LoESoft.GameServer.logic
                         new HpLessTransition(0.2, "Explode")
                         ),
                     new State("Explode",
-                        new Shoot(0, shoots: 10, shootAngle: 36, direction: 0),
+                        new Shoot(0, shoots: 8, shootAngle: 45, direction: 0),
                         new Decay(0)
                         )
                     ),
-                new Threshold(.01,
-                    new TierLoot(6, ItemType.Weapon, 0.01),
-                    new ItemLoot("Health Potion", 0.04),
-                    new ItemLoot("Magic Potion", 0.01)
-                    ),
-                new Threshold(0.04,
-                    new ItemLoot("Potion of Attack", 0.03)
+                new Drops(
+                    new ItemLoot("Health Potion", .1),
+                    new PinkBag(ItemType.Weapon, 6),
+                    new EggBasket(new[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2 }),
+                    new BlueBag(Potions.POTION_OF_ATTACK)
                     )
             )
 
@@ -380,17 +414,24 @@ namespace LoESoft.GameServer.logic
                         new Suicide()
                         )
                     ),
-                new Threshold(.01,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(3, ItemType.Ring, 0.015),
-                    new TierLoot(4, ItemType.Ring, 0.005),
-                    new TierLoot(4, ItemType.Ability, 0.02)
-                    ),
-                new Threshold(0.07,
-                    new ItemLoot("Potion of Speed", 0.07)
+                new Drops(
+                    new PinkBag(ItemType.Weapon, 6),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 7),
+                        new PurpleBag(ItemType.Weapon, 8)
+                        ),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Armor, 7),
+                        new PurpleBag(ItemType.Armor, 8),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Ring, 3),
+                        new PurpleBag(ItemType.Ring, 4)
+                        ),
+                    new EggBasket(new[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2 }),
+                    new BlueBag(Potions.POTION_OF_SPEED)
                     )
             )
 
@@ -428,11 +469,23 @@ namespace LoESoft.GameServer.logic
                             new TimedTransition(1500, "Wander"))
                         )
                     ),
-                new Threshold(.01,
-                    new ItemLoot("Potion of Defense", 0.07),
-                    new TierLoot(6, ItemType.Weapon, 0.01),
-                    new ItemLoot("Health Potion", 0.04),
-                    new ItemLoot("Magic Potion", 0.01)
+                new Drops(
+                    new PinkBag(ItemType.Weapon, 6),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Weapon, 7),
+                        new PurpleBag(ItemType.Weapon, 8)
+                        ),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Armor, 7),
+                        new PurpleBag(ItemType.Armor, 8)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new OnlyOne(
+                        new PurpleBag(ItemType.Ring, 3),
+                        new PurpleBag(ItemType.Ring, 4)
+                        ),
+                    new EggBasket(new[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2 }),
+                    new BlueBag(Potions.POTION_OF_ATTACK)
                     )
             )
         ;
