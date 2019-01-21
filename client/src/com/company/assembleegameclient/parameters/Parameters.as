@@ -12,7 +12,7 @@ import flash.utils.Dictionary;
 import kabam.rotmg.build.impl.BuildEnvironments;
 
 public class Parameters {
-    public static const IS_DEVELOPER_MODE:Boolean = false;
+    public static const IS_DEVELOPER_MODE:Boolean = true;
     public static const DISCORD_PERMANENTLY_INVITE:String = "https://discord.gg/htpVTFq";
     public static const CONNECTION_SECURITY_PROTOCOL:String = "http";
     public static const CLIENT_NAME:String = "LoE Realm";
@@ -369,7 +369,7 @@ public class Parameters {
         setDefault("friendStarRequirement", 0);
         setDefault("HPBar", true);
         setDefault("newMiniMapColors", false);
-        setDefault("fullscreenMod", false);
+        setDefault("fullscreenMod", true);
         setDefault("mscale", 12);
         setDefault("showTierTag", true);
         setDefaultKey("reconVault", KeyCodes.F7);
