@@ -18,7 +18,7 @@ namespace LoESoft.Core.config
 
         public static readonly ServerMode SERVER_MODE = ServerMode.Production;
         public static readonly bool ENABLE_RESTART_SYSTEM = SERVER_MODE == ServerMode.Production;
-        public static readonly int RESTART_DELAY_MINUTES = 90;
+        public static readonly int RESTART_DELAY_MINUTES = 120;
         public static readonly int RESTART_APPENGINE_DELAY_MINUTES = 30;
         public static readonly DateTimeKind DateTimeKind = DateTimeKind.Utc;
 
@@ -58,7 +58,8 @@ namespace LoESoft.Core.config
             new GameVersion(Version: "3.2.1", Allowed: false),
             new GameVersion(Version: "3.2.2", Allowed: false),
             new GameVersion(Version: "3.2.3", Allowed: false),
-            new GameVersion(Version: "3.2.4", Allowed: true)
+            new GameVersion(Version: "3.2.4", Allowed: false),
+            new GameVersion(Version: "3.2.5", Allowed: true)
         };
     }
 }

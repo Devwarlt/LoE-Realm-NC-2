@@ -643,7 +643,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
         }
     }
 
-    override public function playerShoot(projectile:Projectile, attackAmount:int, isDazed:Boolean, isBeserk:Boolean, minAttackFrequency:Number, maxAttackFrequency:Number, weaponRateOfFire:Number):void {
+    override public function playerShoot(projectile:Projectile, attackAmount:int, isDazed:Boolean, isBeserk:Boolean, minAttackFrequency:Number, maxAttackFrequency:Number, weaponRateOfFire:Number, isAbility:Boolean):void {
         var playerShoot:PlayerShoot = (this.messages.require(PLAYERSHOOT) as PlayerShoot);
         playerShoot.bulletId_ = projectile.bulletId_;
         playerShoot.containerType_ = projectile.objectType_;
@@ -656,6 +656,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
         playerShoot.minAttackFrequency_ = minAttackFrequency;
         playerShoot.maxAttackFrequency_ = maxAttackFrequency;
         playerShoot.weaponRateOfFire_ = weaponRateOfFire;
+        playerShoot.isAbility_ = isAbility;
 
         serverConnection.queueMessage(playerShoot);
     }

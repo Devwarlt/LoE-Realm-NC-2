@@ -4,7 +4,6 @@ using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.realm;
 using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using static LoESoft.GameServer.networking.Client;
@@ -23,9 +22,7 @@ namespace LoESoft.GameServer.networking.handlers
                 return;
             try
             {
-                var container = client.Player.Owner.GetEntity(message.SlotObject.ObjectId) as IContainer;
-
-                if (container == null)
+                if (!(client.Player.Owner.GetEntity(message.SlotObject.ObjectId) is IContainer container))
                     return;
 
                 if (TradeManager.TradingPlayers.Contains(client.Player))
@@ -43,7 +40,7 @@ namespace LoESoft.GameServer.networking.handlers
                             log4net.FatalFormat("Cheat engine detected for player {0},\nItem should be a Health Potion, but its {1}.",
                                 client.Player.Name, item.ObjectId);
                             foreach (Player player in client.Player.Owner.Players.Values)
-                                if (player.Client.Account.AccountType >= (int)LoESoft.Core.config.AccountType.DEVELOPER)
+                                if (player.Client.Account.AccountType >= (int)Core.config.AccountType.DEVELOPER)
                                     player.SendInfo(string.Format("Cheat engine detected for player {0},\nItem should be a Health Potion, but its {1}.",
                                         client.Player.Name, item.ObjectId));
                             GameServer.Manager.TryDisconnect(client, DisconnectReason.HP_POTION_CHEAT_ENGINE);
@@ -106,7 +103,13 @@ namespace LoESoft.GameServer.networking.handlers
                                 }
                                 client.Player.Owner.Timers.Add(new WorldTimer(8000, (world, j) =>
                                 {
-                                    switch (client?.Player?.HpPotionPrice) //when player left before Timer
+                                    if (client == null)
+                                        return;
+
+                                    if (client.Player == null)
+                                        return;
+
+                                    switch (client?.Player?.HpPotionPrice)
                                     {
                                         case 5:
                                             break;
@@ -233,7 +236,13 @@ namespace LoESoft.GameServer.networking.handlers
 
                                 client?.Player?.Owner?.Timers.Add(new WorldTimer(8000, (world, j) =>
                                 {
-                                    switch (client?.Player?.MpPotionPrice) //when player left before Timer
+                                    if (client == null)
+                                        return;
+
+                                    if (client.Player == null)
+                                        return;
+
+                                    switch (client.Player.MpPotionPrice)
                                     {
                                         case 5:
                                             break;
@@ -341,11 +350,7 @@ namespace LoESoft.GameServer.networking.handlers
                 client.Player.UpdateCount++;
                 client.Player.SaveToCharacter();
             }
-            catch (NullReferenceException ex)
-            {
-                GameServer.log.Error(ex);
-                return;
-            }
+            catch { return; }
         }
     }
 }

@@ -18,6 +18,7 @@ namespace LoESoft.GameServer.networking.incoming
         public float MinAttackFrequency { get; set; }
         public float MaxAttackFrequency { get; set; }
         public float WeaponRateOfFire { get; set; }
+        public bool IsAbility { get; set; }
 
         public override MessageID ID => MessageID.PLAYERSHOOT;
 
@@ -35,6 +36,7 @@ namespace LoESoft.GameServer.networking.incoming
             MinAttackFrequency = rdr.ReadSingle();
             MaxAttackFrequency = rdr.ReadSingle();
             WeaponRateOfFire = rdr.ReadSingle();
+            IsAbility = rdr.ReadBoolean();
         }
 
         protected override void Write(NWriter wtr)
@@ -49,6 +51,7 @@ namespace LoESoft.GameServer.networking.incoming
             wtr.Write(MinAttackFrequency);
             wtr.Write(MaxAttackFrequency);
             wtr.Write(WeaponRateOfFire);
+            wtr.Write(IsAbility);
         }
     }
 }

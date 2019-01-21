@@ -15,6 +15,7 @@ namespace LoESoft.GameServer.realm.entity.player
 {
     partial class Player
     {
+        public ChatColor ChatColors { get; set; }
         public int MaxHackEntries { get; set; }
         public AccountTypePerks AccountPerks { get; set; }
         public int PetID { get; set; }

@@ -535,7 +535,14 @@ namespace LoESoft.GameServer.realm.entity.player
             return ret;
         }
 
-        private static float Dist(Entity a, Entity b)
+        public float Dist(Entity target)
+        {
+            var dx = X - target.X;
+            var dy = Y - target.Y;
+            return (float)Math.Sqrt(dx * dx + dy * dy);
+        }
+
+        public float Dist(Entity a, Entity b)
         {
             var dx = a.X - b.X;
             var dy = a.Y - b.Y;

@@ -1,4 +1,5 @@
 ﻿using LoESoft.Core.config;
+using LoESoft.GameServer.realm.entity.player;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,30 +14,25 @@ namespace LoESoft.GameServer.realm
     /// </summary>
     public class ChatColor
     {
-        private int _accountType { get; set; }
-        private int _stars { get; set; }
+        private Player _player { get; set; }
 
-        public ChatColor(int stars, int accountType)
-        {
-            _stars = stars;
-            _accountType = accountType;
-        }
+        public ChatColor(Player player) => _player = player;
 
-        public (int name, int text) GetColor()
+        public (int stars, int name, int text) GetColor()
         {
-            if (_accountType >= (int)AccountType.MOD)
+            if (_player.AccountType >= (int)AccountType.MOD)
             {
-                if (specialColors.TryGetValue(_accountType, out (int, int) color))
-                    return color;
+                if (specialColors.TryGetValue(_player.AccountType, out (int, int) color))
+                    return (_player.Stars, color.Item1, color.Item2);
             }
-            else if (_accountType == (int)AccountType.VIP)
+            else if (_player.AccountType == (int)AccountType.VIP)
             {
                 foreach (var i in regularColors)
-                    if (i.Key.Contains(_stars))
-                        return i.Value;
+                    if (i.Key.Contains(_player.Stars))
+                        return (_player.Stars, i.Value.Item1, i.Value.Item2);
             }
 
-            return (0x123456, 0x123456);
+            return (_player.Stars, 0x123456, 0x123456);
         }
 
         private readonly Dictionary<IEnumerable<int>, (int, int)> regularColors = new Dictionary<IEnumerable<int>, (int, int)>

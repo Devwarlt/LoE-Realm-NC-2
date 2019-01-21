@@ -21,7 +21,7 @@ public class Parameters {
     public static const ENVIRONMENT_DNS:String = !IS_DEVELOPER_MODE ? "loe-nc.servegame.com" : "localhost";
     public static const ENVIRONMENT_PORT:String = "5555";
     public static const BUILD_VERSION:String = "3";
-    public static const MINOR_VERSION:String = "2.4";
+    public static const MINOR_VERSION:String = "2.5";
     public static const FULL_BUILD:String = "v" + BUILD_VERSION + "." + MINOR_VERSION;
     public static const ENABLE_ENCRYPTION:Boolean = true;
     public static const PORT:int = 2050;
@@ -369,7 +369,7 @@ public class Parameters {
         setDefault("friendStarRequirement", 0);
         setDefault("HPBar", true);
         setDefault("newMiniMapColors", false);
-        setDefault("fullscreenMod", false);
+        setDefault("fullscreenMod", true);
         setDefault("mscale", 12);
         setDefault("showTierTag", true);
         setDefaultKey("reconVault", KeyCodes.F7);

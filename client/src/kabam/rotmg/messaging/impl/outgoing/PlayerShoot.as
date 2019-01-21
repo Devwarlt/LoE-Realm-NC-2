@@ -15,6 +15,7 @@ public class PlayerShoot extends OutgoingMessage
     public var minAttackFrequency_:Number;
     public var maxAttackFrequency_:Number;
     public var weaponRateOfFire_:Number;
+    public var isAbility_:Boolean;
 
     public function PlayerShoot(_arg1:uint, _arg2:Function) {
         this.startingPos_ = new WorldPosData();
@@ -32,10 +33,11 @@ public class PlayerShoot extends OutgoingMessage
         _arg1.writeFloat(this.minAttackFrequency_);
         _arg1.writeFloat(this.maxAttackFrequency_);
         _arg1.writeFloat(this.weaponRateOfFire_);
+        _arg1.writeBoolean(this.isAbility_);
     }
 
     override public function toString():String {
-        return (formatToString("PLAYERSHOOT", "bulletId_", "containerType_", "startingPos_", "angle_", "attackAmount_", "isDazed_", "isBeserk_", "minAttackFrequency_", "maxAttackFrequency_", "weaponRateOfFire_"));
+        return (formatToString("PLAYERSHOOT", "bulletId_", "containerType_", "startingPos_", "angle_", "attackAmount_", "isDazed_", "isBeserk_", "minAttackFrequency_", "maxAttackFrequency_", "weaponRateOfFire_", "isAbility_"));
     }
 }
 }

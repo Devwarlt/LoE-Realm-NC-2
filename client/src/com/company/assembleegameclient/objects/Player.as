@@ -994,7 +994,7 @@ public class Player extends Character {
 
             if (_local5.Activate == ActivationType.SHOOT) {
                 _local9 = Math.atan2(_arg2, _arg1);
-                this.doShoot(_local4, _local5, (Parameters.data_.cameraAngle + _local9), false);
+                this.doShoot(_local4, _local5, (Parameters.data_.cameraAngle + _local9), false, true);
             }
         }
         else {
@@ -1004,7 +1004,7 @@ public class Player extends Character {
                 _local10 = int(_local5.MpEndCost);
                 if (_local10 <= this.mp_) {
                     _local9 = Math.atan2(_arg2, _arg1);
-                    this.doShoot(_local4, _local5, (Parameters.data_.cameraAngle + _local9), false);
+                    this.doShoot(_local4, _local5, (Parameters.data_.cameraAngle + _local9), false, false);
                 }
             }
         }
@@ -1047,10 +1047,10 @@ public class Player extends Character {
 
         this.attackAngle_ = angle;
         this.attackStart_ = curTime;
-        this.doShoot(weapType, weapon, attackAngle_, true);
+        this.doShoot(weapType, weapon, attackAngle_, true, false);
     }
 
-    private function doShoot(weaponType:int, weaponXML:XML, attackAngle:Number, isShooting:Boolean):void {
+    private function doShoot(weaponType:int, weaponXML:XML, attackAngle:Number, isShooting:Boolean, isAbility:Boolean):void {
         var _local11:uint;
         var _local12:Projectile;
         var _local13:int;
@@ -1081,7 +1081,7 @@ public class Player extends Character {
                 SoundEffectLibrary.play(_local12.sound_, 0.75, false);
             }
             map_.addObj(_local12, (x_ + (Math.cos(attackAngle) * 0.3)), (y_ + (Math.sin(attackAngle) * 0.3)));
-            map_.gs_.gsc_.playerShoot(_local12, this.attackAmount_, this.isDazed_, this.isBerserk_, this.minAttackFrequency_, this.maxAttackFrequency_, this.weaponRateOfFire_);
+            map_.gs_.gsc_.playerShoot(_local12, this.attackAmount_, this.isDazed_, this.isBerserk_, this.minAttackFrequency_, this.maxAttackFrequency_, this.weaponRateOfFire_, isAbility);
             _local9 = (_local9 + arcGap);
             _local10++;
         }

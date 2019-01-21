@@ -58,6 +58,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 Experience = client.Character.Experience;
                 ExperienceGoal = GetExpGoal(Level);
                 Stars = AccountType >= (int)Core.config.AccountType.DEVELOPER ? 70 : GetStars();
+                ChatColors = new ChatColor(this);
                 Texture1 = client.Character.Tex1;
                 Texture2 = client.Character.Tex2;
                 Credits = client.Account.Credits;
