@@ -55,13 +55,12 @@ namespace LoESoft.AppEngine.account
 
                     int[] gifts = Utils.FromCommaSepString32(package.Contents);
 
-                    List<int> giftsList = acc.Gifts.ToList();
+                    var giftsList = acc.Gifts.ToList();
 
                     foreach (int item in gifts)
                         giftsList.Add(item);
 
                     acc.Gifts = giftsList.ToArray();
-
                     acc.FlushAsync();
                     acc.Reload();
 

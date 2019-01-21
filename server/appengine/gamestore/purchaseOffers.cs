@@ -134,7 +134,7 @@ namespace LoESoft.AppEngine.gamestore
                     return;
             }
 
-            List<int> items = acc.Gifts.ToList();
+            var items = acc.Gifts.ToList();
 
             foreach (int item in objectType)
                 items.Add(item);
