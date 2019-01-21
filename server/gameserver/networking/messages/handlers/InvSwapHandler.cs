@@ -39,6 +39,9 @@ namespace LoESoft.GameServer.networking.handlers
                 return;
             }
 
+            if (TradeManager.TradingPlayers.Contains(client.Player))
+                return;
+
             var en1 = client.Player.Owner.GetEntity(message.SlotObject1.ObjectId);
             var en2 = client.Player.Owner.GetEntity(message.SlotObject2.ObjectId);
             var con1 = en1 as IContainer;

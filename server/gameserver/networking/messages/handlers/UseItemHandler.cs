@@ -25,6 +25,9 @@ namespace LoESoft.GameServer.networking.handlers
                 if (!(client.Player.Owner.GetEntity(message.SlotObject.ObjectId) is IContainer container))
                     return;
 
+                if (TradeManager.TradingPlayers.Contains(client.Player))
+                    return;
+
                 Item item;
 
                 switch (message.SlotObject.SlotId)

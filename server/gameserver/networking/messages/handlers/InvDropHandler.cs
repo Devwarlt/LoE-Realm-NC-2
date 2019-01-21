@@ -42,6 +42,9 @@ namespace LoESoft.GameServer.networking.handlers
                 return;
             }
 
+            if (TradeManager.TradingPlayers.Contains(client.Player))
+                return;
+
             //TODO: locker again
             const ushort NORM_BAG = 0x0500;
             const ushort SOUL_BAG = 0x0507;
