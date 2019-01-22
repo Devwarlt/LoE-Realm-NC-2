@@ -12,6 +12,9 @@ namespace LoESoft.GameServer.realm
 {
     internal static class EntityUtils
     {
+        public static bool Within(this int number, int min, int max)
+            => number >= min && number <= max;
+
         public static double DistSqr(this Entity a, Entity b)
         {
             float dx = a.X - b.X;
