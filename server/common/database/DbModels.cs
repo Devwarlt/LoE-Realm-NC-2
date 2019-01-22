@@ -67,9 +67,11 @@ namespace LoESoft.Core
 
         protected T GetValue<T>(RedisValue key, T def = default(T))
         {
-            KeyValuePair<byte[], bool> val;
-            if (!_entries.TryGetValue(key, out val) || val.Key == null)
+            if (!_entries.TryGetValue(key, out KeyValuePair<byte[], bool> val) || val.Key == null)
                 return def;
+
+            if (typeof(T) == typeof(double))
+                return (T)(object)double.Parse(Encoding.UTF8.GetString(val.Key));
 
             if (typeof(T) == typeof(int))
                 return (T)(object)int.Parse(Encoding.UTF8.GetString(val.Key));
@@ -113,8 +115,10 @@ namespace LoESoft.Core
         protected void SetValue<T>(RedisValue key, T val)
         {
             byte[] buff;
+
             if (typeof(T) == typeof(int) || typeof(T) == typeof(uint) ||
-                typeof(T) == typeof(ushort) || typeof(T) == typeof(string))
+                typeof(T) == typeof(ushort) || typeof(T) == typeof(string) ||
+                typeof(T) == typeof(double))
                 buff = Encoding.UTF8.GetBytes(val.ToString());
             else if (typeof(T) == typeof(bool))
                 buff = new byte[] { (byte)((bool)(object)val ? 1 : 0) };
@@ -355,13 +359,13 @@ namespace LoESoft.Core
             set { SetValue("credits", value); }
         }
 
-        public int Fame
+        public double Fame
         {
             get { return GetValue("fame", Settings.STARTUP.FAME); }
             set { SetValue("fame", value); }
         }
 
-        public int TotalFame
+        public double TotalFame
         {
             get { return GetValue("totalFame", Settings.STARTUP.TOTAL_FAME); }
             set { SetValue("totalFame", value); }
@@ -479,7 +483,7 @@ namespace LoESoft.Core
     public struct DbClassStatsEntry
     {
         public int BestLevel { get; set; }
-        public int BestFame { get; set; }
+        public double BestFame { get; set; }
     }
 
     public class DbClassAvailability : RedisObject
@@ -583,12 +587,6 @@ namespace LoESoft.Core
             Init(acc.Database, "char." + acc.AccountId + "." + charId);
         }
 
-        //public LootCache[] LootCaches
-        //{
-        //    get { return JsonConvert.DeserializeObject<LootCache[]>(GetValue<string>("lootCache")); }
-        //    set { SetValue("lootCache", JsonConvert.SerializeObject(value)); }
-        //}
-
         public ushort ObjectType
         {
             get { return GetValue<ushort>("charType", 782); }
@@ -601,13 +599,13 @@ namespace LoESoft.Core
             set { SetValue("level", value); }
         }
 
-        public int Experience
+        public double Experience
         {
             get { return GetValue("exp", 0); }
             set { SetValue("exp", value); }
         }
 
-        public int Fame
+        public double Fame
         {
             get { return GetValue("fame", 0); }
             set { SetValue("fame", value); }
@@ -770,9 +768,9 @@ namespace LoESoft.Core
             set { SetValue("level", value); }
         }
 
-        public int TotalFame
+        public double TotalFame
         {
-            get { return GetValue<int>("totalFame"); }
+            get { return GetValue<double>("totalFame"); }
             set { SetValue("totalFame", value); }
         }
 
@@ -933,7 +931,7 @@ namespace LoESoft.Core
                 .ToArray();
         }
 
-        public static void Insert(IDatabase db, int accId, int chrId, int totalFame)
+        public static void Insert(IDatabase db, int accId, int chrId, double totalFame)
         {
             var buff = new byte[8];
             Buffer.BlockCopy(BitConverter.GetBytes(accId), 0, buff, 0, 4);

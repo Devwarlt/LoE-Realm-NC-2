@@ -1,8 +1,12 @@
 ﻿package kabam.rotmg.servers.control {
 import com.company.assembleegameclient.parameters.Parameters;
 
+import kabam.rotmg.core.StaticInjectorContext;
+
 import kabam.rotmg.servers.api.Server;
 import kabam.rotmg.servers.api.ServerModel;
+
+import robotlegs.bender.framework.api.ILogger;
 
 public class ParseServerDataCommand {
 

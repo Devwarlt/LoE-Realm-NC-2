@@ -67,7 +67,7 @@ namespace LoESoft.Core.config
                         DNS = SERVER_MODE == ServerMode.Production ? CheckDDNS(SERVERS[i].Item2, i) : "localhost",
                         Lat = 0,
                         Long = 0,
-                        Usage = SERVERS[i].Item3,//SERVER_MODE != ServerMode.Local ? GetUsage(CheckDDNS(SERVERS[i].Item2, i), GAMESERVER.PORT) : SERVERS[i].Item3,
+                        Usage = SERVERS[i].Item3,
                         AdminOnly = false
                     });
 

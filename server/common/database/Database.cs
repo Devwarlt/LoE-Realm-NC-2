@@ -406,7 +406,7 @@ namespace LoESoft.Core
             Update(acc);
         }
 
-        public void UpdateFame(DbAccount acc, int amount, bool fromDeath = false)
+        public void UpdateFame(DbAccount acc, double amount, bool fromDeath = false)
         {
             var trans = _db.CreateTransaction();
             trans.HashIncrementAsync(acc.Key, "fame", amount);

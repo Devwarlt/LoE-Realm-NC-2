@@ -97,18 +97,18 @@ public class Player extends Character {
     public var credits_:int = 0;
     public var tokens_:int = 0;
     public var numStars_:int = 0;
-    public var fame_:int = 0;
+    public var fame_:Number = 0;
     public var nameChosen_:Boolean = false;
-    public var currFame_:int = 0;
-    public var nextClassQuestFame_:int = -1;
+    public var currFame_:Number = 0;
+    public var nextClassQuestFame_:Number = -1;
     public var guildName_:String = null;
     public var guildRank_:int = -1;
     public var isFellowGuild_:Boolean = false;
     public var breath_:int = -1;
     public var maxMP_:int = 200;
     public var mp_:Number = 0;
-    public var nextLevelExp_:int = 1000;
-    public var exp_:int = 0;
+    public var nextLevelExp_:Number = 1000;
+    public var exp_:Number = 0;
     public var attack_:String = null;
     public var speed_:String = null;
     public var dexterity_:String = null;
@@ -194,7 +194,7 @@ public class Player extends Character {
         var _local5:Player = new Player(_local4);
         _local5.name_ = name;
         _local5.level_ = int(playerXML.Level);
-        _local5.exp_ = int(playerXML.Exp);
+        _local5.exp_ = Number(playerXML.Exp);
         _local5.equipment_ = ConversionUtil.toIntVector(playerXML.Equipment);
         _local5.calculateStatBoosts();
         _local5.lockedSlot = new Vector.<int>(_local5.equipment_.length);
@@ -381,11 +381,8 @@ public class Player extends Character {
         map_.addObj(new LevelUpEffect(this, _arg1, 20), x_, y_);
     }
 
-    public function handleExpUp(_arg1:int):void {
-        if (level_ == 20) {
-            return;
-        }
-        var _local2:CharacterStatusText = new CharacterStatusText(this, 0xFF00, 1000);
+    public function handleExpUp(_arg1:Number):void {
+        var _local2:CharacterStatusText = new CharacterStatusText(this, 0xFFFFFF, 1000);
         _local2.setStringBuilder(new LineBuilder().setParams(TextKey.PLAYER_EXP, {"exp": _arg1}));
         map_.mapOverlay_.addStatusText(_local2);
     }

@@ -290,13 +290,19 @@ namespace LoESoft.GameServer
             try
             {
                 wtr.Write(Id);
+
                 Position.Write(wtr);
+
                 wtr.Write((ushort)Stats.Length);
-                foreach (KeyValuePair<StatsType, object> i in Stats)
+
+                foreach (var i in Stats)
                 {
                     wtr.Write(i.Key);
+
                     if (i.Key.IsUTF() && i.Value != null)
                         wtr.WriteUTF(i.Value.ToString());
+                    else if (i.Key.GetType() == typeof(double))
+                        wtr.Write((double)i.Value);
                     else
                         wtr.Write((int)i.Value);
                 }

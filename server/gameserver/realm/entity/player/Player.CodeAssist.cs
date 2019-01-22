@@ -502,7 +502,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
         private static int GetLevelExp(int level) => level == 1 ? 0 : 50 * (level - 1) + (level - 2) * (level - 1) * 50;
 
-        private static int GetFameGoal(int fame)
+        private static double GetFameGoal(double fame)
         {
             if (fame >= 2000)
                 return 0;

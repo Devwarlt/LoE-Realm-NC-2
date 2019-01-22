@@ -14,9 +14,9 @@ namespace LoESoft.Core.config
         public static readonly double EVENT_RATE = 2.25;
 
         public static readonly string EVENT_MESSAGE = $"The server is hosting an event with " +
-            $"+{(GetEventRate() - (GetEventRate() != 1 ? 1 : 0)) * 100}% XP, loot drop rate and Shop discounts. Enjoy!";
+            $"+{(GetEventRate() - (GetEventRate() != 1 ? 1 : 0)) * 100}% EXP and loot drop rate. Enjoy!";
 
-        public static readonly ServerMode SERVER_MODE = ServerMode.Production;
+        public static readonly ServerMode SERVER_MODE = ServerMode.Local;
         public static readonly bool ENABLE_RESTART_SYSTEM = SERVER_MODE == ServerMode.Production;
         public static readonly int RESTART_DELAY_MINUTES = 120;
         public static readonly int RESTART_APPENGINE_DELAY_MINUTES = 30;

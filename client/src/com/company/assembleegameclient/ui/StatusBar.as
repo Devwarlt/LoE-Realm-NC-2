@@ -25,8 +25,8 @@ public class StatusBar extends Sprite {
     public var backColor_:uint;
     public var pulseBackColor:uint;
     public var textColor_:uint;
-    public var val_:int = -1;
-    public var max_:int = -1;
+    public var val_:Number = -1;
+    public var max_:Number = -1;
     public var boost_:int = -1;
     public var maxMax_:int = -1;
     public var level_:int = 0;
@@ -117,7 +117,7 @@ public class StatusBar extends Sprite {
         dispatchEvent(new Event("MULTIPLIER_OUT"));
     }
 
-    public function draw(value:int, max:int, boost:int, maxMax:int = -1, level:int = 0):void {
+    public function draw(value:Number, max:Number, boost:int, maxMax:int = -1, level:int = 0):void {
         if (max > 0) {
             value = Math.min(max, Math.max(0, value));
         }

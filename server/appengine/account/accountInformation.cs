@@ -81,12 +81,12 @@ namespace LoESoft.AppEngine.account
             public bool isAgeVerified;
             public bool isNameChosen;
             public bool isAccountMuted;
-            public int totalFame;
+            public double totalFame;
             public DateTime registration;
             public int vaultQuantity;
             public int characterSlotQuantity;
             public int credits;
-            public int fame;
+            public double fame;
             public string authenticationToken;
 
             private enum AccountType : int

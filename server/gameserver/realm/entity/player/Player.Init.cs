@@ -85,7 +85,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 lootDropBoostFreeTimer = LootDropBoost;
                 LootTierBoostTimeLeft = client.Character.LootTierTimer;
                 lootTierBoostFreeTimer = LootTierBoost;
-                FameGoal = (AccountType >= (int)Core.config.AccountType.MOD) ? 0 : GetFameGoal(FameCounter.ClassStats[ObjectType].BestFame);
+                FameGoal = (AccountType >= (int)Core.config.AccountType.MOD) ? 0d : GetFameGoal(FameCounter.ClassStats[ObjectType].BestFame);
                 Glowing = AccountType == (int)Core.config.AccountType.VIP;
                 var guild = GameServer.Manager.Database.GetGuild(client.Account.GuildId);
                 if (guild != null)
@@ -538,12 +538,13 @@ namespace LoESoft.GameServer.realm.entity.player
                 {
                     ObjectId = Id,
                     Color = new ARGB(0xFF8C00),
-                    Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"+" + ((int)newFame - Fame) + " Fame!\"}}",
+                    Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"+" + (newFame - Fame) + " Fame!\"}}",
                 }, null);
 
-            Fame = (int)newFame;
+            Fame = newFame;
 
-            int newGoal;
+            double newGoal;
+
             var stats = FameCounter.ClassStats[ObjectType];
 
             if (stats.BestFame > Fame)
@@ -588,6 +589,7 @@ namespace LoESoft.GameServer.realm.entity.player
                     if (Stats[idx] > limit)
                         Stats[idx] = limit;
                 }
+
                 HP = Stats[0] + Boost[0];
                 MP = Stats[1] + Boost[1];
 
@@ -599,6 +601,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 {
                     foreach (var i in Owner.Players.Values)
                         i.SendInfo(Name + " achieved level 20" + " as " + playerDesc.ObjectId);
+
                     XpBoosted = false;
                     XpBoostTimeLeft = 0;
                 }
@@ -629,13 +632,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 else
                     newexp += (int)(exp * Settings.GetEventRate());
 
-                if (newexp >= int.MaxValue)
-                {
-                    Experience = int.MaxValue;
-                    SendInfo("You achieved the maximum experience!");
-                }
-                else
-                    Experience = (int)newexp;
+                Experience = (int)newexp;
 
                 UpdateCount++;
 
@@ -643,24 +640,16 @@ namespace LoESoft.GameServer.realm.entity.player
                 {
                     try
                     {
-                        double tempexp = i.Experience;
-                        tempexp += (int)((i.XpBoosted ? exp * 2 : exp) * Settings.GetEventRate());
-
-                        if (tempexp >= int.MaxValue)
-                        {
-                            i.Experience = int.MaxValue;
-                            i.SendInfo("You achieved the maximum experience!");
-                        }
-                        else
-                            i.Experience = (int)tempexp;
-
+                        i.Experience = (i.XpBoosted ? exp * 2 : exp) * Settings.GetEventRate();
                         i.UpdateCount++;
                         i.CheckLevelUp(false);
                     }
                     catch (Exception) { }
                 }
             }
+
             FameCounter.Killed(enemy, killer);
+
             return CheckLevelUp();
         }
 

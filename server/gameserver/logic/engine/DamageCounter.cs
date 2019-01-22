@@ -92,8 +92,7 @@ namespace LoESoft.GameServer.logic
 
             if (totalPlayer != 0)
             {
-                float totalExp, playerXp, lowerLimit, upperLimit;
-
+                double totalExp, playerXp, lowerLimit, upperLimit;
                 bool newExpMethod = enemy.ObjectDesc.NewExperience;
 
                 if (newExpMethod)

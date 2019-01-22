@@ -2,6 +2,7 @@
 
 using LoESoft.Core;
 using LoESoft.Core.config;
+using LoESoft.Core.models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -46,7 +47,7 @@ namespace LoESoft.AppEngine.@char
                 else
                     WriteErrorLine(status.GetInfo());
             }
-            catch (Exception) { }
+            catch (Exception e) { Log.Error(e.ToString()); }
         }
 
         private Lazy<List<Settings.APPENGINE.ServerItem>> SvrList { get; set; }

@@ -1614,10 +1614,10 @@ public class GameServerConnectionConcrete extends GameServerConnection {
                     _local4.mp_ = _local8;
                     break;
                 case StatData.NEXT_LEVEL_EXP_STAT:
-                    _local4.nextLevelExp_ = _local8;
+                    _local4.nextLevelExp_ = Number(_local7.strStatValue_);
                     break;
                 case StatData.EXP_STAT:
-                    _local4.exp_ = _local8;
+                    _local4.exp_ = Number(_local7.strStatValue_);
                     break;
                 case StatData.LEVEL_STAT:
                     _arg1.level_ = _local8;
@@ -1692,7 +1692,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
                     _local4.accountId_ = _local7.strStatValue_;
                     break;
                 case StatData.FAME_STAT:
-                    _local4.fame_ = _local8;
+                    _local4.fame_ = Number(_local7.strStatValue_);
                     break;
                 case StatData.FORTUNE_TOKEN_STAT:
                     _local4.setTokens(_local8);
@@ -1753,10 +1753,10 @@ public class GameServerConnectionConcrete extends GameServerConnection {
                     _arg1.nameBitmapData_ = null;
                     break;
                 case StatData.CURR_FAME_STAT:
-                    _local4.currFame_ = _local8;
+                    _local4.currFame_ = Number(_local7.strStatValue_);
                     break;
                 case StatData.NEXT_CLASS_QUEST_FAME_STAT:
-                    _local4.nextClassQuestFame_ = _local8;
+                    _local4.nextClassQuestFame_ = Number(_local7.strStatValue_);
                     break;
                 case StatData.GLOW_COLOR_STAT:
                     _local4.setGlow(_local8);
@@ -1871,7 +1871,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
 
     private function processObjectStatus(_arg1:ObjectStatusData, _arg2:int, _arg3:int):void {
         var _local8:int;
-        var _local9:int;
+        var _local9:Number;
         var _local10:int;
         var _local11:CharacterClass;
         var _local12:XML;

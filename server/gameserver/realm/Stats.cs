@@ -135,10 +135,19 @@ namespace LoESoft.GameServer.realm
 
         internal static List<StatsType> UTF = new List<StatsType>
         {
-            NAME_STAT, ACCOUNT_ID_STAT, OWNER_ACCOUNT_ID_STAT, GUILD_NAME_STAT, PET_NAME_STAT
+            NAME_STAT,
+            ACCOUNT_ID_STAT,
+            OWNER_ACCOUNT_ID_STAT,
+            GUILD_NAME_STAT,
+            PET_NAME_STAT,
+            EXP_STAT,
+            FAME_STAT,
+            CURR_FAME_STAT,
+            NEXT_LEVEL_EXP_STAT,
+            NEXT_CLASS_QUEST_FAME_STAT
         };
 
-        public bool IsUTF() => UTF.Contains(this) ? true : false;
+        public bool IsUTF() => UTF.Contains(this);
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
         public static implicit operator StatsType(int type)

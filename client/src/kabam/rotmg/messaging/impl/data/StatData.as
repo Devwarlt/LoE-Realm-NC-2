@@ -152,14 +152,18 @@ public class StatData {
         return (TextKey.STAT_DATA_UNKNOWN_STAT);
     }
 
-
     public function isStringStat():Boolean {
         switch (this.statType_) {
             case NAME_STAT:
-            case GUILD_NAME_STAT:
-            case PET_NAME_STAT:
             case ACCOUNT_ID_STAT:
             case OWNER_ACCOUNT_ID_STAT:
+            case GUILD_NAME_STAT:
+            case PET_NAME_STAT:
+            case EXP_STAT:
+            case FAME_STAT:
+            case CURR_FAME_STAT:
+            case NEXT_LEVEL_EXP_STAT:
+            case NEXT_CLASS_QUEST_FAME_STAT:
                 return (true);
         }
         return (false);

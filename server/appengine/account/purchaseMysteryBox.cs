@@ -227,7 +227,7 @@ namespace LoESoft.AppEngine.account
         private class MysteryBoxResult
         {
             public string Awards { get; set; }
-            public int GoldLeft { get; set; }
+            public double GoldLeft { get; set; }
             public int Currency { get; set; }
         }
 

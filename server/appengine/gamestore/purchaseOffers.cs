@@ -28,7 +28,7 @@ namespace LoESoft.AppEngine.gamestore
 
         private int Credits(DbAccount acc) => acc.Credits;
 
-        private int Fame(DbAccount acc) => acc.Fame;
+        private double Fame(DbAccount acc) => acc.Fame;
 
         private int GuildFame(DbAccount acc) => acc.GuildFame;
 

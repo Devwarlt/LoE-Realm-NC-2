@@ -151,7 +151,7 @@ namespace LoESoft.AppEngine
     {
         public ushort ObjectType { get; private set; }
         public int BestLevel { get; private set; }
-        public int BestFame { get; private set; }
+        public double BestFame { get; private set; }
 
         public static ClassStatsEntry FromDb(ushort objType, DbClassStatsEntry entry)
         {
@@ -176,9 +176,9 @@ namespace LoESoft.AppEngine
 
     internal class Stats
     {
-        public int BestCharFame { get; private set; }
-        public int TotalFame { get; private set; }
-        public int Fame { get; private set; }
+        public double BestCharFame { get; private set; }
+        public double TotalFame { get; private set; }
+        public double Fame { get; private set; }
 
         private Dictionary<ushort, ClassStatsEntry> entries;
 
@@ -453,8 +453,8 @@ namespace LoESoft.AppEngine
         public int CharacterId { get; private set; }
         public ushort ObjectType { get; private set; }
         public int Level { get; private set; }
-        public int Exp { get; private set; }
-        public int CurrentFame { get; private set; }
+        public double Exp { get; private set; }
+        public double CurrentFame { get; private set; }
         public int[] Equipment { get; private set; }
         public int MaxHitPoints { get; private set; }
         public int HitPoints { get; private set; }
@@ -684,7 +684,7 @@ namespace LoESoft.AppEngine
         public Character Character { get; private set; }
         public FameStats Stats { get; private set; }
         public IEnumerable<Tuple<string, string, double>> Bonuses { get; private set; }
-        public int TotalFame { get; private set; }
+        public double TotalFame { get; private set; }
 
         public bool FirstBorn { get; private set; }
         public DateTime DeathTime { get; private set; }
@@ -775,7 +775,7 @@ namespace LoESoft.AppEngine
         public int Tex2 { get; private set; }
         public int Skin { get; private set; }
         public int[] Equipment { get; private set; }
-        public int TotalFame { get; private set; }
+        public double TotalFame { get; private set; }
 
         public static FameListEntry FromDb(DbChar character)
         {

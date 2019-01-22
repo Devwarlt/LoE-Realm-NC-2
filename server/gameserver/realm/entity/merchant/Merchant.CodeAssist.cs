@@ -45,7 +45,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
                             {
                                 player.Inventory[i] = GameServer.Manager.GameData.Items[(ushort)MType];
 
-                                KeyValuePair<string, int> currency = new KeyValuePair<string, int>(null, -1);
+                                var currency = new KeyValuePair<string, double>(null, -1);
 
                                 switch (Currency)
                                 {
@@ -53,7 +53,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
                                         {
                                             GameServer.Manager.Database.UpdateFame(player.Client.Account, -Price);
                                             player.CurrentFame = player.Client.Account.Fame;
-                                            currency = new KeyValuePair<string, int>("fame", player.CurrentFame);
+                                            currency = new KeyValuePair<string, double>("fame", player.CurrentFame);
                                         }
                                         break;
 
@@ -61,7 +61,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
                                         {
                                             GameServer.Manager.Database.UpdateCredit(player.Client.Account, -Price);
                                             player.Credits = player.Client.Account.Credits;
-                                            currency = new KeyValuePair<string, int>("gold", player.Credits);
+                                            currency = new KeyValuePair<string, double>("gold", player.Credits);
                                         }
                                         break;
 
@@ -69,7 +69,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
                                         {
                                             GameServer.Manager.Database.UpdateTokens(player.Client.Account, -Price);
                                             player.Tokens = player.Client.Account.FortuneTokens;
-                                            currency = new KeyValuePair<string, int>("fortune token", player.Tokens);
+                                            currency = new KeyValuePair<string, double>("fortune token", player.Tokens);
                                         }
                                         break;
 
