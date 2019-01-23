@@ -27,6 +27,7 @@ namespace LoESoft.GameServer.realm.world
                 player.SendInfo("- 1,000 EXP");
                 player.SendInfo("- 50 Fame");
                 player.Experience += 1000;
+                player.FakeExperience += 1000;
 
                 GameServer.Manager.Database.UpdateFame(player.Client.Account, 50);
             } },
@@ -35,6 +36,7 @@ namespace LoESoft.GameServer.realm.world
                 player.SendInfo("- 5,000 EXP");
                 player.SendInfo("- 100 Fame");
                 player.Experience += 5000;
+                player.FakeExperience += 5000;
 
                 GameServer.Manager.Database.UpdateFame(player.Client.Account, 100);
             } },
@@ -43,6 +45,7 @@ namespace LoESoft.GameServer.realm.world
                 player.SendInfo("- 10,000 EXP");
                 player.SendInfo("- 250 Fame");
                 player.Experience += 10000;
+                player.FakeExperience += 10000;
 
                 GameServer.Manager.Database.UpdateFame(player.Client.Account, 250);
             } },
@@ -51,6 +54,7 @@ namespace LoESoft.GameServer.realm.world
                 player.SendInfo("- 25,000 EXP");
                 player.SendInfo("- 500 Fame");
                 player.Experience += 25000;
+                player.FakeExperience += 25000;
 
                 GameServer.Manager.Database.UpdateFame(player.Client.Account, 500);
             } },
@@ -59,6 +63,7 @@ namespace LoESoft.GameServer.realm.world
                 player.SendInfo("- 50,000 EXP");
                 player.SendInfo("- 1,000 Fame");
                 player.Experience += 50000;
+                player.FakeExperience += 50000;
 
                 GameServer.Manager.Database.UpdateFame(player.Client.Account, 1000);
             } },
@@ -67,6 +72,7 @@ namespace LoESoft.GameServer.realm.world
                 player.SendInfo("- 100,000 EXP");
                 player.SendInfo("- 2,500 Fame");
                 player.Experience += 100000;
+                player.FakeExperience += 100000;
 
                 GameServer.Manager.Database.UpdateFame(player.Client.Account, 2500);
             } },
@@ -75,6 +81,7 @@ namespace LoESoft.GameServer.realm.world
                 player.SendInfo("- 250,000 EXP");
                 player.SendInfo("- 5,000 Fame");
                 player.Experience += 250000;
+                player.FakeExperience += 250000;
 
                 GameServer.Manager.Database.UpdateFame(player.Client.Account, 5000);
             } },
@@ -83,6 +90,7 @@ namespace LoESoft.GameServer.realm.world
                 player.SendInfo("- 500,000 EXP");
                 player.SendInfo("- 10,000 Fame");
                 player.Experience += 500000;
+                player.FakeExperience += 500000;
 
                 GameServer.Manager.Database.UpdateFame(player.Client.Account, 10000);
             } },
@@ -91,6 +99,7 @@ namespace LoESoft.GameServer.realm.world
                 player.SendInfo("- 1,000,000 EXP");
                 player.SendInfo("- 25,000 Fame");
                 player.Experience += 1000000;
+                player.FakeExperience += 1000000;
 
                 GameServer.Manager.Database.UpdateFame(player.Client.Account, 25000);
             } },
@@ -99,6 +108,7 @@ namespace LoESoft.GameServer.realm.world
                 player.SendInfo("- 2,500,000 EXP");
                 player.SendInfo("- 50,000 Fame");
                 player.Experience += 2500000;
+                player.FakeExperience += 2500000;
 
                 GameServer.Manager.Database.UpdateFame(player.Client.Account, 50000);
             } }

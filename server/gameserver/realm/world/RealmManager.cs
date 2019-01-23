@@ -145,7 +145,7 @@ namespace LoESoft.GameServer.realm
             return world;
         }
 
-        public bool RemoveWorld(World world)
+        public bool RemoveWorld(World world, bool renewRealm = false)
         {
             if (Worlds.TryRemove(world.Id, out World dummy))
             {
@@ -154,6 +154,9 @@ namespace LoESoft.GameServer.realm
                     OnWorldRemoved(world);
                     world.Dispose();
                     GC.Collect();
+
+                    if (renewRealm)
+                        AddWorld(GameWorld.AutoName(1, true));
                 }
                 catch (Exception) { }
                 return true;

@@ -56,7 +56,14 @@ namespace LoESoft.GameServer.realm.entity.player
                 MpPotionPrice = 5;
                 Level = client.Character.Level == 0 ? 1 : client.Character.Level;
                 Experience = client.Character.Experience;
-                ExperienceGoal = GetExpGoal(Level);
+                FakeExperience = client.Character.FakeExperience;
+                IsFakeEnabled = client.Character.IsFakeEnabled;
+                Bless1 = client.Character.Bless1;
+                Bless2 = client.Character.Bless2;
+                Bless3 = client.Character.Bless3;
+                Bless4 = client.Character.Bless4;
+                Bless5 = client.Character.Bless5;
+                ExperienceGoal = GetExperience(Level + 1);
                 Stars = AccountType >= (int)Core.config.AccountType.DEVELOPER ? 70 : GetStars();
                 ChatColors = new ChatColor(this);
                 Texture1 = client.Character.Tex1;
@@ -201,7 +208,7 @@ namespace LoESoft.GameServer.realm.entity.player
             if (Stats[6] == playerDesc.MaxMpRegen) maxed++;
             if (Stats[7] == playerDesc.MaxDexterity) maxed++;
 
-            var notification = $"{Name} died to {killer} as {maxed}/8 {playerDesc.ObjectId.ToLower()} with {Fame} fame base.";
+            var notification = $"{Name} died at level {Level} to {killer} as {maxed}/8 {playerDesc.ObjectId.ToLower()} with {Fame} fame base.";
 
             if (Fame >= 2000 && !Client.Account.Admin)
                 foreach (var client in GameServer.Manager.GetManager.Clients.Values)
@@ -235,17 +242,8 @@ namespace LoESoft.GameServer.realm.entity.player
                 return;
             }
 
-            if (Client.State == ProtocolState.Disconnected || resurrecting)
+            if (Client.State == ProtocolState.Disconnected)
                 return;
-
-            if (CheckResurrection())
-                return;
-
-            if (Client.Character.Dead)
-            {
-                GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHARACTER_IS_DEAD);
-                return;
-            }
 
             GenerateGravestone();
 
@@ -256,18 +254,71 @@ namespace LoESoft.GameServer.realm.entity.player
 
             AnnounceDeath(killer);
 
-            Client.Character.Dead = true;
-            Client.SendMessage(new DEATH
+            if (CountBlessings() < 5)
             {
-                AccountId = AccountId,
-                CharId = Client.Character.CharId,
-                Killer = killer,
-                zombieId = -1,
-                zombieType = -1
-            });
+                var rng = new Random();
+                var newexp = Experience * (AccountType == (int)Core.config.AccountType.VIP ? 0.95 : 0.9);
+                var newlvl = GetLevel(newexp);
 
-            GameServer.Manager.Database.SaveCharacter(Client.Account, Client.Character, true);
-            GameServer.Manager.Database.Death(GameServer.Manager.GameData, Client.Account, Client.Character, FameCounter.Stats, killer);
+                if (newlvl > Level)
+                    newlvl = Level;
+
+                var items = Inventory;
+
+                if (rng.Next(0, 100) <= 50)
+                    Client.Character.Pet = 0; // release pet
+
+                if (CountBlessings() < 5)
+                    if (rng.Next(0, 100) <= 100 - 20 * CountBlessings())
+                    {
+                        var max = rng.Next(1, 3);
+
+                        for (var i = rng.Next(0, items.Length - 1); i < items.Length; i++)
+                        {
+                            items[i] = null;
+
+                            max--;
+
+                            if (max == 0)
+                                break;
+                        }
+                    }
+
+                var classdesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
+                var (newhp, newmp) = GetStats[GetClassType[ObjectType]];
+                var round = Math.Round(newlvl / 5d) * 5;
+
+                if (round > newlvl)
+                    round -= 5;
+
+                if (newlvl == 1)
+                    round = 1;
+
+                for (var i = 0; i < Stats.Length; i++)
+                {
+                    if (i == 0) // hp
+                        Stats[i] = (int)(newhp * round) + classdesc.HPBase;
+                    else if (i == 1) // mp
+                        Stats[i] = (int)(newmp * round) + classdesc.MPBase;
+                    else // other stats
+                        Stats[i] = (int)round + GetStatBase(i, classdesc);
+                }
+
+                Fame = 0; // wipe fame
+                FakeExperience = 0; // fake exp used to calculate fame base
+                Experience = newexp;
+                IsFakeEnabled = true;
+                Level = newlvl;
+                Inventory = items;
+            }
+
+            Bless1 = false;
+            Bless2 = false;
+            Bless3 = false;
+            Bless4 = false;
+            Bless5 = false;
+
+            SaveToCharacter();
 
             Owner.LeaveWorld(this);
 
@@ -275,6 +326,35 @@ namespace LoESoft.GameServer.realm.entity.player
             { GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHARACTER_IS_DEAD); }
             catch { }
         }
+
+        public int GetStatBase(int index, ObjectDesc desc)
+        {
+            switch (index)
+            {
+                case 2: return desc.ATTBase;
+                case 3: return desc.DEFBase;
+                case 4: return desc.SPDBase;
+                case 5: return desc.VITBase;
+                case 6: return desc.WISBase;
+                case 7: return desc.DEXBase;
+                default: return 0;
+            }
+        }
+
+        public int CountBlessings()
+        {
+            var blessings = 0;
+
+            if (Bless1) blessings++;
+            if (Bless2) blessings++;
+            if (Bless3) blessings++;
+            if (Bless4) blessings++;
+            if (Bless5) blessings++;
+
+            return blessings;
+        }
+
+        public int GetBlessingPrice() => Level * 200;
 
         public override void Init(World owner)
         {
@@ -519,14 +599,14 @@ namespace LoESoft.GameServer.realm.entity.player
             });
         }
 
-        private void CalculateFame(bool notifyFame = true)
+        public void CalculateFame(bool notifyFame = true)
         {
             var newFame = 0d;
-            newFame += Math.Max(0, Math.Min(20000, Experience)) * 0.001;
-            newFame += Math.Max(0, Math.Min(45200, Experience) - 20000) * 0.002;
-            newFame += Math.Max(0, Math.Min(80000, Experience) - 45200) * 0.003;
-            newFame += Math.Max(0, Math.Min(101200, Experience) - 80000) * 0.002;
-            newFame += Math.Max(0, Experience - 101200) * 0.0005;
+            newFame += Math.Max(0, Math.Min(20000, FakeExperience)) * 0.001;
+            newFame += Math.Max(0, Math.Min(45200, FakeExperience) - 20000) * 0.002;
+            newFame += Math.Max(0, Math.Min(80000, FakeExperience) - 45200) * 0.003;
+            newFame += Math.Max(0, Math.Min(101200, FakeExperience) - 80000) * 0.002;
+            newFame += Math.Max(0, FakeExperience - 101200) * 0.0005;
             newFame += Math.Min(Math.Floor((double)FameCounter.Stats.MinutesActive / 6), 30);
             newFame = Math.Floor(newFame);
 
@@ -543,14 +623,8 @@ namespace LoESoft.GameServer.realm.entity.player
 
             Fame = newFame;
 
-            double newGoal;
-
             var stats = FameCounter.ClassStats[ObjectType];
-
-            if (stats.BestFame > Fame)
-                newGoal = GetFameGoal(stats.BestFame);
-            else
-                newGoal = GetFameGoal(Fame);
+            var newGoal = GetFameGoal(stats.BestFame > Fame ? stats.BestFame : Fame);
 
             if (newGoal > FameGoal && AccountType < (int)Core.config.AccountType.MOD)
             {
@@ -567,25 +641,76 @@ namespace LoESoft.GameServer.realm.entity.player
             UpdateCount++;
         }
 
+        private enum ClassType
+        {
+            Mage,
+            Melee,
+            Range
+        }
+
+        private Dictionary<ushort, ClassType> GetClassType = new Dictionary<ushort, ClassType>()
+        {
+            { 0x0300, ClassType.Range }, // rogue
+            { 0x0307, ClassType.Range }, // archer
+            { 0x030e, ClassType.Mage }, // wizard
+            { 0x0310, ClassType.Mage }, // priest
+            { 0x031d, ClassType.Melee }, // warrior
+            { 0x031e, ClassType.Melee }, // knight
+            { 0x031f, ClassType.Melee }, // paladin
+            { 0x0320, ClassType.Range }, // assassin
+            { 0x0321, ClassType.Mage }, // necromancer
+            { 0x0322, ClassType.Range }, // huntress
+            { 0x0323, ClassType.Mage }, // mystic
+            { 0x0324, ClassType.Range }, // trickster
+            { 0x0325, ClassType.Mage }, // sorcerer
+            { 0x0326, ClassType.Melee } // ninja
+        };
+
+        private Dictionary<ClassType, (int, int)> GetStats = new Dictionary<ClassType, (int, int)>()
+        {
+            { ClassType.Mage, (5, 30) },
+            { ClassType.Melee, (15, 5) },
+            { ClassType.Range, (10, 10) }
+        };
+
         private bool CheckLevelUp(bool notifyFame = true)
         {
-            if (Experience - GetLevelExp(Level) >= ExperienceGoal && Level < 20)
+            if (!IsFakeEnabled)
+            {
+                IsFakeEnabled = true;
+                FakeExperience = Experience;
+            }
+
+            if (Experience >= ExperienceGoal)
             {
                 Level++;
-                ExperienceGoal = GetExpGoal(Level);
+
+                ExperienceGoal = GetExperience(Level + 1);
+
                 foreach (var i in GameServer.Manager.GameData.ObjectTypeToElement[ObjectType].Elements("LevelIncrease"))
                 {
                     var rand = new Random();
-                    var min = int.Parse(i.Attribute("min").Value);
-                    var max = int.Parse(i.Attribute("max").Value) + 1;
+
                     var xElement = GameServer.Manager.GameData.ObjectTypeToElement[ObjectType].Element(i.Value);
+
                     if (xElement == null)
                         continue;
-                    var limit =
-                        int.Parse(
-                            xElement.Attribute("max").Value);
+
+                    var limit = int.Parse(xElement.Attribute("max").Value);
                     var idx = StatsManager.StatsNameToIndex(i.Value);
-                    Stats[idx] += rand.Next(min, max);
+
+                    if (Level % 5 != 0)
+                        continue;
+
+                    var (hp, mp) = GetStats[GetClassType[ObjectType]];
+
+                    if (idx == 0)
+                        Stats[idx] += hp;
+                    else if (idx == 1)
+                        Stats[idx] += mp;
+                    else
+                        Stats[idx]++;
+
                     if (Stats[idx] > limit)
                         Stats[idx] = limit;
                 }
@@ -597,13 +722,10 @@ namespace LoESoft.GameServer.realm.entity.player
 
                 var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
 
-                if (Level == 20)
+                if (Level % 50 == 0 || Level == 30)
                 {
-                    foreach (var i in Owner.Players.Values)
-                        i.SendInfo(Name + " achieved level 20" + " as " + playerDesc.ObjectId);
-
-                    XpBoosted = false;
-                    XpBoostTimeLeft = 0;
+                    foreach (var client in GameServer.Manager.GetManager.Clients.Values)
+                        client.Player?.GazerDM($"Player {Name} achived level {Level} as {playerDesc.ObjectId}.");
                 }
 
                 Quest = null;
@@ -623,7 +745,8 @@ namespace LoESoft.GameServer.realm.entity.player
                     Color = new ARGB(0xFF00FF00),
                     Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"Quest Complete!\"}}",
                 }, null);
-            if (exp > 0 && Experience != int.MaxValue)
+
+            if (exp > 0)
             {
                 double newexp = Experience;
 
@@ -640,7 +763,9 @@ namespace LoESoft.GameServer.realm.entity.player
                 {
                     try
                     {
-                        i.Experience = (i.XpBoosted ? exp * 2 : exp) * Settings.GetEventRate();
+                        var boostedexp = (i.XpBoosted ? exp * 2 : exp) * Settings.GetEventRate();
+                        i.Experience += boostedexp;
+                        i.FakeExperience += boostedexp;
                         i.UpdateCount++;
                         i.CheckLevelUp(false);
                     }

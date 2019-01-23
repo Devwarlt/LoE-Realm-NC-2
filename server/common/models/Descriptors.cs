@@ -1004,26 +1004,51 @@ public class ObjectDesc
         {
             MaxHitPoints = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
             MaxHP = Utils.FromString(n.Value);
+            HPBase = Utils.FromString(n.Value);
         }
         if ((n = elem.Element("MaxMagicPoints")) != null)
+        {
             MaxMagicPoints = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
+            MPBase = Utils.FromString(n.Value);
+        }
 
         if ((n = elem.Element("Attack")) != null)
+        {
             MaxAttack = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
-        if ((n = elem.Element("Dexterity")) != null)
-            MaxDexterity = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
-        if ((n = elem.Element("Speed")) != null)
-            MaxSpeed = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
-        if ((n = elem.Element("HpRegen")) != null)
-            MaxHpRegen = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
-        if ((n = elem.Element("MpRegen")) != null)
-            MaxMpRegen = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
+            ATTBase = Utils.FromString(n.Value);
+        }
 
         if ((n = elem.Element("Defense")) != null)
         {
             Defense = Utils.FromString(n.Value);
             MaxDefense = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
+            DEFBase = Utils.FromString(n.Value);
         }
+
+        if ((n = elem.Element("Dexterity")) != null)
+        {
+            MaxDexterity = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
+            DEXBase = Utils.FromString(n.Value);
+        }
+
+        if ((n = elem.Element("Speed")) != null)
+        {
+            MaxSpeed = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
+            SPDBase = Utils.FromString(n.Value);
+        }
+
+        if ((n = elem.Element("HpRegen")) != null)
+        {
+            MaxHpRegen = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
+            VITBase = Utils.FromString(n.Value);
+        }
+
+        if ((n = elem.Element("MpRegen")) != null)
+        {
+            MaxMpRegen = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
+            WISBase = Utils.FromString(n.Value);
+        }
+
         if ((n = elem.Element("Terrain")) != null)
             Terrain = n.Value;
         if ((n = elem.Element("SpawnProbability")) != null)
@@ -1150,6 +1175,15 @@ public class ObjectDesc
     public int MPTier { get; private set; }
 
     public int TaskID { get; private set; }
+
+    public int HPBase { get; private set; }
+    public int MPBase { get; private set; }
+    public int ATTBase { get; private set; }
+    public int DEFBase { get; private set; }
+    public int SPDBase { get; private set; }
+    public int DEXBase { get; private set; }
+    public int VITBase { get; private set; }
+    public int WISBase { get; private set; }
 }
 
 public class TagList : List<Tag>

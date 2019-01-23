@@ -851,9 +851,7 @@ public class GameObject extends BasicObject {
                 }
             }
         }
-        if (_damage <= 0)
-            this.showMissText();
-        else {
+        if (_damage > 0) {
             if (_damage > 0 && this.hp_ - _damage > 0) {
                 _local15 = ((((this.isArmorBroken()) || (((!((_projectile == null))) && (_projectile.projProps_.armorPiercing_))))) || (_local6));
                 this.showDamageText(_damage, _local15);

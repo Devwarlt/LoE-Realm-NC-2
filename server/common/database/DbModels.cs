@@ -70,44 +70,48 @@ namespace LoESoft.Core
             if (!_entries.TryGetValue(key, out KeyValuePair<byte[], bool> val) || val.Key == null)
                 return def;
 
-            if (typeof(T) == typeof(double))
-                return (T)(object)double.Parse(Encoding.UTF8.GetString(val.Key));
-
-            if (typeof(T) == typeof(int))
-                return (T)(object)int.Parse(Encoding.UTF8.GetString(val.Key));
-
-            if (typeof(T) == typeof(uint))
-                return (T)(object)uint.Parse(Encoding.UTF8.GetString(val.Key));
-
-            if (typeof(T) == typeof(ushort))
-                return (T)(object)ushort.Parse(Encoding.UTF8.GetString(val.Key));
-
-            if (typeof(T) == typeof(bool))
-                return (T)(object)(val.Key[0] != 0);
-
-            if (typeof(T) == typeof(DateTime))
-                return (T)(object)DateTime.FromBinary(BitConverter.ToInt64(val.Key, 0));
-
-            if (typeof(T) == typeof(byte[]))
-                return (T)(object)val.Key;
-
-            if (typeof(T) == typeof(ushort[]))
+            try
             {
-                var ret = new ushort[val.Key.Length / 2];
-                Buffer.BlockCopy(val.Key, 0, ret, 0, val.Key.Length);
-                return (T)(object)ret;
-            }
+                if (typeof(T) == typeof(double))
+                    return (T)(object)double.Parse(Encoding.UTF8.GetString(val.Key));
 
-            if (typeof(T) == typeof(int[]) ||
-                typeof(T) == typeof(uint[]))
-            {
-                var ret = new int[val.Key.Length / 4];
-                Buffer.BlockCopy(val.Key, 0, ret, 0, val.Key.Length);
-                return (T)(object)ret;
-            }
+                if (typeof(T) == typeof(int))
+                    return (T)(object)int.Parse(Encoding.UTF8.GetString(val.Key));
 
-            if (typeof(T) == typeof(string))
-                return (T)(object)Encoding.UTF8.GetString(val.Key);
+                if (typeof(T) == typeof(uint))
+                    return (T)(object)uint.Parse(Encoding.UTF8.GetString(val.Key));
+
+                if (typeof(T) == typeof(ushort))
+                    return (T)(object)ushort.Parse(Encoding.UTF8.GetString(val.Key));
+
+                if (typeof(T) == typeof(bool))
+                    return (T)(object)(val.Key[0] != 0);
+
+                if (typeof(T) == typeof(DateTime))
+                    return (T)(object)DateTime.FromBinary(BitConverter.ToInt64(val.Key, 0));
+
+                if (typeof(T) == typeof(byte[]))
+                    return (T)(object)val.Key;
+
+                if (typeof(T) == typeof(ushort[]))
+                {
+                    var ret = new ushort[val.Key.Length / 2];
+                    Buffer.BlockCopy(val.Key, 0, ret, 0, val.Key.Length);
+                    return (T)(object)ret;
+                }
+
+                if (typeof(T) == typeof(int[]) ||
+                    typeof(T) == typeof(uint[]))
+                {
+                    var ret = new int[val.Key.Length / 4];
+                    Buffer.BlockCopy(val.Key, 0, ret, 0, val.Key.Length);
+                    return (T)(object)ret;
+                }
+
+                if (typeof(T) == typeof(string))
+                    return (T)(object)Encoding.UTF8.GetString(val.Key);
+            }
+            catch { return def; }
 
             throw new NotSupportedException();
         }
@@ -603,6 +607,48 @@ namespace LoESoft.Core
         {
             get { return GetValue("exp", 0); }
             set { SetValue("exp", value); }
+        }
+
+        public double FakeExperience
+        {
+            get { return GetValue("fakeExp", 0); }
+            set { SetValue("fakeExp", value); }
+        }
+
+        public bool IsFakeEnabled
+        {
+            get { return GetValue("fake", false); }
+            set { SetValue("fake", value); }
+        }
+
+        public bool Bless1
+        {
+            get { return GetValue("bless1", false); }
+            set { SetValue("bless1", value); }
+        }
+
+        public bool Bless2
+        {
+            get { return GetValue("bless2", false); }
+            set { SetValue("bless2", value); }
+        }
+
+        public bool Bless3
+        {
+            get { return GetValue("bless3", false); }
+            set { SetValue("bless3", value); }
+        }
+
+        public bool Bless4
+        {
+            get { return GetValue("bless4", false); }
+            set { SetValue("bless4", value); }
+        }
+
+        public bool Bless5
+        {
+            get { return GetValue("bless5", false); }
+            set { SetValue("bless5", value); }
         }
 
         public double Fame

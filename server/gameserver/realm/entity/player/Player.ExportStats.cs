@@ -15,7 +15,7 @@ namespace LoESoft.GameServer.realm.entity.player
             stats[StatsType.ACCOUNT_ID_STAT] = AccountId;
             stats[StatsType.NAME_STAT] = Name;
 
-            stats[StatsType.EXP_STAT] = Experience - GetLevelExp(Level);
+            stats[StatsType.EXP_STAT] = Experience;
             stats[StatsType.NEXT_LEVEL_EXP_STAT] = ExperienceGoal;
             stats[StatsType.LEVEL_STAT] = Level;
 

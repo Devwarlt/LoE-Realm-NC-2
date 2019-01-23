@@ -134,7 +134,6 @@ public class EquipmentToolTip extends ToolTip {
         this.addActivateOnEquipTagsToEffectsList();
         this.addDoseTagsToEffectsList();
         this.addMpCostTagToEffectsList();
-        this.addFameBonusTagToEffectsList();
         this.makeEffectsList();
         this.makeLineTwo();
         this.makeRestrictionList();

@@ -62,6 +62,13 @@ namespace LoESoft.GameServer.realm.entity.player
         public double CurrentFame { get; set; }
         public double Experience { get; set; }
         public double ExperienceGoal { get; set; }
+        public double FakeExperience { get; set; }
+        public bool IsFakeEnabled { get; private set; }
+        public bool Bless1 { get; set; }
+        public bool Bless2 { get; set; }
+        public bool Bless3 { get; set; }
+        public bool Bless4 { get; set; }
+        public bool Bless5 { get; set; }
         public double Fame { get; set; }
         public FameCounter FameCounter { get; }
         public TaskManager TaskManager { get; }
@@ -94,7 +101,7 @@ namespace LoESoft.GameServer.realm.entity.player
         public int OxygenBar { get; set; }
         public int PlayerSkin { get; set; }
         public int Stars { get; set; }
-        public int[] Stats { get; }
+        public int[] Stats { get; set; }
         public StatsManager StatsManager { get; }
         public int Texture1 { get; set; }
         public int Texture2 { get; set; }

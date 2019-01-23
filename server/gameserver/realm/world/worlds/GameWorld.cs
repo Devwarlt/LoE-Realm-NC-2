@@ -171,6 +171,8 @@ namespace LoESoft.GameServer.realm.world
                             IsRealmClosed = false;
 
                             Overseer.UniqueEvents.Clear();
+
+                            GameServer.Manager.RemoveWorld(this, true);
                         } while (true);
                     }, TaskCreationOptions.LongRunning);
                     AutoOryx.ContinueWith(task => GameServer.log.Error(task.Exception.InnerException),

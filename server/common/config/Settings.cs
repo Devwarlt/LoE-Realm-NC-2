@@ -11,18 +11,18 @@ namespace LoESoft.Core.config
             Production
         }
 
-        public static readonly double EVENT_RATE = 2.25;
+        public static readonly double EVENT_RATE = 1.5;
 
         public static readonly string EVENT_MESSAGE = $"The server is hosting an event with " +
             $"+{(GetEventRate() - (GetEventRate() != 1 ? 1 : 0)) * 100}% EXP and loot drop rate. Enjoy!";
 
-        public static readonly ServerMode SERVER_MODE = ServerMode.Local;
+        public static readonly ServerMode SERVER_MODE = ServerMode.Production;
         public static readonly bool ENABLE_RESTART_SYSTEM = SERVER_MODE == ServerMode.Production;
         public static readonly int RESTART_DELAY_MINUTES = 120;
         public static readonly int RESTART_APPENGINE_DELAY_MINUTES = 30;
         public static readonly DateTimeKind DateTimeKind = DateTimeKind.Utc;
 
-        public static double GetEventRate() => DateTime.UtcNow > new DateTime(2019, 1, 18, 23, 59, 59) ? 1 : EVENT_RATE;
+        public static double GetEventRate() => DateTime.UtcNow > new DateTime(2019, 1, 23, 23, 59, 59) ? 1 : EVENT_RATE;
 
         public static readonly List<string> ALLOWED_LOCAL_DNS = new List<string>
         {
@@ -59,7 +59,8 @@ namespace LoESoft.Core.config
             new GameVersion(Version: "3.2.2", Allowed: false),
             new GameVersion(Version: "3.2.3", Allowed: false),
             new GameVersion(Version: "3.2.4", Allowed: false),
-            new GameVersion(Version: "3.2.5", Allowed: true)
+            new GameVersion(Version: "3.2.5", Allowed: false),
+            new GameVersion(Version: "3.2.6", Allowed: true)
         };
     }
 }

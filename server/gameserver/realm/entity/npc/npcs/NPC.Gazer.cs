@@ -192,7 +192,7 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                     #endregion
                     #region "Help"
                     case "help":
-                        callback = "You can ask me about 'uptime', 'online' and 'tasks' for more details.";
+                        callback = "You can ask me about 'uptime', 'online', 'tasks', 'check bless', 'bless' and 'fame' for more details.";
                         break;
                     #endregion
                     #region "Access Dream Island"
@@ -298,6 +298,134 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
 
                                 callback = $"Success! You received {days} day{(days > 1 ? "s" : "")} as account lifetime to your VIP account type along event!";
                             }
+                        }
+                        break;
+                    #endregion
+                    #region "Blessings"
+                    case "check bless":
+                    case "check blessings":
+                        callback = $"You have {player.CountBlessings()} of 5 blessings activated.";
+                        break;
+
+                    case "bless":
+                    case "blessings":
+                        player.SendHelp("[Blessings]:");
+                        player.SendHelp("- Medusa's Bless.");
+                        player.SendHelp("- Ghost's Bless.");
+                        player.SendHelp("- Slime's Bless.");
+                        player.SendHelp("- Beholder's Bless.");
+                        player.SendHelp("- Ent's Bless.");
+
+                        callback = "Oh you know about blessings! I can sell 5 different blessings that can protect your against evil forces. Check your chat log.";
+                        break;
+
+                    case "medusa's bless":
+                    case "ghost's bless":
+                    case "slime's bless":
+                    case "beholder's bless":
+                    case "ent's bless":
+                        callback = $"That blessing is costing for your level {player.GetBlessingPrice()} Fame. Say \"buy {command}\" to confirm purchase.";
+                        break;
+
+                    case "buy medusa's bless":
+                        if (player.Bless1)
+                            callback = "You already have this bless.";
+                        else if (player.Client.Account.Fame >= player.GetBlessingPrice())
+                        {
+                            player.Bless1 = true;
+                            player.SaveToCharacter();
+
+                            GameServer.Manager.Database.UpdateFame(player.Client.Account, player.GetBlessingPrice());
+
+                            callback = "You received the blessings of Medusa God!";
+                        }
+                        else
+                            callback = "You do not have enought Fame to purchase this blessing.";
+                        break;
+
+                    case "buy ghost's bless":
+                        if (player.Bless2)
+                            callback = "You already have this bless.";
+                        else if (player.Client.Account.Fame >= player.GetBlessingPrice())
+                        {
+                            player.Bless2 = true;
+                            player.SaveToCharacter();
+
+                            GameServer.Manager.Database.UpdateFame(player.Client.Account, player.GetBlessingPrice());
+
+                            callback = "You received the blessings of Ghost God!";
+                        }
+                        else
+                            callback = "You do not have enought Fame to purchase this blessing.";
+                        break;
+
+                    case "buy slime's bless":
+                        if (player.Bless3)
+                            callback = "You already have this bless.";
+                        else if (player.Client.Account.Fame >= player.GetBlessingPrice())
+                        {
+                            player.Bless3 = true;
+                            player.SaveToCharacter();
+
+                            GameServer.Manager.Database.UpdateFame(player.Client.Account, player.GetBlessingPrice());
+
+                            callback = "You received the blessings of Slime God!";
+                        }
+                        else
+                            callback = "You do not have enought Fame to purchase this blessing.";
+                        break;
+
+                    case "buy beholder's bless":
+                        if (player.Bless4)
+                            callback = "You already have this bless.";
+                        else if (player.Client.Account.Fame >= player.GetBlessingPrice())
+                        {
+                            player.Bless4 = true;
+                            player.SaveToCharacter();
+
+                            GameServer.Manager.Database.UpdateFame(player.Client.Account, player.GetBlessingPrice());
+
+                            callback = "You received the blessings of Beholder God!";
+                        }
+                        else
+                            callback = "You do not have enought Fame to purchase this blessing.";
+                        break;
+
+                    case "buy ent's bless":
+                        if (player.Bless5)
+                            callback = "You already have this bless.";
+                        else if (player.Client.Account.Fame >= player.GetBlessingPrice())
+                        {
+                            player.Bless5 = true;
+                            player.SaveToCharacter();
+
+                            GameServer.Manager.Database.UpdateFame(player.Client.Account, player.GetBlessingPrice());
+
+                            callback = "You received the blessings of Ent God!";
+                        }
+                        else
+                            callback = "You do not have enought Fame to purchase this blessing.";
+                        break;
+                    #endregion
+                    #region "Wipe Fame"
+                    case "fame":
+                        callback = "I can transfer your fame base to your account if you want, just say 'wipe fame'.";
+                        break;
+
+                    case "wipe fame":
+                        if (player.Fame == 0 || player.FakeExperience == 0)
+                            callback = "You cannot use this feature yet, try again later.";
+                        else if (player.Fame < 400)
+                            callback = "You can only transfer fame to your account when you get 400 fame base.";
+                        else
+                        {
+                            GameServer.Manager.Database.UpdateFame(player.Client.Account, player.Fame);
+
+                            player.FakeExperience = 0;
+                            player.CalculateFame(false);
+                            player.SaveToCharacter();
+
+                            callback = "You wipe your fame base of your character and transfered to your account!";
                         }
                         break;
                     #endregion

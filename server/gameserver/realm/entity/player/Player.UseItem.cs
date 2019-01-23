@@ -552,12 +552,14 @@ namespace LoESoft.GameServer.realm.entity.player
                                 idx = 7;
 
                             Stats[idx] += eff.Amount;
+
                             int limit =
                                 int.Parse(
                                     GameServer.Manager.GameData.ObjectTypeToElement[ObjectType].Element(
                                         StatsManager.StatsIndexToName(idx))
                                         .Attribute("max")
                                         .Value);
+
                             if (Stats[idx] > limit)
                                 Stats[idx] = limit;
                         }
@@ -1425,6 +1427,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                         gifts.Add(GameServer.Manager.GameData.IdToObjectType[getEgg]);
 
                                         Experience += 200000;
+                                        FakeExperience += 200000;
                                         GameServer.Manager.Database.UpdateFame(Client.Account, 1000);
                                         GameServer.Manager.Database.UpdateCredit(Client.Account, 200);
                                         CurrentFame = Client.Account.Fame;

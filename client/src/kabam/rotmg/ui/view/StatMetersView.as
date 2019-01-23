@@ -20,28 +20,28 @@ public class StatMetersView extends Sprite {
     private var hpBarBackground_:StatusBar;
     private var mpBarBackground_:StatusBar;
     private var areTempXpListenersAdded:Boolean;
-    private var curXPBoost:int;
     private var expTimer:ExperienceBoostTimerPopup;
 
     public function StatMetersView() {
         this.expBarBackground_ = new StatusBar(176, 16, 0x545454, 0x545454, null);
-        this.expBar_ = new StatusBar(176, 16, 5931045, 0x545454, TextKey.EXP_BAR_LEVEL);
+        this.expBar_ = new StatusBar(176, 16, 5931045, 0x545454, TextKey.EXP_BAR_LEVEL, true, 10, true);
         this.fameBarBackground_ = new StatusBar(176, 16, 0x545454, 0x545454, null);
         this.fameBar_ = new StatusBar(176, 16, 0xE25F00, 0x545454, TextKey.CURRENCY_FAME);
         this.hpBarBackground_ = new StatusBar(176, 16, 0x545454, 0x545454, null);
         this.hpBar_ = new StatusBar(176, 16, 14693428, 0x545454, TextKey.STATUS_BAR_HEALTH_POINTS);
         this.mpBarBackground_ = new StatusBar(176, 16, 0x545454, 0x545454, null);
         this.mpBar_ = new StatusBar(176, 16, 6325472, 0x545454, TextKey.STATUS_BAR_MANA_POINTS);
-        this.hpBar_.y = this.hpBarBackground_.y = 24;
+        this.expBar_.y = this.expBarBackground_.y = 16;
+        this.hpBar_.y = this.hpBarBackground_.y = 32;
         this.mpBar_.y = this.mpBarBackground_.y = 48;
         this.expBarBackground_.visible = true;
         this.expBar_.visible = true;
-        this.fameBarBackground_.visible = false;
-        this.fameBar_.visible = false;
-        addChild(this.expBarBackground_);
-        addChild(this.expBar_);
+        this.fameBarBackground_.visible = true;
+        this.fameBar_.visible = true;
         addChild(this.fameBarBackground_);
         addChild(this.fameBar_);
+        addChild(this.expBarBackground_);
+        addChild(this.expBar_);
         addChild(this.hpBarBackground_);
         addChild(this.hpBar_);
         addChild(this.mpBarBackground_);
@@ -50,55 +50,20 @@ public class StatMetersView extends Sprite {
 
     public function update(_arg1:Player):void {
         this.expBar_.setLabelText(TextKey.EXP_BAR_LEVEL, {"level": _arg1.level_});
-        if (_arg1.level_ < 20) {
-            if (this.expTimer) {
-                this.expTimer.update(_arg1.xpTimer);
+
+        if (_arg1.accountType_ == 1) {
+            if (!this.areTempXpListenersAdded) {
+                this.areTempXpListenersAdded = true;
+                this.expBar_.showMultiplierText();
+                this.expBar_.addEventListener("MULTIPLIER_OVER", this.onExpBarOver);
+                this.expBar_.addEventListener("MULTIPLIER_OUT", this.onExpBarOut);
             }
-            if (!this.expBar_.visible) {
-                this.expBarBackground_.visible = true;
-                this.expBar_.visible = true;
-                this.fameBarBackground_.visible = false;
-                this.fameBar_.visible = false;
-            }
-            this.expBarBackground_.draw(1, 1, 0, 1);
-            this.expBar_.draw(_arg1.exp_, _arg1.nextLevelExp_, 0);
-            if (this.curXPBoost != _arg1.xpBoost_) {
-                this.curXPBoost = _arg1.xpBoost_;
-                if (this.curXPBoost) {
-                    this.expBar_.showMultiplierText();
-                }
-                else {
-                    this.expBar_.hideMultiplierText();
-                }
-            }
-            if (_arg1.xpTimer) {
-                if (!this.areTempXpListenersAdded) {
-                    this.expBar_.addEventListener("MULTIPLIER_OVER", this.onExpBarOver);
-                    this.expBar_.addEventListener("MULTIPLIER_OUT", this.onExpBarOut);
-                    this.areTempXpListenersAdded = true;
-                }
-            }
-            else {
-                if (this.areTempXpListenersAdded) {
-                    this.expBar_.removeEventListener("MULTIPLIER_OVER", this.onExpBarOver);
-                    this.expBar_.removeEventListener("MULTIPLIER_OUT", this.onExpBarOut);
-                    this.areTempXpListenersAdded = false;
-                }
-                if (((this.expTimer) && (this.expTimer.parent))) {
-                    removeChild(this.expTimer);
-                    this.expTimer = null;
-                }
-            }
-        } else {
-            if (!this.fameBar_.visible) {
-                this.fameBarBackground_.visible = true;
-                this.fameBar_.visible = true;
-                this.expBarBackground_.visible = false;
-                this.expBar_.visible = false;
-            }
-            this.fameBarBackground_.draw(1, 1, 0, 1);
-            this.fameBar_.draw(_arg1.currFame_, _arg1.nextClassQuestFame_, 0);
         }
+
+        this.fameBarBackground_.draw(1, 1, 0, 1);
+        this.fameBar_.draw(_arg1.currFame_, _arg1.nextClassQuestFame_, 0);
+        this.expBarBackground_.draw(1, 1, 0, 1);
+        this.expBar_.draw(_arg1.exp_, _arg1.nextLevelExp_, 0);
         this.hpBarBackground_.draw(1, 1, 0, 1);
         this.hpBar_.draw(_arg1.hp_, _arg1.maxHP_, Parameters.parse(_arg1.maxHPBoost_), _arg1.maxHPMax_, _arg1.level_);
         this.mpBarBackground_.draw(1, 1, 0, 1);

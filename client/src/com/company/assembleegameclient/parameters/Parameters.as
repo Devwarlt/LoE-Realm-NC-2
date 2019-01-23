@@ -12,7 +12,7 @@ import flash.utils.Dictionary;
 import kabam.rotmg.build.impl.BuildEnvironments;
 
 public class Parameters {
-    public static const IS_DEVELOPER_MODE:Boolean = true;
+    public static const IS_DEVELOPER_MODE:Boolean = false;
     public static const DISCORD_PERMANENTLY_INVITE:String = "https://discord.gg/htpVTFq";
     public static const CONNECTION_SECURITY_PROTOCOL:String = "http";
     public static const CLIENT_NAME:String = "LoE Realm";
@@ -21,7 +21,7 @@ public class Parameters {
     public static const ENVIRONMENT_DNS:String = !IS_DEVELOPER_MODE ? "loe-nc.servegame.com" : "localhost";
     public static const ENVIRONMENT_PORT:String = "5555";
     public static const BUILD_VERSION:String = "3";
-    public static const MINOR_VERSION:String = "2.5";
+    public static const MINOR_VERSION:String = "2.6";
     public static const FULL_BUILD:String = "v" + BUILD_VERSION + "." + MINOR_VERSION;
     public static const ENABLE_ENCRYPTION:Boolean = true;
     public static const PORT:int = 2050;

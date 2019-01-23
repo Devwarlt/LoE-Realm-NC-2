@@ -1,6 +1,7 @@
 ﻿#region
 
 using LoESoft.GameServer.networking.incoming;
+using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm;
 using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;

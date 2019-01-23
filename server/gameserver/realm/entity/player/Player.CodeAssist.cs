@@ -6,6 +6,7 @@ using LoESoft.GameServer.networking;
 using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.world;
+using MathNet.Numerics.RootFinding;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -215,8 +216,14 @@ namespace LoESoft.GameServer.realm.entity.player
             ExportMonsterCaches(MonsterCaches);
 
             var chr = Client.Character;
-            //chr.LootCaches = LootCaches.ToArray();
             chr.Experience = Experience;
+            chr.FakeExperience = FakeExperience;
+            chr.IsFakeEnabled = IsFakeEnabled;
+            chr.Bless1 = Bless1;
+            chr.Bless2 = Bless2;
+            chr.Bless3 = Bless3;
+            chr.Bless4 = Bless4;
+            chr.Bless5 = Bless5;
             chr.Level = Level;
             chr.Tex1 = Texture1;
             chr.Tex2 = Texture2;
@@ -498,29 +505,37 @@ namespace LoESoft.GameServer.realm.entity.player
 
         public void AwaitGotoAck(long serverTime) => _gotoAckTimeout.Enqueue(serverTime + DcThreshold);
 
-        private static int GetExpGoal(int level) => 50 + (level - 1) * 100;
+        private static double GetExperience(int lvl)
+            => lvl == 1 ? 0 : (75 * lvl * lvl * lvl - 125 * lvl * lvl + 900 * lvl) / 3;
 
-        private static int GetLevelExp(int level) => level == 1 ? 0 : 50 * (level - 1) + (level - 2) * (level - 1) * 50;
+        private static int GetLevel(double exp)
+            => exp == 0 ? 1 : (int)Math.Ceiling(Cubic.RealRoots(-3 * exp / 75, 900 / 75, -125 / 75).Item1);
 
         private static double GetFameGoal(double fame)
         {
             if (fame >= 2000)
                 return 0;
+
             if (fame >= 800)
                 return 2000;
+
             if (fame >= 400)
                 return 800;
+
             if (fame >= 150)
                 return 400;
+
             return fame >= 20 ? 150 : 0;
         }
 
         public int GetStars()
         {
             var ret = 0;
+
             foreach (var i in FameCounter.ClassStats.AllKeys)
             {
                 var entry = FameCounter.ClassStats[ushort.Parse(i)];
+
                 if (entry.BestFame >= 2000)
                     ret += 5;
                 else if (entry.BestFame >= 800)
@@ -532,6 +547,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 else if (entry.BestFame >= 20)
                     ret += 1;
             }
+
             return ret;
         }
 
