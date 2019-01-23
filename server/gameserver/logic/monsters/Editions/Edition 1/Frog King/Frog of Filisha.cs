@@ -20,7 +20,7 @@ namespace LoESoft.GameServer.logic
                 new State("Fight",
                     new Taunt("If Filisha cannot defeat me, you nibbas definitely cannot beat me."),
                     new RemCond(ConditionEffectIndex.Invulnerable), // ok
-                    new ManaDrainBomb(6, 200, 15, coolDown: 400),
+                    new ManaDrainBomb(6, 50, 6, coolDown: 2000),
                     new HpLessTransition(0.97, "Fight2")
                     ),
                 new State("Fight2",
@@ -135,29 +135,30 @@ namespace LoESoft.GameServer.logic
             new WhiteBag("Frog King Skin"),
             new Drops(
                 new OnlyOne(
-                    new ItemLoot("Potion of Life", 0.5),
-                    new ItemLoot("Potion of Mana", 0.5),
-                    new ItemLoot("Potion of Vitality", 1),
-                    new ItemLoot("Potion of Defense", 1)
-                    ),
+				    new BlueBag(Potions.POTION_OF_LIFE),
+					new BlueBag(Potions.POTION_OF_MANA),
+					new BlueBag(Potions.POTION_OF_VITALITY),
+					new BlueBag(Potions.POTION_OF_DEFENSE)
+					),
                 new OnlyOne(
-                    new TierLoot(10, ItemType.Weapon, 0.3),
-                    new TierLoot(11, ItemType.Weapon, 0.2),
-                    new TierLoot(12, ItemType.Weapon, 0.1)
-                    ),
+                    new CyanBag(ItemType.Weapon, 10),
+					new CyanBag(ItemType.Weapon, 11),
+					new CyanBag(ItemType.Weapon, 12)
+					),
                 new OnlyOne(
-                    new TierLoot(11, ItemType.Armor, 0.3),
-                    new TierLoot(12, ItemType.Armor, 0.2),
-                    new TierLoot(13, ItemType.Armor, 0.1)
-                    ),
+				  new CyanBag(ItemType.Armor, 10),
+				  new CyanBag(ItemType.Armor, 11), 
+				  new CyanBag(ItemType.Armor, 12)
+
+					),
                 new OnlyOne(
-                    new TierLoot(5, ItemType.Ability, 0.2),
-                    new TierLoot(6, ItemType.Ability, 0.1)
-                    ),
+					 new CyanBag(ItemType.Ability, 5),
+					 new CyanBag(ItemType.Ability, 6)
+					),
                 new OnlyOne(
-                    new TierLoot(5, ItemType.Ring, 0.15),
-                    new TierLoot(6, ItemType.Ring, 0.08)
-                    )
+				     new CyanBag(ItemType.Ring, 5),
+					 new CyanBag(ItemType.Ring, 6)
+					)
                 )
             )
 
