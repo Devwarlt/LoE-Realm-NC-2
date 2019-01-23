@@ -43,10 +43,10 @@ namespace LoESoft.GameServer.logic
                     new Spawn("Elf Swordsman", maxChildren: 4, coolDown: 7000),
                     new Spawn("Elf Mage", maxChildren: 1, coolDown: 8000)
                     ),
-                new TierLoot(2, ItemType.Weapon),
-                new TierLoot(2, ItemType.Armor),
-                new TierLoot(1, ItemType.Ring),
-                new TierLoot(1, ItemType.Ability),
+                new PinkBag( ItemType.Weapon,2),
+                new PinkBag(ItemType.Armor,2),
+                new PinkBag(ItemType.Ring,1),
+                new PinkBag(ItemType.Ability,1),
                 new ItemLoot("Health Potion", 0.02),
                 new ItemLoot("Magic Potion", 0.02)
             )
@@ -115,10 +115,10 @@ namespace LoESoft.GameServer.logic
                     new Spawn("Goblin Rogue", maxChildren: 7, coolDown: 12000),
                     new Spawn("Goblin Warrior", maxChildren: 7, coolDown: 12000)
                     ),
-                new TierLoot(3, ItemType.Weapon),
-                new TierLoot(3, ItemType.Armor),
-                new TierLoot(1, ItemType.Ring),
-                new TierLoot(1, ItemType.Ability),
+                new PinkBag(ItemType.Weapon,3),
+                new PinkBag(ItemType.Armor,3),
+                new PinkBag(ItemType.Ring,1),
+                new PinkBag(ItemType.Ability,1),
                 new ItemLoot("Health Potion", 0.02),
                 new ItemLoot("Magic Potion", 0.02)
             )

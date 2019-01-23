@@ -28,14 +28,18 @@ namespace LoESoft.GameServer.logic
                         new TimedTransition(2600, "Circling")
                         )
                     ),
-                new TierLoot(3, ItemType.Weapon, 0.2),
-                new TierLoot(4, ItemType.Weapon, 0.12),
-                new TierLoot(3, ItemType.Armor, 0.2),
-                new TierLoot(4, ItemType.Armor, 0.15),
-                new TierLoot(5, ItemType.Armor, 0.02),
-                new TierLoot(1, ItemType.Ring, 0.11),
-                new TierLoot(1, ItemType.Ability, 0.38),
-                new ItemLoot("Magic Potion", 0.03)
+				new OnlyOne(
+					new PinkBag(ItemType.Weapon, 3),
+					new PinkBag(ItemType.Weapon, 4)
+				),
+				new OnlyOne(
+					new PinkBag(ItemType.Armor, 3),
+					new PinkBag(ItemType.Armor, 4),
+					new PinkBag(ItemType.Armor, 5)
+				),
+					new PinkBag(ItemType.Ring, 1),
+					new PinkBag(ItemType.Ability, 1),
+					new ItemLoot("Magic Potion", 0.03)
             )
 
             .Init("Dwarf Veteran",
@@ -183,13 +187,17 @@ namespace LoESoft.GameServer.logic
                         new TimedTransition(30000, "idle")
                         )
                     ),
-                new TierLoot(4, ItemType.Weapon, 0.18),
-                new TierLoot(5, ItemType.Weapon, 0.05),
-                new TierLoot(5, ItemType.Armor, 0.24),
-                new TierLoot(6, ItemType.Armor, 0.03),
-                new TierLoot(2, ItemType.Ring, 0.07),
-                new TierLoot(2, ItemType.Ability, 0.2),
-                new ItemLoot("Health Potion", 0.04),
+				  new OnlyOne(
+					new PinkBag(ItemType.Weapon, 4),
+					new PinkBag(ItemType.Weapon, 5)
+				),
+				new OnlyOne(
+					new PinkBag(ItemType.Armor, 5),
+					new PinkBag(ItemType.Armor, 6)
+				),
+					new PurpleBag(ItemType.Ring, 2),
+					new PurpleBag(ItemType.Ability, 2),
+				new ItemLoot("Health Potion", 0.04),
                 new ItemLoot("Magic Potion", 0.05)
             )
 
@@ -300,8 +308,10 @@ namespace LoESoft.GameServer.logic
                         ),
                     new Reproduce(max: 1)
                     ),
-                new TierLoot(4, ItemType.Armor, 0.02),
-                new TierLoot(6, ItemType.Armor, 0.015),
+				new OnlyOne(
+                new PinkBag(ItemType.Armor, 4),
+                new PinkBag(ItemType.Armor, 6)
+				),
                 new ItemLoot("Health Potion", 0.03)
             )
 
@@ -340,15 +350,23 @@ namespace LoESoft.GameServer.logic
                         new EntityNotExistsTransition("Drake Baby", 8, "idle")
                         )
                     ),
-                new TierLoot(5, ItemType.Weapon, 0.14),
-                new TierLoot(6, ItemType.Weapon, 0.05),
-                new TierLoot(5, ItemType.Armor, 0.19),
-                new TierLoot(6, ItemType.Armor, 0.02),
-                new TierLoot(2, ItemType.Ring, 0.07),
-                new TierLoot(3, ItemType.Ring, 0.001),
-                new TierLoot(2, ItemType.Ability, 0.28),
-                new TierLoot(3, ItemType.Ability, 0.001),
-                new ItemLoot("Health Potion", 0.09),
+				new OnlyOne(
+					new PinkBag(ItemType.Weapon, 5),
+					new PinkBag(ItemType.Weapon, 6)
+					),
+				new OnlyOne(
+					new PinkBag(ItemType.Armor, 5),
+					new PinkBag(ItemType.Armor, 6)
+					),
+				new OnlyOne(
+					new PurpleBag(ItemType.Ring, 2),
+					new PurpleBag(ItemType.Ring, 3)
+					),
+				new OnlyOne(
+					new PurpleBag(ItemType.Ability, 2),
+					new PurpleBag(ItemType.Ability, 3)
+					),
+				new ItemLoot("Health Potion", 0.09),
                 new ItemLoot("Magic Potion", 0.12)
             )
 
@@ -409,7 +427,7 @@ namespace LoESoft.GameServer.logic
                     ),
                 new ItemLoot("Health Potion", 0.01),
                 new ItemLoot("Magic Potion", 0.01),
-                new TierLoot(2, ItemType.Armor, 0.01)
+                new PinkBag(ItemType.Armor, 2)
             )
         ;
     }

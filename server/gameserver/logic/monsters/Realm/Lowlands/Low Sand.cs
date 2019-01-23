@@ -18,11 +18,11 @@ namespace LoESoft.GameServer.logic
                     new Spawn("Sandsman Archer", maxChildren: 2, coolDown: 10000),
                     new Spawn("Sandsman Sorcerer", maxChildren: 3, coolDown: 8000)
                     ),
-                new TierLoot(3, ItemType.Weapon),
-                new TierLoot(3, ItemType.Armor),
-                new TierLoot(1, ItemType.Ring),
-                new TierLoot(1, ItemType.Ability),
-                new ItemLoot("Health Potion", 0.04)
+				 new PinkBag(ItemType.Weapon, 3),
+				 new PinkBag(ItemType.Armor, 3),
+				 new PinkBag(ItemType.Ability, 1),
+				 new PinkBag(ItemType.Ring, 1),
+				new ItemLoot("Health Potion", 0.04)
             )
 
             .Init("Sandsman Archer",
@@ -92,13 +92,13 @@ namespace LoESoft.GameServer.logic
                             ),
                         new TimedTransition(3200, "idle")
                         ),
-                    new DropPortalOnDeath("Pirate Cave Portal", 0.01)
+                    new DropPortalOnDeath("Pirate Cave Portal", 0.01,1)
                     ),
-                new TierLoot(2, ItemType.Weapon),
-                new TierLoot(2, ItemType.Armor),
-                new TierLoot(1, ItemType.Ring),
-                new TierLoot(1, ItemType.Ability),
-                new ItemLoot("Health Potion", 0.02),
+				 new PinkBag(ItemType.Weapon, 2),
+				 new PinkBag(ItemType.Armor, 2),
+				 new PinkBag(ItemType.Ability, 1),
+				 new PinkBag(ItemType.Ring, 1),
+				new ItemLoot("Health Potion", 0.02),
                 new ItemLoot("Magic Potion", 0.02)
             )
 
@@ -118,7 +118,7 @@ namespace LoESoft.GameServer.logic
                         new Circle(7, 2, sightRange: 9),
                         new TimedTransition(3100, "wander")
                         ),
-                    new DropPortalOnDeath("Pirate Cave Portal", 0.01)
+                    new DropPortalOnDeath("Pirate Cave Portal", 0.01, 1)
                     )
             )
         ;

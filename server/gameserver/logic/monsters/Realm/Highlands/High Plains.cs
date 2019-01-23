@@ -22,16 +22,20 @@ namespace LoESoft.GameServer.logic
                     new Shoot(10, index: 0, shoots: 3, shootAngle: 15),
                     new Shoot(10, index: 1, aim: 0.5, coolDown: 1200)
                     ),
-                new Threshold(.01,
-                    new TierLoot(5, ItemType.Weapon, 0.16),
-                    new TierLoot(6, ItemType.Weapon, 0.08),
-                    new TierLoot(7, ItemType.Weapon, 0.04),
-                    new TierLoot(5, ItemType.Armor, 0.16),
-                    new TierLoot(6, ItemType.Armor, 0.08),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(3, ItemType.Ring, 0.05),
-                    new TierLoot(3, ItemType.Ability, 0.2),
-                    new ItemLoot("Purple Drake Egg", 0.005)
+                new Drops(
+					new OnlyOne(
+						new PinkBag(ItemType.Weapon, 5),
+						new PinkBag(ItemType.Weapon, 6),
+						new PurpleBag(ItemType.Weapon, 7)
+					),
+					new OnlyOne(
+						new PinkBag(ItemType.Armor, 5),
+						new PinkBag(ItemType.Armor, 6),
+						new PurpleBag(ItemType.Armor, 7)
+					),
+						new PurpleBag(ItemType.Ring, 3),
+						new PurpleBag(ItemType.Ability, 3),
+						new ItemLoot("Purple Drake Egg", 0.005)
                     )
             )
 
@@ -158,7 +162,7 @@ namespace LoESoft.GameServer.logic
                     ),
                 new ItemLoot("Health Potion", 0.04),
                 new ItemLoot("Magic Potion", 0.01),
-                new TierLoot(2, ItemType.Ring, 0.01)
+                new PurpleBag( ItemType.Ring, 2)
             )
 
             .Init("Shield Orc Flooder",
@@ -187,7 +191,7 @@ namespace LoESoft.GameServer.logic
                     ),
                 new ItemLoot("Health Potion", 0.04),
                 new ItemLoot("Magic Potion", 0.01),
-                new TierLoot(4, ItemType.Ability, 0.01)
+                new PurpleBag(ItemType.Ability, 4)
             )
 
             .Init("Shield Orc Key",
@@ -217,7 +221,7 @@ namespace LoESoft.GameServer.logic
                     ),
                 new ItemLoot("Health Potion", 0.04),
                 new ItemLoot("Magic Potion", 0.01),
-                new TierLoot(4, ItemType.Armor, 0.01)
+                new PinkBag(ItemType.Armor, 4)
             )
 
             .Init("Left Horizontal Trap",
@@ -335,15 +339,19 @@ namespace LoESoft.GameServer.logic
                         new TimedTransition(2400, "idle")
                         )
                     ),
-                new Threshold(.01,
-                    new TierLoot(5, ItemType.Weapon, 0.16),
-                    new TierLoot(6, ItemType.Weapon, 0.08),
-                    new TierLoot(7, ItemType.Weapon, 0.04),
-                    new TierLoot(5, ItemType.Armor, 0.16),
-                    new TierLoot(6, ItemType.Armor, 0.08),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(3, ItemType.Ring, 0.05),
-                    new TierLoot(3, ItemType.Ability, 0.1)
+                new Drops(
+					new OnlyOne(
+                        new PinkBag(ItemType.Weapon, 5),
+					    new PinkBag(ItemType.Weapon, 6),
+						new PinkBag(ItemType.Weapon, 7)
+					),
+					new OnlyOne(
+					    new PinkBag(ItemType.Armor, 5),
+						new PinkBag(ItemType.Armor, 6),
+						new PinkBag(ItemType.Armor, 7)
+					),
+                    new PurpleBag(ItemType.Ring, 3),
+                    new PurpleBag(ItemType.Ability,3)
                     )
             )
         ;
