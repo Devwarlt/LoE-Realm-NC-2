@@ -55,7 +55,7 @@ namespace LoESoft.GameServer.realm.entity
             bool monsterNearby = false;
             this.Aoe(radius / 2, false, enemy =>
             {
-                if (enemy.IsPet)
+                if (!enemy.IsPet)
                     monsterNearby = true;
             });
 

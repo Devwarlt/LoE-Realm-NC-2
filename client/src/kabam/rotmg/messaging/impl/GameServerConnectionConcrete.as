@@ -1616,11 +1616,29 @@ public class GameServerConnectionConcrete extends GameServerConnection {
                 case StatData.NEXT_LEVEL_EXP_STAT:
                     _local4.nextLevelExp_ = Number(_local7.strStatValue_);
                     break;
+                case StatData.NEXT_ATTACK_EXP_STAT:
+                    _local4.nextAttackExp_ = Number(_local7.strStatValue_);
+                    break;
+                case StatData.NEXT_DEFENSE_EXP_STAT:
+                    _local4.nextDefenseExp_ = Number(_local7.strStatValue_);
+                    break;
                 case StatData.EXP_STAT:
                     _local4.exp_ = Number(_local7.strStatValue_);
                     break;
+                case StatData.ATTACK_EXP_STAT:
+                    _local4.attackExp_ = Number(_local7.strStatValue_);
+                    break;
+                case StatData.DEFENSE_EXP_STAT:
+                    _local4.defenseExp_ = Number(_local7.strStatValue_);
+                    break;
                 case StatData.LEVEL_STAT:
                     _arg1.level_ = _local8;
+                    break;
+                case StatData.ATTACK_LEVEL_STAT:
+                    _arg1.attackLevel_ = _local8;
+                    break;
+                case StatData.DEFENSE_LEVEL_STAT:
+                    _arg1.defenseLevel_ = _local8;
                     break;
                 case StatData.ATTACK_STAT:
                     _local4.attack_ = _local8.toString();

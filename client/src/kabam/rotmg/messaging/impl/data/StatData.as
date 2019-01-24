@@ -114,14 +114,12 @@ public class StatData {
     public static const PET_ATTACK_CHANCE:int = 108;
     public static const PET_ATTACK_DAMAGE_MIN:int = 109;
     public static const PET_ATTACK_DAMAGE_MAX:int = 110;
-    
-    /*
-        public readonly static StatsType ATTACK_LEVEL_STAT = 111;
-        public readonly static StatsType ATTACK_EXP_STAT = 112;
-        public readonly static StatsType NEXT_ATTACK_LEVEL_EXP_STAT = 113;
-        public readonly static StatsType DEFENSE_LEVEL_STAT = 114;
-        public readonly static StatsType DEFENSE_EXP_STAT = 115;
-        public readonly static StatsType NEXT_DEFENSE_LEVEL_EXP_STAT = 116;*/
+    public static const ATTACK_LEVEL_STAT:int = 111;
+    public static const ATTACK_EXP_STAT:int = 112;
+    public static const NEXT_ATTACK_EXP_STAT:int = 113;
+    public static const DEFENSE_LEVEL_STAT:int = 114;
+    public static const DEFENSE_EXP_STAT:int = 115;
+    public static const NEXT_DEFENSE_EXP_STAT:int = 116;
 
     public var statType_:uint = 0;
     public var statValue_:int;
@@ -172,6 +170,10 @@ public class StatData {
             case CURR_FAME_STAT:
             case NEXT_LEVEL_EXP_STAT:
             case NEXT_CLASS_QUEST_FAME_STAT:
+            case ATTACK_EXP_STAT:
+            case NEXT_ATTACK_EXP_STAT:
+            case DEFENSE_EXP_STAT:
+            case NEXT_DEFENSE_EXP_STAT:
                 return (true);
         }
         return (false);

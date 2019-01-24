@@ -219,7 +219,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="app\language\english.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="app\globalNews\globalNews.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

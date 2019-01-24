@@ -1,180 +1,207 @@
 ﻿package kabam.rotmg.game.view.components {
 import com.company.assembleegameclient.objects.Player;
 import com.company.assembleegameclient.parameters.Parameters;
+import com.company.assembleegameclient.ui.StatusBar;
+import com.company.assembleegameclient.util.TextureRedrawer;
+import com.company.util.AssetLibrary;
+
+import flash.display.Bitmap;
 
 import flash.display.Sprite;
-import flash.events.MouseEvent;
-import flash.filters.GlowFilter;
+import flash.filters.DropShadowFilter;
+import flash.geom.ColorTransform;
 
-import kabam.rotmg.game.model.StatModel;
+import kabam.rotmg.pets.util.PetsViewAssetFactory;
+
 import kabam.rotmg.text.model.TextKey;
-
-import org.osflash.signals.natives.NativeSignal;
+import kabam.rotmg.text.view.TextFieldDisplayConcrete;
+import kabam.rotmg.text.view.stringBuilder.LineBuilder;
+import kabam.rotmg.text.view.stringBuilder.StaticStringBuilder;
 
 public class StatsView extends Sprite {
-
-    private static const statsModel:Array = [new StatModel(TextKey.STAT_MODEL_ATTACK_SHORT, TextKey.STAT_MODEL_ATTACK_LONG, TextKey.STAT_MODEL_ATTACK_DESCRIPTION, true), new StatModel(TextKey.STAT_MODEL_DEFENSE_SHORT, TextKey.STAT_MODEL_DEFENSE_LONG, TextKey.STAT_MODEL_DEFENSE_DESCRIPTION, false), new StatModel(TextKey.STAT_MODEL_SPEED_SHORT, TextKey.STAT_MODEL_SPEED_LONG, TextKey.STAT_MODEL_SPEED_DESCRIPTION, true), new StatModel(TextKey.STAT_MODEL_DEXTERITY_SHORT, TextKey.STAT_MODEL_DEXTERITY_LONG, TextKey.STAT_MODEL_DEXTERITY_DESCRIPTION, true), new StatModel(TextKey.STAT_MODEL_VITALITY_SHORT, TextKey.STAT_MODEL_VITALITY_LONG, TextKey.STAT_MODEL_VITALITY_DESCRIPTION, true), new StatModel(TextKey.STAT_MODEL_WISDOM_SHORT, TextKey.STAT_MODEL_WISDOM_LONG, TextKey.STAT_MODEL_WISDOM_DESCRIPTION, true)];
-    public static const ATTACK:int = 0;
-    public static const DEFENSE:int = 1;
-    public static const SPEED:int = 2;
-    public static const DEXTERITY:int = 3;
-    public static const VITALITY:int = 4;
-    public static const WISDOM:int = 5;
-    public static const STATE_UNDOCKED:String = "state_undocked";
-    public static const STATE_DOCKED:String = "state_docked";
-    public static const STATE_DEFAULT:String = STATE_DOCKED;//"state_docked"
-
-    private const WIDTH:int = 191;
-    private const HEIGHT:int = 45;
-
-    protected var _strAttack:Number;
-    protected var _strDefense:Number;
-    protected var _strSpeed:Number;
-    protected var _strDexterity:Number;
-    protected var _strVitality:Number;
-    protected var _strWisdom:Number;
-    protected var _strAttackBoost:Number;
-    protected var _strDefenseBoost:Number;
-    protected var _strSpeedBoost:Number;
-    protected var _strDexterityBoost:Number;
-    protected var _strVitalityBoost:Number;
-    protected var _strWisdomBoost:Number;
-
-    private var background:Sprite;
-    public var stats_:Vector.<StatView>;
-    public var containerSprite:Sprite;
-    public var mouseDown:NativeSignal;
-    public var currentState:String = "state_docked";
+    private var contents_:Sprite;
+    private var attackBarBackground_:StatusBar;
+    private var attackBar_:StatusBar;
+    private var defenseBarBackground_:StatusBar;
+    private var defenseBar_:StatusBar;
+    private var expIcon_:Bitmap;
+    private var expText_:TextFieldDisplayConcrete;
+    private var expGoalIcon_:Bitmap;
+    private var expGoalText_:TextFieldDisplayConcrete;
+    private var regularStats_:Sprite;
+    private var attackIcon_:Bitmap;
+    private var attackText_:TextFieldDisplayConcrete;
+    private var defenseIcon_:Bitmap;
+    private var defenseText_:TextFieldDisplayConcrete;
+    private var speedIcon_:Bitmap;
+    private var speedText_:TextFieldDisplayConcrete;
+    private var dexterityIcon_:Bitmap;
+    private var dexterityText_:TextFieldDisplayConcrete;
+    private var vitalityIcon_:Bitmap;
+    private var vitalityText_:TextFieldDisplayConcrete;
+    private var wisdomIcon_:Bitmap;
+    private var wisdomText_:TextFieldDisplayConcrete;
 
     public function StatsView() {
-        this.background = this.createBackground();
-        this.stats_ = new Vector.<StatView>();
-        this.containerSprite = new Sprite();
         super();
-        addChild(this.background);
-        addChild(this.containerSprite);
-        this.createStats();
-        mouseChildren = false;
-        this.mouseDown = new NativeSignal(this, MouseEvent.MOUSE_DOWN, MouseEvent);
+        this.createSpriteContent();
+        this.createAttDefBars();
+        this.createStatsText();
+        this.contents_.addChild(this.regularStats_);
+        addChild(this.contents_);
     }
 
-    private function getStrAttack(player:Player):Number {
-        return this._strAttack = Parameters.parse(player.attack_);
+    private function createSpriteContent():void {
+        this.contents_ = new Sprite();
+        this.contents_.graphics.clear();
+        this.contents_.graphics.beginFill(0, 0);
+        this.contents_.graphics.drawRect(0, 0, 186, 112);
+        this.regularStats_ = new Sprite();
+        this.regularStats_.filters = [TextureRedrawer.OUTLINE_FILTER];
     }
 
-    private function getStrDefense(player:Player):Number {
-        return this._strDefense = Parameters.parse(player.defense_);
+    private function createAttDefBars():void {
+        this.attackBarBackground_ = new StatusBar(176, 16, 0x545454, 0x545454, null);
+        this.attackBar_ = new StatusBar(176, 16, 0xFF1493, 0x545454, TextKey.EXP_BAR_LEVEL, true, 10, true);
+        this.defenseBarBackground_ = new StatusBar(176, 16, 0x545454, 0x545454, null);
+        this.defenseBar_ = new StatusBar(176, 16, 0x000000, 0x545454, TextKey.EXP_BAR_LEVEL, true, 10, true);
+        this.contents_.addChild(this.attackBarBackground_);
+        this.contents_.addChild(this.attackBar_);
+        this.contents_.addChild(this.defenseBarBackground_);
+        this.contents_.addChild(this.defenseBar_);
+        this.attackBar_.x = this.attackBarBackground_.x =
+                this.defenseBar_.x = this.defenseBarBackground_.x = 4;
+        this.attackBar_.y = this.attackBarBackground_.y = 4;
+        this.defenseBar_.y = this.defenseBarBackground_.y = 24;
     }
 
-    private function getStrSpeed(player:Player):Number {
-        return this._strSpeed = Parameters.parse(player.speed_);
+    private function createStatsText():void {
+        this.expIcon_ = new Bitmap(AssetLibrary.getImageFromSet("lofiInterfaceBig", 15));
+        this.expIcon_.transform.colorTransform = new ColorTransform((0x00 / 0xFF), (0xFA / 0xFF), (0x9A / 0xFF));
+        this.expIcon_.filters = [new DropShadowFilter(0, 0, 0)];
+        this.expIcon_.x = 4;
+        this.expIcon_.y = 44;
+        this.contents_.addChild(this.expIcon_);
+        this.expText_ = PetsViewAssetFactory.returnTextfield(0x00FF7F, 12, false, true).setHTML(true);
+        this.expText_.filters = [new DropShadowFilter(0, 0, 0)];
+        this.expText_.x = 18;
+        this.expText_.y = 56;
+        this.contents_.addChild(this.expText_);
+
+        this.expGoalIcon_ = new Bitmap(AssetLibrary.getImageFromSet("lofiInterfaceBig", 15));
+        this.expGoalIcon_.transform.colorTransform = new ColorTransform((0xFF / 0xFF), (0xD7 / 0xFF), (0x00 / 0xFF));
+        this.expGoalIcon_.filters = [new DropShadowFilter(0, 0, 0)];
+        this.expGoalIcon_.x = this.expIcon_.x;
+        this.expGoalIcon_.y = this.expIcon_.y + 16;
+        this.contents_.addChild(this.expGoalIcon_);
+        this.expGoalText_ = PetsViewAssetFactory.returnTextfield(0xEEDD82, 12, false, true).setHTML(true);
+        this.expGoalText_.filters = [new DropShadowFilter(0, 0, 0)];
+        this.expGoalText_.x = this.expText_.x;
+        this.expGoalText_.y = this.expText_.y + 16;
+        this.contents_.addChild(this.expGoalText_);
+
+        this.attackIcon_ = new Bitmap(AssetLibrary.getImageFromSet("lofiInterfaceBig", 34));
+        this.attackIcon_.filters = [TextureRedrawer.matrixFilter(0x9400D3)];
+        this.attackIcon_.x = this.expText_.x - 12;
+        this.attackIcon_.y = this.expGoalIcon_.y + 26;
+        this.regularStats_.addChild(this.attackIcon_);
+        this.attackText_ = PetsViewAssetFactory.returnTextfield(0xDA70D6, 10, true, true).setHTML(true);
+        this.attackText_.filters = [new DropShadowFilter(0, 0, 0)];
+        this.attackText_.x = this.expGoalText_.x + 5;
+        this.attackText_.y = this.expGoalText_.y + 25;
+        this.contents_.addChild(this.attackText_);
+
+        this.defenseIcon_ = new Bitmap(AssetLibrary.getImageFromSet("lofiInterfaceBig", 35));
+        this.defenseIcon_.filters = [TextureRedrawer.matrixFilter(0x708090)];
+        this.defenseIcon_.x = this.attackIcon_.x;
+        this.defenseIcon_.y = this.attackIcon_.y + 16;
+        this.regularStats_.addChild(this.defenseIcon_);
+        this.defenseText_ = PetsViewAssetFactory.returnTextfield(0xD3D3D3, 10, true, true).setHTML(true);
+        this.defenseText_.filters = [new DropShadowFilter(0, 0, 0)];
+        this.defenseText_.x = this.attackText_.x;
+        this.defenseText_.y = this.attackText_.y + 16;
+        this.contents_.addChild(this.defenseText_);
+
+        this.speedIcon_ = new Bitmap(AssetLibrary.getImageFromSet("lofiInterfaceBig", 36));
+        this.speedIcon_.filters = [TextureRedrawer.matrixFilter(0x32CD32)];
+        this.speedIcon_.x = this.attackIcon_.x + 60;
+        this.speedIcon_.y = this.attackIcon_.y;
+        this.regularStats_.addChild(this.speedIcon_);
+        this.speedText_ = PetsViewAssetFactory.returnTextfield(0x9ACD32, 10, true, true).setHTML(true);
+        this.speedText_.filters = [new DropShadowFilter(0, 0, 0)];
+        this.speedText_.x = this.attackText_.x + 60;
+        this.speedText_.y = this.attackText_.y;
+        this.contents_.addChild(this.speedText_);
+
+        this.dexterityIcon_ = new Bitmap(AssetLibrary.getImageFromSet("lofiInterfaceBig", 37));
+        this.dexterityIcon_.filters = [TextureRedrawer.matrixFilter(0xCD6600)];
+        this.dexterityIcon_.x = this.speedIcon_.x;
+        this.dexterityIcon_.y = this.speedIcon_.y + 16;
+        this.regularStats_.addChild(this.dexterityIcon_);
+        this.dexterityText_ = PetsViewAssetFactory.returnTextfield(0xFFA500, 10, true, true).setHTML(true);
+        this.dexterityText_.filters = [new DropShadowFilter(0, 0, 0)];
+        this.dexterityText_.x = this.speedText_.x;
+        this.dexterityText_.y = this.speedText_.y + 16;
+        this.contents_.addChild(this.dexterityText_);
+
+        this.vitalityIcon_ = new Bitmap(AssetLibrary.getImageFromSet("lofiInterfaceBig", 38));
+        this.vitalityIcon_.filters = [TextureRedrawer.matrixFilter(0xCD2626)];
+        this.vitalityIcon_.x = this.speedIcon_.x + 60;
+        this.vitalityIcon_.y = this.speedIcon_.y;
+        this.regularStats_.addChild(this.vitalityIcon_);
+        this.vitalityText_ = PetsViewAssetFactory.returnTextfield(0xFF3030, 10, true, true).setHTML(true);
+        this.vitalityText_.filters = [new DropShadowFilter(0, 0, 0)];
+        this.vitalityText_.x = this.speedText_.x + 60;
+        this.vitalityText_.y = this.speedText_.y;
+        this.contents_.addChild(this.vitalityText_);
+
+        this.wisdomIcon_ = new Bitmap(AssetLibrary.getImageFromSet("lofiInterfaceBig", 39));
+        this.wisdomIcon_.filters = [TextureRedrawer.matrixFilter(0x3A5FCD)];
+        this.wisdomIcon_.x = this.vitalityIcon_.x;
+        this.wisdomIcon_.y = this.vitalityIcon_.y + 16;
+        this.regularStats_.addChild(this.wisdomIcon_);
+        this.wisdomText_ = PetsViewAssetFactory.returnTextfield(0x4876FF, 10, true, true).setHTML(true);
+        this.wisdomText_.filters = [new DropShadowFilter(0, 0, 0)];
+        this.wisdomText_.x = this.vitalityText_.x;
+        this.wisdomText_.y = this.vitalityText_.y + 16;
+        this.contents_.addChild(this.wisdomText_);
     }
 
-    private function getStrDexterity(player:Player):Number {
-        return this._strDexterity = Parameters.parse(player.dexterity_);
+    public function update(_arg1:Player):void {
+        if (!_arg1)
+            return;
+
+        // update att bar
+        this.attackBar_.setLabelText(TextKey.ATT_EXP_BAR_LEVEL, {"level": _arg1.attackLevel_});
+        this.attackBarBackground_.draw(1, 1, 0, 1);
+        this.attackBar_.draw(_arg1.attackExp_, _arg1.nextAttackExp_, 0);
+
+        // update def bar
+        this.defenseBar_.setLabelText(TextKey.DEF_EXP_BAR_LEVEL, {"level": _arg1.defenseLevel_});
+        this.defenseBarBackground_.draw(1, 1, 0, 1);
+        this.defenseBar_.draw(_arg1.defenseExp_, _arg1.nextDefenseExp_, 0);
+
+        //update labels
+        this.expText_.setStringBuilder(new LineBuilder().setParams(Parameters.formatValue(_arg1.exp_) + " <b>XP</b>"));
+        this.expGoalText_.setStringBuilder(new LineBuilder().setParams(Parameters.formatValue(_arg1.nextLevelExp_ - _arg1.exp_) + " <b>XP</b>\nto Level <b>" + (_arg1.level_ + 1) + "</b>"));
+        this.attackText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString(_arg1.attackLevel_, _arg1.attackBoost_)));
+        this.defenseText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString(_arg1.defenseLevel_, _arg1.defenseBoost_)));
+        this.speedText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString2(_arg1.speed_, _arg1.speedBoost_)));
+        this.dexterityText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString2(_arg1.dexterity_, _arg1.dexterityBoost_)));
+        this.vitalityText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString2(_arg1.vitality_, _arg1.vitalityBoost_)));
+        this.wisdomText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString2(_arg1.wisdom_, _arg1.wisdomBoost_)));
     }
 
-    private function getStrVitality(player:Player):Number {
-        return this._strVitality = Parameters.parse(player.vitality_);
+    private static function makeStatsFormattedString(_arg1:int, _arg2:String = "0"):String {
+        return makeStatsFormattedNumber(_arg1, Number(_arg2));
     }
 
-    private function getStrWisdom(player:Player):Number {
-        return this._strWisdom = Parameters.parse(player.wisdom_);
+    private static function makeStatsFormattedString2(_arg1:String, _arg2:String = "0"):String {
+        return makeStatsFormattedNumber(Number(_arg1), Number(_arg2));
     }
 
-    private function getStrAttackBoost(player:Player):Number {
-        return this._strAttackBoost = Parameters.parse(player.attackBoost_);
+    private static function makeStatsFormattedNumber(_arg1:int, _arg2:int = 0):String {
+        return _arg1 + "" + (_arg2 != 0 ? " + " + (_arg1 + _arg2) : "");
     }
-
-    private function getStrDefenseBoost(player:Player):Number {
-        return this._strDefenseBoost = Parameters.parse(player.defenseBoost_);
-    }
-
-    private function getStrSpeedBoost(player:Player):Number {
-        return this._strSpeedBoost = Parameters.parse(player.speedBoost_);
-    }
-
-    private function getStrDexterityBoost(player:Player):Number {
-        return this._strDexterityBoost = Parameters.parse(player.dexterityBoost_);
-    }
-
-    private function getStrVitalityBoost(player:Player):Number {
-        return this._strVitalityBoost = Parameters.parse(player.vitalityBoost_);
-    }
-
-    private function getStrWisdomBoost(player:Player):Number {
-        return this._strWisdomBoost = Parameters.parse(player.wisdomBoost_);
-    }
-
-    private function createStats():void {
-        var _local3:StatView;
-        var _local1:int;
-        var _local2:int;
-        while (_local2 < statsModel.length) {
-            _local3 = this.createStat(_local2, _local1);
-            this.stats_.push(_local3);
-            this.containerSprite.addChild(_local3);
-            _local1 = (_local1 + (_local2 % 2));
-            _local2++;
-        }
-    }
-
-    private function createStat(_arg1:int, _arg2:int):StatView {
-        var _local4:StatView;
-        var _local3:StatModel = statsModel[_arg1];
-        _local4 = new StatView(_local3.name, _local3.abbreviation, _local3.description, _local3.redOnZero);
-        _local4.x = (((_arg1 % 2) * this.WIDTH) / 2);
-        _local4.y = (_arg2 * (this.HEIGHT / 3));
-        return (_local4);
-    }
-
-    public function draw(_arg1:Player, _arg2:Boolean = true):void {
-        if (_arg1) {
-            this.setBackgroundVisibility();
-            this.drawStats(_arg1);
-        }
-        if (_arg2)
-            this.containerSprite.x = ((this.WIDTH - this.containerSprite.width) / 2);
-    }
-
-    private function drawStats(player:Player):void {
-        this.stats_[ATTACK].draw(this.getStrAttack(player), this.getStrAttackBoost(player), player.attackMax_, player.level_);
-        this.stats_[DEFENSE].draw(this.getStrDefense(player), this.getStrDefenseBoost(player), player.defenseMax_, player.level_);
-        this.stats_[SPEED].draw(this.getStrSpeed(player), this.getStrSpeedBoost(player), player.speedMax_, player.level_);
-        this.stats_[DEXTERITY].draw(this.getStrDexterity(player), this.getStrDexterityBoost(player), player.dexterityMax_, player.level_);
-        this.stats_[VITALITY].draw(this.getStrVitality(player), this.getStrVitalityBoost(player), player.vitalityMax_, player.level_);
-        this.stats_[WISDOM].draw(this.getStrWisdom(player), this.getStrWisdomBoost(player), player.wisdomMax_, player.level_);
-    }
-
-    public function dock():void {
-        this.currentState = STATE_DOCKED;
-    }
-
-    public function undock():void {
-        this.currentState = STATE_UNDOCKED;
-    }
-
-    private function createBackground():Sprite {
-        this.background = new Sprite();
-        this.background.graphics.clear();
-        this.background.graphics.beginFill(0x363636);
-        this.background.graphics.lineStyle(2, 0xFFFFFF);
-        this.background.graphics.drawRoundRect(-5, -5, (this.WIDTH + 10), (this.HEIGHT + 13), 10);
-        this.background.filters = [new GlowFilter(0, 1, 10, 10, 1, 3)];
-        return (this.background);
-    }
-
-    private function setBackgroundVisibility():void {
-        if (this.currentState == STATE_UNDOCKED) {
-            this.background.alpha = 1;
-        }
-        else {
-            if (this.currentState == STATE_DOCKED) {
-                this.background.alpha = 0;
-            }
-        }
-    }
-
-
 }
 }

@@ -49,6 +49,9 @@ public class StatMetersView extends Sprite {
     }
 
     public function update(_arg1:Player):void {
+        if (!_arg1)
+            return;
+
         this.expBar_.setLabelText(TextKey.EXP_BAR_LEVEL, {"level": _arg1.level_});
 
         if (_arg1.accountType_ == 1) {

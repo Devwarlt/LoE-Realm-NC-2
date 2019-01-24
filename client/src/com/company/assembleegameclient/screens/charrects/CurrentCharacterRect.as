@@ -43,9 +43,6 @@ public class CurrentCharacterRect extends CharacterRect {
     private var icon:DisplayObject;
     private var newPetIcon:ItemWithTooltip;
     private var samplePetIcons:Array = [0x4700, 0x4701, 0x4702, 0x4703, 0x4704, 0x4705, 0x4705, 0x4706, 0x4707];
-    protected var statsMaxedText:TextFieldDisplayConcrete;
-    protected var statsMaxedTextLabel:TextFieldDisplayConcrete;
-    protected var statsMaxedTextLabelSprite:Sprite;
 
     public function CurrentCharacterRect(_arg1:String, _arg2:CharacterClass, _arg3:SavedCharacter, _arg4:CharacterStats) {
         this.myPlayerToolTipFactory = new MyPlayerToolTipFactory();
@@ -107,18 +104,18 @@ public class CurrentCharacterRect extends CharacterRect {
             super.makeTagline(new LineBuilder().setParams(TextKey.CURRENT_CHARACTER_TAGLINE, {
                 "quest": (((this.charStats == null)) ? 0 : this.charStats.numStars())
             }), new LineBuilder().setParams(TextKey.CURRENT_CHARACTER_TAGLINEFAME, {
-                "fame": Parameters.addComma(this.char.fame()),
-                "nextStarFame": Parameters.addComma(this.getNextStarFame())
+                "fame": Parameters.formatValue(this.char.fame()),
+                "nextStarFame": Parameters.formatValue(this.getNextStarFame())
             }), new LineBuilder().setParams(TextKey.CURRENT_CHARACTER_TAGLINEEXP, {
-                "experience": Parameters.addComma(this.char.xp())
+                "experience": Parameters.formatValue(this.char.xp())
             }));
         } else {
             super.makeTagline(new LineBuilder().setParams(TextKey.CURRENT_CHARACTER_TAGLINE, {
                 "quest": 5
             }), new LineBuilder().setParams(TextKey.CURRENT_CHARACTER_TAGLINEFAME_NOQUEST, {
-                "fame": Parameters.addComma(this.char.fame())
+                "fame": Parameters.formatValue(this.char.fame())
             }), new LineBuilder().setParams(TextKey.CURRENT_CHARACTER_TAGLINEEXP, {
-                "experience": Parameters.addComma(this.char.xp())
+                "experience": Parameters.formatValue(this.char.xp())
             }), true);
         }
         taglineClassText.x = (taglineClassText.x + taglineClassIcon.width);

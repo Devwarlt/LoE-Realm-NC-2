@@ -108,7 +108,11 @@ public class Player extends Character {
     public var maxMP_:int = 200;
     public var mp_:Number = 0;
     public var nextLevelExp_:Number = 1000;
+    public var nextAttackExp_:Number = 1000;
+    public var nextDefenseExp_:Number = 1000;
     public var exp_:Number = 0;
+    public var attackExp_:Number = 0;
+    public var defenseExp_:Number = 0;
     public var attack_:String = null;
     public var speed_:String = null;
     public var dexterity_:String = null;

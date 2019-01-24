@@ -87,6 +87,8 @@ public class TextKey {
     public static const PLAYER_TOOL_TIP_CLICK_MESSAGE:String = "PlayerToolTip.clickMessage";
     public static const RANK_TEXT_RANK:String = "RankText.rank";
     public static const EXP_BAR_LEVEL:String = "ExpBar.level";
+    public static const ATT_EXP_BAR_LEVEL:String = "AttExpBar.level";
+    public static const DEF_EXP_BAR_LEVEL:String = "DefExpBar.level";
     public static const STATUS_BAR_HEALTH_POINTS:String = "StatusBar.HealthPoints";
     public static const STATUS_BAR_MANA_POINTS:String = "StatusBar.ManaPoints";
     public static const MY_PLAYER_TOOL_TIP_NEXT_CLASS_QUEST:String = "MyPlayerToolTip.NextClassQuest";

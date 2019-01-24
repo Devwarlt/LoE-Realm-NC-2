@@ -20,11 +20,11 @@ namespace LoESoft.GameServer.realm.entity.player
             stats[StatsType.LEVEL_STAT] = Level;
 
             stats[StatsType.ATTACK_EXP_STAT] = AttackExperience;
-            stats[StatsType.NEXT_ATTACK_LEVEL_EXP_STAT] = AttackGoalExperience;
+            stats[StatsType.NEXT_ATTACK_EXP_STAT] = AttackGoalExperience;
             stats[StatsType.ATTACK_LEVEL_STAT] = AttackLevel;
 
             stats[StatsType.DEFENSE_EXP_STAT] = DefenseExperience;
-            stats[StatsType.NEXT_DEFENSE_LEVEL_EXP_STAT] = DefenseGoalExperience;
+            stats[StatsType.NEXT_DEFENSE_EXP_STAT] = DefenseGoalExperience;
             stats[StatsType.DEFENSE_LEVEL_STAT] = DefenseLevel;
 
             stats[StatsType.FAME_STAT] = CurrentFame;

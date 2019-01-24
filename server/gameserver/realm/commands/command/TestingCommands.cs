@@ -8,7 +8,7 @@ namespace LoESoft.GameServer.realm.commands
 {
     public class TestingCommands : Command
     {
-        public TestingCommands() : base("test", (int)AccountType.REGULAR)
+        public TestingCommands() : base("test", (int)AccountType.DEVELOPER)
         {
         }
 

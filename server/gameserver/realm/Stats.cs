@@ -127,10 +127,10 @@ namespace LoESoft.GameServer.realm
         public readonly static StatsType PET_ATTACK_DAMAGE_MAX = 110;
         public readonly static StatsType ATTACK_LEVEL_STAT = 111;
         public readonly static StatsType ATTACK_EXP_STAT = 112;
-        public readonly static StatsType NEXT_ATTACK_LEVEL_EXP_STAT = 113;
+        public readonly static StatsType NEXT_ATTACK_EXP_STAT = 113;
         public readonly static StatsType DEFENSE_LEVEL_STAT = 114;
         public readonly static StatsType DEFENSE_EXP_STAT = 115;
-        public readonly static StatsType NEXT_DEFENSE_LEVEL_EXP_STAT = 116;
+        public readonly static StatsType NEXT_DEFENSE_EXP_STAT = 116;
 
         private byte _type;
 
@@ -148,12 +148,10 @@ namespace LoESoft.GameServer.realm
             CURR_FAME_STAT,
             NEXT_LEVEL_EXP_STAT,
             NEXT_CLASS_QUEST_FAME_STAT,
-            ATTACK_LEVEL_STAT,
             ATTACK_EXP_STAT,
-            NEXT_ATTACK_LEVEL_EXP_STAT,
-            DEFENSE_LEVEL_STAT,
+            NEXT_ATTACK_EXP_STAT,
             DEFENSE_EXP_STAT,
-            NEXT_DEFENSE_LEVEL_EXP_STAT
+            NEXT_DEFENSE_EXP_STAT
         };
 
         public bool IsUTF() => UTF.Contains(this);

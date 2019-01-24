@@ -317,12 +317,12 @@
     <Soulbound />
     <DisplayId>Gem of Blight</DisplayId>
   </Object>
-  <Object type="0x5011" id="Umbral Staff">
+  <Object type="0x5011" id="Umbral Staff" spritePeriod="4" spriteFile="LRE" spriteArray="128-133">
     <Class>Equipment</Class>
     <Item />
     <Texture>
       <File>LRE</File>
-      <Index>80</Index>
+      <Index>128</Index>
     </Texture>
     <Tier>14</Tier>
     <SlotType>17</SlotType>
@@ -335,10 +335,9 @@
     <Projectile>
       <ObjectId>umbral staff prj</ObjectId>
       <Speed>180</Speed>
-      <MinDamage>60</MinDamage>
+      <MinDamage>65</MinDamage>
       <MaxDamage>105</MaxDamage>
       <LifetimeMS>475</LifetimeMS>
-      <ParticleTrail intensity="0.8" lifetimeMS="250">0xc30e0e</ParticleTrail>
       <Amplitude>0.5</Amplitude>
       <Frequency>2</Frequency>
     </Projectile>
@@ -356,12 +355,12 @@
     <OldSound>magicShoot</OldSound>
     <DisplayId>Umbral Staff</DisplayId>
   </Object>
-  <Object type="0x5010" id="Umbral Wand">
+  <Object type="0x5010" id="Umbral Wand" spritePeriod="4" spriteFile="LRE" spriteArray="208-213">
     <Class>Equipment</Class>
     <Item />
     <Texture>
       <File>LRE</File>
-      <Index>90</Index>
+      <Index>208</Index>
     </Texture>
     <SlotType>8</SlotType>
     <Tier>14</Tier>
@@ -375,9 +374,8 @@
       <ObjectId>umbral wand prj</ObjectId>
       <Speed>150</Speed>
       <LifetimeMS>600</LifetimeMS>
-      <ParticleTrail intensity="0.8" lifetimeMS="250">0xc30e0e</ParticleTrail>
-      <MinDamage>95</MinDamage>
-      <MaxDamage>135</MaxDamage>
+      <MinDamage>100</MinDamage>
+      <MaxDamage>145</MaxDamage>
       <MultiHit />
     </Projectile>
     <Umbral />
@@ -392,12 +390,12 @@
     <OldSound>magicShoot</OldSound>
     <DisplayId>Umbral Wand</DisplayId>
   </Object>
-  <Object type="0x500f" id="Umbral Sword">
+  <Object type="0x500f" id="Umbral Sword" spritePeriod="4" spriteFile="LRE" spriteArray="144-149">
     <Class>Equipment</Class>
     <Item />
     <Texture>
       <File>LRE</File>
-      <Index>82</Index>
+      <Index>144</Index>
     </Texture>
     <SlotType>1</SlotType>
     <Tier>14</Tier>
@@ -410,10 +408,9 @@
     <Projectile>
       <ObjectId>umbral sword prj</ObjectId>
       <Speed>100</Speed>
-      <MinDamage>225</MinDamage>
+      <MinDamage>230</MinDamage>
       <MaxDamage>285</MaxDamage>
       <LifetimeMS>350</LifetimeMS>
-      <ParticleTrail intensity="0.8" lifetimeMS="250">0xc30e0e</ParticleTrail>
     </Projectile>
     <Umbral />
     <ActivateOnEquip stat="20" amount="1">IncrementStat</ActivateOnEquip>
@@ -427,12 +424,12 @@
     <OldSound>bladeSwing</OldSound>
     <DisplayId>Umbral Sword</DisplayId>
   </Object>
-  <Object type="0x500e" id="Umbral Bow">
+  <Object type="0x500e" id="Umbral Bow" spritePeriod="4" spriteFile="LRE" spriteArray="160-165">
     <Class>Equipment</Class>
     <Item />
     <Texture>
       <File>LRE</File>
-      <Index>84</Index>
+      <Index>160</Index>
     </Texture>
     <SlotType>3</SlotType>
     <Tier>14</Tier>
@@ -445,10 +442,9 @@
     <Projectile>
       <ObjectId>umbral bow prj</ObjectId>
       <Speed>160</Speed>
-      <MinDamage>50</MinDamage>
-      <MaxDamage>75</MaxDamage>
+      <MinDamage>55</MinDamage>
+      <MaxDamage>80</MaxDamage>
       <LifetimeMS>440</LifetimeMS>
-      <ParticleTrail intensity="0.8" lifetimeMS="250">0xc30e0e</ParticleTrail>
       <MultiHit />
     </Projectile>
     <Umbral />
@@ -464,12 +460,12 @@
     <OldSound>arrowShoot</OldSound>
     <DisplayId>Umbral Bow</DisplayId>
   </Object>
-  <Object type="0x500d" id="Umbral Dagger">
+  <Object type="0x500d" id="Umbral Dagger" spritePeriod="4" spriteFile="LRE" spriteArray="176-181">
     <Class>Equipment</Class>
     <Item />
     <Texture>
       <File>LRE</File>
-      <Index>86</Index>
+      <Index>176</Index>
     </Texture>
     <SlotType>2</SlotType>
     <Tier>14</Tier>
@@ -482,7 +478,7 @@
     <Projectile>
       <ObjectId>umbral dagger prj</ObjectId>
       <Speed>140</Speed>
-      <MinDamage>95</MinDamage>
+      <MinDamage>100</MinDamage>
       <MaxDamage>180</MaxDamage>
       <LifetimeMS>400</LifetimeMS>
       <ParticleTrail intensity="0.8" lifetimeMS="250">0xc30e0e</ParticleTrail>
@@ -499,12 +495,12 @@
     <OldSound>daggerSwing</OldSound>
     <DisplayId>Umbral Dagger</DisplayId>
   </Object>
-  <Object type="0x500c" id="Umbral Katana">
+  <Object type="0x500c" id="Umbral Katana" spritePeriod="4" spriteFile="LRE" spriteArray="192-197">
     <Class>Equipment</Class>
     <Item />
     <Texture>
       <File>LRE</File>
-      <Index>88</Index>
+      <Index>192</Index>
     </Texture>
     <SlotType>24</SlotType>
     <Tier>14</Tier>
@@ -518,9 +514,8 @@
       <ObjectId>umbral katana prj</ObjectId>
       <Speed>120</Speed>
       <MinDamage>150</MinDamage>
-      <MaxDamage>170</MaxDamage>
+      <MaxDamage>190</MaxDamage>
       <LifetimeMS>350</LifetimeMS>
-      <ParticleTrail intensity="0.8" lifetimeMS="250">0xc30e0e</ParticleTrail>
       <MultiHit />
     </Projectile>
     <Umbral />

@@ -5,6 +5,7 @@ import com.company.util.MoreDateUtil;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
+import flash.globalization.NumberFormatter;
 import flash.net.SharedObject;
 import flash.system.Capabilities;
 import flash.utils.Dictionary;
@@ -12,7 +13,7 @@ import flash.utils.Dictionary;
 import kabam.rotmg.build.impl.BuildEnvironments;
 
 public class Parameters {
-    public static const IS_DEVELOPER_MODE:Boolean = true;
+    public static const IS_DEVELOPER_MODE:Boolean = false;
     public static const DISCORD_PERMANENTLY_INVITE:String = "https://discord.gg/htpVTFq";
     public static const CONNECTION_SECURITY_PROTOCOL:String = "http";
     public static const CLIENT_NAME:String = "LoE Realm";
@@ -152,18 +153,6 @@ public class Parameters {
         data_[_arg1] = _arg2;
     }
 
-    public static function addComma(num:uint):String {
-        if (num == 0)
-            return "0";
-        var str:String = "";
-        while (num > 0) {
-            var tmp:uint = num % 1000;
-            str = (num > 999 ? "," + (tmp < 100 ? (tmp < 10 ? "00" : "0") : "") : "") + tmp + str;
-            num = num / 1000;
-        }
-        return str;
-    }
-
     public static function parse(str:String):int {
         if (str == null)
             str = "0";
@@ -221,25 +210,10 @@ public class Parameters {
         return value * (180 / Math.PI) + "º";
     }
 
-    public static function formatValue(value:Number, places:Number, dotToComma:Boolean = false):String {
-        return appendValues(value, places, dotToComma);
-    }
-
-    private static function appendValues(value:Number, places:Number, dotToComma:Boolean):String {
-        var string:String = null;
-        var valueData:Array = [ String(int(value)), String(value - int(value)).substr(2)];
-
-        for (var i:Number = 0; i < places; i++)
-            valueData.push((valueData[1]).charAt(i)); // append all strings properly to right length
-
-        string = valueData[0] + (dotToComma ? "," : ".") + valueData[2];
-
-        for (i = 3; i < valueData.length; i++)
-            string = string + valueData[i];
-
-        var stringData:Array = string.split((dotToComma ? "," : "."));
-
-        return stringData[1] == null || stringData[1] == "" ? stringData[0] : string;
+    public static function formatValue(value:Number, digits:Number = 0):String {
+        var nf:NumberFormatter = new NumberFormatter("en-US");
+        nf.fractionalDigits = digits;
+        return nf.formatNumber(value);
     }
 
     private static function setDefault(_arg1:String, _arg2:*):void {

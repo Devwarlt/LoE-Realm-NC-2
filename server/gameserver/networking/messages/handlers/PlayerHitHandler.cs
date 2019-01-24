@@ -33,7 +33,7 @@ namespace LoESoft.GameServer.networking.handlers
                     else
                         player.ApplyConditionEffect(effect);
 
-            player.CalculateAttack();
+            player.CalculateDefense();
             player.ForceHit(prj);
         }
     }
