@@ -128,31 +128,22 @@ public class StatsView extends Sprite {
         return (_local4);
     }
 
-    public function draw(_arg1:Player, _arg2:Boolean = true, _arg3:Boolean = false):void {
+    public function draw(_arg1:Player, _arg2:Boolean = true):void {
         if (_arg1) {
             this.setBackgroundVisibility();
-            this.drawStats(_arg1, _arg3);
+            this.drawStats(_arg1);
         }
         if (_arg2)
             this.containerSprite.x = ((this.WIDTH - this.containerSprite.width) / 2);
     }
 
-    private function drawStats(player:Player, isCharacterScreenFormat:Boolean):void {
-        if (isCharacterScreenFormat) {
-            this.stats_[ATTACK].draw(this.getStrAttack(player), this.getStrAttackBoost(player), player.attackMax_, player.level_);
-            this.stats_[DEFENSE].draw(this.getStrDefense(player), this.getStrDefenseBoost(player), player.defenseMax_, player.level_);
-            this.stats_[SPEED].draw(this.getStrSpeed(player), this.getStrSpeedBoost(player), player.speedMax_, player.level_);
-            this.stats_[DEXTERITY].draw(this.getStrWisdom(player), this.getStrDexterityBoost(player), player.dexterityMax_, player.level_);
-            this.stats_[VITALITY].draw(this.getStrDexterity(player), this.getStrVitalityBoost(player), player.vitalityMax_, player.level_);
-            this.stats_[WISDOM].draw(this.getStrVitality(player), this.getStrWisdomBoost(player), player.wisdomMax_, player.level_);
-        } else {
-            this.stats_[ATTACK].draw(this.getStrAttack(player), this.getStrAttackBoost(player), player.attackMax_, player.level_);
-            this.stats_[DEFENSE].draw(this.getStrDefense(player), this.getStrDefenseBoost(player), player.defenseMax_, player.level_);
-            this.stats_[SPEED].draw(this.getStrSpeed(player), this.getStrSpeedBoost(player), player.speedMax_, player.level_);
-            this.stats_[DEXTERITY].draw(this.getStrDexterity(player), this.getStrDexterityBoost(player), player.dexterityMax_, player.level_);
-            this.stats_[VITALITY].draw(this.getStrVitality(player), this.getStrVitalityBoost(player), player.vitalityMax_, player.level_);
-            this.stats_[WISDOM].draw(this.getStrWisdom(player), this.getStrWisdomBoost(player), player.wisdomMax_, player.level_);
-        }
+    private function drawStats(player:Player):void {
+        this.stats_[ATTACK].draw(this.getStrAttack(player), this.getStrAttackBoost(player), player.attackMax_, player.level_);
+        this.stats_[DEFENSE].draw(this.getStrDefense(player), this.getStrDefenseBoost(player), player.defenseMax_, player.level_);
+        this.stats_[SPEED].draw(this.getStrSpeed(player), this.getStrSpeedBoost(player), player.speedMax_, player.level_);
+        this.stats_[DEXTERITY].draw(this.getStrDexterity(player), this.getStrDexterityBoost(player), player.dexterityMax_, player.level_);
+        this.stats_[VITALITY].draw(this.getStrVitality(player), this.getStrVitalityBoost(player), player.vitalityMax_, player.level_);
+        this.stats_[WISDOM].draw(this.getStrWisdom(player), this.getStrWisdomBoost(player), player.wisdomMax_, player.level_);
     }
 
     public function dock():void {

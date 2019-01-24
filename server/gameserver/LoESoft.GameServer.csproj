@@ -801,6 +801,7 @@
     <EmbeddedResource Include="realm\world\maps\json\loe_wine_cellar.json" />
     <EmbeddedResource Include="realm\world\maps\json\pub-arena-v1.json" />
     <EmbeddedResource Include="realm\world\maps\json\new_nexus.json" />
+    <EmbeddedResource Include="realm\world\maps\json\loe_chicago_3.2.7.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="realm\world\maps\json\dungeons\spider_den\" />

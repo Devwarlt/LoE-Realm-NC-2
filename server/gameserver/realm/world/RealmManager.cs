@@ -88,7 +88,17 @@ namespace LoESoft.GameServer.realm
 
             Monitor = new RealmPortalMonitor();
 
-            AddWorld(GameWorld.AutoName(1, true)); // realm
+            if (Realm.AllRealmEvents.Count == 0)
+                foreach (var realmevent in Realm.RealmEventCache)
+                    Realm.AllRealmEvents.Add(realmevent.Name);
+
+            AddWorld(GameWorld.AutoName(1, true));
+
+            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            {
+                AddWorld(GameWorld.AutoName(1, true));
+                AddWorld(GameWorld.AutoName(1, true));
+            }
 
             Chat = new ChatManager();
             Commands = new CommandManager();

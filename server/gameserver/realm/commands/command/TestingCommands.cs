@@ -2,12 +2,13 @@
 using LoESoft.GameServer.realm.entity.player;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace LoESoft.GameServer.realm.commands
 {
     public class TestingCommands : Command
     {
-        public TestingCommands() : base("test", (int)AccountType.DEVELOPER)
+        public TestingCommands() : base("test", (int)AccountType.REGULAR)
         {
         }
 
@@ -67,8 +68,29 @@ namespace LoESoft.GameServer.realm.commands
                     }
                     break;
 
+                case "exp":
+                    {
+                        if (int.TryParse(cmd, out int result))
+                        {
+                            player.Experience += result;
+                            player.FakeExperience += result;
+
+                            do
+                            {
+                                Thread.Sleep(1000);
+
+                                if (player == null)
+                                    break;
+                            }
+                            while (player.CheckLevelUp(false));
+                        }
+                        else
+                            player.SendInfo("Use numeric values.");
+                        break;
+                    }
+
                 default:
-                    player.SendHelp("Available testing commands: 'chatdata' (my / all), 'projectiles' (ids / all) and 'id' (mine / pet).");
+                    player.SendHelp("Available testing commands: 'chatdata' (my / all), 'projectiles' (ids / all), 'id' (mine / pet) and 'exp'.");
                     break;
             }
             return true;

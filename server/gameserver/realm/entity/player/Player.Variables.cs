@@ -69,6 +69,13 @@ namespace LoESoft.GameServer.realm.entity.player
         public bool Bless3 { get; set; }
         public bool Bless4 { get; set; }
         public bool Bless5 { get; set; }
+        public int AttackLevel { get; set; }
+        public double AttackExperience { get; set; }
+        public double AttackGoalExperience { get; set; }
+        public int DefenseLevel { get; set; }
+        public double DefenseExperience { get; set; }
+        public double DefenseGoalExperience { get; set; }
+        public int SpeedBase { get; set; }
         public double Fame { get; set; }
         public FameCounter FameCounter { get; }
         public TaskManager TaskManager { get; }

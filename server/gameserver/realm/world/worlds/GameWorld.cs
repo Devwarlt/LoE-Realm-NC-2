@@ -76,17 +76,13 @@ namespace LoESoft.GameServer.realm.world
 
                     AutoEvents = new Task(async () =>
                     {
-                        if (Realm.AllRealmEvents.Count == 0)
-                            foreach (var realmevent in Overseer.RealmEventCache)
-                                Realm.AllRealmEvents.Add(realmevent.Name);
-
                         do
                         {
                             if (Overseer != null)
                             {
                                 if (Overseer.ActualRunningEvents.Count < 5)
                                 {
-                                    var revent = Overseer.RealmEventCache[Overseer.rand.Next(0, Overseer.RealmEventCache.Count)];
+                                    var revent = Realm.RealmEventCache[Overseer.rand.Next(0, Realm.RealmEventCache.Count)];
                                     var success = true;
 
                                     if (!Overseer.UniqueEvents.Contains(revent.Name))
@@ -172,8 +168,11 @@ namespace LoESoft.GameServer.realm.world
 
                             Overseer.UniqueEvents.Clear();
 
-                            GameServer.Manager.RemoveWorld(this, true);
+                            break;
                         } while (true);
+
+                        AutoEvents.Dispose();
+                        GameServer.Manager.RemoveWorld(this, true);
                     }, TaskCreationOptions.LongRunning);
                     AutoOryx.ContinueWith(task => GameServer.log.Error(task.Exception.InnerException),
                         TaskContinuationOptions.OnlyOnFaulted);

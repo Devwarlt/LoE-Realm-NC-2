@@ -70,8 +70,6 @@ namespace LoESoft.GameServer.realm
             }
         }
 
-        private bool Done = false;
-
         public void OnPlayerEntered(Player player)
         {
             player.SendInfo("Welcome to Realm of the Mad God");

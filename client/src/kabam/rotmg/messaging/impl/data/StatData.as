@@ -114,6 +114,14 @@ public class StatData {
     public static const PET_ATTACK_CHANCE:int = 108;
     public static const PET_ATTACK_DAMAGE_MIN:int = 109;
     public static const PET_ATTACK_DAMAGE_MAX:int = 110;
+    
+    /*
+        public readonly static StatsType ATTACK_LEVEL_STAT = 111;
+        public readonly static StatsType ATTACK_EXP_STAT = 112;
+        public readonly static StatsType NEXT_ATTACK_LEVEL_EXP_STAT = 113;
+        public readonly static StatsType DEFENSE_LEVEL_STAT = 114;
+        public readonly static StatsType DEFENSE_EXP_STAT = 115;
+        public readonly static StatsType NEXT_DEFENSE_LEVEL_EXP_STAT = 116;*/
 
     public var statType_:uint = 0;
     public var statValue_:int;

@@ -7,15 +7,15 @@ namespace LoESoft.GameServer.realm
 {
     internal partial class Realm
     {
-        public readonly List<RealmEvent> RealmEventCache = new List<RealmEvent>
+        public static readonly List<RealmEvent> RealmEventCache = new List<RealmEvent>
         {
             new RealmEvent("Skull Shrine", 1, false, new SkullShrine(), "Your futile efforts are no match for a Skull Shrine!"),
             new RealmEvent("Pentaract",  1, false, new Pentaract(), "Behold my Pentaract, and despair!"),
             new RealmEvent("Grand Sphinx", 0.25, true, new Sphinx(), "At last, a Grand Sphinx will teach you to respect!"),
             new RealmEvent("Cube God", 1, false, new CubeGod(), "Your meager abillities cannot possibly challenge a Cube God!"),
-            new RealmEvent("Maurth the Succubus Princess", 0.25, false, new Maurth(), "Haha!! My Maurth the Succubus Princess will SUCC the Life out of you!"),
-            new RealmEvent("Undertaker the Great Juggernaut", 0.15, true, new Undertaker(), "You Humans are fools! My Undertaker the Great Juggernaut will take care to crush your spines!"),
-            new RealmEvent("Dyno Bot", 0.3, false, new DynoBot(), "BEWARE FOOLS! My Dyno Bot mutes, kicks and bans!"),
+            //new RealmEvent("Maurth the Succubus Princess", 0.25, false, new Maurth(), "Haha!! My Maurth the Succubus Princess will SUCC the Life out of you!"),
+            //new RealmEvent("Undertaker the Great Juggernaut", 0.15, true, new Undertaker(), "You Humans are fools! My Undertaker the Great Juggernaut will take care to crush your spines!"),
+            //new RealmEvent("Dyno Bot", 0.3, false, new DynoBot(), "BEWARE FOOLS! My Dyno Bot mutes, kicks and bans!"),
             //new RealmEvent("The Lost Spirit", 0.15, false, new LostSpirit(), "The ancient soul of my father still presides within this realm.. and now he has awoken.. YOU ARE DOOMED MORTAL!"),
             new RealmEvent("Lucky Ent God", 1, true, new LuckyEntGod(), "Lucky Ent God has been spawned!"),
             new RealmEvent("Lucky Djinn", 1, true, new LuckyDjinn(), "Lucky Djinn has been spawned!"),

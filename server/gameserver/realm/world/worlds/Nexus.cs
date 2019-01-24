@@ -9,6 +9,7 @@ namespace LoESoft.GameServer.realm.world
     public class Nexus : World, IDungeon
     {
         public const string LOE_CHICAGO_BUILD_2_1 = "loe_chicago_2.1";
+        public const string LOE_CHICAGO_BUILD_3_2_7 = "loe_chicago_3.2.7";
         public const string SEBS_NEXUS = "new_nexus"; //TODO
 
         public Nexus()
@@ -22,7 +23,7 @@ namespace LoESoft.GameServer.realm.world
             SafePlace = true;
         }
 
-        protected override void Init() => LoadMap(LOE_CHICAGO_BUILD_2_1, MapType.Json);
+        protected override void Init() => LoadMap(LOE_CHICAGO_BUILD_3_2_7, MapType.Json);
 
         public override void Tick(RealmTime time)
         {
@@ -39,7 +40,7 @@ namespace LoESoft.GameServer.realm.world
                         if (i.Value.Name == j)
                             (i.Value as Portal).PortalName = i.Value.Name;
 
-                        i.Value.Name = j + " (" + i.Key.Players.Count + ")";
+                        i.Value.Name = j + " (" + i.Key.Players.Count + "/" + i.Key.MaxPlayers + ")";
                         i.Value.UpdateCount++;
                         break;
                     }

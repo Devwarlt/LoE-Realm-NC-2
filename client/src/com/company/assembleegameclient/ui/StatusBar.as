@@ -166,13 +166,8 @@ public class StatusBar extends Sprite {
         graphics.clear();
         this.colorSprite.graphics.clear();
         var _local1:uint = 0xFFFFFF;
-        if ((((this.maxMax_ > 0)) && (((this.max_ - this.boost_) == this.maxMax_)))) {
-            _local1 = 0xFCDF00;
-        }
-        else {
-            if (this.boost_ > 0) {
-                _local1 = 6206769;
-            }
+        if (this.boost_ > 0) {
+            _local1 = 6206769;
         }
         if (this.textColor_ != _local1) {
             this.setTextColor(_local1);
@@ -207,21 +202,12 @@ public class StatusBar extends Sprite {
     public function drawWithMouseOver():void {
         var _local2:int;
         var _local1:String = "";
-        if (Parameters.data_.toggleToMaxText) {
-            _local2 = (this.maxMax_ - (this.max_ - this.boost_));
-            if (_local2 > 0) {
-                _local1 = (_local1 + ("|" + Math.ceil((_local2 / 5)).toString()));
-            }
-        }
-        if (this.max_ > 0) {
-            if (!this.enablePercentage)
-                this.valueText_.setStringBuilder(this.valueTextStringBuilder_.setString((((this.val_ + "/") + this.max_) + _local1)));
-            else
-                this.valueText_.setStringBuilder(this.valueTextStringBuilder_.setString(Parameters.formatValue((this.val_ / this.max_) * 100, 2) + "%"));
-        }
-        else {
+
+        if (this.enablePercentage)
+            this.valueText_.setStringBuilder(this.valueTextStringBuilder_.setString(Parameters.formatValue((this.val_ / this.max_) * 100, 2) + "%"));
+        else
             this.valueText_.setStringBuilder(this.valueTextStringBuilder_.setString(("" + this.val_)));
-        }
+
         if (!contains(this.valueText_)) {
             this.valueText_.mouseEnabled = false;
             this.valueText_.mouseChildren = false;

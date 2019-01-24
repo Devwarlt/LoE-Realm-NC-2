@@ -80,34 +80,21 @@ public class StatView extends Sprite {
         this.max_ = statMax;
         this.level_ = level;
 
-        if (statBase - statBoost >= statMax)
-            _local5 = 0xFCDF00;
-        else {
-            if ((this.redOnZero_ && this.val_ <= 0) || this.boost_ < 0)
-                _local5 = 16726072;
-            else {
-                if (this.boost_ > 0)
-                    _local5 = 6206769;
-                else
-                    _local5 = 0xB3B3B3;
-            }
-        }
+        if (this.boost_ > 0)
+            _local5 = 6206769;
+        else
+            _local5 = 0xB3B3B3;
+
         if (this.valColor_ != _local5) {
             this.valColor_ = _local5;
             this.valText_.setColor(this.valColor_);
         }
-        this.setNewText(Parameters.data_.toggleToMaxText);
+        this.setNewText();
     }
 
-    public function setNewText(_arg1:Boolean):void {
+    public function setNewText():void {
         var _local3:int;
         var _local2:String = this.val_.toString();
-
-        if (_arg1) {
-            _local3 = (this.max_ - (this.val_ - this.boost_));
-            if (this.level_ >= 20 && _local3 > 0)
-                _local2 = (_local2 + ("|" + _local3.toString()));
-        }
 
         if (this.boost_ != 0)
             _local2 = (_local2 + (((" (" + (((this.boost_ > 0)) ? "+" : "")) + this.boost_.toString()) + ")"));

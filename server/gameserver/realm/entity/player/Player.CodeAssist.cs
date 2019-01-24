@@ -216,15 +216,19 @@ namespace LoESoft.GameServer.realm.entity.player
             ExportMonsterCaches(MonsterCaches);
 
             var chr = Client.Character;
+            chr.Level = Level;
             chr.Experience = Experience;
             chr.FakeExperience = FakeExperience;
             chr.IsFakeEnabled = IsFakeEnabled;
+            chr.AttackLevel = AttackLevel;
+            chr.AttackExperience = AttackExperience;
+            chr.DefenseLevel = DefenseLevel;
+            chr.DefenseExperience = DefenseExperience;
             chr.Bless1 = Bless1;
             chr.Bless2 = Bless2;
             chr.Bless3 = Bless3;
             chr.Bless4 = Bless4;
             chr.Bless5 = Bless5;
-            chr.Level = Level;
             chr.Tex1 = Texture1;
             chr.Tex2 = Texture2;
             chr.Fame = Fame;
@@ -233,6 +237,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
             if (PetID != 0)
                 chr.Pet = PetID;
+
             try
             {
                 switch (Inventory.Length)
@@ -505,11 +510,18 @@ namespace LoESoft.GameServer.realm.entity.player
 
         public void AwaitGotoAck(long serverTime) => _gotoAckTimeout.Enqueue(serverTime + DcThreshold);
 
-        private static double GetExperience(int lvl)
-            => lvl == 1 ? 0 : (75 * lvl * lvl * lvl - 125 * lvl * lvl + 900 * lvl) / 3;
+        private enum ExpType
+        {
+            Level,
+            Stat
+        }
 
-        private static int GetLevel(double exp)
-            => exp == 0 ? 1 : (int)Math.Ceiling(Cubic.RealRoots(-3 * exp / 75, 900 / 75, -125 / 75).Item1);
+        private static double GetExperience(int lvl, ExpType type)
+            => lvl == 1 ? 0 : (75 * lvl * lvl * lvl - 125 * lvl * lvl + 900 * lvl) / (type == ExpType.Level ? 3 : 12);
+
+        private static int GetLevel(double exp, ExpType type)
+            => exp == 0 ? 1 : (int)Math.Ceiling(Cubic.RealRoots((type == ExpType.Level ? -3 : -12)
+                * exp / 75, 900 / 75, -125 / 75).Item1);
 
         private static double GetFameGoal(double fame)
         {

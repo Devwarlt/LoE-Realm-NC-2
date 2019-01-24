@@ -615,6 +615,30 @@ namespace LoESoft.Core
             set { SetValue("fakeExp", value); }
         }
 
+        public int AttackLevel
+        {
+            get { return GetValue("attLevel", 1); }
+            set { SetValue("attLevel", value); }
+        }
+
+        public double AttackExperience
+        {
+            get { return GetValue("attExp", 0); }
+            set { SetValue("attExp", value); }
+        }
+
+        public int DefenseLevel
+        {
+            get { return GetValue("defLevel", 1); }
+            set { SetValue("defLevel", value); }
+        }
+
+        public double DefenseExperience
+        {
+            get { return GetValue("defExp", 0); }
+            set { SetValue("defExp", value); }
+        }
+
         public bool IsFakeEnabled
         {
             get { return GetValue("fake", false); }

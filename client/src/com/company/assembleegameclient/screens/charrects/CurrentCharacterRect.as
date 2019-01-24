@@ -67,7 +67,6 @@ public class CurrentCharacterRect extends CharacterRect {
         this.makeTaglineText();
         this.makeDeleteButton();
         this.makeNewPetIcon(_local7);
-        this.makeStatsMaxedText();
         this.addEventListeners();
     }
 
@@ -137,59 +136,6 @@ public class CurrentCharacterRect extends CharacterRect {
         this.deleteButton.x = (WIDTH - 40);
         this.deleteButton.y = ((HEIGHT - this.deleteButton.height) * 0.5);
         addChild(this.deleteButton);
-    }
-
-    private function makeStatsMaxedText():void {
-        var _local1:int = this.getMaxedStats();
-        var _local2:uint = 0xB3B3B3;
-        if (_local1 == 8)
-            _local2 = 0xFCDF00;
-        this.statsMaxedText = new TextFieldDisplayConcrete().setSize(14).setColor(0xFFFFFF);
-        this.statsMaxedText.setBold(true);
-        this.statsMaxedText.setColor(_local2);
-        this.statsMaxedText.setStringBuilder(new StaticStringBuilder((_local1 + "/8")));
-        this.statsMaxedText.filters = makeDropShadowFilter();
-        this.statsMaxedText.x = 10;
-        this.statsMaxedText.y = 40;
-        if (_local1 == 8) {
-            this.statsMaxedTextLabelSprite = new Sprite();
-            this.statsMaxedTextLabel = new TextFieldDisplayConcrete();
-            this.statsMaxedTextLabel.setSize(9).setColor(10092390).setBold(true);
-            this.statsMaxedTextLabel.setStringBuilder(new LineBuilder().setParams("MAX"));
-            this.statsMaxedTextLabel.filters = makeDropShadowFilter();
-            this.statsMaxedTextLabelSprite.addChild(this.statsMaxedTextLabel);
-            this.statsMaxedTextLabelSprite.x = (this.statsMaxedText.x + 24);
-            this.statsMaxedTextLabelSprite.y = (this.statsMaxedText.y - 2);
-            addChild(this.statsMaxedTextLabelSprite);
-            ColorAdjustPlugin.install();
-            new GTween(this.statsMaxedTextLabelSprite, 3, {contrast: 100}, {repeatCount: 0, reflect: true});
-        }
-        selectContainer.addChild(this.statsMaxedText);
-    }
-
-    private function getMaxedStats():int {
-        var _local1:int;
-        //Patch?
-        var weirdMaxDexterity:int = this.charType.hpRegeneration.max;
-        var weirdMaxVitality:int = this.charType.mpRegeneration.max;
-        var weirdMaxWisdom:int = this.charType.dexterity.max;
-        if (this.char.hp() == this.charType.hp.max)
-            _local1++;
-        if (this.char.mp() == this.charType.mp.max)
-            _local1++;
-        if (this.char.att() == this.charType.attack.max)
-            _local1++;
-        if (this.char.def() == this.charType.defense.max)
-            _local1++;
-        if (this.char.spd() == this.charType.speed.max)
-            _local1++;
-        if (this.char.dex() == weirdMaxDexterity)
-            _local1++;
-        if (this.char.vit() == weirdMaxVitality)
-            _local1++;
-        if (this.char.wis() == weirdMaxWisdom)
-            _local1++;
-        return (_local1);
     }
 
     override protected function onMouseOver(_arg1:MouseEvent):void {

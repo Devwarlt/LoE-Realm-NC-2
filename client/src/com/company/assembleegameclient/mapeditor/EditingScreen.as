@@ -594,7 +594,7 @@ public class EditingScreen extends Sprite {
         if (_local2 == null) {
             return;
         }
-        new FileReference().save(_local2, (((this.filename_ == null)) ? "map.jm" : this.filename_));
+        new FileReference().save(_local2, (((this.filename_ == null)) ? "map.json" : this.filename_));
     }
 
     private function onSubmit(_arg1:CommandEvent):void {
@@ -637,7 +637,7 @@ public class EditingScreen extends Sprite {
     private function onLoad(_arg1:CommandEvent):void {
         this.loadedFile_ = new FileReference();
         this.loadedFile_.addEventListener(Event.SELECT, this.onFileBrowseSelect);
-        this.loadedFile_.browse([new FileFilter("JSON Map (*.jm)", "*.jm")]);
+        this.loadedFile_.browse([new FileFilter("JSON (*.json)", "*.json")]);
     }
 
     private function onFileBrowseSelect(event:Event):void {

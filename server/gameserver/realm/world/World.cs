@@ -121,7 +121,7 @@ namespace LoESoft.GameServer.realm
                     catch { }
 
             if (Players.Count != 0)
-                foreach (var player in Players.Values)
+                foreach (var player in Players.Values.Where(player => player != null))
                     player.Tick(time);
 
             if (EnemiesCollision != null)
@@ -129,11 +129,11 @@ namespace LoESoft.GameServer.realm
                 var collisions = EnemiesCollision.GetActiveChunks(PlayersCollision).ToList();
 
                 if (collisions.Count != 0)
-                    foreach (var collision in collisions)
+                    foreach (var collision in collisions.Where(collision => collision != null))
                         collision.Tick(time);
 
                 if (GameObjects.Count != 0)
-                    foreach (var gameobject in GameObjects.Values.Where(x => x is Decoy))
+                    foreach (var gameobject in GameObjects.Values.Where(x => x is Decoy && x != null))
                         gameobject.Tick(time);
             }
             else
