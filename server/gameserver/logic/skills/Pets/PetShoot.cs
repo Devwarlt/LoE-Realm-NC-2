@@ -63,7 +63,7 @@ namespace LoESoft.GameServer.logic.skills.Pets
                 return;
             }
 
-            if (host.Owner.SafePlace)
+            if (host.Owner.SafePlace || !player.EnablePetAttack)
                 return;
 
             var cool = (int?)state ?? -1;

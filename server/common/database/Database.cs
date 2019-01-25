@@ -536,6 +536,7 @@ namespace LoESoft.Core
                 Bless3 = false,
                 Bless4 = false,
                 Bless5 = false,
+                EnablePetAttack = true,
                 Fame = 0,
                 HasBackpack = false,
                 Items = @class.Element("Equipment").Value.Replace("0xa22", "-1").CommaToArray<int>(),

@@ -229,6 +229,7 @@ namespace LoESoft.GameServer.realm.entity.player
             chr.Bless3 = Bless3;
             chr.Bless4 = Bless4;
             chr.Bless5 = Bless5;
+            chr.EnablePetAttack = EnablePetAttack;
             chr.Tex1 = Texture1;
             chr.Tex2 = Texture2;
             chr.Fame = Fame;
@@ -517,10 +518,10 @@ namespace LoESoft.GameServer.realm.entity.player
         }
 
         private static double GetExperience(int lvl, ExpType type)
-            => lvl == 1 ? 0 : (75 * lvl * lvl * lvl - 125 * lvl * lvl + 900 * lvl) / (type == ExpType.Level ? 3 : 12);
+            => lvl == 1 ? 0 : (75 * lvl * lvl * lvl - 125 * lvl * lvl + 900 * lvl) / (type == ExpType.Level ? 2 : 20);
 
         private static int GetLevel(double exp, ExpType type)
-            => exp == 0 ? 1 : (int)Math.Ceiling(Cubic.RealRoots((type == ExpType.Level ? -3 : -12)
+            => exp == 0 ? 1 : (int)Math.Ceiling(Cubic.RealRoots((type == ExpType.Level ? -2 : -20)
                 * exp / 75, 900 / 75, -125 / 75).Item1);
 
         private static double GetFameGoal(double fame)

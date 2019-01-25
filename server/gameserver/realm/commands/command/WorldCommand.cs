@@ -580,4 +580,34 @@ namespace LoESoft.GameServer.realm.commands
             return true;
         }
     }
+
+    internal class PetAttackCommand : Command
+    {
+        public PetAttackCommand() : base("petattack", (int)AccountType.VIP)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            if (args.Length != 1)
+            {
+                player.SendHelp("Usage: /petattack <on/off>");
+                return false;
+            }
+
+            var onoff = (args[0]).ToLower();
+
+            if (onoff != "on" && onoff != "off")
+            {
+                player.SendInfo("Use labels 'on' or 'off'.");
+                return false;
+            }
+
+            player.EnablePetAttack = onoff == "on";
+            player.SaveToCharacter();
+            player.UpdateCount++;
+
+            return true;
+        }
+    }
 }

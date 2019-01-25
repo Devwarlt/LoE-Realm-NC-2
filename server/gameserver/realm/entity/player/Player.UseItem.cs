@@ -532,36 +532,16 @@ namespace LoESoft.GameServer.realm.entity.player
                                 return true;
                             }
 
-                            int idx = -1;
+                            var amount = eff.Amount * 25;
 
-                            if (eff.Stats == StatsType.MAX_HP_STAT)
-                                idx = 0;
-                            else if (eff.Stats == StatsType.MAX_MP_STAT)
-                                idx = 1;
-                            else if (eff.Stats == StatsType.ATTACK_STAT)
-                                idx = 2;
-                            else if (eff.Stats == StatsType.DEFENSE_STAT)
-                                idx = 3;
-                            else if (eff.Stats == StatsType.SPEED_STAT)
-                                idx = 4;
-                            else if (eff.Stats == StatsType.VITALITY_STAT)
-                                idx = 5;
-                            else if (eff.Stats == StatsType.WISDOM_STAT)
-                                idx = 6;
-                            else if (eff.Stats == StatsType.DEXTERITY_STAT)
-                                idx = 7;
+                            CurrentFame += amount;
 
-                            Stats[idx] += eff.Amount;
+                            SendHelp($"You received {amount} Fame!");
 
-                            int limit =
-                                int.Parse(
-                                    GameServer.Manager.GameData.ObjectTypeToElement[ObjectType].Element(
-                                        StatsManager.StatsIndexToName(idx))
-                                        .Attribute("max")
-                                        .Value);
+                            GameServer.Manager.Database.UpdateFame(Client.Account, amount);
 
-                            if (Stats[idx] > limit)
-                                Stats[idx] = limit;
+                            SaveToCharacter();
+                            UpdateCount++;
                         }
                         break;
 

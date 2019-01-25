@@ -675,6 +675,12 @@ namespace LoESoft.Core
             set { SetValue("bless5", value); }
         }
 
+        public bool EnablePetAttack
+        {
+            get { return GetValue("enablePetAttack", true); }
+            set { SetValue("enablePetAttack", value); }
+        }
+
         public double Fame
         {
             get { return GetValue("fame", 0); }

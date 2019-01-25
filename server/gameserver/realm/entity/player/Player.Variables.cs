@@ -75,7 +75,7 @@ namespace LoESoft.GameServer.realm.entity.player
         public int DefenseLevel { get; set; }
         public double DefenseExperience { get; set; }
         public double DefenseGoalExperience { get; set; }
-        public int SpeedBase { get; set; }
+        public bool EnablePetAttack { get; set; }
         public double Fame { get; set; }
         public FameCounter FameCounter { get; }
         public TaskManager TaskManager { get; }

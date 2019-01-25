@@ -335,21 +335,16 @@ namespace LoESoft.GameServer.realm.commands
             }
             try
             {
-                foreach (var i in player.Owner.Players)
-                {
-                    if (i.Value.AccountType >= player.AccountType)
-                    {
-                        player.SendInfo("You cannot kick someone with same account type or greater than yours!");
-                        break;
-                    }
+                var target = player.Owner.Players.Values.FirstOrDefault(p => p?.Name.ToLower() == args[0].ToLower());
 
-                    if (i.Value.Name.ToLower() == args[0].ToLower().Trim())
-                    {
-                        player.SendInfo($"Player {i.Value.Name} has been disconnected!");
-                        GameServer.Manager.TryDisconnect(i.Value.Client, DisconnectReason.PLAYER_KICK);
-                        break;
-                    }
+                if (target == null)
+                {
+                    player.SendInfo("Player not found!");
+                    return false;
                 }
+
+                player.SendInfo($"Player {target.Name} has been disconnected!");
+                GameServer.Manager.TryDisconnect(target.Client, DisconnectReason.PLAYER_KICK);
             }
             catch
             {
@@ -696,7 +691,7 @@ namespace LoESoft.GameServer.realm.commands
             var minSize = 50;
             var maxSize = 150;
 
-            if(size >= minSize && size <= maxSize)
+            if (size >= minSize && size <= maxSize)
             {
                 player.SendInfo($"Succesfully changed your size ({size})!");
                 player.Client.Character.Size = size;

@@ -333,9 +333,12 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                         else if (player.Client.Account.Fame >= player.GetBlessingPrice())
                         {
                             player.Bless1 = true;
-                            player.SaveToCharacter();
+                            player.CurrentFame -= player.GetBlessingPrice();
 
                             GameServer.Manager.Database.UpdateFame(player.Client.Account, player.GetBlessingPrice());
+
+                            player.SaveToCharacter();
+                            player.UpdateCount++;
 
                             callback = "You received the blessings of Medusa God!";
                         }
@@ -349,9 +352,12 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                         else if (player.Client.Account.Fame >= player.GetBlessingPrice())
                         {
                             player.Bless2 = true;
-                            player.SaveToCharacter();
+                            player.CurrentFame -= player.GetBlessingPrice();
 
                             GameServer.Manager.Database.UpdateFame(player.Client.Account, player.GetBlessingPrice());
+
+                            player.SaveToCharacter();
+                            player.UpdateCount++;
 
                             callback = "You received the blessings of Ghost God!";
                         }
@@ -365,9 +371,12 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                         else if (player.Client.Account.Fame >= player.GetBlessingPrice())
                         {
                             player.Bless3 = true;
-                            player.SaveToCharacter();
+                            player.CurrentFame -= player.GetBlessingPrice();
 
                             GameServer.Manager.Database.UpdateFame(player.Client.Account, player.GetBlessingPrice());
+
+                            player.SaveToCharacter();
+                            player.UpdateCount++;
 
                             callback = "You received the blessings of Slime God!";
                         }
@@ -381,9 +390,12 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                         else if (player.Client.Account.Fame >= player.GetBlessingPrice())
                         {
                             player.Bless4 = true;
-                            player.SaveToCharacter();
+                            player.CurrentFame -= player.GetBlessingPrice();
 
                             GameServer.Manager.Database.UpdateFame(player.Client.Account, player.GetBlessingPrice());
+
+                            player.SaveToCharacter();
+                            player.UpdateCount++;
 
                             callback = "You received the blessings of Beholder God!";
                         }
@@ -397,9 +409,12 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                         else if (player.Client.Account.Fame >= player.GetBlessingPrice())
                         {
                             player.Bless5 = true;
-                            player.SaveToCharacter();
+                            player.CurrentFame -= player.GetBlessingPrice();
 
                             GameServer.Manager.Database.UpdateFame(player.Client.Account, player.GetBlessingPrice());
+
+                            player.SaveToCharacter();
+                            player.UpdateCount++;
 
                             callback = "You received the blessings of Ent God!";
                         }
@@ -419,11 +434,14 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                             callback = "You can only transfer fame to your account when you get 400 fame base.";
                         else
                         {
-                            GameServer.Manager.Database.UpdateFame(player.Client.Account, player.Fame);
-
                             player.FakeExperience = 0;
                             player.CalculateFame(false);
+                            player.CurrentFame += player.Fame;
+
+                            GameServer.Manager.Database.UpdateFame(player.Client.Account, player.Fame);
+
                             player.SaveToCharacter();
+                            player.UpdateCount++;
 
                             callback = "You wipe your fame base of your character and transfered to your account!";
                         }

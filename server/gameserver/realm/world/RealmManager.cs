@@ -94,12 +94,6 @@ namespace LoESoft.GameServer.realm
 
             AddWorld(GameWorld.AutoName(1, true));
 
-            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
-            {
-                AddWorld(GameWorld.AutoName(1, true));
-                AddWorld(GameWorld.AutoName(1, true));
-            }
-
             Chat = new ChatManager();
             Commands = new CommandManager();
             NPCs = new NPCs();

@@ -59,17 +59,18 @@ namespace LoESoft.GameServer.realm.entity.player
                 ExperienceGoal = GetExperience(Level + 1, ExpType.Level);
                 FakeExperience = client.Character.FakeExperience;
                 IsFakeEnabled = client.Character.IsFakeEnabled;
-                AttackLevel = client.Character.AttackLevel;
+                AttackLevel = client.Character.AttackLevel + 10;
                 AttackExperience = client.Character.AttackExperience;
-                AttackGoalExperience = GetExperience(AttackLevel + 1, ExpType.Stat);
-                DefenseLevel = client.Character.DefenseLevel;
+                AttackGoalExperience = GetExperience(AttackLevel + 1 - 10, ExpType.Stat);
+                DefenseLevel = client.Character.DefenseLevel + 10;
                 DefenseExperience = client.Character.DefenseExperience;
-                DefenseGoalExperience = GetExperience(DefenseLevel + 1, ExpType.Stat);
+                DefenseGoalExperience = GetExperience(DefenseLevel + 1 - 10, ExpType.Stat);
                 Bless1 = client.Character.Bless1;
                 Bless2 = client.Character.Bless2;
                 Bless3 = client.Character.Bless3;
                 Bless4 = client.Character.Bless4;
                 Bless5 = client.Character.Bless5;
+                EnablePetAttack = client.Character.EnablePetAttack;
                 Stars = AccountType >= (int)Core.config.AccountType.DEVELOPER ? 70 : GetStars();
                 ChatColors = new ChatColor(this);
                 Texture1 = client.Character.Tex1;
@@ -289,11 +290,21 @@ namespace LoESoft.GameServer.realm.entity.player
             var rng = new Random();
             var lvl = Level;
             var exp = Experience;
+            var attlvl = AttackLevel;
+            var attexp = AttackExperience;
+            var deflvl = DefenseLevel;
+            var defexp = DefenseExperience;
             var fame = Fame;
             var fexp = FakeExperience;
             var exploss = Math.Floor(exp * .2);
+            var attexploss = Math.Floor(attexp * .2);
+            var defexploss = Math.Floor(defexp * .2);
             var newexp = exp - exploss;
+            var newattexp = attexp - attexploss;
+            var newdefexp = defexp - defexploss;
             var newlvl = GetLevel(newexp, ExpType.Level);
+            var newattlvl = GetLevel(newattexp, ExpType.Stat) + 10;
+            var newdeflvl = GetLevel(newdefexp, ExpType.Stat) + 10;
             var items = Inventory;
             var (hp, mp) = GetStats[GetClassType[ObjectType]];
 
@@ -303,12 +314,34 @@ namespace LoESoft.GameServer.realm.entity.player
                 newexp = GetLevel(1, ExpType.Level);
             }
 
+            if (newattlvl < 10)
+            {
+                newattlvl = 10;
+                newattexp = GetLevel(1, ExpType.Stat);
+            }
+
+            if (newdeflvl < 10)
+            {
+                newdeflvl = 10;
+                newdefexp = GetLevel(1, ExpType.Stat);
+            }
+
             if (lvl > newlvl)
-                Level = newlvl;
+                newlvl = Level;
             else
                 newlvl = lvl;
 
-            if (rng.Next(0, 100) <= 50 - 10 * blessings)
+            if (attlvl > newattlvl)
+                newattlvl = AttackLevel;
+            else
+                newattlvl = attlvl;
+
+            if (deflvl > newdeflvl)
+                newdeflvl = DefenseLevel;
+            else
+                newdeflvl = deflvl;
+
+            if (rng.Next(0, 100) <= 100 - 20 * blessings)
                 Client.Character.Pet = 0;
 
             if (rng.Next(0, 100) <= 100 - 20 * blessings)
@@ -335,9 +368,14 @@ namespace LoESoft.GameServer.realm.entity.player
             Stats[6] = 10; // default wis
             Stats[7] = 25; // default dex
             Fame = 0;
+            Level = newlvl;
             Experience = newexp;
             FakeExperience = 0;
             IsFakeEnabled = true;
+            AttackLevel = newattlvl;
+            AttackExperience = newattexp;
+            DefenseLevel = newdeflvl;
+            DefenseExperience = newdefexp;
             Inventory = items;
             Bless1 = false;
             Bless2 = false;
@@ -623,32 +661,26 @@ namespace LoESoft.GameServer.realm.entity.player
 
         public void CalculateAttack()
         {
-            AttackExperience++;
+            AttackExperience += Settings.GetEventRate();
 
             if (AttackExperience >= AttackGoalExperience)
             {
                 AttackLevel++;
-
-                AttackGoalExperience = GetExperience(AttackLevel + 1, ExpType.Stat);
-
-                SendHelp($"You advanced from attack level {AttackLevel - 1} to level {AttackLevel}.");
-
+                AttackGoalExperience = GetExperience(AttackLevel + 1 - 10, ExpType.Stat);
+                SendHelp($"You advanced from attack level {AttackLevel - 1 - 10} to level {AttackLevel - 10}.");
                 UpdateCount++;
             }
         }
 
         public void CalculateDefense()
         {
-            DefenseExperience++;
+            DefenseExperience += Settings.GetEventRate();
 
             if (DefenseExperience >= DefenseGoalExperience)
             {
                 DefenseLevel++;
-
-                DefenseGoalExperience = GetExperience(DefenseLevel + 1, ExpType.Stat);
-
-                SendHelp($"You advanced from defense level {DefenseLevel - 1} to level {DefenseLevel}.");
-
+                DefenseGoalExperience = GetExperience(DefenseLevel + 1 - 10, ExpType.Stat);
+                SendHelp($"You advanced from defense level {DefenseLevel - 1 - 10} to level {DefenseLevel - 10}.");
                 UpdateCount++;
             }
         }
@@ -743,8 +775,8 @@ namespace LoESoft.GameServer.realm.entity.player
 
                 var (hp, mp) = GetStats[GetClassType[ObjectType]];
 
-                Stats[0] = hp * Level;
-                Stats[1] = mp * Level;
+                Stats[0] = hp * Level + 100;
+                Stats[1] = mp * Level + 100;
 
                 HP = Stats[0] + Boost[0];
                 MP = Stats[1] + Boost[1];

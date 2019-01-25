@@ -24,22 +24,10 @@ namespace LoESoft.GameServer.logic.loot
 
     public class LootBagRate
     {
-        public const double PINK_BAG = 0.2;             // 20%
-        public const double PURPLE_BAG = 0.1;           // 10%
-        public const double CYAN_BAG = 0.05;            // 5%
-        public const double WHITE_BAG = 0.0125;         // 1.25%
-    }
-
-    public class LootEggRate
-    {
-        public const double TIER_0 = 1 / 5;             // 20%
-        public const double TIER_1 = TIER_0 / 1.75;     // 11.42857142857143%
-        public const double TIER_2 = TIER_1 / 1.75;     // 6.530612244897959%
-        public const double TIER_3 = TIER_2 / 1.75;     // 3.731778425655977%
-        public const double TIER_4 = TIER_3 / 1.75;     // 2.132444814660558%
-        public const double TIER_5 = TIER_4 / 1.75;     // 1.218539894091747%
-        public const double TIER_6 = TIER_5 / 1.75;     // 0.69630851090957%
-        public const double TIER_7 = TIER_6 / 1.75;     // 0.3978904408877254%
+        public const double PINK_BAG = 0.05;
+        public const double PURPLE_BAG = 0.03;
+        public const double CYAN_BAG = 0.01;
+        public const double WHITE_BAG = 0.005;
     }
 
     public enum BagType

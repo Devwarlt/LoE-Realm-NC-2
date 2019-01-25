@@ -11,10 +11,12 @@ namespace LoESoft.Core.config
             Production
         }
 
-        public static readonly double EVENT_RATE = 1.5;
+        public static readonly double EVENT_RATE = 3;
+        public static readonly DateTime EVENT_OVER = new DateTime(2019, 1, 27, 23, 59, 59);
 
         public static readonly string EVENT_MESSAGE = $"The server is hosting an event with " +
-            $"+{(GetEventRate() - (GetEventRate() != 1 ? 1 : 0)) * 100}% EXP and loot drop rate. Enjoy!";
+            $"+{(GetEventRate() - (GetEventRate() != 1 ? 1 : 0)) * 100}% EXP, stats EXP and loot drop rate. Enjoy it until " +
+            $"{EVENT_OVER.ToString("MM/dd/yyyy hh:mm tt")} UTC!";
 
         public static readonly ServerMode SERVER_MODE = ServerMode.Production;
         public static readonly bool ENABLE_RESTART_SYSTEM = SERVER_MODE == ServerMode.Production;
@@ -22,7 +24,7 @@ namespace LoESoft.Core.config
         public static readonly int RESTART_APPENGINE_DELAY_MINUTES = 30;
         public static readonly DateTimeKind DateTimeKind = DateTimeKind.Utc;
 
-        public static double GetEventRate() => DateTime.UtcNow > new DateTime(2019, 1, 23, 23, 59, 59) ? 1 : EVENT_RATE;
+        public static double GetEventRate() => DateTime.UtcNow > EVENT_OVER ? 1 : EVENT_RATE;
 
         public static readonly List<string> ALLOWED_LOCAL_DNS = new List<string>
         {

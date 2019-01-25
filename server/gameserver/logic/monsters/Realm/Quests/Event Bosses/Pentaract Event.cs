@@ -43,7 +43,7 @@ namespace LoESoft.GameServer.logic
                 new State(
                     new AddCond(ConditionEffectIndex.Invulnerable),
                     new State("Waiting",
-                        new TimedTransition(15000, "Spawn"),
+                        new TimedTransition(30000, "Spawn"),
                         new EntityNotExistsTransition("Pentaract Tower", 50, "Die")
                         ),
                     new State("Spawn",
