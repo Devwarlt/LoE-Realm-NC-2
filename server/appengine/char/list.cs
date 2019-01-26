@@ -17,7 +17,7 @@ namespace LoESoft.AppEngine.@char
         {
             var ip = Context.Request.RemoteEndPoint.Address.ToString();
 
-            if (!Manager.CheckWebClient(ip))
+            if (!Manager.CheckWebClient(ip) && !(Settings.SERVER_MODE == Settings.ServerMode.Local))
             {
                 SendGDError(GameDataErrors.GameDateNotFound);
                 return;

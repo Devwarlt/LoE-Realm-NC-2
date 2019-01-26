@@ -950,6 +950,7 @@ public class Player extends Character {
         var _local9:Number;
         var _local10:int;
         var _local11:int;
+        var _local12:Boolean;
         if ((((map_ == null)) || (isPaused()))) {
             return (false);
         }
@@ -992,11 +993,6 @@ public class Player extends Character {
             this.nextAltAttack_ = (_local8 + _local11);
 
             map_.gs_.gsc_.useItem(_local8, objectId_, 1, _local4, _local6.x, _local6.y, _arg3, isTrading);
-
-            if (_local5.Activate == ActivationType.SHOOT) {
-                _local9 = Math.atan2(_arg2, _arg1);
-                this.doShoot(_local4, _local5, (Parameters.data_.cameraAngle + _local9), false, true);
-            }
         }
         else {
             if (_local5.hasOwnProperty("MultiPhase")) {

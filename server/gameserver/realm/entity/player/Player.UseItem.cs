@@ -1543,15 +1543,29 @@ namespace LoESoft.GameServer.realm.entity.player
             double arcGap = item.ArcGap * Math.PI / 180;
             double startAngle = Math.Atan2(target.Y - Y, target.X - X) - (item.NumProjectiles - 1) / 2 * arcGap;
             ProjectileDesc prjDesc = item.Projectiles[0]; //Assume only one
+            Message[] messages = new Message[item.NumProjectiles];
 
             for (int i = 0; i < item.NumProjectiles; i++)
             {
-                Projectile proj = CreateProjectile(prjDesc, item.ObjectType,
+                var proj = CreateProjectile(prjDesc, item.ObjectType,
                     (int)StatsManager.GetAttackDamage(prjDesc.MinDamage, prjDesc.MaxDamage),
                     time.TotalElapsedMs, new Position { X = X, Y = Y }, (float)(startAngle + arcGap * i));
                 Owner?.EnterWorld(proj);
                 FameCounter.Shoot(proj);
+
+                messages[i] = new SERVERPLAYERSHOOT()
+                {
+                    BulletId = proj.ProjectileId,
+                    OwnerId = Id,
+                    ContainerType = item.ObjectType,
+                    StartingPos = new Position { X = X, Y = Y },
+                    Angle = proj.Angle,
+                    Damage = (short)proj.Damage
+                };
             }
+
+            foreach (var plr in Owner?.Players.Values.Where(p => p?.DistSqr(this) < RadiusSqr))
+                plr?.Client.SendMessage(messages);
         }
 
         private void PoisonEnemy(Enemy enemy, ActivateEffect eff)

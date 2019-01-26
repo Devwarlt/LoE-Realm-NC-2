@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using LoESoft.Core.config;
 
 namespace LoESoft.AppEngine.security
 {
@@ -14,6 +15,12 @@ namespace LoESoft.AppEngine.security
             var domain = Query["domain"];
             var isnullcap = string.IsNullOrWhiteSpace(capability);
             var isnulldom = string.IsNullOrWhiteSpace(domain);
+
+            if (Settings.SERVER_MODE == Settings.ServerMode.Local)
+            {
+                WriteLine("<Success/>");
+                return;
+            }
 
             if (isnullcap && isnulldom)
             {
