@@ -19,7 +19,7 @@ public class AssetsConfig implements IConfig {
         this.injector.map(CharacterFactory).asSingleton();
         this.injector.map(IconFactory).asSingleton();
         this.injector.map(BeginSecurityProtocolDataTask);
-        this.startup.addTask(BeginSecurityProtocolDataTask, -666);
+        this.startup.addTask(BeginSecurityProtocolDataTask, -998);
     }
 
 

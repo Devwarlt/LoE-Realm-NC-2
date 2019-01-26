@@ -63,20 +63,21 @@ namespace LoESoft.GameServer.realm
             }));
         }
 
-        public void AddReconnectToPlayer(string id, Tuple<float, float> position) => ReconnectRequests.TryAdd(id, position);
+        public void AddReconnectToPlayer(string id, (float, float) position) => ReconnectRequests.TryAdd(id, position);
 
-        public Tuple<float, float> RemovePositionFromReconnect(string id)
+        public (float, float) RemovePositionFromReconnect(string id)
         {
             if (ReconnectRequests.ContainsKey(id))
             {
-                ReconnectRequests.TryRemove(id, out Tuple<float, float> position);
+                ReconnectRequests.TryRemove(id, out (float, float) position);
                 return position;
             }
 
-            return null;
+            return default;
         }
 
-        private ConcurrentDictionary<string, Tuple<float, float>> ReconnectRequests { get; set; } = new ConcurrentDictionary<string, Tuple<float, float>>();
+        private ConcurrentDictionary<string, (float, float)> ReconnectRequests { get; set; }
+            = new ConcurrentDictionary<string, (float, float)>();
 
         public void BeginInit()
         {
@@ -94,7 +95,7 @@ namespace LoESoft.GameServer.realm
             await Task.Delay(1000 / Settings.GAMESERVER.TICKETS_PER_SECOND); // 200 ms (5 TPS)
 
             try { Tick(GameServer.Manager.Logic.GameTime); }
-            catch { }
+            catch (Exception e) { GameServer.log.Error(e); }
 
             WorldTick();
         }

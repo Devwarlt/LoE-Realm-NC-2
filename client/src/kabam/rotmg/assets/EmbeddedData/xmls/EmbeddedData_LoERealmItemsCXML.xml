@@ -328,7 +328,7 @@
 		<SlotType>17</SlotType>
 		<Description>The Oryx servants are terrified in the presence of this equipment!</Description>
 		<ExtraTooltipData>
-			<EffectInfo name="Umbral Series" description="This item is a better version of tops released on update 5.00 and add +1 point on all of your status, except health and magic points." />
+			<EffectInfo name="Umbral Series" description="This item is a better version of tops released." />
 		</ExtraTooltipData>
 		<RateOfFire>1</RateOfFire>
 		<Sound>weapon/wand_of_death</Sound>
@@ -342,18 +342,12 @@
 			<Frequency>2</Frequency>
 		</Projectile>
 		<Umbral />
-		<ActivateOnEquip stat="20" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="21" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="22" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="26" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="27" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="28" amount="1">IncrementStat</ActivateOnEquip>
-		<BagType>4</BagType>
+		<Soulbound />
+		<BagType>6</BagType>
 		<FameBonus>4</FameBonus>
 		<NumProjectiles>2</NumProjectiles>
 		<ArcGap>0</ArcGap>
 		<OldSound>magicShoot</OldSound>
-		<DisplayId>Umbral Staff</DisplayId>
 	</Object>
 	<Object type="0x5010" id="Umbral Wand" spritePeriod="4" spriteFile="LRE" spriteArray="208-213">
 		<Class>Equipment</Class>
@@ -366,7 +360,7 @@
 		<Tier>14</Tier>
 		<Description>The Oryx servants are terrified in the presence of this equipment!</Description>
 		<ExtraTooltipData>
-			<EffectInfo name="Umbral Series" description="This item is a better version of tops released on update 5.00 and add +1 point on all of your status, except health and magic points." />
+			<EffectInfo name="Umbral Series" description="This item is a better version of tops released." />
 		</ExtraTooltipData>
 		<RateOfFire>1</RateOfFire>
 		<Sound>weapon/wand_of_death</Sound>
@@ -379,16 +373,10 @@
 			<MultiHit />
 		</Projectile>
 		<Umbral />
-		<ActivateOnEquip stat="20" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="21" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="22" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="26" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="27" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="28" amount="1">IncrementStat</ActivateOnEquip>
-		<BagType>4</BagType>
+		<Soulbound />
+		<BagType>6</BagType>
 		<FameBonus>4</FameBonus>
 		<OldSound>magicShoot</OldSound>
-		<DisplayId>Umbral Wand</DisplayId>
 	</Object>
 	<Object type="0x500f" id="Umbral Sword" spritePeriod="4" spriteFile="LRE" spriteArray="144-149">
 		<Class>Equipment</Class>
@@ -401,7 +389,7 @@
 		<Tier>14</Tier>
 		<Description>The Oryx servants are terrified in the presence of this equipment!</Description>
 		<ExtraTooltipData>
-			<EffectInfo name="Umbral Series" description="This item is a better version of tops released on update 5.00 and add +1 point on all of your status, except health and magic points." />
+			<EffectInfo name="Umbral Series" description="This item is a better version of tops released." />
 		</ExtraTooltipData>
 		<RateOfFire>1</RateOfFire>
 		<Sound>weapon/mithril_sword</Sound>
@@ -413,16 +401,10 @@
 			<LifetimeMS>350</LifetimeMS>
 		</Projectile>
 		<Umbral />
-		<ActivateOnEquip stat="20" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="21" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="22" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="26" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="27" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="28" amount="1">IncrementStat</ActivateOnEquip>
-		<BagType>4</BagType>
+		<Soulbound />
+		<BagType>6</BagType>
 		<FameBonus>4</FameBonus>
 		<OldSound>bladeSwing</OldSound>
-		<DisplayId>Umbral Sword</DisplayId>
 	</Object>
 	<Object type="0x500e" id="Umbral Bow" spritePeriod="4" spriteFile="LRE" spriteArray="160-165">
 		<Class>Equipment</Class>
@@ -435,7 +417,7 @@
 		<Tier>14</Tier>
 		<Description>The Oryx servants are terrified in the presence of this equipment!</Description>
 		<ExtraTooltipData>
-			<EffectInfo name="Umbral Series" description="This item is a better version of tops released on update 5.00 and add +1 point on all of your status, except health and magic points." />
+			<EffectInfo name="Umbral Series" description="This item is a better version of tops released." />
 		</ExtraTooltipData>
 		<RateOfFire>1</RateOfFire>
 		<Sound>weapon/golden_bow</Sound>
@@ -448,17 +430,11 @@
 			<MultiHit />
 		</Projectile>
 		<Umbral />
-		<ActivateOnEquip stat="20" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="21" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="22" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="26" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="27" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="28" amount="1">IncrementStat</ActivateOnEquip>
-		<BagType>4</BagType>
+		<Soulbound />
+		<BagType>6</BagType>
 		<FameBonus>4</FameBonus>
 		<NumProjectiles>3</NumProjectiles>
 		<OldSound>arrowShoot</OldSound>
-		<DisplayId>Umbral Bow</DisplayId>
 	</Object>
 	<Object type="0x500d" id="Umbral Dagger" spritePeriod="4" spriteFile="LRE" spriteArray="176-181">
 		<Class>Equipment</Class>
@@ -471,7 +447,7 @@
 		<Tier>14</Tier>
 		<Description>The Oryx servants are terrified in the presence of this equipment!</Description>
 		<ExtraTooltipData>
-			<EffectInfo name="Umbral Series" description="This item is a better version of tops released on update 5.00 and add +1 point on all of your status, except health and magic points." />
+			<EffectInfo name="Umbral Series" description="This item is a better version of tops released." />
 		</ExtraTooltipData>
 		<RateOfFire>1</RateOfFire>
 		<Sound>weapon/fire_dagger</Sound>
@@ -481,19 +457,12 @@
 			<MinDamage>100</MinDamage>
 			<MaxDamage>180</MaxDamage>
 			<LifetimeMS>400</LifetimeMS>
-			<ParticleTrail intensity="0.8" lifetimeMS="250">0xc30e0e</ParticleTrail>
 		</Projectile>
 		<Umbral />
-		<ActivateOnEquip stat="20" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="21" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="22" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="26" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="27" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="28" amount="1">IncrementStat</ActivateOnEquip>
-		<BagType>4</BagType>
+		<Soulbound />
+		<BagType>6</BagType>
 		<FameBonus>4</FameBonus>
 		<OldSound>daggerSwing</OldSound>
-		<DisplayId>Umbral Dagger</DisplayId>
 	</Object>
 	<Object type="0x500c" id="Umbral Katana" spritePeriod="4" spriteFile="LRE" spriteArray="192-197">
 		<Class>Equipment</Class>
@@ -506,7 +475,7 @@
 		<Tier>14</Tier>
 		<Description>The Oryx servants are terrified in the presence of this equipment!</Description>
 		<ExtraTooltipData>
-			<EffectInfo name="Umbral Series" description="This item is a better version of tops released on update 5.00 and add +1 point on all of your status, except health and magic points." />
+			<EffectInfo name="Umbral Series" description="This item is a better version of tops released." />
 		</ExtraTooltipData>
 		<RateOfFire>1</RateOfFire>
 		<Sound>weapon/long_sword</Sound>
@@ -519,16 +488,71 @@
 			<MultiHit />
 		</Projectile>
 		<Umbral />
-		<ActivateOnEquip stat="20" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="21" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="22" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="26" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="27" amount="1">IncrementStat</ActivateOnEquip>
-		<ActivateOnEquip stat="28" amount="1">IncrementStat</ActivateOnEquip>
-		<BagType>4</BagType>
+		<Soulbound />
+		<BagType>6</BagType>
 		<FameBonus>4</FameBonus>
 		<OldSound>bladeSwing</OldSound>
-		<DisplayId>Umbral Katana</DisplayId>
+	</Object>
+	<Object type="0x671e" id="Umbral Armor" spritePeriod="4" spriteFile="LRE" spriteArray="134-139">
+		<Class>Equipment</Class>
+		<Item />
+		<Texture>
+			<File>LRE</File>
+			<Index>134</Index>
+		</Texture>
+		<SlotType>7</SlotType>
+		<Tier>15</Tier>
+		<Description>The Oryx servants are terrified in the presence of this equipment!</Description>
+		<ExtraTooltipData>
+			<EffectInfo name="Umbral Series" description="This item is a better version of tops released." />
+		</ExtraTooltipData>
+		<ActivateOnEquip stat="21" amount="26">IncrementStat</ActivateOnEquip>
+		<BagType>6</BagType>
+		<FameBonus>6</FameBonus>
+		<Umbral />
+		<Soulbound />
+	</Object>
+	<Object type="0x671f" id="Umbral Robe" spritePeriod="4" spriteFile="LRE" spriteArray="166-171">
+		<Class>Equipment</Class>
+		<Item />
+		<Texture>
+			<File>LRE</File>
+			<Index>166</Index>
+		</Texture>
+		<SlotType>14</SlotType>
+		<Tier>15</Tier>
+		<Description>The Oryx servants are terrified in the presence of this equipment!</Description>
+		<ExtraTooltipData>
+			<EffectInfo name="Umbral Series" description="This item is a better version of tops released." />
+		</ExtraTooltipData>
+		<ActivateOnEquip stat="20" amount="4">IncrementStat</ActivateOnEquip>
+		<ActivateOnEquip stat="21" amount="15">IncrementStat</ActivateOnEquip>
+		<ActivateOnEquip stat="27" amount="7">IncrementStat</ActivateOnEquip>
+		<ActivateOnEquip stat="3" amount="65">IncrementStat</ActivateOnEquip>
+		<BagType>6</BagType>
+		<FameBonus>6</FameBonus>
+		<Umbral />
+		<Soulbound />
+	</Object>
+	<Object type="0x6722" id="Umbral Skin Armor" spritePeriod="4" spriteFile="LRE" spriteArray="150-155">
+		<Class>Equipment</Class>
+		<Item />
+		<Texture>
+			<File>LRE</File>
+			<Index>150</Index>
+		</Texture>
+		<SlotType>6</SlotType>
+		<Tier>15</Tier>
+		<Description>The Oryx servants are terrified in the presence of this equipment!</Description>
+		<ExtraTooltipData>
+			<EffectInfo name="Umbral Series" description="This item is a better version of tops released." />
+		</ExtraTooltipData>
+		<ActivateOnEquip stat="21" amount="19">IncrementStat</ActivateOnEquip>
+		<ActivateOnEquip stat="28" amount="5">IncrementStat</ActivateOnEquip>
+		<BagType>4</BagType>
+		<FameBonus>6</FameBonus>
+		<Umbral />
+		<Soulbound />
 	</Object>
 	<Object type="0x500b" id="Infected Staff of the Cosmic Whole">
 		<Class>Equipment</Class>
@@ -965,7 +989,7 @@
 	</Object>
 	<Object type="0x518e" id="Warden Two-handed Sword" setType="0x0009" setName="Forgotten Sentinel Set">
 		<Class>Equipment</Class>
-		<Item/>
+		<Item />
 		<Texture>
 			<File>LRE</File>
 			<Index>0</Index>
@@ -988,7 +1012,7 @@
 	</Object>
 	<Object type="0x518f" id="Warden Helmet" setType="0x0009" setName="Forgotten Sentinel Set">
 		<Class>Equipment</Class>
-		<Item/>
+		<Item />
 		<Texture>
 			<File>LRE</File>
 			<Index>1</Index>
@@ -997,7 +1021,7 @@
 		<Description>Helmet of the forgotten sentinel.</Description>
 		<ActivateOnEquip stat="21" amount="10">IncrementStat</ActivateOnEquip>
 		<ActivateOnEquip stat="22" amount="5">IncrementStat</ActivateOnEquip>
-		<Usable/>
+		<Usable />
 		<BagType>6</BagType>
 		<FameBonus>6</FameBonus>
 		<MpCost>110</MpCost>
@@ -1008,7 +1032,7 @@
 	</Object>
 	<Object type="0x518d" id="The Sentinel Warden" setType="0x0009" setName="Forgotten Sentinel Set">
 		<Class>Equipment</Class>
-		<Item/>
+		<Item />
 		<Texture>
 			<File>LRE</File>
 			<Index>2</Index>
@@ -1021,7 +1045,7 @@
 		<ActivateOnEquip stat="0" amount="60">IncrementStat</ActivateOnEquip>
 		<BagType>6</BagType>
 		<FameBonus>5</FameBonus>
-		<Legacy/>
+		<Legacy />
 		<DisplayId>The Sentinel Warden</DisplayId>
 	</Object>
 </Objects>

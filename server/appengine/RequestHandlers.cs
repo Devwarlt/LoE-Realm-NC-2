@@ -15,6 +15,8 @@ namespace LoESoft.AppEngine
 {
     public abstract class RequestHandler
     {
+        public static WebClientMonitor Manager { get; } = new WebClientMonitor();
+
         protected NameValueCollection Query { get; private set; }
         protected HttpListenerContext Context { get; private set; }
         protected Database Database => AppEngine.Database;
@@ -40,6 +42,19 @@ namespace LoESoft.AppEngine
 
             HandleRequest();
         }
+
+        public enum GameDataErrors : int
+        {
+            NullCapabilityAndDomain = 0,
+            NullCapability = 1,
+            NullDomain = 2,
+            InvalidCapability = 3,
+            InvalidDomain = 4,
+            GameDateNotFound = 5
+        }
+
+        public void SendGDError(GameDataErrors id)
+            => WriteErrorLine($"[Error GD#{(int)id}] An error occurred while game load, report to any moderator.");
 
         public void WriteLine(XElement value, bool xml = true, params object[] args)
         {
@@ -77,7 +92,7 @@ namespace LoESoft.AppEngine
                     writer.Write($"<Error>{value}</Error>");
         }
 
-        private XmlWriterSettings settings = new XmlWriterSettings
+        private readonly XmlWriterSettings settings = new XmlWriterSettings
         {
             Indent = true,
             IndentChars = "    ",

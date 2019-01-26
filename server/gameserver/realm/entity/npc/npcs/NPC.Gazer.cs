@@ -30,6 +30,7 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
         {
             string callback = null;
             string task = null;
+
             var isTask = false;
 
             if (command.Length >= 6)
@@ -44,6 +45,9 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                 task = taskToLowerNames.Contains(taskStart) ? taskOriginalNames.FirstOrDefault(name => name.ToLower() == taskStart) : null;
                 isTask = task != null;
             }
+
+            var acc = player.Client.Account;
+            var cost = player.GetBlessingPrice();
 
             if (!isTask)
                 switch (command)
@@ -215,29 +219,6 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                         });
                         return;
                     #endregion
-                    #region "Event: max"
-                    case "max":
-                        var eventmax = new DateTime(2019, 1, 18, 12, 59, 59);
-
-                        if (DateTime.UtcNow > eventmax)
-                            callback = "The event already over, try again later.";
-                        else
-                        {
-                            player.Stats[0] = player.ObjectDesc.MaxHitPoints;
-                            player.Stats[1] = player.ObjectDesc.MaxMagicPoints;
-                            player.Stats[2] = player.ObjectDesc.MaxAttack;
-                            player.Stats[3] = player.ObjectDesc.MaxDefense;
-                            player.Stats[4] = player.ObjectDesc.MaxSpeed;
-                            player.Stats[5] = player.ObjectDesc.MaxHpRegen;
-                            player.Stats[6] = player.ObjectDesc.MaxMpRegen;
-                            player.Stats[7] = player.ObjectDesc.MaxDexterity;
-                            player.SaveToCharacter();
-                            player.UpdateCount++;
-
-                            callback = "You have been maxed!";
-                        }
-                        break;
-                    #endregion
                     #region "Event: vip"
                     case "vip":
                         var eventvip = new DateTime(2019, 1, 18, 12, 59, 59);
@@ -252,7 +233,6 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                             {
                                 var _outgoing = new List<Message>();
                                 var _world = GameServer.Manager.GetWorld(player.Owner.Id);
-                                var acc = player.Client.Account;
                                 var days = 7;
 
                                 var _notification = new NOTIFICATION
@@ -316,7 +296,7 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                         player.SendHelp("- Beholder's Bless.");
                         player.SendHelp("- Ent's Bless.");
 
-                        callback = "Oh you know about blessings! I can sell 5 different blessings that can protect your against evil forces. Check your chat log.";
+                        callback = "Oh, you know about blessings! I can sell 5 different blessings that can protect your against evil forces. Check your chat log.";
                         break;
 
                     case "medusa's bless":
@@ -324,7 +304,7 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                     case "slime's bless":
                     case "beholder's bless":
                     case "ent's bless":
-                        callback = $"That blessing is costing for your level {player.GetBlessingPrice()} Fame. Say \"buy {command}\" to confirm purchase.";
+                        callback = $"That blessing is costing for your level {cost} Fame. Say \"buy {command}\" to confirm purchase.";
                         break;
 
                     case "buy medusa's bless":
@@ -332,11 +312,10 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                             callback = "You already have this bless.";
                         else if (player.Client.Account.Fame >= player.GetBlessingPrice())
                         {
+                            GameServer.Manager.Database.UpdateFame(acc, -cost);
+
                             player.Bless1 = true;
-                            player.CurrentFame -= player.GetBlessingPrice();
-
-                            GameServer.Manager.Database.UpdateFame(player.Client.Account, player.GetBlessingPrice());
-
+                            player.CurrentFame = acc.Fame;
                             player.SaveToCharacter();
                             player.UpdateCount++;
 
@@ -351,11 +330,10 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                             callback = "You already have this bless.";
                         else if (player.Client.Account.Fame >= player.GetBlessingPrice())
                         {
+                            GameServer.Manager.Database.UpdateFame(acc, -cost);
+
                             player.Bless2 = true;
-                            player.CurrentFame -= player.GetBlessingPrice();
-
-                            GameServer.Manager.Database.UpdateFame(player.Client.Account, player.GetBlessingPrice());
-
+                            player.CurrentFame = acc.Fame;
                             player.SaveToCharacter();
                             player.UpdateCount++;
 
@@ -370,11 +348,10 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                             callback = "You already have this bless.";
                         else if (player.Client.Account.Fame >= player.GetBlessingPrice())
                         {
+                            GameServer.Manager.Database.UpdateFame(acc, -cost);
+
                             player.Bless3 = true;
-                            player.CurrentFame -= player.GetBlessingPrice();
-
-                            GameServer.Manager.Database.UpdateFame(player.Client.Account, player.GetBlessingPrice());
-
+                            player.CurrentFame = acc.Fame;
                             player.SaveToCharacter();
                             player.UpdateCount++;
 
@@ -389,11 +366,10 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                             callback = "You already have this bless.";
                         else if (player.Client.Account.Fame >= player.GetBlessingPrice())
                         {
+                            GameServer.Manager.Database.UpdateFame(acc, -cost);
+
                             player.Bless4 = true;
-                            player.CurrentFame -= player.GetBlessingPrice();
-
-                            GameServer.Manager.Database.UpdateFame(player.Client.Account, player.GetBlessingPrice());
-
+                            player.CurrentFame = acc.Fame;
                             player.SaveToCharacter();
                             player.UpdateCount++;
 
@@ -408,11 +384,10 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                             callback = "You already have this bless.";
                         else if (player.Client.Account.Fame >= player.GetBlessingPrice())
                         {
+                            GameServer.Manager.Database.UpdateFame(acc, -cost);
+
                             player.Bless5 = true;
-                            player.CurrentFame -= player.GetBlessingPrice();
-
-                            GameServer.Manager.Database.UpdateFame(player.Client.Account, player.GetBlessingPrice());
-
+                            player.CurrentFame = acc.Fame;
                             player.SaveToCharacter();
                             player.UpdateCount++;
 
@@ -434,12 +409,12 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                             callback = "You can only transfer fame to your account when you get 400 fame base.";
                         else
                         {
+                            GameServer.Manager.Database.UpdateFame(acc, player.Fame);
+
+                            player.CurrentFame = acc.Fame;
+                            player.Fame = 0;
                             player.FakeExperience = 0;
                             player.CalculateFame(false);
-                            player.CurrentFame += player.Fame;
-
-                            GameServer.Manager.Database.UpdateFame(player.Client.Account, player.Fame);
-
                             player.SaveToCharacter();
                             player.UpdateCount++;
 

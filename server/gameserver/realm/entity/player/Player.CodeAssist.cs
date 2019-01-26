@@ -456,7 +456,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                         SendHelp("You dropped your connection with the server! Reconnecting...");
 
-                        Owner.AddReconnectToPlayer(AccountId, Tuple.Create(X, Y));
+                        Owner.AddReconnectToPlayer(AccountId, (X, Y));
 
                         Client.Reconnect(new RECONNECT()
                         {

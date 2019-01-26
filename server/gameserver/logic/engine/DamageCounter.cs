@@ -56,13 +56,17 @@ namespace LoESoft.GameServer.logic
         {
             if (Parent != null)
                 return Parent.GetPlayerData();
-            List<Tuple<Player, int>> dat = new List<Tuple<Player, int>>();
-            foreach (KeyValuePair<Player, int> i in hitters)
+
+            var dat = new List<Tuple<Player, int>>();
+
+            foreach (var i in hitters)
             {
                 if (i.Key.Owner == null)
                     continue;
+
                 dat.Add(new Tuple<Player, int>(i.Key, i.Value));
             }
+
             return dat.ToArray();
         }
 
@@ -74,84 +78,68 @@ namespace LoESoft.GameServer.logic
                 return;
             }
 
-            List<Tuple<Player, int>> eligiblePlayers = new List<Tuple<Player, int>>();
+            var players = new List<Player>();
 
-            int totalDamage = 0;
-            int totalPlayer = 0;
-
-            Enemy enemy = (Parent ?? this).enemy;
-
-            foreach (KeyValuePair<Player, int> i in (Parent ?? this).hitters)
+            foreach (var i in (Parent ?? this).hitters)
             {
                 if (i.Key.Owner == null)
                     continue;
-                totalDamage += i.Value;
-                totalPlayer++;
-                eligiblePlayers.Add(new Tuple<Player, int>(i.Key, i.Value));
+
+                players.Add(i.Key);
             }
 
-            if (totalPlayer != 0)
-            {
-                double totalExp, playerXp, lowerLimit, upperLimit;
-                bool newExpMethod = enemy.ObjectDesc.NewExperience;
+            var exp = 0d;
+            var newmethod = enemy.ObjectDesc.NewExperience;
 
-                if (newExpMethod)
-                    totalExp = enemy.ObjectDesc.Experience;
-                else
-                    totalExp = ProcessExperience(enemy.ObjectDesc.MaxHP);
+            if (newmethod)
+                exp = enemy.ObjectDesc.Experience;
+            else
+                exp = ProcessExperience(enemy.ObjectDesc.MaxHP);
 
-                int lvUps = 0;
+            exp *= GroupBonus(players.Count);
 
-                foreach (Tuple<Player, int> i in eligiblePlayers)
-                {
-                    if (newExpMethod)
-                        playerXp = totalExp;
-                    else
-                    {
-                        playerXp = totalExp * i.Item2 / totalDamage;
-                        lowerLimit = totalExp / totalPlayer * 0.1f;
-                        upperLimit = i.Item1.ExperienceGoal * 0.1f;
+            if (players.Count != 0)
+                foreach (var player in players)
+                    player?.EnemyKilled(enemy, (int)exp);
 
-                        if (i.Item1.Quest == enemy)
-                            upperLimit = i.Item1.ExperienceGoal * 0.5f;
+            players.Clear();
 
-                        if (playerXp < lowerLimit)
-                            playerXp = lowerLimit;
-
-                        if (playerXp > upperLimit)
-                            playerXp = upperLimit;
-                    }
-
-                    bool killer = (Parent ?? this).LastHitter == i.Item1;
-
-                    if (i.Item1.EnemyKilled(enemy, i.Item1.AccountPerks.Experience(i.Item1.Level, (int)playerXp), killer) && !killer)
-                        lvUps++;
-                }
-
-                (Parent ?? this).LastHitter.FameCounter.LevelUpAssist(lvUps);
-            }
-
-            if (enemy.Owner is GameWorld)
+            if (enemy.Owner is IRealm)
                 (enemy.Owner as GameWorld).EnemyKilled(enemy, (Parent ?? this).LastHitter);
         }
 
-        private float ProcessExperience(double hp)
+        private double GroupBonus(int amount)
+        {
+            if (amount == 1)
+                return 1;
+            else if (amount > 1 && amount <= 4)
+                return 1.05;
+            else if (amount > 4 && amount <= 8)
+                return 1.1;
+            else if (amount > 8 && amount <= 12)
+                return 1.15;
+            else if (amount > 12 && amount <= 16)
+                return 1.2;
+            else if (amount > 16)
+                return 1.25;
+            else
+                return 0;
+        }
+
+        private double ProcessExperience(double hp)
         {
             if (hp == 0)
                 return 0;
             else if (hp > 0 && hp <= 100)
-                return (float)hp / 10;
+                return hp / 10;
             else if (hp > 100 && hp <= 1000)
-                return (float)(hp / 10) * 1.25f;
+                return (hp / 10) * 1.25;
             else if (hp > 1000 && hp <= 10000)
-                return (float)(hp / 10) * 1.5f;
+                return (hp / 10) * 1.5;
             else
                 return 2000;
         }
 
-        public void Dispose()
-        {
-            enemy = null;
-        }
+        public void Dispose() => enemy = null;
     }
 }

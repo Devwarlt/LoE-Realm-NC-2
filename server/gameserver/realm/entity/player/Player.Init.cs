@@ -59,10 +59,18 @@ namespace LoESoft.GameServer.realm.entity.player
                 ExperienceGoal = GetExperience(Level + 1, ExpType.Level);
                 FakeExperience = client.Character.FakeExperience;
                 IsFakeEnabled = client.Character.IsFakeEnabled;
-                AttackLevel = client.Character.AttackLevel + 10;
+                AttackLevel = client.Character.AttackLevel;
+
+                if (AttackLevel < 10)
+                    AttackLevel += 10;
+
                 AttackExperience = client.Character.AttackExperience;
                 AttackGoalExperience = GetExperience(AttackLevel + 1 - 10, ExpType.Stat);
-                DefenseLevel = client.Character.DefenseLevel + 10;
+                DefenseLevel = client.Character.DefenseLevel;
+
+                if (DefenseLevel < 10)
+                    DefenseLevel += 10;
+
                 DefenseExperience = client.Character.DefenseExperience;
                 DefenseGoalExperience = GetExperience(DefenseLevel + 1 - 10, ExpType.Stat);
                 Bless1 = client.Character.Bless1;
@@ -290,9 +298,9 @@ namespace LoESoft.GameServer.realm.entity.player
             var rng = new Random();
             var lvl = Level;
             var exp = Experience;
-            var attlvl = AttackLevel;
+            var attlvl = AttackLevel - 10;
             var attexp = AttackExperience;
-            var deflvl = DefenseLevel;
+            var deflvl = DefenseLevel - 10;
             var defexp = DefenseExperience;
             var fame = Fame;
             var fexp = FakeExperience;
@@ -434,7 +442,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
             var newposition = owner.RemovePositionFromReconnect(AccountId);
 
-            if (newposition != null)
+            if (newposition != default)
                 Move((int)newposition.Item1 + 0.5f, (int)newposition.Item2 + 0.5f);
             else
                 Move(x + 0.5f, y + 0.5f);
@@ -661,26 +669,26 @@ namespace LoESoft.GameServer.realm.entity.player
 
         public void CalculateAttack()
         {
-            AttackExperience += Settings.GetEventRate();
+            AttackExperience += Settings.GetEventRate() * 10;
 
             if (AttackExperience >= AttackGoalExperience)
             {
                 AttackLevel++;
                 AttackGoalExperience = GetExperience(AttackLevel + 1 - 10, ExpType.Stat);
-                SendHelp($"You advanced from attack level {AttackLevel - 1 - 10} to level {AttackLevel - 10}.");
+                SendHelp($"You advanced from attack level {AttackLevel - 1} to level {AttackLevel}.");
                 UpdateCount++;
             }
         }
 
         public void CalculateDefense()
         {
-            DefenseExperience += Settings.GetEventRate();
+            DefenseExperience += Settings.GetEventRate() * 10;
 
             if (DefenseExperience >= DefenseGoalExperience)
             {
                 DefenseLevel++;
                 DefenseGoalExperience = GetExperience(DefenseLevel + 1 - 10, ExpType.Stat);
-                SendHelp($"You advanced from defense level {DefenseLevel - 1 - 10} to level {DefenseLevel - 10}.");
+                SendHelp($"You advanced from defense level {DefenseLevel - 1} to level {DefenseLevel}.");
                 UpdateCount++;
             }
         }
@@ -693,7 +701,6 @@ namespace LoESoft.GameServer.realm.entity.player
             newFame += Math.Max(0, Math.Min(80000, FakeExperience) - 45200) * 0.003;
             newFame += Math.Max(0, Math.Min(101200, FakeExperience) - 80000) * 0.002;
             newFame += Math.Max(0, FakeExperience - 101200) * 0.0005;
-            newFame += Math.Min(Math.Floor((double)FameCounter.Stats.MinutesActive / 6), 30);
             newFame = Math.Floor(newFame);
 
             if (newFame == Fame)
@@ -801,7 +808,7 @@ namespace LoESoft.GameServer.realm.entity.player
             return false;
         }
 
-        public bool EnemyKilled(Enemy enemy, int exp, bool killer)
+        public bool EnemyKilled(Enemy enemy, int exp)
         {
             if (enemy == Quest)
                 Owner.BroadcastMessage(new NOTIFICATION
@@ -830,8 +837,6 @@ namespace LoESoft.GameServer.realm.entity.player
                     i.CheckLevelUp(false);
                 }
             }
-
-            FameCounter.Killed(enemy, killer);
 
             return CheckLevelUp();
         }

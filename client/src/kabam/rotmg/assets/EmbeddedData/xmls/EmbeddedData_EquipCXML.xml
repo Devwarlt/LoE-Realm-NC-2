@@ -1373,6 +1373,7 @@
 			<Index>0x3d</Index>
 		</Texture>
 		<SlotType>1</SlotType>
+		<Tier>13</Tier>
 		<Description>An exalted weapon of the august kings of old, hallowed with the spirit of nations and yearning to grant power anew.</Description>
 		<RateOfFire>1</RateOfFire>
 		<Sound>weapon/mithril_sword</Sound>
@@ -1814,6 +1815,7 @@
 			<Index>0x4d</Index>
 		</Texture>
 		<SlotType>8</SlotType>
+		<Tier>13</Tier>
 		<Description>A shining gold wand of force, built by a diabolic archmagus to channel vast corrupting energies into the material plane.</Description>
 		<RateOfFire>1</RateOfFire>
 		<Sound>weapon/wand_of_death</Sound>
@@ -2425,6 +2427,7 @@
 			<Index>0x0d</Index>
 		</Texture>
 		<SlotType>6</SlotType>
+		<Tier>14</Tier>
 		<Description>Outstanding leather armor made from the virtually impregnable hide of a great desert wyrm.</Description>
 		<ActivateOnEquip stat="21" amount="18">IncrementStat</ActivateOnEquip>
 		<ActivateOnEquip stat="28" amount="5">IncrementStat</ActivateOnEquip>
@@ -2645,6 +2648,7 @@
 			<Index>0x2d</Index>
 		</Texture>
 		<SlotType>7</SlotType>
+		<Tier>14</Tier>
 		<Description>Exquisitely decorated adamantine armor smithed by underdeep dwarves for the wardens of the demonclefts.</Description>
 		<ActivateOnEquip stat="21" amount="25">IncrementStat</ActivateOnEquip>
 		<BagType>4</BagType>
@@ -3002,6 +3006,7 @@
 			<Index>0x6d</Index>
 		</Texture>
 		<SlotType>2</SlotType>
+		<Tier>13</Tier>
 		<Description>A moonsteel dagger of the underworld, corrupted by loathsome enchantments and profane spells.</Description>
 		<RateOfFire>1</RateOfFire>
 		<Sound>weapon/fire_dagger</Sound>
@@ -3379,6 +3384,7 @@
 			<Index>0x5d</Index>
 		</Texture>
 		<SlotType>3</SlotType>
+		<Tier>13</Tier>
 		<Description>A superlative bow of sunsteel and diamondwire, created by a secretive race of star-dwelling entities.</Description>
 		<RateOfFire>1</RateOfFire>
 		<Sound>weapon/golden_bow</Sound>
@@ -6676,6 +6682,7 @@
 			<Index>0x1d</Index>
 		</Texture>
 		<SlotType>14</SlotType>
+		<Tier>14</Tier>
 		<Description>A robe of gossamer glowthread, used by the sorceress matriarchs of the western kingdoms.</Description>
 		<ActivateOnEquip stat="20" amount="4">IncrementStat</ActivateOnEquip>
 		<ActivateOnEquip stat="21" amount="14">IncrementStat</ActivateOnEquip>
@@ -7481,6 +7488,7 @@
 			<Index>0x7d</Index>
 		</Texture>
 		<SlotType>17</SlotType>
+		<Tier>13</Tier>
 		<Description>A golden staff of elysian consciousness, shining with the base power of empyrean truths.</Description>
 		<RateOfFire>1</RateOfFire>
 		<Sound>weapon/wand_of_death</Sound>
@@ -8129,11 +8137,9 @@
 		<feedPower>35</feedPower>
 	</Object>
 	<Object type="0xaf3" id="Yellow Drake Egg">
-		
 
-    Bleeding
+		Bleeding
 
-    
 		<Class>Equipment</Class>
 		<Item />
 		<Texture>

@@ -204,7 +204,7 @@ namespace LoESoft.GameServer.realm.world
                     newEntities.Add(EntityGod[rng.Next(EntityGod.Count - 1)]);
 
             if ((currentWave % 2 == 0) && (currentWave >= 20))
-                for (int i = 0; i < currentWave / 2; i++)
+                for (int i = 0; i < currentWave / 8; i++)
                     newEntities.Add(DreamMinions[rng.Next(DreamMinions.Count - 1)]);
 
             if ((currentWave % 5 == 0) && (currentWave >= 20))

@@ -155,14 +155,11 @@ namespace LoESoft.GameServer.realm
             {
                 try
                 {
-                    OnWorldRemoved(world);
-                    world.Dispose();
+                    OnWorldRemoved(dummy);
+                    dummy.Dispose();
                     GC.Collect();
-
-                    if (renewRealm)
-                        AddWorld(GameWorld.AutoName(1, true));
                 }
-                catch (Exception) { }
+                catch (Exception e) { GameServer.log.Error(e); }
                 return true;
             }
             return false;
@@ -188,13 +185,13 @@ namespace LoESoft.GameServer.realm
         {
             world.BeginInit();
 
-            if (world is GameWorld)
+            if (world is IRealm)
                 Monitor.WorldAdded(world);
         }
 
         private void OnWorldRemoved(World world)
         {
-            if (world is GameWorld)
+            if (world is IRealm)
                 Monitor.WorldRemoved(world);
         }
 

@@ -69,6 +69,7 @@ public class BeginSecurityProtocolDataTask extends BaseTask {
     private function onComplete(success:Boolean, data:*):void {
         if (!success || data.length == 8)
             onTextError();
+
         completeTask(success, data);
     }
 

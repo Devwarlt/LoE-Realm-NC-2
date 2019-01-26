@@ -603,6 +603,7 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
+            player.SendInfo($"Pet attack is {onoff}.");
             player.EnablePetAttack = onoff == "on";
             player.SaveToCharacter();
             player.UpdateCount++;

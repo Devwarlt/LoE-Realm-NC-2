@@ -15,11 +15,19 @@ namespace LoESoft.AppEngine.@char
     {
         protected override void HandleRequest()
         {
+            var ip = Context.Request.RemoteEndPoint.Address.ToString();
+
+            if (!Manager.CheckWebClient(ip))
+            {
+                SendGDError(GameDataErrors.GameDateNotFound);
+                return;
+            }
+            else
+                Manager.UpdateWebClient(ip, true);
+
             try
             {
-                DbAccount acc;
-
-                var status = Database.Verify(Query["guid"], Query["password"], out acc);
+                var status = Database.Verify(Query["guid"], Query["password"], out DbAccount acc);
 
                 if (status == LoginStatus.OK || status == LoginStatus.AccountNotExists)
                 {
@@ -28,7 +36,7 @@ namespace LoESoft.AppEngine.@char
 
                     if (acc.Banned)
                     {
-                        using (StreamWriter wtr = new StreamWriter(Context.Response.OutputStream))
+                        using (var wtr = new StreamWriter(Context.Response.OutputStream))
                             wtr.WriteLine("<Error>Account under maintenance</Error>");
 
                         Context.Response.Close();

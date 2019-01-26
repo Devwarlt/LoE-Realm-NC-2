@@ -52,7 +52,7 @@ public class ErrorDialog extends Sprite {
         super();
         var _local2:String = [_arg2 ? "Connection aborted:" : "An error has occured:", _arg1].join("\n");
         this.stageProxy = new StageProxy(this);
-        this._makeUIAndAdd(_local2, _arg2 ? "Invalid Security Protocols" : "D'oh, this isn't good", "Ok", null, _arg2);
+        this._makeUIAndAdd(_local2, "D'oh, this isn't good", "Ok", null, _arg2);
         this.makeUIAndAdd();
         this.uiWaiter.complete.addOnce(this.onComplete);
         addChild(this.box_);

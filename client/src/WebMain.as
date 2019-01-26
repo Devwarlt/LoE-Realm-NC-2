@@ -40,6 +40,7 @@ import kabam.rotmg.fame.FameConfig;
 import kabam.rotmg.fortune.FortuneConfig;
 import kabam.rotmg.friends.FriendConfig;
 import kabam.rotmg.game.GameConfig;
+import kabam.rotmg.gamedata.GameDataConfig;
 import kabam.rotmg.language.LanguageConfig;
 import kabam.rotmg.legends.LegendsConfig;
 import kabam.rotmg.maploading.MapLoadingConfig;
@@ -138,6 +139,7 @@ public class WebMain extends Sprite {
                 .configure(DialogsConfig)
                 .configure(EnvironmentConfig)
                 .configure(ApplicationConfig)
+                .configure(GameDataConfig)
                 .configure(LanguageConfig)
                 .configure(TextConfig)
                 .configure(AppEngineConfig)
