@@ -262,16 +262,9 @@
     <Content Include="assets\xmls\EmbeddedData_LoERealmGoldenCrownsCXML.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="assets\xmls\EmbeddedData_DrrItemsCXML.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="assets\xmls\EmbeddedData_LoERealmItemsCXML.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
-    </Content>
-    <Content Include="assets\xmls\EmbeddedData_LoERealmLegendaryTierCXML.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="assets\xmls\EmbeddedData_LoERealmPetsCXML.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -284,9 +277,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="assets\xmls\EmbeddedData_LoERealmSkinsCXML.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets\xmls\EmbeddedData_LoERealmSuperRareTierCXML.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="assets\xmls\EmbeddedData_LowCXML.xml">

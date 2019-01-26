@@ -9092,23 +9092,6 @@
     <Activate effect="Invisible" duration="4">ConditionEffectSelf</Activate>
     <feedPower>35</feedPower>
   </Object>
-  <Object type="0x913" id="Crown">
-    <Class>Equipment</Class>
-    <Item />
-    <Texture>
-      <File>lofiObj3</File>
-      <Index>0xc6</Index>
-    </Texture>
-    <SlotType>9</SlotType>
-    <Description>Super regal!</Description>
-    <ActivateOnEquip stat="26" amount="60">IncrementStat</ActivateOnEquip>
-    <ActivateOnEquip stat="27" amount="700">IncrementStat</ActivateOnEquip>
-    <ActivateOnEquip stat="20" amount="20">IncrementStat</ActivateOnEquip>
-    <ActivateOnEquip stat="22" amount="20">IncrementStat</ActivateOnEquip>
-    <BagType>6</BagType>
-    <Soulbound />
-    <feedPower>0</feedPower>
-  </Object>
   <Object type="0xc27" id="Captain's Ring">
     <Class>Equipment</Class>
     <Item />

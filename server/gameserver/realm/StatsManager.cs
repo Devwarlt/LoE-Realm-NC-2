@@ -52,7 +52,7 @@ namespace LoESoft.GameServer.realm
             if (player.HasConditionEffect(ConditionEffectIndex.Weak))
                 return 0.5f;
 
-            var ret = (0.5f + (player.AttackLevel + player.Boost[2]) / 75F * (2 - 0.5f));
+            var ret = (0.5f + (player.AttackLevel + player.Boost[2]) / 75f * (2 - 0.5f));
 
             if (player.HasConditionEffect(ConditionEffectIndex.Damaging))
                 ret *= 1.5f;
@@ -143,6 +143,7 @@ namespace LoESoft.GameServer.realm
         public float GetDex()
         {
             int dex = GetStats(7);
+
             if (player.HasConditionEffect(ConditionEffectIndex.Dazed))
                 dex = 0;
 

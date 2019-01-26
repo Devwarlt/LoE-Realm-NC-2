@@ -2109,7 +2109,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
         }
         var _local3:Boolean = (this.player.distTo(_arg1.pos_) < _arg1.radius_);
         if (_local3) {
-            _local4 = GameObject.damageWithDefense(_arg1.damage_, Parameters.parse(this.player.defense_), false, this.player.condition_);
+            _local4 = GameObject.damageWithDefense(_arg1.damage_, this.player.defenseLevel_ + Parameters.parse(this.player.defenseBoost_), false, this.player.condition_);
             _local5 = null;
             if (_arg1.effect_ != 0) {
                 _local5 = new Vector.<uint>();

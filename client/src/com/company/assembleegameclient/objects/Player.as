@@ -806,7 +806,7 @@ public class Player extends Character {
         if (isWeak()) {
             return (MIN_ATTACK_MULT);
         }
-        var _local1:Number = (MIN_ATTACK_MULT + ((Parameters.parse(this.attack_) / 75) * (MAX_ATTACK_MULT - MIN_ATTACK_MULT)));
+        var _local1:Number = (MIN_ATTACK_MULT + (((this.attackLevel_ + Parameters.parse(this.attackBoost_)) / 75) * (MAX_ATTACK_MULT - MIN_ATTACK_MULT)));
         if (isDamaging()) {
             _local1 = (_local1 * 1.5);
         }

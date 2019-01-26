@@ -262,8 +262,9 @@ public class Projectile extends BasicObject {
                 }
 
                 if (go == player) {
+                    var newdmg:int = GameObject.damageWithDefense(this.damage_, go.defenseLevel_, this.projProps_.armorPiercing_, go.condition_);
                     map_.gs_.gsc_.playerHit(this.bulletId_, this.ownerId_);
-                    go.damage(this.objectType_, dmg, this.projProps_.effects_, false, this);
+                    go.damage(this.objectType_, newdmg, this.projProps_.effects_, false, this);
                 }
                 else {
                     if (goIsEnemy) {
