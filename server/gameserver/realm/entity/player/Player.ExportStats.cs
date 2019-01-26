@@ -1,6 +1,5 @@
 ﻿#region
 
-using System;
 using System.Collections.Generic;
 
 #endregion
@@ -15,15 +14,15 @@ namespace LoESoft.GameServer.realm.entity.player
             stats[StatsType.ACCOUNT_ID_STAT] = AccountId;
             stats[StatsType.NAME_STAT] = Name;
 
-            stats[StatsType.EXP_STAT] = Experience;
+            stats[StatsType.EXP_STAT] = Experience - GetExperience(Level, ExpType.Level);
             stats[StatsType.NEXT_LEVEL_EXP_STAT] = ExperienceGoal;
             stats[StatsType.LEVEL_STAT] = Level;
 
-            stats[StatsType.ATTACK_EXP_STAT] = AttackExperience;
+            stats[StatsType.ATTACK_EXP_STAT] = AttackExperience - GetExperience(AttackLevel - 10, ExpType.Stat);
             stats[StatsType.NEXT_ATTACK_EXP_STAT] = AttackGoalExperience;
             stats[StatsType.ATTACK_LEVEL_STAT] = AttackLevel;
 
-            stats[StatsType.DEFENSE_EXP_STAT] = DefenseExperience;
+            stats[StatsType.DEFENSE_EXP_STAT] = DefenseExperience - GetExperience(DefenseLevel - 10, ExpType.Stat);
             stats[StatsType.NEXT_DEFENSE_EXP_STAT] = DefenseGoalExperience;
             stats[StatsType.DEFENSE_LEVEL_STAT] = DefenseLevel;
 
@@ -113,6 +112,7 @@ namespace LoESoft.GameServer.realm.entity.player
             stats[StatsType.ADMIN] = Admin;
 
             stats[StatsType.PET_OBJECT_ID] = PetID;
+
             if (PetID != 0)
             {
                 try
@@ -134,10 +134,11 @@ namespace LoESoft.GameServer.realm.entity.player
                         stats[StatsType.PET_ATTACK_DAMAGE_MAX] = PetAttack[3];
                     }
                 }
-                catch (ArgumentOutOfRangeException) { } // just don't return errors, hold this exception without export any value
+                catch { } // just don't return errors, hold this exception without export any value
             }
 
-            stats[StatsType.SIZE_STAT] = Client.Character.Size;
+            try { stats[StatsType.SIZE_STAT] = Client.Character.Size; }
+            catch { }
         }
     }
 }

@@ -52,7 +52,7 @@ namespace LoESoft.GameServer.realm
             SafePlace = false;
             AllowTeleport = true;
             ShowDisplays = true;
-            MaxPlayers = -1;
+            MaxPlayersCount = -1;
             SetMusic("main");
             Timers.Add(new WorldTimer(120 * 1000, (w, t) =>
             {
@@ -93,6 +93,8 @@ namespace LoESoft.GameServer.realm
         private async void WorldTick()
         {
             await Task.Delay(1000 / Settings.GAMESERVER.TICKETS_PER_SECOND); // 200 ms (5 TPS)
+
+            GameServer.Manager.TickerReady.WaitOne(); // await main thread load, before world ticker task init
 
             try { Tick(GameServer.Manager.Logic.GameTime); }
             catch (Exception e) { GameServer.log.Error(e); }
@@ -190,7 +192,8 @@ namespace LoESoft.GameServer.realm
         public bool Dungeon { get; protected set; }
         public bool Cave { get; protected set; }
         public bool Shaking { get; protected set; }
-        public int MaxPlayers { get; protected set; }
+        public int PlayersCount { get; private set; }
+        public int MaxPlayersCount { get; protected set; }
         public Wmap Map { get; private set; }
         public ConcurrentDictionary<int, Enemy> Quests { get; }
         public ConcurrentDictionary<Projectile, object> Projectiles { get; set; } = new ConcurrentDictionary<Projectile, object>();
@@ -420,8 +423,8 @@ namespace LoESoft.GameServer.realm
 
             player.Init(this);
 
-            if (MaxPlayers != -1)
-                MaxPlayers++;
+            if (MaxPlayersCount != -1)
+                PlayersCount++;
 
             PlayersCollision.Insert(player);
         }
@@ -431,8 +434,8 @@ namespace LoESoft.GameServer.realm
             if (!Players.TryRemove(player.Id, out Player dummy) || !Entities.TryRemove(player.Id, out Entity entity))
                 return;
 
-            if (MaxPlayers != -1)
-                MaxPlayers--;
+            if (MaxPlayersCount != -1)
+                PlayersCount--;
 
             PlayersCollision.Remove(player);
         }
@@ -552,8 +555,8 @@ namespace LoESoft.GameServer.realm
         }
 
         public bool IsFull =>
-            MaxPlayers != -1
-            && Players.Keys.Count >= MaxPlayers;
+            MaxPlayersCount != -1
+            && Players.Keys.Count >= MaxPlayersCount;
 
         public bool IsDungeon() =>
             !(this is IDungeon);

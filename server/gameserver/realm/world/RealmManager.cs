@@ -52,6 +52,10 @@ namespace LoESoft.GameServer.realm
         public bool Terminating { get; private set; }
         public int TPS { get; private set; }
 
+        internal GameWorld GW { get; private set; }
+
+        public ManualResetEvent TickerReady { get; } = new ManualResetEvent(false);
+
         private ConcurrentDictionary<string, Vault> Vaults { get; set; }
 
         private int nextWorldId;
@@ -92,7 +96,7 @@ namespace LoESoft.GameServer.realm
                 foreach (var realmevent in Realm.RealmEventCache)
                     Realm.AllRealmEvents.Add(realmevent.Name);
 
-            AddWorld(GameWorld.AutoName(1, true));
+            AddWorld(GW = GameWorld.AutoName(1, true));
 
             Chat = new ChatManager();
             Commands = new CommandManager();
@@ -108,6 +112,8 @@ namespace LoESoft.GameServer.realm
             var logic = new Task(() => Logic.TickLoop(), TaskCreationOptions.LongRunning);
             logic.ContinueWith(GameServer.Restart, TaskContinuationOptions.OnlyOnFaulted);
             logic.Start();
+
+            TickerReady.Set();
         }
 
         public void Stop()

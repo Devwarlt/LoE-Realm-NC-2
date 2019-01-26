@@ -669,7 +669,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
         public void CalculateAttack()
         {
-            AttackExperience += Settings.GetEventRate() * 10;
+            AttackExperience += Settings.GetEventRate() * 5;
 
             if (AttackExperience >= AttackGoalExperience)
             {
@@ -682,7 +682,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
         public void CalculateDefense()
         {
-            DefenseExperience += Settings.GetEventRate() * 10;
+            DefenseExperience += Settings.GetEventRate() * 5;
 
             if (DefenseExperience >= DefenseGoalExperience)
             {
@@ -782,8 +782,14 @@ namespace LoESoft.GameServer.realm.entity.player
 
                 var (hp, mp) = GetStats[GetClassType[ObjectType]];
 
-                Stats[0] = hp * Level + 100;
-                Stats[1] = mp * Level + 100;
+                Stats[0] = Level * hp + 100; // hp
+                Stats[1] = Level * mp + 100; // mp
+                Stats[2] = 0; // old attack
+                Stats[3] = 0; // old defense
+                Stats[4] = Level / 2; // spd
+                Stats[5] = 10; // default hp
+                Stats[6] = 10; // default wis
+                Stats[7] = 25; // default dex
 
                 HP = Stats[0] + Boost[0];
                 MP = Stats[1] + Boost[1];
@@ -808,7 +814,7 @@ namespace LoESoft.GameServer.realm.entity.player
             return false;
         }
 
-        public bool EnemyKilled(Enemy enemy, int exp)
+        public bool CalculateExp(Enemy enemy, int exp)
         {
             if (enemy == Quest)
                 Owner.BroadcastMessage(new NOTIFICATION
@@ -825,17 +831,6 @@ namespace LoESoft.GameServer.realm.entity.player
                 Experience += getexpboost;
                 FakeExperience += getexpboost;
                 UpdateCount++;
-
-                foreach (var i in Owner.PlayersCollision.HitTest(X, Y, 16)
-                    .Where(i => i != this && i != null).OfType<Player>())
-                {
-                    getexpboost = GetExpBoost(exp, i.AccountType);
-
-                    i.Experience += getexpboost;
-                    i.FakeExperience += getexpboost;
-                    i.UpdateCount++;
-                    i.CheckLevelUp(false);
-                }
             }
 
             return CheckLevelUp();

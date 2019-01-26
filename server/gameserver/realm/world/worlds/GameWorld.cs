@@ -21,13 +21,16 @@ namespace LoESoft.GameServer.realm.world
         private readonly bool oryxPresent;
         private readonly string displayname;
 
+        public string OriginName { get; set; }
+
         public GameWorld(int mapId, string name, bool oryxPresent)
         {
             displayname = name;
             Name = name;
+            OriginName = name;
             Background = 0;
             Difficulty = -1;
-            MaxPlayers = 50;
+            MaxPlayersCount = 50;
 
             this.oryxPresent = oryxPresent;
             this.mapId = mapId;
@@ -167,13 +170,7 @@ namespace LoESoft.GameServer.realm.world
                             IsRealmClosed = false;
 
                             Overseer.UniqueEvents.Clear();
-
-                            break;
                         } while (true);
-
-                        AutoEvents.Dispose();
-
-                        GameServer.Manager.RemoveWorld(this, true);
                     }, TaskCreationOptions.LongRunning);
                     AutoOryx.ContinueWith(task => GameServer.log.Error(task.Exception.InnerException),
                     TaskContinuationOptions.OnlyOnFaulted);
@@ -206,7 +203,7 @@ namespace LoESoft.GameServer.realm.world
                 Overseer.Dispose();
 
                 AutoEvents.Dispose();
-                AutoOryx.Dispose();
+                //AutoOryx.Dispose();
             }
 
             base.Dispose();

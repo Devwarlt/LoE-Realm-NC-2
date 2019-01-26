@@ -15,15 +15,18 @@ namespace LoESoft.AppEngine.@char
     {
         protected override void HandleRequest()
         {
-            var ip = Context.Request.RemoteEndPoint.Address.ToString();
-
-            if (!Manager.CheckWebClient(ip))
+            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
             {
-                SendGDError(GameDataErrors.GameDateNotFound);
-                return;
+                var ip = Context.Request.RemoteEndPoint.Address.ToString();
+
+                if (!Manager.CheckWebClient(ip))
+                {
+                    SendGDError(GameDataErrors.GameDateNotFound);
+                    return;
+                }
+                else
+                    Manager.UpdateWebClient(ip, true);
             }
-            else
-                Manager.UpdateWebClient(ip, true);
 
             try
             {

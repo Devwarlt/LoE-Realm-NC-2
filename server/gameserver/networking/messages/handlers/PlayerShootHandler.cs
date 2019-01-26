@@ -33,7 +33,14 @@ namespace LoESoft.GameServer.networking.handlers
 
             _cheatHandler.Handler();
 
-            var _projectile = player.PlayerShootProjectile(message.BulletId, item.Projectiles[0], item.ObjectType, GameServer.Manager.Logic.GameTime.TotalElapsedMs, message.Position, message.Angle);
+            var _projectile = player.PlayerShootProjectile(
+                message.BulletId,
+                item.Projectiles[0],
+                item.ObjectType,
+                GameServer.Manager.Logic.GameTime.TotalElapsedMs,
+                message.Position,
+                message.Angle);
+            _projectile.IsAbility = message.IsAbility;
 
             player.Owner.EnterWorld(_projectile);
 

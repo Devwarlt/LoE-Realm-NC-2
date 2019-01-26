@@ -21,6 +21,7 @@ namespace LoESoft.GameServer.realm.entity
         public int EntityId { get; set; }
         public string ObjectId { get; set; }
         public string DisplayId { get; set; }
+        public bool IsAbility { get; set; }
 
         private const long SafeLifetimeMS = 30000; // to avoid instantly projectile dispose
 

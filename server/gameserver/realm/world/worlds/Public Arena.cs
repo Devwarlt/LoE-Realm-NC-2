@@ -130,7 +130,7 @@ namespace LoESoft.GameServer.realm.world
             Background = 0;
             Difficulty = 5;
             AllowTeleport = true;
-            MaxPlayers = 20;
+            MaxPlayersCount = 20;
         }
 
         protected override void Init() => LoadMap("pub-arena-v1", MapType.Json);

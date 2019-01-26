@@ -7,6 +7,7 @@ using LoESoft.GameServer.realm.entity.player;
 using LoESoft.GameServer.realm.world;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -99,8 +100,8 @@ namespace LoESoft.GameServer.logic
             exp *= GroupBonus(players.Count);
 
             if (players.Count != 0)
-                foreach (var player in players)
-                    player?.EnemyKilled(enemy, (int)exp);
+                foreach (var player in players.Where(p => p != null))
+                    player.CalculateExp(enemy, (int)exp);
 
             players.Clear();
 

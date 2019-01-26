@@ -182,26 +182,31 @@ public class StatsView extends Sprite {
         this.defenseBar_.draw(_arg1.defenseExp_, _arg1.nextDefenseExp_, 0);
 
         //update labels
-        this.expText_.setStringBuilder(new LineBuilder().setParams(Parameters.formatValue(_arg1.exp_) + " <b>XP</b>"));
+        this.expText_.setStringBuilder(new LineBuilder().setParams(Parameters.formatValue((_arg1.exp_ + getExperienceBase(_arg1.level_))) + " <b>XP</b>"));
         this.expGoalText_.setStringBuilder(new LineBuilder().setParams(Parameters.formatValue(_arg1.nextLevelExp_ - _arg1.exp_) + " <b>XP</b>\nto Level <b>" + (_arg1.level_ + 1) + "</b>"));
-        this.attackText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString(_arg1.attackLevel_, _arg1.attackBoost_)));
-        this.defenseText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString(_arg1.defenseLevel_, _arg1.defenseBoost_)));
+        this.attackText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString(_arg1.attackLevel_, _arg1.attackBoost_, true)));
+        this.defenseText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString(_arg1.defenseLevel_, _arg1.defenseBoost_, true)));
         this.speedText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString2(_arg1.speed_, _arg1.speedBoost_)));
         this.dexterityText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString2(_arg1.dexterity_, _arg1.dexterityBoost_)));
         this.vitalityText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString2(_arg1.vitality_, _arg1.vitalityBoost_)));
         this.wisdomText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString2(_arg1.wisdom_, _arg1.wisdomBoost_)));
     }
 
-    private static function makeStatsFormattedString(_arg1:int, _arg2:String = "0"):String {
-        return makeStatsFormattedNumber(_arg1, Number(_arg2));
+    private static function makeStatsFormattedString(_arg1:int, _arg2:String = "0", _arg3:Boolean = false):String {
+        return makeStatsFormattedNumber(_arg1, Number(_arg2), _arg3);
     }
 
-    private static function makeStatsFormattedString2(_arg1:String, _arg2:String = "0"):String {
-        return makeStatsFormattedNumber(Number(_arg1), Number(_arg2));
+    private static function makeStatsFormattedString2(_arg1:String, _arg2:String = "0", _arg3:Boolean = false):String {
+        return makeStatsFormattedNumber(Number(_arg1), Number(_arg2), _arg3);
     }
 
-    private static function makeStatsFormattedNumber(_arg1:int, _arg2:int = 0):String {
-        return _arg1 + "" + (_arg2 != 0 ? " + " + (_arg1 + _arg2) : "");
+    private static function makeStatsFormattedNumber(_arg1:int, _arg2:int = 0, _arg3:Boolean = false):String {
+        var _local1:int = _arg2 > 0 ? Math.abs(_arg1 - _arg2) : _arg2 + _arg1;
+        return (!_arg3 ? (_local1) : (_arg1)) + "" + (_arg2 > 0 ? " + " + _arg2 : "");
+    }
+
+    private static function getExperienceBase(_arg1:int, _arg2:Boolean = false):Number {
+        return _arg1 == 1 ? 0 : ((75 * _arg1 * _arg1 * _arg1 - 125 * _arg1 *_arg1 + 900 * _arg1) / (!_arg2 ? 2 : 20));
     }
 }
 }

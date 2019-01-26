@@ -39,7 +39,9 @@ namespace LoESoft.GameServer.networking.handlers
                     else
                         entity.ApplyConditionEffect(effect);
 
-            player.CalculateAttack();
+            if (!prj.IsAbility)
+                player.CalculateAttack();
+
             prj.ForceHit(entity, time, message.Killed);
         }
     }
