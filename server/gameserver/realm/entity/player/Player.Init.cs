@@ -442,7 +442,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
             var newposition = owner.RemovePositionFromReconnect(AccountId);
 
-            if (newposition != default)
+            if (newposition.Item1 != 0 && newposition.Item2 != 0)
                 Move((int)newposition.Item1 + 0.5f, (int)newposition.Item2 + 0.5f);
             else
                 Move(x + 0.5f, y + 0.5f);
