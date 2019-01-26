@@ -18,6 +18,8 @@ public class GlowRedrawer {
     private static const GRADIENT_MAX_SUB:uint = 0x282828;
     private static const GLOW_FILTER:GlowFilter = new GlowFilter(0, 0.3, 12, 12, 2, BitmapFilterQuality.LOW, false, false);
     private static const GLOW_FILTER_ALT:GlowFilter = new GlowFilter(0, 0.5, 16, 16, 3, BitmapFilterQuality.LOW, false, false);
+    private static const GLOW_FILTER_PLAYER:GlowFilter = new GlowFilter(0, 0.8, 12, 12, 2, BitmapFilterQuality.LOW, false, false);
+    private static const GLOW_FILTER_PLAYER_ALT:GlowFilter = new GlowFilter(0, 1, 16, 16, 3, BitmapFilterQuality.LOW, false, false);
 
     private static var tempMatrix_:Matrix = new Matrix();
     private static var gradient_:Shape = getGradient();
@@ -52,6 +54,34 @@ public class GlowRedrawer {
         }
         if (_arg4) {
             cache(_arg1, _arg2, _arg3, _local6);
+        }
+        return (_local6);
+    }
+
+    public static function outlineGlowPlayer(_arg1:BitmapData, _arg2:uint):BitmapData {
+        var _local5:String = getHash(_arg2, 1.4);
+        if (isCached(_arg1, _local5)) {
+            return (glowHashes[_arg1][_local5]);
+        }
+        var _local6:BitmapData = _arg1.clone();
+        tempMatrix_.identity();
+        tempMatrix_.scale((_arg1.width / 0x0100), (_arg1.height / 0x0100));
+        _local6.draw(gradient_, tempMatrix_, null, BlendMode.SUBTRACT);
+        var _local7:Bitmap = new Bitmap(_arg1);
+        _local6.draw(_local7, null, null, BlendMode.ALPHA);
+        TextureRedrawer.OUTLINE_FILTER.blurX = 1.4;
+        TextureRedrawer.OUTLINE_FILTER.blurY = 1.4;
+        TextureRedrawer.OUTLINE_FILTER.color = 0;
+        _local6.applyFilter(_local6, _local6.rect, PointUtil.ORIGIN, TextureRedrawer.OUTLINE_FILTER);
+        if (_arg2 != 0xFFFFFFFF) {
+            if (((Parameters.isGpuRender()) && (!((_arg2 == 0))))) {
+                GLOW_FILTER_PLAYER_ALT.color = _arg2;
+                _local6.applyFilter(_local6, _local6.rect, PointUtil.ORIGIN, GLOW_FILTER_PLAYER_ALT);
+            }
+            else {
+                GLOW_FILTER_PLAYER.color = _arg2;
+                _local6.applyFilter(_local6, _local6.rect, PointUtil.ORIGIN, GLOW_FILTER_PLAYER);
+            }
         }
         return (_local6);
     }

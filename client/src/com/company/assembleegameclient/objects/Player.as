@@ -911,7 +911,7 @@ public class Player extends Character {
 
         var plrTex:BitmapData = texturingCache_[tex];
         if (plrTex == null) {
-            plrTex = GlowRedrawer.outlineGlow(tex, this.glowColor_);
+            plrTex = GlowRedrawer.outlineGlowPlayer(tex, this.glowColor_);
             texturingCache_[tex] = plrTex;
         }
         if (isPaused() || isStasis() || isPetrified()) {

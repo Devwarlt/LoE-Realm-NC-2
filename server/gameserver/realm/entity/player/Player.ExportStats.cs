@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 
 #endregion
@@ -43,6 +44,9 @@ namespace LoESoft.GameServer.realm.entity.player
             if (Glowing)
                 stats[StatsType.GLOW_COLOR_STAT] = 1;
 
+            if (AccountType >= (int)Core.config.AccountType.VIP)
+                stats[StatsType.GLOW_COLOR_STAT] = new Random().Next(0x000000, 0xffffff);
+
             stats[StatsType.HP_STAT] = HP;
             stats[StatsType.MP_STAT] = MP;
 
@@ -83,7 +87,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 stats[StatsType.DEXTERITY_BOOST_STAT] = Boost[7];
             }
 
-            stats[StatsType.SIZE_STAT] = Resize16x16Skins.IsSkin16x16Type(PlayerSkin) ? 70 : setTypeSkin?.Size ?? Size;
+            stats[StatsType.SIZE_STAT] = (int)((Resize16x16Skins.IsSkin16x16Type(PlayerSkin) ? 70 : setTypeSkin?.Size ?? Size) * ((Client?.Character?.Size ?? 100) / 100.0f));
 
             stats[StatsType.HASBACKPACK_STAT] = HasBackpack.GetHashCode();
 
@@ -136,9 +140,6 @@ namespace LoESoft.GameServer.realm.entity.player
                 }
                 catch { } // just don't return errors, hold this exception without export any value
             }
-
-            try { stats[StatsType.SIZE_STAT] = Client.Character.Size; }
-            catch { }
         }
     }
 }
