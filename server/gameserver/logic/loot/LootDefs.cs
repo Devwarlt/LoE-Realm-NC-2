@@ -292,7 +292,7 @@ namespace LoESoft.GameServer.logic.loot
 
         public EggBasket(EggType[] rarity)
         {
-            this.rarity = rarity[new Random().Next(0, rarity.Length)];
+            this.rarity = rarity[GameServer.RNG.Next(0, rarity.Length)];
         }
 
         public void Populate(Enemy enemy, Tuple<Player, int> playerData, Random rnd, string lootState, IList<LootDef> lootDefs)
@@ -305,7 +305,7 @@ namespace LoESoft.GameServer.logic.loot
                 .Select(item => item.Value)
                 .ToArray();
 
-            var onlyOne = candidates[new Random().Next(0, candidates.Length)];
+            var onlyOne = candidates[GameServer.RNG.Next(0, candidates.Length)];
 
             double probability = 0;
 
@@ -404,7 +404,7 @@ namespace LoESoft.GameServer.logic.loot
 
         public CyanBag(string[] itemName)
         {
-            this.itemName = itemName[new Random().Next(0, itemName.Length)];
+            this.itemName = itemName[GameServer.RNG.Next(0, itemName.Length)];
             setByTier = false;
         }
 
@@ -500,7 +500,7 @@ namespace LoESoft.GameServer.logic.loot
         public WhiteBag(string[] itemName, bool eventChest = false)
         {
             this.eventChest = eventChest;
-            this.itemName = itemName[new Random().Next(0, itemName.Length)];
+            this.itemName = itemName[GameServer.RNG.Next(0, itemName.Length)];
         }
 
         public void Populate(Enemy enemy, Tuple<Player, int> playerData, Random rnd, string lootState, IList<LootDef> lootDefs)

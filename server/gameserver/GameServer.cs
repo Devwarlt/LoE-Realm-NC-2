@@ -34,12 +34,10 @@ namespace LoESoft.GameServer
         private static readonly ManualResetEvent Shutdown = new ManualResetEvent(false);
 
         public static int GameUsage { get; private set; }
-
         public static bool AutoRestart { get; private set; }
-
         public static ChatManager Chat { get; set; }
-
         public static RealmManager Manager;
+        public static Random RNG { get; set; } = new Random();
 
         public static DateTime WhiteListTurnOff { get; private set; }
 
