@@ -11,7 +11,7 @@ namespace LoESoft.Core.config
             Production
         }
 
-        public static readonly double EVENT_RATE = 6;
+        public static readonly double EVENT_RATE = 100;
         public static readonly DateTime EVENT_OVER = new DateTime(2019, 1, 28, 23, 59, 59);
 
         public static readonly string EVENT_MESSAGE = $"The server is hosting an event with " +

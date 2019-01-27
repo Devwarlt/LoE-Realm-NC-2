@@ -24,10 +24,10 @@ namespace LoESoft.GameServer.logic.loot
 
     public class LootBagRate
     {
-        public const double PINK_BAG = 0.025;
-        public const double PURPLE_BAG = 0.015;
-        public const double CYAN_BAG = 0.005;
-        public const double WHITE_BAG = 0.0001;
+        public const double PINK_BAG = 1;//0.025;
+        public const double PURPLE_BAG = 1;//0.015;
+        public const double CYAN_BAG = 1;//0.005;
+        public const double WHITE_BAG = 1;//0.0001;
     }
 
     public enum BagType
