@@ -16,15 +16,15 @@ namespace LoESoft.GameServer.realm.entity.player
             stats[StatsType.NAME_STAT] = Name;
 
             stats[StatsType.EXP_STAT] = Experience - GetExperience(Level, ExpType.Level);
-            stats[StatsType.NEXT_LEVEL_EXP_STAT] = ExperienceGoal;
+            stats[StatsType.NEXT_LEVEL_EXP_STAT] = ExperienceGoal - GetExperience(Level, ExpType.Level);
             stats[StatsType.LEVEL_STAT] = Level;
 
             stats[StatsType.ATTACK_EXP_STAT] = AttackExperience - GetExperience(AttackLevel - 10, ExpType.Stat);
-            stats[StatsType.NEXT_ATTACK_EXP_STAT] = AttackGoalExperience;
+            stats[StatsType.NEXT_ATTACK_EXP_STAT] = AttackGoalExperience - GetExperience(AttackLevel - 10, ExpType.Stat);
             stats[StatsType.ATTACK_LEVEL_STAT] = AttackLevel;
 
             stats[StatsType.DEFENSE_EXP_STAT] = DefenseExperience - GetExperience(DefenseLevel - 10, ExpType.Stat);
-            stats[StatsType.NEXT_DEFENSE_EXP_STAT] = DefenseGoalExperience;
+            stats[StatsType.NEXT_DEFENSE_EXP_STAT] = DefenseGoalExperience - GetExperience(DefenseLevel - 10, ExpType.Stat);
             stats[StatsType.DEFENSE_LEVEL_STAT] = DefenseLevel;
 
             stats[StatsType.FAME_STAT] = CurrentFame;
