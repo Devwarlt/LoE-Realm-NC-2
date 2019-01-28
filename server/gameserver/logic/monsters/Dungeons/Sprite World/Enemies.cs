@@ -151,9 +151,7 @@ namespace LoESoft.GameServer.logic
                 new ItemLoot("Staff of Extreme Prejudice", 0.005),
                 new ItemLoot("Wine Cellar Incantation", 0.005),
                     new TierLoot(3, ItemType.Ring, 0.2),
-
                     new TierLoot(6, ItemType.Armor, 0.2),
-
                     new TierLoot(3, ItemType.Ability, 0.2),
                     new TierLoot(4, ItemType.Ability, 0.15),
                     new TierLoot(5, ItemType.Ability, 0.1)

@@ -13,6 +13,10 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             if (time.TotalElapsedMs - b <= 100)
                 return;
+
+            if (Owner == null)
+                return;
+
             try
             {
                 if (Owner.Name == "Ocean Trench")

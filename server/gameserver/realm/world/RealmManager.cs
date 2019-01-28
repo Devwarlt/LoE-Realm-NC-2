@@ -24,13 +24,23 @@ namespace LoESoft.GameServer.realm
     public class RealmManager
     {
         public static Dictionary<string, int> QuestPortraits = new Dictionary<string, int>();
-        public static List<string> CurrentRealmNames = new List<string>();
 
         public static List<string> Realms = new List<string>
         {
             "Djinn",
             "Medusa",
             "Beholder",
+        };
+
+        public static ConcurrentDictionary<string, bool> OldschoolPlayers = new ConcurrentDictionary<string, bool>();
+
+        private readonly List<string> OldschoolPlayer = new List<string>()
+        {
+            "Norga", "Bilisha", "Maurth", "Blasphemy", "NPEtoPPEx", "Hallow",
+            "K", "Banana", "IAmlawa", "FrostIof", "Adwubz", "LoliLust",
+            "Fade", "Blunt", "stgg", "MERICA", "Dshoopy", "baconey",
+            "Bituloss", "EthaNGold", "yasuo", "Zen", "GhostMaree",
+            "Sebafra", "Backpackek", "Dev", "Zemagaia", "Six"
         };
 
         public const int MAX_REALM_PLAYERS = 85;
@@ -47,12 +57,10 @@ namespace LoESoft.GameServer.realm
         public string InstanceId { get; private set; }
         public LogicTicker Logic { get; private set; }
         public int MaxClients { get; private set; }
-        public RealmPortalMonitor Monitor { get; private set; }
+        public PortalMonitor Monitor { get; private set; }
         public Database Database { get; private set; }
         public bool Terminating { get; private set; }
         public int TPS { get; private set; }
-
-        internal GameWorld GW { get; private set; }
 
         public ManualResetEvent TickerReady { get; } = new ManualResetEvent(false);
 
@@ -76,8 +84,22 @@ namespace LoESoft.GameServer.realm
 
         public void Initialize()
         {
+            foreach (var oldschool in OldschoolPlayer)
+                OldschoolPlayers.TryAdd(oldschool, false);
+
             GameData = new EmbeddedData();
             Behaviors = new BehaviorDb();
+            Chat = new ChatManager();
+            Commands = new CommandManager();
+            NPCs = new NPCs();
+
+            Log.Info($"\t- {NPCs.Database.Count}\tNPC{(NPCs.Database.Count > 1 ? "s" : "")}.");
+            Log._("Message", Message.Messages.Count);
+
+            Settings.DISPLAY_SUPPORTED_VERSIONS();
+
+            Log.Info("Initializing GameServer...");
+            Log.Info("Initializing GameServer... OK!\n");
 
             Player.HandleQuests(GameData);
             Merchant.HandleMerchant(GameData);
@@ -90,19 +112,13 @@ namespace LoESoft.GameServer.realm
             AddWorld((int)WorldID.DRASTA_CITADEL_ID, new DrastaCitadel());
             AddWorld((int)WorldID.DREAM_ISLAND, new DreamIsland());
 
-            Monitor = new RealmPortalMonitor();
+            Monitor = new PortalMonitor(this, Worlds[0]);
 
             if (Realm.AllRealmEvents.Count == 0)
                 foreach (var realmevent in Realm.RealmEventCache)
                     Realm.AllRealmEvents.Add(realmevent.Name);
 
-            AddWorld(GW = GameWorld.AutoName(1, true));
-
-            Chat = new ChatManager();
-            Commands = new CommandManager();
-            NPCs = new NPCs();
-
-            Log.Info($"\t- {NPCs.Database.Count}\tNPC{(NPCs.Database.Count > 1 ? "s" : "")}.");
+            AddWorld(GameWorld.AutoName(1, true));
         }
 
         public void Run()
@@ -139,49 +155,52 @@ namespace LoESoft.GameServer.realm
 
         #region "World Utils"
 
-        public World AddWorld(int id, World world)
+        public void AddWorld(int id, World world)
         {
+            if (world.Manager != null)
+                throw new InvalidOperationException("World already added.");
+
             world.Id = id;
             Worlds[id] = world;
+
             OnWorldAdded(world);
-            return world;
         }
 
         public World AddWorld(World world)
         {
+            if (world.Manager != null)
+                throw new InvalidOperationException("World already added.");
+
             world.Id = Interlocked.Increment(ref nextWorldId);
             Worlds[world.Id] = world;
+
             OnWorldAdded(world);
+
             return world;
         }
 
         public bool RemoveWorld(World world, bool renewRealm = false)
         {
-            if (Worlds.TryRemove(world.Id, out World dummy))
+            if (world.Manager == null)
+                throw new InvalidOperationException("World is not added.");
+
+            if (Worlds.TryRemove(world.Id, out world))
             {
-                try
-                {
-                    OnWorldRemoved(dummy);
-                    dummy.Dispose();
-                    GC.Collect();
-                }
-                catch (Exception e) { GameServer.log.Error(e); }
+                OnWorldRemoved(world);
                 return true;
             }
-            return false;
-        }
-
-        public void CloseWorld(World world)
-        {
-            Monitor.WorldRemoved(world);
+            else
+                return false;
         }
 
         public World GetWorld(int id)
         {
             if (!Worlds.TryGetValue(id, out World ret))
                 return null;
+
             if (ret.Id == 0)
                 return null;
+
             return ret;
         }
 
@@ -189,16 +208,25 @@ namespace LoESoft.GameServer.realm
 
         private void OnWorldAdded(World world)
         {
-            world.BeginInit();
+            world.Manager = this;
 
             if (world is IRealm)
-                Monitor.WorldAdded(world);
+                Monitor.AddRealm(world);
+
+            Log.Warn($"World {world.Id}({world.Name}) added. {Worlds.Count} Worlds existing.");
         }
 
         private void OnWorldRemoved(World world)
         {
-            if (world is IRealm)
-                Monitor.WorldRemoved(world);
+            var isrealm = world is IRealm;
+            var name = world.Name;
+
+            Log.Warn($"World {world.Id}({world.Name}) removed.");
+
+            Monitor.RemoveWorld(world);
+
+            if (isrealm)
+                AddWorld(GameWorld.AutoName(1, true, name));
         }
 
         #endregion

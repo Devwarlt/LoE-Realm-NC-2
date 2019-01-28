@@ -1,9 +1,12 @@
 ﻿#region
 
+using LoESoft.Core.config;
+using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
 using LoESoft.GameServer.realm.mapsetpiece;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 #endregion
@@ -27,7 +30,7 @@ namespace LoESoft.GameServer.realm.world
             OriginName = name;
             Background = 0;
             Difficulty = -1;
-            MaxPlayersCount = 50;
+            MaxPlayersCount = 20;
 
             this.oryxPresent = oryxPresent;
             this.mapId = mapId;
@@ -50,12 +53,15 @@ namespace LoESoft.GameServer.realm.world
                 Overseer = null;
         }
 
-        public static GameWorld AutoName(int mapId, bool oryxPresent)
+        public static GameWorld AutoName(int mapId, bool oryxPresent, string oldName = null)
         {
-            var name = RealmManager.Realms[new Random().Next(RealmManager.Realms.Count)];
+            if (oldName != null)
+                RealmManager.OldschoolPlayers[oldName] = false;
 
-            RealmManager.Realms.Remove(name);
-            RealmManager.CurrentRealmNames.Add(name);
+            var players = RealmManager.OldschoolPlayers.Where(p => !p.Value).ToList();
+            var name = players[Environment.TickCount % players.Count].Key;
+
+            RealmManager.OldschoolPlayers[name] = true;
 
             return new GameWorld(mapId, name, oryxPresent);
         }
@@ -114,65 +120,71 @@ namespace LoESoft.GameServer.realm.world
                     }, TaskCreationOptions.LongRunning);
                     AutoEvents.ContinueWith(task => GameServer.log.Error(task.Exception.InnerException),
                         TaskContinuationOptions.OnlyOnFaulted);
-                    //AutoOryx = new Task(async () =>
-                    //{
-                    //    do
-                    //    {
-                    //        await Task.Delay(30 * 60 * 1000);
+                    AutoOryx = new Task(async () =>
+                    {
+                        do
+                        {
+                            await Task.Delay(30 * 60 * 1000);
 
-                    //        foreach (var i in Players.Values)
-                    //        {
-                    //            Overseer.SendMsg(i, "I HAVE CLOSED THIS REALM!", "#Oryx the Mad God");
-                    //            Overseer.SendMsg(i, "YOU WILL NOT LIVE TO SEE THE LIGHT OF DAY!", "#Oryx the Mad God");
-                    //        }
+                            foreach (var i in Players.Values)
+                            {
+                                Overseer.SendMsg(i, "I HAVE CLOSED THIS REALM!", "#Oryx the Mad God");
+                                Overseer.SendMsg(i, "YOU WILL NOT LIVE TO SEE THE LIGHT OF DAY!", "#Oryx the Mad God");
+                            }
 
-                    //        foreach (var i in GameServer.Manager.GetManager.Clients.Values)
-                    //            i.Player?.GazerDM($"Oryx is preparing to close realm '{Name}' in 15 seconds.");
+                            foreach (var i in GameServer.Manager.GetManager.Clients.Values)
+                                i.Player?.GazerDM($"Oryx is preparing to close realm '{Name}' in 15 seconds.");
 
-                    //        await Task.Delay(15 * 1000);
+                            await Task.Delay(15 * 1000);
 
-                    //        IsRealmClosed = true;
+                            IsRealmClosed = true;
 
-                    //        var wc = GameServer.Manager.AddWorld(new WineCellar());
-                    //        var players = Players.Values.Where(player => player != null);
+                            var wc = GameServer.Manager.AddWorld(new WineCellar());
+                            var players = Players.Values.Where(player => player != null);
 
-                    //        foreach (var player in players)
-                    //        {
-                    //            Overseer.SendMsg(player, "MY MINIONS HAVE FAILED ME!", "#Oryx the Mad God");
-                    //            Overseer.SendMsg(player, "BUT NOW YOU SHALL FEEL MY WRATH!", "#Oryx the Mad God");
-                    //            Overseer.SendMsg(player, "COME MEET YOUR DOOM AT THE WALLS OF MY WINE CELLAR!", "#Oryx the Mad God");
+                            foreach (var player in players)
+                            {
+                                Overseer.SendMsg(player, "MY MINIONS HAVE FAILED ME!", "#Oryx the Mad God");
+                                Overseer.SendMsg(player, "BUT NOW YOU SHALL FEEL MY WRATH!", "#Oryx the Mad God");
+                                Overseer.SendMsg(player, "COME MEET YOUR DOOM AT THE WALLS OF MY WINE CELLAR!", "#Oryx the Mad God");
 
-                    //            player.Client.SendMessage(new SHOWEFFECT { EffectType = EffectType.Jitter });
-                    //            player.ApplyConditionEffect(new ConditionEffect
-                    //            {
-                    //                DurationMS = 15000,
-                    //                Effect = ConditionEffectIndex.Invincible
-                    //            });
-                    //        }
+                                player.Client.SendMessage(new SHOWEFFECT { EffectType = EffectType.Jitter });
+                                player.ApplyConditionEffect(new ConditionEffect
+                                {
+                                    DurationMS = 15000,
+                                    Effect = ConditionEffectIndex.Invincible
+                                });
+                            }
 
-                    //        await Task.Delay(10 * 1000);
+                            await Task.Delay(10 * 1000);
 
-                    //        foreach (var player in players)
-                    //            player.Client.SendMessage(new RECONNECT
-                    //            {
-                    //                Host = "",
-                    //                Port = Settings.GAMESERVER.PORT,
-                    //                GameId = wc.Id,
-                    //                Name = wc.Name,
-                    //                Key = wc.PortalKey
-                    //            });
+                            foreach (var player in players)
+                                player.Client.SendMessage(new RECONNECT
+                                {
+                                    Host = "",
+                                    Port = Settings.GAMESERVER.PORT,
+                                    GameId = wc.Id,
+                                    Name = wc.Name,
+                                    Key = wc.PortalKey
+                                });
 
-                    //        await Task.Delay(5 * 1000);
+                            await Task.Delay(5 * 1000);
 
-                    //        IsRealmClosed = false;
+                            IsRealmClosed = false;
 
-                    //        Overseer.UniqueEvents.Clear();
-                    //    } while (true);
-                    //}, TaskCreationOptions.LongRunning);
-                    //AutoOryx.ContinueWith(task => GameServer.log.Error(task.Exception.InnerException),
-                    //TaskContinuationOptions.OnlyOnFaulted);
+                            Overseer.UniqueEvents.Clear();
+
+                            break;
+                        } while (true);
+
+                        AutoEvents.Dispose();
+
+                        Manager.RemoveWorld(this);
+                    }, TaskCreationOptions.LongRunning);
+                    AutoOryx.ContinueWith(task => GameServer.log.Error(task.Exception.InnerException),
+                    TaskContinuationOptions.OnlyOnFaulted);
                     AutoEvents.Start();
-                    //AutoOryx.Start();
+                    AutoOryx.Start();
                 }
             }
         }
@@ -200,7 +212,7 @@ namespace LoESoft.GameServer.realm.world
                 Overseer.Dispose();
 
                 AutoEvents.Dispose();
-                //AutoOryx.Dispose();
+                AutoOryx.Dispose();
             }
 
             base.Dispose();

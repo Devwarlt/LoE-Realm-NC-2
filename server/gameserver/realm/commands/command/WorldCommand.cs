@@ -345,8 +345,6 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            var world = GameServer.Manager.Monitor.GetRandomRealm();
-
             if (player.Owner is IRealm)
                 if ((player.Owner as GameWorld).IsRealmClosed)
                 {
@@ -388,6 +386,14 @@ namespace LoESoft.GameServer.realm.commands
                     - (isfree ? client.RealmRegularEntryMS : client.RealmVIPEntryMS)) / 1000;
 
                 player.SendInfo($"{elapsed} second{(elapsed > 1 ? "s" : "")} remains to use '/realm' command.");
+                return false;
+            }
+
+            var world = GameServer.Manager.Monitor.GetRandomRealm();
+
+            if (world.IsFull)
+            {
+                player.SendError("{\"key\":\"server.dungeon_full\"}");
                 return false;
             }
 

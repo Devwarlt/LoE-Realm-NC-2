@@ -37,7 +37,6 @@ namespace LoESoft.GameServer
         public static bool AutoRestart { get; private set; }
         public static ChatManager Chat { get; set; }
         public static RealmManager Manager;
-        public static Random RNG { get; set; } = new Random();
 
         public static DateTime WhiteListTurnOff { get; private set; }
 
@@ -72,16 +71,10 @@ namespace LoESoft.GameServer
                 Manager.Initialize();
                 Manager.Run();
 
-                Log._("Message", Message.Messages.Count);
-
                 var server = new Server();
                 var policy = new PolicyServer();
 
                 Console.CancelKeyPress += (sender, e) => e.Cancel = true;
-
-                Settings.DISPLAY_SUPPORTED_VERSIONS();
-
-                Log.Info("Initializing GameServer...");
 
                 policy.Start();
                 server.Start();
@@ -94,8 +87,6 @@ namespace LoESoft.GameServer
                 }
 
                 Console.Title = Settings.GAMESERVER.TITLE;
-
-                Log.Info("Initializing GameServer... OK!");
 
                 Console.CancelKeyPress += delegate
                 {

@@ -24,10 +24,10 @@ namespace LoESoft.GameServer.logic.loot
 
     public class LootBagRate
     {
-        public const double PINK_BAG = 1;//0.025;
-        public const double PURPLE_BAG = 1;//0.015;
-        public const double CYAN_BAG = 1;//0.005;
-        public const double WHITE_BAG = 1;//0.0001;
+        public const double PINK_BAG = 0.025;
+        public const double PURPLE_BAG = 0.015;
+        public const double CYAN_BAG = 0.005;
+        public const double WHITE_BAG = 0.0001;
     }
 
     public enum BagType
@@ -292,7 +292,7 @@ namespace LoESoft.GameServer.logic.loot
 
         public EggBasket(EggType[] rarity)
         {
-            this.rarity = rarity[GameServer.RNG.Next(0, rarity.Length)];
+            this.rarity = rarity[Environment.TickCount % rarity.Length];
         }
 
         public void Populate(Enemy enemy, Tuple<Player, int> playerData, Random rnd, string lootState, IList<LootDef> lootDefs)
@@ -305,7 +305,7 @@ namespace LoESoft.GameServer.logic.loot
                 .Select(item => item.Value)
                 .ToArray();
 
-            var onlyOne = candidates[GameServer.RNG.Next(0, candidates.Length)];
+            var onlyOne = candidates[Environment.TickCount % candidates.Length];
 
             double probability = 0;
 
@@ -404,7 +404,7 @@ namespace LoESoft.GameServer.logic.loot
 
         public CyanBag(string[] itemName)
         {
-            this.itemName = itemName[GameServer.RNG.Next(0, itemName.Length)];
+            this.itemName = itemName[Environment.TickCount % itemName.Length];
             setByTier = false;
         }
 
@@ -500,7 +500,7 @@ namespace LoESoft.GameServer.logic.loot
         public WhiteBag(string[] itemName, bool eventChest = false)
         {
             this.eventChest = eventChest;
-            this.itemName = itemName[GameServer.RNG.Next(0, itemName.Length)];
+            this.itemName = itemName[Environment.TickCount % itemName.Length];
         }
 
         public void Populate(Enemy enemy, Tuple<Player, int> playerData, Random rnd, string lootState, IList<LootDef> lootDefs)
@@ -864,6 +864,7 @@ namespace LoESoft.GameServer.logic.loot
         {
             var data = enemy.DamageCounter.GetPlayerData();
             var mostDamage = GetMostDamage(data);
+
             foreach (var loot in mostDamage.Where(pl => pl.Equals(playerDat)).SelectMany(pl => loots))
                 loot.Populate(enemy, null, rand, lootState, lootDefs);
         }

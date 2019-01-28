@@ -86,7 +86,7 @@ namespace LoESoft.GameServer.realm.entity
                 state.OnDeath(new BehaviorEventArgs(this, time));
             }
 
-            Owner.LeaveWorld(this);
+            Owner?.LeaveWorld(this);
         }
 
         public void SetDamageCounter(DamageCounter counter, Enemy enemy)

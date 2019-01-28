@@ -53,6 +53,8 @@ namespace LoESoft.GameServer.realm
                 }
                 catch { }
 
+                GameServer.Manager.Monitor.Tick(GameTime);
+
                 looptime += (int)(watch.ElapsedMilliseconds - GameTime.TotalElapsedMs) - GameTime.ElapsedMsDelta;
             } while (true);
         }

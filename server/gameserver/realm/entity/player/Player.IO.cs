@@ -75,9 +75,9 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             var monsterCaches = new List<MonsterCache>();
 
-            try
+            /*try
             { monsterCaches = JsonConvert.DeserializeObject<List<MonsterCache>>(File.ReadAllText(Path.Combine(GameServer.MonsterCachePath, $"mc-char.{AccountId}.{Client.Character.CharId}.json"))); }
-            catch { }
+            catch { }*/
 
             return monsterCaches;
         }

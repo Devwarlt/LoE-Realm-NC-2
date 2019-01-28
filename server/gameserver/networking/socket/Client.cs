@@ -107,7 +107,7 @@ namespace LoESoft.GameServer.networking
                 Account = null;
 
                 if (Player.PetID != 0 && Player.Pet != null)
-                    Player.Owner.LeaveWorld(Player.Pet);
+                    Player.Owner?.LeaveWorld(Player.Pet);
 
                 Player = null;
                 Random = null;

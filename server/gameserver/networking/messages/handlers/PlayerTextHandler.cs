@@ -12,6 +12,9 @@ namespace LoESoft.GameServer.networking.handlers
 
         protected override void HandleMessage(Client client, PLAYERTEXT message)
         {
+            if (client.Player == null)
+                return;
+
             if (client.Player.Owner == null)
                 return;
 

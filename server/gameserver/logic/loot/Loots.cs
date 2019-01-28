@@ -250,7 +250,7 @@ namespace LoESoft.GameServer.logic.loot
                     enemy.Y + (float)((rand.NextDouble() * 2 - 1) * 0.5));
                 container.Size = 80;
 
-                enemy.Owner.EnterWorld(container);
+                enemy.Owner?.EnterWorld(container);
             }
             else
                 foreach (var owner in owners)
@@ -266,7 +266,7 @@ namespace LoESoft.GameServer.logic.loot
                         enemy.Y + (float)((rand.NextDouble() * 2 - 1) * 0.5));
                     container.Size = 80;
 
-                    enemy.Owner.EnterWorld(container);
+                    enemy.Owner?.EnterWorld(container);
                 }
         }
     }

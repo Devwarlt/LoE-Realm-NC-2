@@ -79,9 +79,23 @@ namespace LoESoft.GameServer.realm
         private ConcurrentDictionary<string, (float, float)> ReconnectRequests { get; set; }
             = new ConcurrentDictionary<string, (float, float)>();
 
-        public void BeginInit()
+        private RealmManager _manager;
+
+        public RealmManager Manager
         {
-            Seed = GameServer.Manager.Random.NextUInt32();
+            get => _manager;
+            internal set
+            {
+                _manager = value;
+
+                if (_manager != null)
+                    BeginInit();
+            }
+        }
+
+        private void BeginInit()
+        {
+            Seed = _manager.Random.NextUInt32();
             PortalKey = Utils.RandomBytes(NeedsPortalKey ? 16 : 0);
 
             var worldtick = new Task(() => WorldTick());
@@ -94,21 +108,22 @@ namespace LoESoft.GameServer.realm
         {
             await Task.Delay(1000 / Settings.GAMESERVER.TICKETS_PER_SECOND); // 200 ms (5 TPS)
 
-            GameServer.Manager.TickerReady.WaitOne(); // await main thread load, before world ticker task init
+            _manager.TickerReady.WaitOne(); // await main thread load, before world ticker task init
 
-            try { Tick(GameServer.Manager.Logic.GameTime); }
-            catch (Exception e) { GameServer.log.Error(e); }
+            try { Tick(_manager.Logic.GameTime); }
+            catch { }
 
-            WorldTick();
+            if (!Deleted)
+                WorldTick();
         }
 
         public virtual void Tick(RealmTime time)
         {
-            if (IsLimbo)
+            if (IsLimbo || Deleted)
                 return;
 
-            if (Timers.Count != 0)
-                for (var i = 0; i < Timers.Count; i++)
+            if (Timers?.Count != 0)
+                for (var i = 0; i < Timers?.Count; i++)
                     try
                     {
                         if (Timers[i] == null)
@@ -117,7 +132,7 @@ namespace LoESoft.GameServer.realm
                         if (!Timers[i].Tick(this, time))
                             continue;
 
-                        Timers.RemoveAt(i);
+                        Timers?.RemoveAt(i);
 
                         i--;
                     }
@@ -158,9 +173,9 @@ namespace LoESoft.GameServer.realm
                 return;
 
             if (this is Vault vault)
-                GameServer.Manager.RemoveVault(vault.AccountId);
+                _manager.RemoveVault(vault.AccountId);
 
-            GameServer.Manager.RemoveWorld(this);
+            _manager.RemoveWorld(this);
         }
 
         private int entityInc;
@@ -179,7 +194,7 @@ namespace LoESoft.GameServer.realm
         public ConcurrentDictionary<int, Player> Players { get; private set; }
         public ConcurrentDictionary<int, Enemy> Enemies { get; private set; }
         public ConcurrentDictionary<int, GameObject> GameObjects { get; private set; }
-        public List<WorldTimer> Timers { get; }
+        public List<WorldTimer> Timers { get; private set; }
         public int Background { get; protected set; }
         public CollisionMap<Entity> EnemiesCollision { get; private set; }
         public CollisionMap<Entity> PlayersCollision { get; private set; }
@@ -195,7 +210,7 @@ namespace LoESoft.GameServer.realm
         public int PlayersCount { get; private set; }
         public int MaxPlayersCount { get; protected set; }
         public Wmap Map { get; private set; }
-        public ConcurrentDictionary<int, Enemy> Quests { get; }
+        public ConcurrentDictionary<int, Enemy> Quests { get; private set; }
         public ConcurrentDictionary<Projectile, object> Projectiles { get; set; } = new ConcurrentDictionary<Projectile, object>();
 
         public virtual World GetInstance(Client psr) => null;
@@ -210,7 +225,7 @@ namespace LoESoft.GameServer.realm
             if (tile.TileDesc.NoWalk)
                 return false;
 
-            if (GameServer.Manager.GameData.ObjectDescs.TryGetValue(tile.ObjType, out ObjectDesc desc))
+            if (_manager.GameData.ObjectDescs.TryGetValue(tile.ObjType, out ObjectDesc desc))
             {
                 if (!desc.Static)
                     return false;
@@ -235,23 +250,43 @@ namespace LoESoft.GameServer.realm
             return Name;
         }
 
+        private readonly object _deleteLock = new object();
+
+        public bool Deleted { get; set; }
+
         public bool Delete()
         {
-            lock (this)
+            using (TimedLock.Lock(_deleteLock))
             {
                 if (Players.Count > 0)
                     return false;
 
+                Deleted = true;
+                Manager.RemoveWorld(this);
                 Id = 0;
-            }
 
-            Map = null;
-            Players = null;
-            Enemies = null;
-            Entities = null;
-            Projectiles = null;
-            GameObjects = null;
-            return true;
+                Map.Dispose();
+                Players.Clear();
+                Enemies.Clear();
+                Quests.Clear();
+                Projectiles.Clear();
+                GameObjects.Clear();
+                Timers.Clear();
+
+                EnemiesCollision = null;
+                PlayersCollision = null;
+                Map = null;
+                Players = null;
+                Enemies = null;
+                Quests = null;
+                Projectiles = null;
+                GameObjects = null;
+                Timers = null;
+
+                GC.Collect();
+
+                return true;
+            }
         }
 
         protected abstract void Init();
@@ -291,7 +326,7 @@ namespace LoESoft.GameServer.realm
 
         private void FromWorldMap(Stream dat)
         {
-            var map = new Wmap(GameServer.Manager.GameData);
+            var map = new Wmap(_manager.GameData);
             Map = map;
             entityInc = 0;
             entityInc += Map.Load(dat, 0);
@@ -304,9 +339,9 @@ namespace LoESoft.GameServer.realm
                     try
                     {
                         var tile = Map[x, y];
-                        if (GameServer.Manager.GameData.Tiles[tile.TileId].NoWalk)
+                        if (_manager.GameData.Tiles[tile.TileId].NoWalk)
                             Obstacles[x, y] = 3;
-                        if (GameServer.Manager.GameData.ObjectDescs.TryGetValue(tile.ObjType, out ObjectDesc desc))
+                        if (_manager.GameData.ObjectDescs.TryGetValue(tile.ObjType, out ObjectDesc desc))
                         {
                             if (desc.Class == "Wall" ||
                                 desc.Class == "ConnectedWall" ||
@@ -579,7 +614,7 @@ namespace LoESoft.GameServer.realm
                     break;
 
                 case MapType.Json:
-                    FromWorldMap(new MemoryStream(Json2Wmap.Convert(GameServer.Manager.GameData, new StreamReader(stream).ReadToEnd())));
+                    FromWorldMap(new MemoryStream(Json2Wmap.Convert(_manager.GameData, new StreamReader(stream).ReadToEnd())));
                     break;
 
                 default:
@@ -589,7 +624,7 @@ namespace LoESoft.GameServer.realm
 
         protected void LoadMap(string json)
         {
-            FromWorldMap(new MemoryStream(Json2Wmap.Convert(GameServer.Manager.GameData, json)));
+            FromWorldMap(new MemoryStream(Json2Wmap.Convert(_manager.GameData, json)));
         }
 
         public void ChatReceived(string text)

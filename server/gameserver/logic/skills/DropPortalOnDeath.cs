@@ -22,7 +22,7 @@ namespace LoESoft.GameServer.logic.behaviors
         public DropPortalOnDeath(
             string portalName,
             double percent,
-            int dropDelaySec = 30,
+            int dropDelaySec = 0,
             float XAdjustment = 0,
             float YAdjustment = 0,
             int PortalDespawnTimeSec = 30
