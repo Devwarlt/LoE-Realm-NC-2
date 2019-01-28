@@ -183,7 +183,7 @@ public class StatsView extends Sprite {
 
         //update labels
         this.expText_.setStringBuilder(new LineBuilder().setParams(Parameters.formatValue((_arg1.exp_ + getExperienceBase(_arg1.level_))) + " <b>XP</b>"));
-        this.expGoalText_.setStringBuilder(new LineBuilder().setParams(Parameters.formatValue(_arg1.nextLevelExp_ - _arg1.exp_) + " <b>XP</b>\nto Level <b>" + (_arg1.level_ + 1) + "</b>"));
+        this.expGoalText_.setStringBuilder(new LineBuilder().setParams(Parameters.formatValue(_arg1.nextLevelExp_) + " <b>XP</b>\nto Level <b>" + (_arg1.level_ + 1) + "</b>"));
         this.attackText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString(_arg1.attackLevel_, _arg1.attackBoost_, true)));
         this.defenseText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString(_arg1.defenseLevel_, _arg1.defenseBoost_, true)));
         this.speedText_.setStringBuilder(new LineBuilder().setParams(makeStatsFormattedString2(_arg1.speed_, _arg1.speedBoost_)));

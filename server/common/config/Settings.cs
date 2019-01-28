@@ -18,7 +18,7 @@ namespace LoESoft.Core.config
             $"+{(GetEventRate() - (GetEventRate() != 1 ? 1 : 0)) * 100}% EXP, stats EXP and loot drop rate. Enjoy it until " +
             $"{EVENT_OVER.ToString("MM/dd/yyyy hh:mm tt")} UTC!";
 
-        public static readonly ServerMode SERVER_MODE = ServerMode.Local;
+        public static readonly ServerMode SERVER_MODE = ServerMode.Production;
         public static readonly bool ENABLE_RESTART_SYSTEM = SERVER_MODE == ServerMode.Production;
         public static readonly int RESTART_DELAY_MINUTES = 90;
         public static readonly int RESTART_APPENGINE_DELAY_MINUTES = 30;
