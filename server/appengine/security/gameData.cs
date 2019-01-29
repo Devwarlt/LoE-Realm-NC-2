@@ -7,11 +7,13 @@ namespace LoESoft.AppEngine.security
     {
         private List<string> AllowedCapabilities => new List<string>() { "ActiveX", "PlugIn", "StandAlone" };
 
-        private bool VerifyDomain(string domain) => domain.Contains("http://loe-nc.servegame.com/");
+        private bool VerifyDomain(string domain) => domain.Contains("http://devwarlt.servegame.com:1000/");
 
         protected override void HandleRequest()
         {
-            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            var ip = Context.Request.RemoteEndPoint.Address.ToString();
+
+            if (Settings.SERVER_MODE == Settings.ServerMode.Production && ip != "127.0.0.1")
             {
                 var capability = Query["capability"];
                 var domain = Query["domain"];
@@ -47,8 +49,6 @@ namespace LoESoft.AppEngine.security
                     SendGDError(GameDataErrors.InvalidDomain);
                     return;
                 }
-
-                var ip = Context.Request.RemoteEndPoint.Address.ToString();
 
                 if (!Manager.CheckWebClient(ip))
                     Manager.AddWebClient(ip, false);

@@ -704,7 +704,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
         aoeAck.position_.x_ = X;
         aoeAck.position_.y_ = Y;
 
-        serverConnection.queueMessage(aoeAck);
+        //serverConnection.queueMessage(aoeAck);
     }
 
     override public function groundDamage(time:int, X:Number, Y:Number):void {
@@ -720,7 +720,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
         var shootAck:ShootAck = (this.messages.require(SHOOTACK) as ShootAck);
         shootAck.time_ = time;
 
-        serverConnection.queueMessage(shootAck);
+        //serverConnection.queueMessage(shootAck);
     }
 
     override public function playerText(text:String):void {

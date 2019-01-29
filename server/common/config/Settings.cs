@@ -26,11 +26,6 @@ namespace LoESoft.Core.config
 
         public static double GetEventRate() => DateTime.UtcNow > EVENT_OVER ? 1 : EVENT_RATE;
 
-        public static readonly List<string> ALLOWED_LOCAL_DNS = new List<string>
-        {
-            "::1", "localhost", "127.0.0.1", "loe-nc.servegame.com"
-        };
-
         public static class STARTUP
         {
             public static readonly int GOLD = 40;
@@ -67,7 +62,8 @@ namespace LoESoft.Core.config
             new GameVersion(Version: "3.2.8", Allowed: false),
             new GameVersion(Version: "3.2.8.1", Allowed: false),
             new GameVersion(Version: "3.2.8.2", Allowed: false),
-            new GameVersion(Version: "3.2.8.3", Allowed: true)
+            new GameVersion(Version: "3.2.8.3", Allowed: false),
+            new GameVersion(Version: "3.2.9", Allowed: true)
         };
     }
 }
