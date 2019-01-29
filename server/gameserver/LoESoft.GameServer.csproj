@@ -804,6 +804,8 @@
     <EmbeddedResource Include="realm\world\maps\json\pub-arena-v1.json" />
     <EmbeddedResource Include="realm\world\maps\json\new_nexus.json" />
     <EmbeddedResource Include="realm\world\maps\json\loe_chicago_3.2.7.json" />
+    <None Include="realm\world\maps\json\dungeons\abyss\abyss_1.wmap" />
+    <None Include="realm\world\maps\json\dungeons\abyss\abyss_2.wmap" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="realm\world\maps\json\dungeons\spider_den\" />

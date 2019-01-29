@@ -1,8 +1,10 @@
 ﻿namespace LoESoft.GameServer.realm.world
 {
+
     public class UndeadLair : World
     {
-        public UndeadLair()
+		private string map => "udl";
+		public UndeadLair()
         {
             Name = "Undead Lair";
             Dungeon = true;
@@ -10,6 +12,6 @@
             AllowTeleport = true;
         }
 
-        protected override void Init() => LoadMap("udl", MapType.Json);
+        protected override void Init() => LoadMap(map, MapType.Json);
     }
 }
