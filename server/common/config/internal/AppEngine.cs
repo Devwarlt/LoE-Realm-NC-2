@@ -31,9 +31,7 @@ namespace LoESoft.Core.config
                 public bool AdminOnly { get; set; }
 
                 public XElement ToXml()
-                {
-                    return
-                        new XElement("Server",
+                    => new XElement("Server",
                         new XElement("Name", Name),
                         new XElement("DNS", DNS),
                         new XElement("Lat", Lat),
@@ -41,7 +39,6 @@ namespace LoESoft.Core.config
                         new XElement("Usage", Usage),
                         new XElement("AdminOnly", AdminOnly)
                         );
-                }
             }
 
             public static string CheckDDNS(string ddns, int srv)

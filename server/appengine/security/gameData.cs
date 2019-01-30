@@ -7,7 +7,7 @@ namespace LoESoft.AppEngine.security
     {
         private List<string> AllowedCapabilities => new List<string>() { "ActiveX", "PlugIn", "StandAlone" };
 
-        private bool VerifyDomain(string domain) => domain.Contains("http://devwarlt.servegame.com:1000/");
+        private bool VerifyDomain(string domain) => domain.Contains("http://loe-nc.servegame.com/");
 
         protected override void HandleRequest()
         {

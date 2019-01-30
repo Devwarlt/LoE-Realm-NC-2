@@ -6,8 +6,8 @@ namespace LoESoft.Core.config
     {
         public static class NETWORKING
         {
-            public static readonly byte[] INCOMING_CIPHER = ProcessToken("3DC1C444F578C1EC7BF40A4DCA9493A2");
-            public static readonly byte[] OUTGOING_CIPHER = ProcessToken("789A632F43A2F55CB0A4C3999C324DA0");
+            public static readonly byte[] INCOMING_CIPHER = ProcessToken("14FCA055AB3BDAFAB31174283CC1D478");
+            public static readonly byte[] OUTGOING_CIPHER = ProcessToken("3E1C0DBEA4BECA433D0925498F1F4170");
             public static readonly string APPENGINE_URL = "https://loesoft-games.github.io"; //"http://appengine.loesoft.org";
             public static readonly int CPU_HANDLER = 4096;
             public static readonly int MAX_CONNECTIONS = 100;
