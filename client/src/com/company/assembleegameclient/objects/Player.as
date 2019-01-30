@@ -986,7 +986,7 @@ public class Player extends Character {
                 SoundEffectLibrary.play("no_mana");
                 return (false);
             }
-            _local11 = 500;
+            _local11 = 2000;
             if (_local5.hasOwnProperty(TextKey.COOLDOWN)) {
                 _local11 = (Number(_local5.Cooldown) * NumberKey.COOLDOWNVALUE);
             }

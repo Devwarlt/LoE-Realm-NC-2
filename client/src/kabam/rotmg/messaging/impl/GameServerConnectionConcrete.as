@@ -481,7 +481,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
         var qp:QueuePong = (this.messages.require(QUEUE_PONG) as QueuePong);
         qp.serial_ = _arg1.serial_;
         qp.time_ = getTimer();
-        serverConnection.queueMessage(qp);
+        //serverConnection.queueMessage(qp);
     }
 
     private function onHatchPet(_arg1:HatchPetMessage):void {
@@ -831,7 +831,6 @@ public class GameServerConnectionConcrete extends GameServerConnection {
             this.addTextLine.dispatch(ChatMessage.make("", "You cannot use items while trading."));
 
             SoundEffectLibrary.play("error");
-
             return;
         }
 

@@ -22,7 +22,7 @@ public class Parameters {
     public static const ENVIRONMENT_DNS:String = !IS_DEVELOPER_MODE ? "loe-nc.servegame.com" : "127.0.0.1";
     public static const ENVIRONMENT_PORT:String = "5555";
     public static const BUILD_VERSION:String = "3";
-    public static const MINOR_VERSION:String = "2.9";
+    public static const MINOR_VERSION:String = "2.9.1";
     public static const FULL_BUILD:String = "v" + BUILD_VERSION + "." + MINOR_VERSION;
     public static const ENABLE_ENCRYPTION:Boolean = true;
     public static const PORT:int = 2050;
@@ -46,24 +46,16 @@ public class Parameters {
     public static const TERMS_OF_USE_URL:String = "http://legal.decagames.io/tos";
     public static const PRIVACY_POLICY_URL:String = "http://legal.decagames.io/privacy";
     public static const USER_GENERATED_CONTENT_TERMS:String = "/UGDTermsofUse.html";
-    public static const RC4_INCOMING_CIPHER:String = "3DC1C444F578C1EC7BF40A4DCA9493A2";
-    public static const RC4_OUTGOING_CIPHER:String = "789A632F43A2F55CB0A4C3999C324DA0";
+    public static const RC4_INCOMING_CIPHER:String = "14FCA055AB3BDAFAB31174283CC1D478";
+    public static const RC4_OUTGOING_CIPHER:String = "3E1C0DBEA4BECA433D0925498F1F4170";
     public static const TOKEN:String = "FDE649D19A6C182F23F3776F8C975AD3";
     public static const RSA_PUBLIC_KEY:String =
-            "-----BEGIN PUBLIC KEY-----\n" +
-            "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAlLt9Hv4QMVH+jC1uQ0hJ" +
-            "QTTst7QShRMmvWpNng9qE+NpzdMID8ibKqWIjTIB7Ajq3UygK5Y9IJnLJtM5bFhu" +
-            "cdzk3yqsFySgmmwOYAHuH4aFNgp6B0OrFJv7UMhbN4fudt5cfBVaPJBh9nOnmPFF" +
-            "VZqBLbqlWdOOnofU/x8VMrZRLN9DwsjggCLAfo/nOQp4ucb7RENm5gGegxx/kCvy" +
-            "anrr/UPmH2AlInH5T8LVbwABYnxmG2vED2C2d+aXrynXNB3+tfKNpXueaGwPjHNu" +
-            "goIN5rcNm9Pq+Mdq5K45nLVSgl++QAJziXN09O8vWQNe3+XEayFy4IjjapiksCi2" +
-            "hXVCcSUgHt2MamJWsbJxfU3CXXSKe8oVoe+Xr2YSCmcewSStBp6tP9MRc4xH1mjT" +
-            "GFIxifLXJIDiNzXgTy2bBXwtDKKAsXBXfNxmFtOzuUl+meTTe6tMxtERmIfQjOB8" +
-            "2vDDuYDVjOdsYqYALW/HWPCV7d1sleOD0F4NeWiC+307lgpdK2S/z1iG+XiFqjh+" +
-            "Kwt8gtkD78P0C4W5Sjoi19OeFHZj9H/WjL+FarwzJdjJHkiwORpozrDkWTi3dxfH" +
-            "wyOTtsd5tIJi7JGWwY2aydu0kjliiCn5tz7OJromqLwuWf85UVblbTApoUZbdykT" +
-            "K1DGrdk7bxkFkZeSQOtywO0CAwEAAQ==\n" +
-            "-----END PUBLIC KEY-----";
+        "-----BEGIN PUBLIC KEY-----\n" +
+        "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDfhb/mtO6xf4SieiNtBhGwPUgV" +
+        "tvNDQ6j50eX69U2z5fF0iHORzVGL4Fr6b4hWcN7l0wf4eGxWHAaJlmungHgwmOoE" +
+        "oT1EftmWgEJxkBIt6+CpflytXrvC7E6LhfY+2i/omJlFh2iPv0ncsCkGvJ64o33l" +
+        "mBqqju8Rb3YrPC154wIDAQAB\n" +
+        "-----END PUBLIC KEY-----";
 
     public static const ID:uint = 7750407;
 

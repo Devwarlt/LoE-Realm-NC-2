@@ -124,10 +124,12 @@ public class SocketServer {
             this.data.length = 0;
             msg.writeToOutput(this.data);
             this.data.position = 0;
+
             if (this.outgoingCipher != null) {
                 this.outgoingCipher.encrypt(this.data);
                 this.data.position = 0;
             }
+
             this.socket.writeInt(this.data.bytesAvailable + 5);
             this.socket.writeByte(msg.id);
             this.socket.writeBytes(this.data);
