@@ -1,7 +1,10 @@
-﻿namespace LoESoft.GameServer.realm.world
+﻿using System;
+namespace LoESoft.GameServer.realm.world
 {
     public class AbyssofDemons : World
     {
+		private Random r = new Random();
+		public string map => "abyss";
         public AbyssofDemons()
         {
             Name = "Abyss of Demons";
@@ -10,6 +13,6 @@
             AllowTeleport = true;
         }
 
-        protected override void Init() => LoadMap("abyss", MapType.Wmap);
+        protected override void Init() => LoadMap($"dungeons.abyss.abyss{r.Next(1, 2).ToString()}",MapType.Wmap);
     }
 }
