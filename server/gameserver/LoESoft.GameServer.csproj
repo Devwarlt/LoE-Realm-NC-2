@@ -468,7 +468,6 @@
     <Compile Include="networking\socket\Client.cs" />
     <Compile Include="networking\socket\message\IncomingMessage.cs" />
     <Compile Include="networking\socket\message\ProcessMessage.cs" />
-    <Compile Include="networking\socket\ProcessPolicyFile.cs" />
     <Compile Include="networking\socket\state\ProtocolState.cs" />
     <Compile Include="networking\socket\token\OutgoingToken.cs" />
     <Compile Include="networking\socket\state\IncomingState.cs" />

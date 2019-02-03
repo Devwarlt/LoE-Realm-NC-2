@@ -15,19 +15,6 @@ namespace LoESoft.AppEngine.@char
     {
         protected override void HandleRequest()
         {
-            var ip = Context.Request.RemoteEndPoint.Address.ToString();
-
-            if (Settings.SERVER_MODE == Settings.ServerMode.Production && ip != "127.0.0.1")
-            {
-                if (!Manager.CheckWebClient(ip))
-                {
-                    SendGDError(GameDataErrors.GameDateNotFound);
-                    return;
-                }
-                else
-                    Manager.UpdateWebClient(ip, true);
-            }
-
             try
             {
                 var status = Database.Verify(Query["guid"], Query["password"], out DbAccount acc);
@@ -70,7 +57,14 @@ namespace LoESoft.AppEngine.@char
 
         private List<Settings.APPENGINE.ServerItem> GetServerList()
         {
-            var ret = Settings.APPENGINE.GetServerItem();
+            /*var tcpclient = new TcpClient();
+            tcpclient.Client.NoDelay = true;
+            tcpclient.Client.UseOnlyOverlappedIO = true;
+            tcpclient.Client.Ttl = 112;
+            tcpclient.Client.SendTimeout = 1000;
+            tcpclient.Client.ReceiveTimeout = 1000;*/
+
+            var ret = Settings.APPENGINE.GetServerItem(null);
             return ret;
         }
     }

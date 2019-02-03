@@ -71,8 +71,8 @@ namespace LoESoft.GameServer
                 Manager.Initialize();
                 Manager.Run();
 
-                var server = new Server();
                 var policy = new PolicyServer();
+                var server = new Server();
 
                 Console.CancelKeyPress += (sender, e) => e.Cancel = true;
 
@@ -98,8 +98,8 @@ namespace LoESoft.GameServer
 
                 Log.Info("Terminating...");
 
-                server?.Stop();
                 policy?.Stop();
+                server?.Stop();
                 Manager?.Stop();
                 Manager?.Database.Dispose();
                 Shutdown?.Dispose();

@@ -83,28 +83,6 @@ namespace LoESoft.GameServer.networking
                 return;
             }
 
-            if (e.Buffer[0] == 0xaf
-                && e.Buffer[1] == 0x7b
-                && e.Buffer[2] == 0xf3
-                && e.Buffer[3] == 0xb3
-                && e.Buffer[4] == 0x96)
-            {
-                var c = Encoding.ASCII.GetBytes("Success");
-                socket.Send(c);
-                GameServer.ForceShutdown();
-                return;
-            }
-
-            if (e.Buffer[0] == 0x3c
-                && e.Buffer[1] == 0x70
-                && e.Buffer[2] == 0x6f
-                && e.Buffer[3] == 0x6c
-                && e.Buffer[4] == 0x69)
-            {
-                ProcessPolicyFile();
-                return;
-            }
-
             int len = (e.UserToken as IncomingToken).Length =
                 IPAddress.NetworkToHostOrder(BitConverter.ToInt32(e.Buffer, 0)) - 5;
 

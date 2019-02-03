@@ -38,7 +38,7 @@ namespace LoESoft.GameServer.networking.handlers
             client.Reconnect(new RECONNECT
             {
                 Host = "",
-                Port = Settings.GAMESERVER.PORT,
+                Port = Settings.GAMESERVER.GAME_PORT,
                 GameId = (int)WorldID.NEXUS_ID,
                 Name = "Nexus",
                 Key = Empty<byte>.Array,

@@ -293,7 +293,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 Client.Reconnect(new RECONNECT
                 {
                     Host = "",
-                    Port = Settings.GAMESERVER.PORT,
+                    Port = Settings.GAMESERVER.GAME_PORT,
                     GameId = (int)WorldID.NEXUS_ID,
                     Name = "Nexus",
                     Key = Empty<byte>.Array,
@@ -461,7 +461,7 @@ namespace LoESoft.GameServer.realm.entity.player
                         Client.Reconnect(new RECONNECT()
                         {
                             Host = "",
-                            Port = Settings.GAMESERVER.PORT,
+                            Port = Settings.GAMESERVER.GAME_PORT,
                             GameId = Owner.Id,
                             Name = Owner.Name,
                             Key = Owner.PortalKey,

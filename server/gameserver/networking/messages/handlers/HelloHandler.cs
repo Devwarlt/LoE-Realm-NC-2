@@ -80,40 +80,6 @@ namespace LoESoft.GameServer.networking.handlers
             client.Account = acc;
             client.AccountId = acc.AccountId;
 
-            if (AccountInUseManager.ContainsKey(client.AccountId))
-            {
-                do
-                {
-                    var timeout = client.CheckAccountInUseTimeout;
-
-                    if (timeout <= 0)
-                        break;
-
-                    var outgoing = new List<Message>
-                        {
-                            new FAILURE
-                            {
-                                ErrorId = (int)ErrorIDs.NORMAL_CONNECTION,
-                                ErrorDescription = $"Account in use ({timeout:n0} second{(timeout > 1 ? "s" : "")} until timeout)."
-                            },
-                            new FAILURE
-                            {
-                                ErrorId = (int)ErrorIDs.NORMAL_CONNECTION,
-                                ErrorDescription = $"Connection failed! Retrying..."
-                            }
-                        };
-
-                    client.SendMessage(outgoing);
-
-                    Thread.Sleep(3 * 1000);
-
-                    if (client.CheckAccountInUseTimeout <= 0)
-                        break;
-                } while (client.Socket.Connected && client.State != ProtocolState.Disconnected);
-
-                client.RemoveAccountInUse();
-            }
-
             var TryConnect = GameServer.Manager.TryConnect(client);
 
             if (!TryConnect.Connected)

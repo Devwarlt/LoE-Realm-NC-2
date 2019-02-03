@@ -33,7 +33,7 @@ namespace LoESoft.GameServer.networking
                 {
                     try
                     {
-                        Socket.Bind(new IPEndPoint(IPAddress.Any, Settings.GAMESERVER.PORT));
+                        Socket.Bind(new IPEndPoint(IPAddress.Any, Settings.GAMESERVER.GAME_PORT));
                         Socket.Listen(0xFF);
 
                         connected = true;
@@ -44,22 +44,22 @@ namespace LoESoft.GameServer.networking
                 Thread.Sleep(100);
             } while (!connected);
 
-            Beginaccept(Socket);
+            BeginAccept(Socket);
         }
 
-        private void Beginaccept(Socket skt) => skt.BeginAccept(OnConnectionRecieved, skt);
+        private void BeginAccept(Socket skt) => skt.BeginAccept(OnConnectionReceived, skt);
 
-        private void OnConnectionRecieved(IAsyncResult result)
+        private void OnConnectionReceived(IAsyncResult result)
         {
             try
             {
-                var socket = (Socket)result.AsyncState;
-                var clientSocket = socket.EndAccept(result);
+                var serverSocket = (Socket)result.AsyncState;
+                var clientSocket = serverSocket.EndAccept(result);
 
                 if (clientSocket != null)
                     new Client(clientSocket);
 
-                Beginaccept(socket);
+                BeginAccept(serverSocket);
             }
             catch { }
         }

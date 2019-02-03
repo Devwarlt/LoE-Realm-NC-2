@@ -212,7 +212,7 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                         player.Client.Reconnect(new networking.outgoing.RECONNECT()
                         {
                             Host = "",
-                            Port = Settings.GAMESERVER.PORT,
+                            Port = Settings.GAMESERVER.GAME_PORT,
                             GameId = (int)WorldID.DREAM_ISLAND,
                             Name = "Dream Island",
                             Key = Empty<byte>.Array,
@@ -271,7 +271,7 @@ namespace LoESoft.GameServer.realm.entity.npc.npcs
                                     Host = string.Empty,
                                     Key = Empty<byte>.Array,
                                     Name = "Nexus",
-                                    Port = Settings.GAMESERVER.PORT
+                                    Port = Settings.GAMESERVER.GAME_PORT
                                 };
 
                                 _world.Timers.Add(new WorldTimer(2000, (w, t) => player.Client.Reconnect(_reconnect)));

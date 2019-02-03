@@ -34,7 +34,7 @@ namespace LoESoft.GameServer.networking.handlers
             client.Reconnect(new RECONNECT
             {
                 Host = "",
-                Port = Settings.GAMESERVER.PORT,
+                Port = Settings.GAMESERVER.GAME_PORT,
                 GameId = world.Id,
                 Name = world.Name,
                 Key = Empty<byte>.Array,

@@ -19,6 +19,7 @@ import kabam.rotmg.core.signals.SetLoadingMessageSignal;
 import kabam.rotmg.dialogs.control.CloseDialogsSignal;
 import kabam.rotmg.dialogs.control.OpenDialogSignal;
 import kabam.rotmg.fortune.components.TimerCallback;
+import kabam.rotmg.gamedata.services.GetServerGameDataConfigTask;
 import kabam.rotmg.text.model.TextKey;
 
 import robotlegs.bender.framework.api.ILogger;
@@ -176,7 +177,8 @@ public class GetCharListTask extends BaseTask {
         }
         else {
             this.clearAccountAndReloadCharacters();
-            this.setLoadingMessage.dispatch("LoginError.tooManyFails");
+            this.setLoadingMessage.dispatch("The server is offline, try again later.");
+            this.stopRetryTimer();
         }
     }
 

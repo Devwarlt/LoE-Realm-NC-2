@@ -167,13 +167,6 @@ namespace LoESoft.AppEngine
                     return;
                 }
 
-                if (context.Request.Url.LocalPath.Contains("admin/restart"))
-                {
-                    new restart().HandleRequest(context);
-                    context.Response.Close();
-                    return;
-                }
-
                 if (context.Request.Url.LocalPath.Contains("sfx") || context.Request.Url.LocalPath.Contains("music"))
                 {
                     new Sfx().HandleRequest(context);

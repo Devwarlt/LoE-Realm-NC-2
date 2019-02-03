@@ -8,6 +8,7 @@ import flash.events.ProgressEvent;
 import flash.events.SecurityErrorEvent;
 import flash.events.TimerEvent;
 import flash.net.Socket;
+import flash.system.Security;
 import flash.utils.ByteArray;
 import flash.utils.Timer;
 
@@ -63,12 +64,14 @@ public class SocketServer {
     public function connect(address:String, port:int):void {
         this.server = address;
         this.port = port;
-        this.addListeners();
         this.messageLen = -1;
+        this.addListeners();
         this.socket.connect(address, port);
     }
 
     private function addListeners():void {
+        Security.loadPolicyFile("xmlsocket://" + Parameters.ENVIRONMENT_DNS + ":" + Parameters.POLICY);
+
         this.socket.addEventListener(Event.CONNECT, this.onConnect);
         this.socket.addEventListener(Event.CLOSE, this.onClose);
         this.socket.addEventListener(ProgressEvent.SOCKET_DATA, this.onSocketData);

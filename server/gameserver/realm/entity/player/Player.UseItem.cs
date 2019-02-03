@@ -1362,7 +1362,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                 Host = string.Empty,
                                 Key = Empty<byte>.Array,
                                 Name = "Nexus",
-                                Port = Settings.GAMESERVER.PORT
+                                Port = Settings.GAMESERVER.GAME_PORT
                             };
 
                             _world.Timers.Add(new WorldTimer(2000, (w, t) => Client.Reconnect(_reconnect)));

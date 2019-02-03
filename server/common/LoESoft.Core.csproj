@@ -107,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="config\internal\AppEngine.cs" />
+    <Compile Include="config\internal\PolicyServer.cs" />
     <Compile Include="config\internal\Networking.cs" />
     <Compile Include="config\internal\Database.cs" />
     <Compile Include="config\internal\GameServer.cs" />

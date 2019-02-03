@@ -162,7 +162,7 @@ namespace LoESoft.GameServer.realm.world
                                 player.Client.SendMessage(new RECONNECT
                                 {
                                     Host = "",
-                                    Port = Settings.GAMESERVER.PORT,
+                                    Port = Settings.GAMESERVER.GAME_PORT,
                                     GameId = wc.Id,
                                     Name = wc.Name,
                                     Key = wc.PortalKey

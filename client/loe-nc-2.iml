@@ -2,7 +2,7 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="LoE Realm NC">
     <configurations>
-      <configuration name="LoE Realm NC" main-class="WebMain" output-file="client-release.swf" output-folder="$MODULE_DIR$/release/client-resource">
+      <configuration name="LoE Realm NC" main-class="WebMain" output-file="build-3.2.12.swf" output-folder="$MODULE_DIR$/release">
         <dependencies target-player="18.0">
           <entries>
             <entry library-id="5aae583f-abea-482e-9c5e-e8ffaead6593">

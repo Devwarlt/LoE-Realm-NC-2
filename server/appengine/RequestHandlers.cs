@@ -50,7 +50,7 @@ namespace LoESoft.AppEngine
             NullDomain = 2,
             InvalidCapability = 3,
             InvalidDomain = 4,
-            GameDateNotFound = 5
+            GameDataNotFound = 5
         }
 
         public void SendGDError(GameDataErrors id)

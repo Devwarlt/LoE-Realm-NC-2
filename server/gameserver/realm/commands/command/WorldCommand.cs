@@ -51,7 +51,7 @@ namespace LoESoft.GameServer.realm.commands
             player.Client.Reconnect(new RECONNECT
             {
                 Host = "",
-                Port = Settings.GAMESERVER.PORT,
+                Port = Settings.GAMESERVER.GAME_PORT,
                 GameId = (int)WorldID.TUT_ID,
                 Name = "Tutorial",
                 Key = Empty<byte>.Array,
@@ -71,7 +71,7 @@ namespace LoESoft.GameServer.realm.commands
             player.Client.Reconnect(new RECONNECT
             {
                 Host = "",
-                Port = Settings.GAMESERVER.PORT,
+                Port = Settings.GAMESERVER.GAME_PORT,
                 GameId = (int)WorldID.DRASTA_CITADEL_ID,
                 Name = "Drasta Citadel",
                 Key = Empty<byte>.Array,
@@ -401,7 +401,7 @@ namespace LoESoft.GameServer.realm.commands
                 player.Client.Reconnect(new RECONNECT()
                 {
                     Host = "",
-                    Port = Settings.GAMESERVER.PORT,
+                    Port = Settings.GAMESERVER.GAME_PORT,
                     GameId = world.Id,
                     Name = world.Name,
                     Key = world.PortalKey,
@@ -434,7 +434,7 @@ namespace LoESoft.GameServer.realm.commands
                 player.Client.Reconnect(new RECONNECT()
                 {
                     Host = "",
-                    Port = Settings.GAMESERVER.PORT,
+                    Port = Settings.GAMESERVER.GAME_PORT,
                     GameId = GameServer.Manager.PlayerVault(player.Client).Id,
                     Name = GameServer.Manager.PlayerVault(player.Client).Name,
                     Key = GameServer.Manager.PlayerVault(player.Client).PortalKey
