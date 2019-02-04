@@ -263,12 +263,11 @@ namespace LoESoft.GameServer.logic
                         ),
                     new Decay(60000)
                     ),
-                new ItemLoot("Magic Potion", 0.25),
-                new Threshold(.001,
-                    new ItemLoot("Tincture of Life", 0.06),
+                new Drops(
+                    new ItemLoot("Magic Potion", 0.25),
                     new ItemLoot("Green Drake Egg", 0.08),
-                    new WhiteBag("Quiver of Thunder"),
-                    new TierLoot(8, ItemType.Armor, 0.3)
+                    new PurpleBag(ItemType.Armor, 8),
+                    new WhiteBag("Quiver of Thunder")
                     )
             )
         ;

@@ -17,8 +17,10 @@ namespace LoESoft.GameServer.networking.handlers
         {
             if (client.Player.Owner == null)
                 return;
-            World world = Manager.GetWorld(client.Player.Owner.Id);
-            if (world.Id == (int) WorldID.NEXUS_ID)
+
+            var world = GameServer.Manager.GetWorld(client.Player.Owner.Id);
+
+            if (world.Id == (int)WorldID.NEXUS_ID)
             {
                 client.SendMessage(new TEXT
                 {
@@ -34,8 +36,8 @@ namespace LoESoft.GameServer.networking.handlers
             client.Reconnect(new RECONNECT
             {
                 Host = "",
-                Port = Settings.GAMESERVER.PORT,
-                GameId = (int) WorldID.NEXUS_ID,
+                Port = Settings.GAMESERVER.GAME_PORT,
+                GameId = (int)WorldID.NEXUS_ID,
                 Name = "nexus.Nexus",
                 Key = Empty<byte>.Array,
             });

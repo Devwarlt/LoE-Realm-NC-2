@@ -180,11 +180,6 @@ public class Options extends Sprite {
         StatusBar.barTextSignal.dispatch(Parameters.data_.toggleBarText);
     }
 
-    private static function onToMaxTextToggle():void {
-        StatusBar.barTextSignal.dispatch(Parameters.data_.toggleBarText);
-        StatView.toMaxTextSignal.dispatch(Parameters.data_.toggleToMaxText);
-    }
-
     public static var currentCursor:int = Parameters.data_.cursorSelect == MouseCursor.AUTO ? -1 : int(Parameters.data_.cursorSelect);
     private static var cursors:Array = [MouseCursor.AUTO, "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 
@@ -498,7 +493,6 @@ public class Options extends Sprite {
         this.addOptionAndPosition(new ChoiceOption("disableEnemyParticles", makeOnOffLabels(), [true, false], "Disable enemy particles", "Disable particles when hit enemy and when enemy is dying.", null));
         this.addOptionAndPosition(new ChoiceOption("disableAllyParticles", makeOnOffLabels(), [true, false], "Disable ally particles", "Disable particles produces by shooting ally.", null));
         this.addOptionAndPosition(new ChoiceOption("disablePlayersHitParticles", makeOnOffLabels(), [true, false], "Disable players hit particles", "Disable particles when player or ally is hit.", null));
-        this.addOptionAndPosition(new ChoiceOption("toggleToMaxText", makeOnOffLabels(), [true, false], TextKey.OPTIONS_TOGGLE_TOMAXTEXT, TextKey.OPTIONS_TOGGLE_TOMAXTEXT_DESC, onToMaxTextToggle));
         this.addOptionAndPosition(new ChoiceOption("newMiniMapColors", makeOnOffLabels(), [true, false], TextKey.OPTIONS_TOGGLE_NEWMINIMAPCOLORS, TextKey.OPTIONS_TOGGLE_NEWMINIMAPCOLORS_DESC, null));
         this.addOptionAndPosition(new ChoiceOption("hidePets",makeOnOffLabels(),[true,false],"Hide Pets","Hide all pets",null));
         this.addOptionAndPosition(new ChoiceOption("hidePlayers",makeOnOffLabels(),[true,false],"Hide Players","Hide all players",null));

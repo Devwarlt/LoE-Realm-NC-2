@@ -8,7 +8,7 @@ namespace LoESoft.GameServer.logic
         private _ SetpieceBossesGreatCoilSnakeSetpiece = () => Behav()
             .Init("Great Coil Snake",
                 new State(
-                    new DropPortalOnDeath("Forbidden Jungle Portal", 20, PortalDespawnTimeSec: 100),
+                    //new DropPortalOnDeath("Forbidden Jungle Portal", 20, PortalDespawnTimeSec: 100),
                     new Prioritize(
                         new StayCloseToSpawn(8, 5),
                         new Wander()
@@ -23,7 +23,7 @@ namespace LoESoft.GameServer.logic
                         new TossObject("Great Snake Egg", 4, 90, 5000, 600),
                         new TossObject("Great Snake Egg", 4, 180, 5000, 1200),
                         new TossObject("Great Snake Egg", 4, 270, 5000, 1800),
-                        new NoPlayerWithinTransition(30, "Waiting")
+                        new NoPlayerWithinTransition(15, "Waiting")
                         )
                     )
             )
@@ -43,12 +43,16 @@ namespace LoESoft.GameServer.logic
 
             .Init("Great Temple Snake",
                 new State(
-                    new Prioritize(
-                        new Chase(6),
-                        new Wander()
+                    new State("init",
+                        new Prioritize(
+                            new Chase(6),
+                            new Wander()
+                            ),
+                        new Shoot(10, 2, 7, 0, coolDown: 1000, coolDownOffset: 0),
+                        new Shoot(10, 6, 60, 1, coolDown: 2000, coolDownOffset: 600),
+                        new TimedTransition(2500, "die")
                         ),
-                    new Shoot(10, 2, 7, 0, coolDown: 1000, coolDownOffset: 0),
-                    new Shoot(10, 6, 60, 1, coolDown: 2000, coolDownOffset: 600)
+                    new State("die", new Suicide())
                     )
             )
         ;

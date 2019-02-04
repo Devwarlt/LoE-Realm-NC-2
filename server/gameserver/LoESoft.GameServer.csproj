@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LoESoft.GameServer</RootNamespace>
     <AssemblyName>GameServer</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <MonoTargetFrameworkVersion>v4.0</MonoTargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
@@ -49,6 +49,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -60,6 +61,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -104,11 +106,14 @@
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MathNet.Numerics, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MathNet.Numerics.4.7.0\lib\net461\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Pipelines.Sockets.Unofficial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=42ea0a778e13fbe2, processorArchitecture=MSIL">
-      <HintPath>..\packages\Pipelines.Sockets.Unofficial.1.0.7\lib\net461\Pipelines.Sockets.Unofficial.dll</HintPath>
+      <HintPath>..\packages\Pipelines.Sockets.Unofficial.1.0.9\lib\net472\Pipelines.Sockets.Unofficial.dll</HintPath>
     </Reference>
     <Reference Include="StackExchange.Redis, Version=2.0.0.0, Culture=neutral, PublicKeyToken=c219ff1ca8c2ce46, processorArchitecture=MSIL">
       <HintPath>..\packages\StackExchange.Redis.2.0.519\lib\net461\StackExchange.Redis.dll</HintPath>
@@ -137,6 +142,7 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Threading.Channels, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Channels.4.5.0\lib\netstandard2.0\System.Threading.Channels.dll</HintPath>
     </Reference>
@@ -338,9 +344,14 @@
     <Compile Include="logic\transitions\PlayerWithinTransition.cs" />
     <Compile Include="logic\transitions\HpLessTransition.cs" />
     <Compile Include="logic\transitions\TimedTransition.cs" />
+    <Compile Include="networking\ClientManager.cs" />
+    <Compile Include="networking\LogicTicker.cs" />
     <Compile Include="networking\messages\handlers\ClaimDailyReward.cs" />
+    <Compile Include="networking\messages\handlers\GoToQuestRoomHandler.cs" />
     <Compile Include="networking\messages\handlers\hack\ICheatHandler.cs" />
     <Compile Include="networking\messages\handlers\hack\DexterityCheatHandler.cs" />
+    <Compile Include="networking\messages\handlers\MarketHandler.cs" />
+    <Compile Include="networking\messages\handlers\QueuePongHandler.cs" />
     <Compile Include="networking\messages\incoming\ACCEPTTRADE.cs" />
     <Compile Include="networking\messages\incoming\AOEACK.cs" />
     <Compile Include="networking\messages\incoming\BUY.cs" />
@@ -368,12 +379,15 @@
     <Compile Include="networking\messages\incoming\JOINGUILD.cs" />
     <Compile Include="networking\messages\incoming\ACCEPT_ARENA_DEATH.cs" />
     <Compile Include="networking\messages\incoming\LOAD.cs" />
+    <Compile Include="networking\messages\incoming\MARKET_COMMAND.cs" />
     <Compile Include="networking\messages\incoming\MOVE.cs" />
     <Compile Include="networking\messages\incoming\OTHERHIT.cs" />
     <Compile Include="networking\messages\incoming\PLAYERHIT.cs" />
     <Compile Include="networking\messages\incoming\PLAYERSHOOT.cs" />
     <Compile Include="networking\messages\incoming\PLAYERTEXT.cs" />
     <Compile Include="networking\messages\incoming\PONG.cs" />
+    <Compile Include="networking\messages\incoming\QUEST_ROOM_MSG.cs" />
+    <Compile Include="networking\messages\incoming\QUEUE_PONG.cs" />
     <Compile Include="networking\messages\incoming\REQUESTTRADE.cs" />
     <Compile Include="networking\messages\incoming\RESKIN.cs" />
     <Compile Include="networking\messages\incoming\SETCONDITION.cs" />
@@ -429,6 +443,10 @@
     <Compile Include="networking\messages\MessageHandler.cs" />
     <Compile Include="networking\messages\MessageHandlers.cs" />
     <Compile Include="networking\messages\outgoing\LOGIN_REWARD_MSG.cs" />
+    <Compile Include="networking\messages\outgoing\MARKET_RESULT.cs" />
+    <Compile Include="networking\messages\outgoing\QUEUE_PING.cs" />
+    <Compile Include="networking\messages\outgoing\SERVER_FULL.cs" />
+    <Compile Include="networking\messages\outgoing\SET_FOCUS.cs" />
     <Compile Include="networking\socket\Connection.cs" />
     <Compile Include="networking\socket\message\OutgoingMessage.cs" />
     <Compile Include="networking\socket\NetworkHandler.cs" />
@@ -450,7 +468,6 @@
     <Compile Include="networking\socket\Client.cs" />
     <Compile Include="networking\socket\message\IncomingMessage.cs" />
     <Compile Include="networking\socket\message\ProcessMessage.cs" />
-    <Compile Include="networking\socket\ProcessPolicyFile.cs" />
     <Compile Include="networking\socket\state\ProtocolState.cs" />
     <Compile Include="networking\socket\token\OutgoingToken.cs" />
     <Compile Include="networking\socket\state\IncomingState.cs" />
@@ -461,6 +478,7 @@
     <Compile Include="realm\ChatManager.cs" />
     <Compile Include="realm\entity\player\Player.IO.cs" />
     <Compile Include="realm\entity\player\Player.Tasks.cs" />
+    <Compile Include="realm\mapsetpiece\setpieces\Crystal.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\MountainTemple.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\LordOfTheLostLands.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\LuckyDjinn.cs" />
@@ -522,9 +540,8 @@
     <Compile Include="realm\entity\player\Player.Init.cs" />
     <Compile Include="realm\entity\Entity.Projectile.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\special\AbyssIdol_LavaBomb.cs" />
-    <Compile Include="networking\LogicTicker.cs" />
     <Compile Include="realm\world\RealmManager.cs" />
-    <Compile Include="realm\world\RealmPortalMonitor.cs" />
+    <Compile Include="realm\world\PortalMonitor.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\AbyssDeath.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\Ciphers.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\Avatar.cs" />
@@ -641,7 +658,6 @@
     <Compile Include="Vector2.cs" />
     <Compile Include="wRandom.cs" />
     <Compile Include="networking\messages\handlers\AoEAckHandler.cs" />
-    <Compile Include="networking\ISManager.cs" />
     <Compile Include="realm\world\worlds\Vault.cs" />
     <Compile Include="realm\mapsetpiece\setpieces\EyeOfTheDragon.cs" />
     <Compile Include="realm\entity\Entity.ActivateBoost.cs" />
@@ -782,8 +798,13 @@
     <EmbeddedResource Include="realm\world\maps\json\drasta.json" />
     <EmbeddedResource Include="realm\world\maps\json\dream-island-expansion1.json" />
     <EmbeddedResource Include="realm\world\maps\json\dungeons\undead_lair\udl.json" />
-    <EmbeddedResource Include="realm\world\maps\json\SND.json" />
     <EmbeddedResource Include="realm\world\maps\json\nexus_summer.json" />
+    <EmbeddedResource Include="realm\world\maps\json\loe_wine_cellar.json" />
+    <EmbeddedResource Include="realm\world\maps\json\pub-arena-v1.json" />
+    <EmbeddedResource Include="realm\world\maps\json\new_nexus.json" />
+    <EmbeddedResource Include="realm\world\maps\json\loe_chicago_3.2.7.json" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\abyss\abyss_1.wmap" />
+    <EmbeddedResource Include="realm\world\maps\json\dungeons\abyss\abyss_2.wmap" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="realm\world\maps\json\dungeons\spider_den\" />

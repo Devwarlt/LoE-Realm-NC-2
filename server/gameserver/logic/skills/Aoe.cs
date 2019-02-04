@@ -27,7 +27,7 @@ namespace LoESoft.GameServer.logic.behaviors
             uint color
             )
         {
-            this.radius = (float) radius;
+            this.radius = (float)radius;
             this.players = players;
             this.minDamage = minDamage;
             this.maxDamage = maxDamage;

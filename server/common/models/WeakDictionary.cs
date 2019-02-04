@@ -27,7 +27,7 @@ namespace LoESoft.Core
 
         public new T Target
         {
-            get { return (T) base.Target; }
+            get { return (T)base.Target; }
         }
     }
 
@@ -84,7 +84,7 @@ namespace LoESoft.Core
         {
             if (obj is WeakKeyReference<T> weakKey)
                 return weakKey.HashCode;
-            return comparer.GetHashCode((T) obj);
+            return comparer.GetHashCode((T)obj);
         }
 
         // Note: There are actually 9 cases to handle here. // Let Wa = Alive Weak Reference Let Wd
@@ -117,7 +117,7 @@ namespace LoESoft.Core
             }
             else
             {
-                target = (T) obj;
+                target = (T)obj;
                 isDead = false;
             }
             return target;
@@ -416,7 +416,7 @@ namespace LoESoft.Core
         {
             foreach (KeyValuePair<object, TValue> kvp in dictionary)
             {
-                WeakReference<TKey> weakKey = (WeakReference<TKey>) (kvp.Key);
+                WeakReference<TKey> weakKey = (WeakReference<TKey>)(kvp.Key);
                 TValue value = kvp.Value;
                 TKey key = weakKey.Target;
                 if (weakKey.IsAlive)
@@ -432,7 +432,7 @@ namespace LoESoft.Core
             List<object> toRemove = null;
             foreach (KeyValuePair<object, TValue> pair in dictionary)
             {
-                WeakReference<TKey> weakKey = (WeakReference<TKey>) (pair.Key);
+                WeakReference<TKey> weakKey = (WeakReference<TKey>)(pair.Key);
 
                 if (!weakKey.IsAlive)
                 {

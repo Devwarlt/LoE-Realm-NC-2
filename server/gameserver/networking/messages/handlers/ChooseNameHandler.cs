@@ -30,10 +30,10 @@ namespace LoESoft.GameServer.networking.handlers
                 string lockToken = null;
                 try
                 {
-                    while ((lockToken = Manager.Database.AcquireLock(key)) == null)
+                    while ((lockToken = GameServer.Manager.Database.AcquireLock(key)) == null)
                         ;
 
-                    if (Manager.Database.Conn.HashExists("names", name.ToUpperInvariant()))
+                    if (GameServer.Manager.Database.Conn.HashExists("names", name.ToUpperInvariant()))
                     {
                         client.SendMessage(new NAMERESULT
                         {
@@ -52,8 +52,9 @@ namespace LoESoft.GameServer.networking.handlers
                     else
                     {
                         if (client.Account.NameChosen)
-                            Manager.Database.UpdateCredit(client.Account, -1000);
-                        while (!Manager.Database.RenameIGN(client.Account, name, lockToken))
+                            GameServer.Manager.Database.UpdateCredit(client.Account, -1000);
+
+                        while (!GameServer.Manager.Database.RenameIGN(client.Account, name, lockToken))
                             ;
                         client.Player.Name = client.Account.Name;
                         client.Player.UpdateCount++;
@@ -67,7 +68,7 @@ namespace LoESoft.GameServer.networking.handlers
                 finally
                 {
                     if (lockToken != null)
-                        Manager.Database.ReleaseLock(key, lockToken);
+                        GameServer.Manager.Database.ReleaseLock(key, lockToken);
                 }
             }
         }

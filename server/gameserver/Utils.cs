@@ -23,7 +23,7 @@ namespace LoESoft.GameServer
             if (!(arg is DateTime))
                 throw new NotSupportedException();
 
-            DateTime dt = (DateTime) arg;
+            DateTime dt = (DateTime)arg;
 
             string suffix, _suffix;
 

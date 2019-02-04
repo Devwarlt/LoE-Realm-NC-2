@@ -48,7 +48,7 @@ namespace LoESoft.GameServer.logic.behaviors
 
         protected override void TickCore(Entity host, RealmTime time, ref object state)
         {
-            int cool = (int) state;
+            int cool = (int)state;
 
             if (cool <= 0)
             {
@@ -70,14 +70,14 @@ namespace LoESoft.GameServer.logic.behaviors
                 } :
                 new Position
                 {
-                    X = host.X + (float) (range * Math.Cos(tossAngle.Value)),
-                    Y = host.Y + (float) (range * Math.Sin(tossAngle.Value)),
+                    X = host.X + (float)(range * Math.Cos(tossAngle.Value)),
+                    Y = host.Y + (float)(range * Math.Sin(tossAngle.Value)),
                 };
 
-                if (!host.Owner.IsPassable((int) target.X, (int) target.Y))
+                if (!host.Owner.IsPassable((int)target.X, (int)target.Y))
                     return;
 
-                if (host.Owner.Map[(int) target.X, (int) target.Y].TileDesc.NoWalk)
+                if (host.Owner.Map[(int)target.X, (int)target.Y].TileDesc.NoWalk)
                     return;
 
                 if (!invisiToss)

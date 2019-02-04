@@ -29,7 +29,7 @@ namespace LoESoft.GameServer.logic.skills.Pets
                 return;
             }
 
-            int cool = (int) state;
+            int cool = (int)state;
             if (cool <= 0)
             {
                 if (!player.HasConditionEffect(ConditionEffectIndex.Sick) && !player.HasConditionEffect(ConditionEffectIndex.PetDisable))
@@ -108,7 +108,7 @@ namespace LoESoft.GameServer.logic.skills.Pets
 
             Tuple<int, int, double> formula = MinMaxBonus(tier, stars);
 
-            return (int) (rnd.Next(formula.Item1, formula.Item2) * formula.Item3);
+            return (int)(rnd.Next(formula.Item1, formula.Item2) * formula.Item3);
         }
 
         public static Tuple<int, int, double> MinMaxBonus(int tier, int stars)

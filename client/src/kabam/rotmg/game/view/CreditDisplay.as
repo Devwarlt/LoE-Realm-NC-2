@@ -37,7 +37,7 @@ public class CreditDisplay extends Sprite {
     private var fameIcon_:Bitmap;
     private var fortuneIcon_:Bitmap;
     private var credits_:int = -1;
-    private var fame_:int = -1;
+    private var fame_:Number = -1;
     private var fortune_:int = -1;
     private var displayFortune_:Boolean = false;
     private var displayFame_:Boolean = true;
@@ -148,7 +148,7 @@ public class CreditDisplay extends Sprite {
         }
     }
 
-    public function draw(_arg1:int, _arg2:int, _arg3:int = 0):void {
+    public function draw(_arg1:int, _arg2:Number, _arg3:int = 0):void {
         if (this.displayFortune_) {
             this.handleFortuneTimeTextUpdate();
         }

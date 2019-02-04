@@ -114,6 +114,12 @@ public class StatData {
     public static const PET_ATTACK_CHANCE:int = 108;
     public static const PET_ATTACK_DAMAGE_MIN:int = 109;
     public static const PET_ATTACK_DAMAGE_MAX:int = 110;
+    public static const ATTACK_LEVEL_STAT:int = 111;
+    public static const ATTACK_EXP_STAT:int = 112;
+    public static const NEXT_ATTACK_EXP_STAT:int = 113;
+    public static const DEFENSE_LEVEL_STAT:int = 114;
+    public static const DEFENSE_EXP_STAT:int = 115;
+    public static const NEXT_DEFENSE_EXP_STAT:int = 116;
 
     public var statType_:uint = 0;
     public var statValue_:int;
@@ -152,14 +158,22 @@ public class StatData {
         return (TextKey.STAT_DATA_UNKNOWN_STAT);
     }
 
-
     public function isStringStat():Boolean {
         switch (this.statType_) {
             case NAME_STAT:
-            case GUILD_NAME_STAT:
-            case PET_NAME_STAT:
             case ACCOUNT_ID_STAT:
             case OWNER_ACCOUNT_ID_STAT:
+            case GUILD_NAME_STAT:
+            case PET_NAME_STAT:
+            case EXP_STAT:
+            case FAME_STAT:
+            case CURR_FAME_STAT:
+            case NEXT_LEVEL_EXP_STAT:
+            case NEXT_CLASS_QUEST_FAME_STAT:
+            case ATTACK_EXP_STAT:
+            case NEXT_ATTACK_EXP_STAT:
+            case DEFENSE_EXP_STAT:
+            case NEXT_DEFENSE_EXP_STAT:
                 return (true);
         }
         return (false);

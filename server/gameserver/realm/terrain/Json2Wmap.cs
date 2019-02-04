@@ -67,13 +67,13 @@ namespace LoESoft.GameServer.realm.terrain
             for (int i = 0; i < obj.dict.Length; i++)
             {
                 loc o = obj.dict[i];
-                tileDict[(short) i] = new TerrainTile
+                tileDict[(short)i] = new TerrainTile
                 {
-                    TileId = o.ground == null ? (ushort) 0xff : data.IdToTileType[o.ground],
+                    TileId = o.ground == null ? (ushort)0xff : data.IdToTileType[o.ground],
                     TileObj = o.objs == null ? null : o.objs[0].id,
                     Name = o.objs == null ? "" : o.objs[0].name ?? "",
                     Terrain = TerrainType.None,
-                    Region = o.regions == null ? TileRegion.None : (TileRegion) Enum.Parse(typeof(TileRegion), o.regions[0].id.Replace(' ', '_'))
+                    Region = o.regions == null ? TileRegion.None : (TileRegion)Enum.Parse(typeof(TileRegion), o.regions[0].id.Replace(' ', '_'))
                 };
             }
 

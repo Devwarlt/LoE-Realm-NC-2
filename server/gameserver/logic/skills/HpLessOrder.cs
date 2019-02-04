@@ -22,8 +22,8 @@ namespace LoESoft.GameServer.logic.behaviors
             string targetStateName
             )
         {
-            this.dist = (float) dist;
-            this.threshold = (float) threshold;
+            this.dist = (float)dist;
+            this.threshold = (float)threshold;
             this.children = BehaviorDb.InitGameData.IdToObjectType[children];
             this.targetStateName = targetStateName;
         }

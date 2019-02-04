@@ -30,23 +30,17 @@ public class EnterGameCommand {
     [Inject]
     public var noServersDialogFactory:NoServersDialogFactory;
 
-
     public function execute():void {
         if (!this.servers.isServerAvailable()) {
             this.showNoServersDialog();
         }
         else {
-            //if (!this.account.isRegistered()) {
-            //    this.launchGame();
-            //}
-            //else {
             if (!this.model.getIsAgeVerified()) {
                 this.showAgeVerificationDialog();
             }
             else {
                 this.showCurrentCharacterScreen();
             }
-            //}
         }
     }
 

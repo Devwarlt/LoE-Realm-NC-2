@@ -1,6 +1,5 @@
 ﻿using LoESoft.Core.config;
 using LoESoft.Core.models;
-using LoESoft.GameServer.realm;
 using log4net;
 using System;
 using System.Collections.Concurrent;
@@ -16,7 +15,6 @@ namespace LoESoft.GameServer.networking
 
         private static readonly ILog log = LogManager.GetLogger(typeof(NetworkHandler));
 
-        private readonly RealmManager Manager = GameServer.Manager;
         private readonly Client client;
         private readonly ConcurrentQueue<Message> pending = new ConcurrentQueue<Message>();
         private readonly object sendLock = new object();
@@ -68,7 +66,7 @@ namespace LoESoft.GameServer.networking
         {
             Log.Error(ex.ToString());
 
-            Manager.TryDisconnect(client, DisconnectReason.SOCKET_ERROR_DETECTED);
+            GameServer.Manager.TryDisconnect(client, DisconnectReason.SOCKET_ERROR_DETECTED);
         }
 
         public void Dispose()

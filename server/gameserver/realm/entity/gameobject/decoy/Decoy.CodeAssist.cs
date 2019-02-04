@@ -21,7 +21,7 @@ namespace LoESoft.GameServer.realm.entity
         private Vector2 GetRandDirection()
         {
             double angle = rand.NextDouble() * 2 * Math.PI;
-            return new Vector2((float) Math.Cos(angle), (float) Math.Sin(angle));
+            return new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
         }
     }
 }

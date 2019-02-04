@@ -1,8 +1,8 @@
 ﻿using LoESoft.Core.config;
-using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace LoESoft.GameServer.realm.commands
 {
@@ -16,11 +16,11 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-     //       if (Settings.SERVER_MODE == Settings.ServerMode.Production)
-      //      {
-       //         player.SendInfo("You cannot use this feature along Production mode.");
-       //         return false;
-      //      }
+            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            {
+                player.SendInfo("You cannot use this feature along Production mode.");
+                return false;
+            }
 
             if (!AllowTestingCommands)
             {
@@ -44,22 +44,15 @@ namespace LoESoft.GameServer.realm.commands
                     }
                     break;
 
-                case "clients":
-                    {
-                        foreach (KeyValuePair<string, ClientData> i in GameServer.Manager.ClientManager)
-                            player.SendInfo($"[Clients] [ID: {i.Key}] Client '{i.Value.Client.Account.Name}' joined network at {i.Value.Registered}.");
-                    }
-                    break;
-
                 case "projectiles":
                     {
                         if (cmd == "ids")
-                            foreach (KeyValuePair<int, byte> i in player.Owner.Projectiles.Keys)
-                                player.SendInfo($"[Projectiles] [Player ID: {i.Key} / Projectile ID: {i.Value}]");
+                            foreach (var i in player.Owner.Projectiles.Keys)
+                                player.SendInfo($"[Projectiles] [Player ID: {i.ProjectileOwner.Id} / Projectile ID: {i.ProjectileId}]");
 
                         if (cmd == "all")
-                            foreach (KeyValuePair<KeyValuePair<int, byte>, Projectile> i in player.Owner.Projectiles)
-                                player.SendInfo($"[Projectiles] [Player ID: {i.Key.Key} / Projectile ID: {i.Key.Value} / Damage: {i.Value}]");
+                            foreach (var i in player.Owner.Projectiles.Keys)
+                                player.SendInfo($"[Projectiles] [Player ID: {i.ProjectileOwner.Id} / Projectile ID: {i.ProjectileId} / Damage: {i.Damage}]");
                     }
                     break;
 
@@ -75,8 +68,29 @@ namespace LoESoft.GameServer.realm.commands
                     }
                     break;
 
+                case "exp":
+                    {
+                        if (int.TryParse(cmd, out int result))
+                        {
+                            player.Experience += result;
+                            player.FakeExperience += result;
+
+                            do
+                            {
+                                Thread.Sleep(1000);
+
+                                if (player == null)
+                                    break;
+                            }
+                            while (player.CheckLevelUp(false));
+                        }
+                        else
+                            player.SendInfo("Use numeric values.");
+                        break;
+                    }
+
                 default:
-                    player.SendHelp("Available testing commands: 'chatdata' (my / all), 'clients', 'projectiles' (ids / all) and 'id' (mine / pet).");
+                    player.SendHelp("Available testing commands: 'chatdata' (my / all), 'projectiles' (ids / all), 'id' (mine / pet) and 'exp'.");
                     break;
             }
             return true;

@@ -19,7 +19,7 @@ namespace LoESoft.GameServer.realm.entity
                 return true;
 
             var prevHp = HP;
-            var dmg = (int) StatsManager.GetDefenseDamage(this, projectile.Damage, ObjectDesc.Defense);
+            var dmg = (int)StatsManager.GetDefenseDamage(this, projectile.Damage, ObjectDesc.Defense);
 
             HP -= dmg;
 
@@ -27,7 +27,7 @@ namespace LoESoft.GameServer.realm.entity
             {
                 TargetId = Id,
                 Effects = 0,
-                Damage = (ushort) dmg,
+                Damage = (ushort)dmg,
                 Killed = !CheckHP(),
                 BulletId = projectile.ProjectileId,
                 ObjectId = projectile.ProjectileOwner.Id

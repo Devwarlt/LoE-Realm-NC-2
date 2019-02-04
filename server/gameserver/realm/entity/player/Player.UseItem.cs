@@ -5,11 +5,11 @@ using LoESoft.Core.config;
 using LoESoft.GameServer.networking;
 using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.networking.outgoing;
+using LoESoft.GameServer.realm.world;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using static LoESoft.GameServer.networking.Client;
-using LoESoft.GameServer.realm.world;
 
 #endregion
 
@@ -19,25 +19,30 @@ namespace LoESoft.GameServer.realm.entity.player
     {
         public bool Activate(RealmTime time, Item item, USEITEM pkt)
         {
-            bool endMethod = false;
+            var endMethod = false;
+            var target = pkt.ItemUsePos;
 
-            Position target = pkt.ItemUsePos;
             MP -= item.MpCost;
 
             if (!(Owner?.GetEntity(pkt.SlotObject.ObjectId) is IContainer con))
                 return true;
+
             if (CheatEngineDetectSlot(item, pkt, con))
                 CheatEngineDetect(item, pkt);
+
             if (item.IsBackpack)
                 Backpack();
+
             if (item.XpBooster) //XpBooster(item);
                 return true;
+
             if (item.LootDropBooster) //LootDropBooster(item);
                 return true;
+
             if (item.LootTierBooster) //LootTierBooster(item);
                 return true;
 
-            Random rnd = new Random();
+            var rnd = new Random();
 
             foreach (ActivateEffect eff in item.ActivateEffects)
             {
@@ -45,15 +50,15 @@ namespace LoESoft.GameServer.realm.entity.player
                 {
                     case ActivateEffects.BulletNova:
                         {
-                            Projectile[] prjs = new Projectile[20];
-                            ProjectileDesc prjDesc = item.Projectiles[0];
+                            var prjs = new Projectile[20];
+                            var prjDesc = item.Projectiles[0];
                             var batch = new Message[21];
 
                             for (var i = 0; i < 20; i++)
                             {
-                                Projectile proj = CreateProjectile(prjDesc, item.ObjectType, Random.Next(prjDesc.MinDamage, prjDesc.MaxDamage), time.TotalElapsedMs, target, (float)(i * (Math.PI * 2) / 20));
+                                var proj = CreateProjectile(prjDesc, item.ObjectType, Random.Next(prjDesc.MinDamage, prjDesc.MaxDamage), time.TotalElapsedMs, target, (float)(i * (Math.PI * 2) / 20));
 
-                                Owner.AddProjectileFromId(Id, proj.ProjectileId, proj);
+                                Owner.Projectiles.TryAdd(proj, null);
 
                                 Owner?.EnterWorld(proj);
                                 FameCounter.Shoot(proj);
@@ -78,7 +83,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                 Color = new ARGB(0xFFFF00AA)
                             };
 
-                            foreach (Player plr in Owner?.Players.Values.Where(p => p?.DistSqr(this) < RadiusSqr))
+                            foreach (var plr in Owner?.Players.Values.Where(p => p?.DistSqr(this) < RadiusSqr))
                                 plr?.Client.SendMessage(batch);
                         }
                         break;
@@ -179,7 +184,9 @@ namespace LoESoft.GameServer.realm.entity.player
 
                     case ActivateEffects.VampireBlast:
                         {
-                            List<Message> pkts = new List<Message>
+                            try
+                            {
+                                var pkts = new List<Message>
                             {
                                 new SHOWEFFECT
                                 {
@@ -198,38 +205,48 @@ namespace LoESoft.GameServer.realm.entity.player
                                 }
                             };
 
-                            int totalDmg = 0;
-                            List<Enemy> enemies = new List<Enemy>();
-                            Owner?.Aoe(target, eff.Radius, false, enemy =>
-                            {
-                                enemies.Add(enemy as Enemy);
-                                totalDmg += (enemy as Enemy).Damage(this, time, eff.TotalDamage, false);
-                            });
-                            List<Player> players = new List<Player>();
-                            this.Aoe(eff.Radius, true, player =>
-                            {
-                                players?.Add(player as Player);
-                                ActivateHealHp(player as Player, totalDmg, pkts);
-                            });
+                                var totalDmg = 0;
+                                var enemies = new List<Enemy>();
 
-                            if (enemies.Count > 0)
-                            {
-                                Random rand = new Random();
-                                for (int i = 0; i < 5; i++)
+                                Owner?.Aoe(target, eff.Radius, false, enemy =>
                                 {
-                                    Enemy a = enemies[rand.Next(0, enemies.Count)];
-                                    Player b = players[rand.Next(0, players.Count)];
-                                    pkts.Add(new SHOWEFFECT
+                                    if (!enemy.IsPet)
                                     {
-                                        EffectType = EffectType.Flow,
-                                        TargetId = b.Id,
-                                        PosA = new Position { X = a.X, Y = a.Y },
-                                        Color = new ARGB(0xffffffff)
-                                    });
-                                }
-                            }
+                                        enemies.Add(enemy as Enemy);
+                                        totalDmg += (enemy as Enemy).Damage(this, time, eff.TotalDamage, false);
+                                    }
+                                });
 
-                            BroadcastSync(pkts, p => this.Dist(p) < 25);
+                                var players = new List<Player>();
+
+                                this.Aoe(eff.Radius, true, player =>
+                                {
+                                    players?.Add(player as Player);
+                                    ActivateHealHp(player as Player, totalDmg, pkts);
+                                });
+
+                                if (enemies.Count > 0)
+                                {
+                                    var rand = new Random();
+
+                                    for (int i = 0; i < 5; i++)
+                                    {
+                                        var a = enemies[rand.Next(0, enemies.Count)];
+                                        var b = players[rand.Next(0, players.Count)];
+
+                                        pkts.Add(new SHOWEFFECT
+                                        {
+                                            EffectType = EffectType.Flow,
+                                            TargetId = b.Id,
+                                            PosA = new Position { X = a.X, Y = a.Y },
+                                            Color = new ARGB(0xffffffff)
+                                        });
+                                    }
+                                }
+
+                                BroadcastSync(pkts, p => this.Dist(p) < 25);
+                            }
+                            catch { }
                         }
                         break;
 
@@ -241,10 +258,11 @@ namespace LoESoft.GameServer.realm.entity.player
                                 Color = new ARGB(0xff9000ff),
                                 TargetId = Id,
                                 PosA = target
-                            }, p => this.Dist(p) < 25);
+                            }, p => Dist(p) < 25);
+
                             Owner?.Timers.Add(new WorldTimer(1500, (world, t) =>
                             {
-                                Trap trap = new Trap(
+                                var trap = new Trap(
                                     this,
                                     eff.Radius,
                                     eff.TotalDamage,
@@ -258,7 +276,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                     case ActivateEffects.StasisBlast:
                         {
-                            List<Message> pkts = new List<Message>
+                            var pkts = new List<Message>
                             {
                                 new SHOWEFFECT
                                 {
@@ -327,25 +345,34 @@ namespace LoESoft.GameServer.realm.entity.player
                     case ActivateEffects.Lightning:
                         {
                             Enemy start = null;
-                            double angle = Math.Atan2(target.Y - Y, target.X - X);
-                            double diff = Math.PI / 3;
+
+                            var angle = Math.Atan2(target.Y - Y, target.X - X);
+                            var diff = Math.PI / 3;
+
                             Owner?.Aoe(target, 6, false, enemy =>
                             {
                                 if (!(enemy is Enemy))
                                     return;
-                                double x = Math.Atan2(enemy.Y - Y, enemy.X - X);
+
+                                if (enemy.IsPet)
+                                    return;
+
+                                var x = Math.Atan2(enemy.Y - Y, enemy.X - X);
+
                                 if (Math.Abs(angle - x) < diff)
                                 {
                                     start = enemy as Enemy;
                                     diff = Math.Abs(angle - x);
                                 }
                             });
+
                             if (start == null)
                                 return true;
 
-                            Enemy current = start;
-                            Enemy[] targets = new Enemy[eff.MaxTargets];
-                            for (int i = 0; i < targets.Length; i++)
+                            var current = start;
+                            var targets = new Enemy[eff.MaxTargets];
+
+                            for (var i = 0; i < targets.Length; i++)
                             {
                                 targets[i] = current;
 
@@ -355,24 +382,31 @@ namespace LoESoft.GameServer.realm.entity.player
                                         Array.IndexOf(targets, enemy) == -1 &&
                                         this.Dist(enemy) <= 6) is Enemy next))
                                     break;
+
                                 current = next;
                             }
 
-                            List<Message> pkts = new List<Message>();
-                            for (int i = 0; i < targets.Length; i++)
+                            var pkts = new List<Message>();
+
+                            for (var i = 0; i < targets.Length; i++)
                             {
                                 if (targets[i] == null)
                                     break;
+
                                 if (targets[i].HasConditionEffect(ConditionEffectIndex.Invincible))
                                     continue;
-                                Entity prev = i == 0 ? (Entity)this : targets[i - 1];
+
+                                var prev = i == 0 ? (Entity)this : targets[i - 1];
+
                                 targets[i]?.Damage(this, time, eff.TotalDamage, false);
+
                                 if (eff.ConditionEffect != null)
                                     targets[i].ApplyConditionEffect(new ConditionEffect
                                     {
                                         Effect = eff.ConditionEffect.Value,
                                         DurationMS = (int)(eff.EffectDuration * 1000)
                                     });
+
                                 pkts.Add(new SHOWEFFECT
                                 {
                                     EffectType = EffectType.Lightning,
@@ -400,10 +434,13 @@ namespace LoESoft.GameServer.realm.entity.player
                                     Color = new ARGB(0xffddff00),
                                     TargetId = Id,
                                     PosA = target
-                                }, p => this?.Dist(p) < 25);
-                                Placeholder x = new Placeholder(1500);
+                                }, p => this?.Dist(p) < 14);
+
+                                var x = new Placeholder(1500);
+
                                 x.Move(target.X, target.Y);
                                 Owner?.EnterWorld(x);
+
                                 try
                                 {
                                     Owner.Timers.Add(new WorldTimer(1500, (world, t) =>
@@ -415,8 +452,8 @@ namespace LoESoft.GameServer.realm.entity.player
                                             TargetId = x.Id,
                                             PosA = new Position { X = eff.Radius }
                                         }, null);
-                                        world.Aoe(target, eff.Radius, false,
-                                            enemy => PoisonEnemy(enemy as Enemy, eff));
+
+                                        world.Aoe(target, eff.Radius, false, enemy => PoisonEnemy(enemy as Enemy, eff));
                                     }));
                                 }
                                 catch (Exception) { }
@@ -460,6 +497,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                     }
                             return true;
                         }
+
                     case ActivateEffects.RemoveNegativeConditions:
                         {
                             this?.Aoe(eff.Range / 2, true, player => ApplyConditionEffect(NegativeEffs));
@@ -494,34 +532,16 @@ namespace LoESoft.GameServer.realm.entity.player
                                 return true;
                             }
 
-                            int idx = -1;
+                            var amount = eff.Amount * 25;
 
-                            if (eff.Stats == StatsType.MAX_HP_STAT)
-                                idx = 0;
-                            else if (eff.Stats == StatsType.MAX_MP_STAT)
-                                idx = 1;
-                            else if (eff.Stats == StatsType.ATTACK_STAT)
-                                idx = 2;
-                            else if (eff.Stats == StatsType.DEFENSE_STAT)
-                                idx = 3;
-                            else if (eff.Stats == StatsType.SPEED_STAT)
-                                idx = 4;
-                            else if (eff.Stats == StatsType.VITALITY_STAT)
-                                idx = 5;
-                            else if (eff.Stats == StatsType.WISDOM_STAT)
-                                idx = 6;
-                            else if (eff.Stats == StatsType.DEXTERITY_STAT)
-                                idx = 7;
+                            CurrentFame += amount;
 
-                            Stats[idx] += eff.Amount;
-                            int limit =
-                                int.Parse(
-                                    GameServer.Manager.GameData.ObjectTypeToElement[ObjectType].Element(
-                                        StatsManager.StatsIndexToName(idx))
-                                        .Attribute("max")
-                                        .Value);
-                            if (Stats[idx] > limit)
-                                Stats[idx] = limit;
+                            SendHelp($"You received {amount} Fame!");
+
+                            GameServer.Manager.Database.UpdateFame(Client.Account, amount);
+
+                            SaveToCharacter();
+                            UpdateCount++;
                         }
                         break;
 
@@ -585,15 +605,16 @@ namespace LoESoft.GameServer.realm.entity.player
                                     SendHelp("Dungeon not implemented yet.");
                                     return true;
                                 }
-                                Entity entity = Resolve(objType);
-                                World w = GameServer.Manager.GetWorld(Owner.Id); //can't use Owner here, as it goes out of scope
-                                int TimeoutTime = GameServer.Manager.GameData.Portals[objType].TimeoutTime;
-                                string DungName = GameServer.Manager.GameData.Portals[objType].DungeonName;
 
-                                ARGB c = new ARGB(0x00FF00);
+                                var entity = Resolve(objType);
+                                var w = GameServer.Manager.GetWorld(Owner.Id); //can't use Owner here, as it goes out of scope
+                                var TimeoutTime = GameServer.Manager.GameData.Portals[objType].TimeoutTime;
+                                var DungName = GameServer.Manager.GameData.Portals[objType].DungeonName;
 
-                                entity?.Move(X, Y);
-                                w?.EnterWorld(entity);
+                                var c = new ARGB(0x00FF00);
+
+                                entity.Move(X, Y);
+                                w.EnterWorld(entity);
 
                                 w.BroadcastMessage(new NOTIFICATION
                                 {
@@ -611,15 +632,15 @@ namespace LoESoft.GameServer.realm.entity.player
                                     NameColor = 0x123456,
                                     TextColor = 0x123456
                                 }, null);
-                                w?.Timers.Add(new WorldTimer(TimeoutTime * 1000,
+
+                                w.Timers.Add(new WorldTimer(TimeoutTime * 1000,
                                     (world, t) => //default portal close time * 1000
                                     {
                                         try
-                                        {
-                                            w?.LeaveWorld(entity);
-                                        }
-                                        catch (Exception) { }
+                                        { world.LeaveWorld(entity); }
+                                        catch { }
                                     }));
+
                                 return false;
                             }
                             else
@@ -628,6 +649,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                 return true;
                             }
                         }
+
                     case ActivateEffects.Dye:
                         {
                             SendHelp("Feature temporarly disabled until further notice from LoESoft Games.");
@@ -649,6 +671,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                             //SaveToCharacter();
                         }
+
                     case ActivateEffects.ShurikenAbility:
                         {
                             if (!ninjaShoot)
@@ -712,6 +735,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                 return true;
                             }
                         }
+
                     case ActivateEffects.Pet:
                         {
                             if (Database.Names.Contains(Name))
@@ -924,6 +948,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                 return true;
                             }
                         }
+
                     case ActivateEffects.CreatePet:
                         {
                             /// <summary>
@@ -1055,6 +1080,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                     }
                             return true;
                         }
+
                     // TODO ?
                     case ActivateEffects.StatBoostSelf:
                         {
@@ -1105,6 +1131,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                             return false;
                         }
+
                     case ActivateEffects.StatBoostAura:
                         {
                             int idx = -1;
@@ -1292,14 +1319,14 @@ namespace LoESoft.GameServer.realm.entity.player
                                 return true;
                             }
 
-                            List<Message> _outgoing = new List<Message>();
-                            World _world = GameServer.Manager.GetWorld(Owner.Id);
-                            DbAccount acc = Client.Account;
-                            int days = eff.Amount;
+                            var _outgoing = new List<Message>();
+                            var _world = GameServer.Manager.GetWorld(Owner.Id);
+                            var acc = Client.Account;
+                            var days = eff.Amount;
 
                             SendInfo($"Success! You received {eff.Amount} day{(eff.Amount > 1 ? "s" : "")} as account lifetime to your VIP account type when {item.DisplayId} was consumed!");
 
-                            NOTIFICATION _notification = new NOTIFICATION
+                            var _notification = new NOTIFICATION
                             {
                                 Color = new ARGB(0xFFFFFF),
                                 ObjectId = Id,
@@ -1308,7 +1335,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                             _outgoing.Add(_notification);
 
-                            SHOWEFFECT _showeffect = new SHOWEFFECT
+                            var _showeffect = new SHOWEFFECT
                             {
                                 Color = new ARGB(0xffddff00),
                                 EffectType = EffectType.Nova,
@@ -1319,7 +1346,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
                             Owner.BroadcastMessage(_outgoing, null);
 
-                            acc.AccountLifetime = DateTime.Now;
+                            acc.AccountLifetime = DateTime.UtcNow;
                             acc.AccountLifetime = acc.AccountLifetime.AddDays(days);
                             acc.AccountType = (int)Core.config.AccountType.VIP;
                             acc.FlushAsync();
@@ -1329,13 +1356,13 @@ namespace LoESoft.GameServer.realm.entity.player
 
                             SendInfo("Reconnecting...");
 
-                            RECONNECT _reconnect = new RECONNECT
+                            var _reconnect = new RECONNECT
                             {
                                 GameId = (int)WorldID.NEXUS_ID, // change to Drasta Citadel in future versions!
                                 Host = string.Empty,
                                 Key = Empty<byte>.Array,
                                 Name = "Nexus",
-                                Port = Settings.GAMESERVER.PORT
+                                Port = Settings.GAMESERVER.GAME_PORT
                             };
 
                             _world.Timers.Add(new WorldTimer(2000, (w, t) => Client.Reconnect(_reconnect)));
@@ -1380,6 +1407,7 @@ namespace LoESoft.GameServer.realm.entity.player
                                         gifts.Add(GameServer.Manager.GameData.IdToObjectType[getEgg]);
 
                                         Experience += 200000;
+                                        FakeExperience += 200000;
                                         GameServer.Manager.Database.UpdateFame(Client.Account, 1000);
                                         GameServer.Manager.Database.UpdateCredit(Client.Account, 200);
                                         CurrentFame = Client.Account.Fame;
@@ -1412,16 +1440,11 @@ namespace LoESoft.GameServer.realm.entity.player
                                     }
                             return true;
                         }
+
                     case ActivateEffects.PermaPet:
                     case ActivateEffects.PetSkin:
                     case ActivateEffects.Unlock:
                         {
-                            if (Owner.Id != (int)WorldID.VAULT_ID)
-                            {
-                                SendInfo("You can only use this item in the Vault!");
-                                return true;
-                            }
-
                             if (eff.Slot == null)
                             {
                                 SendInfo($"There is no unlock action for this item.");
@@ -1439,7 +1462,6 @@ namespace LoESoft.GameServer.realm.entity.player
 
                                 case "vault":
                                     message = "Vault Chest";
-                                    //GameServer.Manager.Database.AddChest(Client.Account);
                                     (Owner as Vault).AddChest(this);
                                     break;
 
@@ -1521,19 +1543,36 @@ namespace LoESoft.GameServer.realm.entity.player
             double arcGap = item.ArcGap * Math.PI / 180;
             double startAngle = Math.Atan2(target.Y - Y, target.X - X) - (item.NumProjectiles - 1) / 2 * arcGap;
             ProjectileDesc prjDesc = item.Projectiles[0]; //Assume only one
+            Message[] messages = new Message[item.NumProjectiles];
 
             for (int i = 0; i < item.NumProjectiles; i++)
             {
-                Projectile proj = CreateProjectile(prjDesc, item.ObjectType,
+                var proj = CreateProjectile(prjDesc, item.ObjectType,
                     (int)StatsManager.GetAttackDamage(prjDesc.MinDamage, prjDesc.MaxDamage),
                     time.TotalElapsedMs, new Position { X = X, Y = Y }, (float)(startAngle + arcGap * i));
                 Owner?.EnterWorld(proj);
                 FameCounter.Shoot(proj);
+
+                messages[i] = new SERVERPLAYERSHOOT()
+                {
+                    BulletId = proj.ProjectileId,
+                    OwnerId = Id,
+                    ContainerType = item.ObjectType,
+                    StartingPos = new Position { X = X, Y = Y },
+                    Angle = proj.Angle,
+                    Damage = (short)proj.Damage
+                };
             }
+
+            foreach (var plr in Owner?.Players.Values.Where(p => p?.DistSqr(this) < RadiusSqr))
+                plr?.Client.SendMessage(messages);
         }
 
         private void PoisonEnemy(Enemy enemy, ActivateEffect eff)
         {
+            if (enemy.IsPet)
+                return;
+
             if (enemy.ObjectDesc.Pet)
                 return;
 
@@ -1548,31 +1587,28 @@ namespace LoESoft.GameServer.realm.entity.player
                             DurationMS = (int) eff.EffectDuration
                         }
                     });
-                int remainingDmg = (int)StatsManager.GetDefenseDamage(enemy, eff.TotalDamage, enemy.ObjectDesc.Defense);
-                int perDmg = remainingDmg * 1000 / eff.DurationMS;
-                WorldTimer tmr = null;
-                int x = 0;
-                tmr = new WorldTimer(100, (w, t) =>
-                {
-                    if (enemy.Owner == null)
-                        return;
-                    w.BroadcastMessage(new SHOWEFFECT
-                    {
-                        EffectType = EffectType.Poison,
-                        TargetId = enemy.Id,
-                        Color = new ARGB(0xffddff00)
-                    }, null);
+                var remainingDmg = (int)StatsManager.GetDefenseDamage(enemy, eff.TotalDamage, enemy.ObjectDesc.Defense);
+                var perDmg = remainingDmg * 1000 / eff.DurationMS;
 
-                    if (x % 10 == 0)
+                WorldTimer tmr = null;
+                var x = 0;
+
+                tmr = new WorldTimer(250, (w, t) =>
+                {
+                    if (enemy.Owner == null || w == null)
+                        return;
+
+                    if (x % 4 == 0) // make sure to change this if timer delay is changed
                     {
-                        int thisDmg;
-                        if (remainingDmg < perDmg)
+                        var thisDmg = perDmg;
+
+                        if (remainingDmg < thisDmg)
                             thisDmg = remainingDmg;
-                        else
-                            thisDmg = perDmg;
 
                         enemy.Damage(this, t, thisDmg, true);
+
                         remainingDmg -= thisDmg;
+
                         if (remainingDmg <= 0)
                             return;
                     }
@@ -1580,11 +1616,11 @@ namespace LoESoft.GameServer.realm.entity.player
 
                     tmr.Reset();
 
-                    GameServer.Manager.Logic.AddPendingAction(_ => w.Timers.Add(tmr), PendingPriority.Creation);
+                    w.Timers.Add(tmr);
                 });
                 Owner?.Timers.Add(tmr);
             }
-            catch (Exception) { }
+            catch { }
         }
 
         private bool CheatEngineDetectSlot(Item item, USEITEM pkt, IContainer con) => pkt?.SlotObject.SlotId != 255 && pkt?.SlotObject.SlotId != 254 && con?.Inventory[pkt.SlotObject.SlotId] != item;

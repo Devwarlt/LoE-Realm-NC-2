@@ -35,11 +35,13 @@ namespace LoESoft.GameServer.realm.entity.merchant
         public static int[] region8list;
         public static int[] region9list;
         public static int[] region10list;
-      //  public static int[] smallclothlist;
-     //   public static int[] accessorylist;
-     //   public static int[] largeclothlist;
-     //   public static int[] clothinglist;
+
+        //  public static int[] smallclothlist;
+        //   public static int[] accessorylist;
+        //   public static int[] largeclothlist;
+        //   public static int[] clothinglist;
         internal static readonly List<int> weaponSlotType = new List<int> { 1, 2, 3, 8, 17, 24 };
+
         internal static readonly List<int> abilitySlotType = new List<int> { 4, 5, 11, 12, 13, 15, 16, 18, 19, 20, 21, 22, 23, 25 };
         internal static readonly List<int> armorSlotType = new List<int> { 6, 7, 14 };
         internal static readonly List<int> ringSlotType = new List<int> { 9 };

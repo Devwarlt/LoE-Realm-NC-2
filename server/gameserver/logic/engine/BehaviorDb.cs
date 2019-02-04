@@ -40,10 +40,8 @@ namespace LoESoft.GameServer.logic
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        public BehaviorDb(RealmManager manager)
+        public BehaviorDb()
         {
-            Manager = manager;
-
             Definitions = new Dictionary<ushort, Tuple<State, Loot>>();
 
             if (Interlocked.Exchange(ref initializing, 1) == 1)
@@ -61,7 +59,7 @@ namespace LoESoft.GameServer.logic
             for (int i = 0; i < fields.Length; i++)
             {
                 FieldInfo field = fields[i];
-                ((_) field.GetValue(this))();
+                ((_)field.GetValue(this))();
                 field.SetValue(this, null);
             }
 
@@ -71,11 +69,8 @@ namespace LoESoft.GameServer.logic
             initializing = 0;
         }
 
-        public RealmManager Manager
-        { get; private set; }
-
         internal static EmbeddedData InitGameData
-        { get { return InitDb.Manager.GameData; } }
+        { get { return GameServer.Manager.GameData; } }
 
         public Dictionary<ushort, Tuple<State, Loot>> Definitions
         { get; private set; }
@@ -95,9 +90,12 @@ namespace LoESoft.GameServer.logic
             public Ctor Init(string objType, State rootState, params ILootDef[] defs)
             {
                 var d = new Dictionary<string, State>();
+
                 rootState.Resolve(d);
                 rootState.ResolveChildren(d);
-                EmbeddedData dat = InitDb.Manager.GameData;
+
+                var dat = GameServer.Manager.GameData;
+
                 try
                 {
                     if (InitDb.Definitions.ContainsKey(dat.IdToObjectType[objType]))
@@ -107,7 +105,7 @@ namespace LoESoft.GameServer.logic
                         if (defs.Length > 0)
                         {
                             var loot = new Loot(defs);
-                            rootState.Death += (sender, e) => loot.Handle((Enemy) e.Host, e.Time);
+                            rootState.Death += (sender, e) => loot.Handle((Enemy)e.Host, e.Time);
                             InitDb.Definitions.Add(dat.IdToObjectType[objType], new Tuple<State, Loot>(rootState, loot));
                         }
                         else

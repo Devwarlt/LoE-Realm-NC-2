@@ -101,13 +101,14 @@ namespace LoESoft.GameServer.logic
                 new State(
                     new HpLessTransition(.2, "Death"),
                     new State(
-                        new Charge(0.6, 7, coolDown: 5000),
+                        new Charge(6, 7, coolDown: 5000),
                         new Shoot(3, 6, 60, index: 0, angleOffset: 0, coolDown: 1200),
                         new Shoot(3, 6, 60, index: 0, angleOffset: 10, coolDown: 1200, coolDownOffset: 200),
                         new Shoot(3, 6, 60, index: 0, angleOffset: 20, coolDown: 1200, coolDownOffset: 400),
                         new Shoot(3, 6, 60, index: 0, angleOffset: 30, coolDown: 1200, coolDownOffset: 600),
                         new Shoot(3, 6, 60, index: 0, angleOffset: 40, coolDown: 1200, coolDownOffset: 800),
-                        new Shoot(3, 6, 60, index: 0, angleOffset: 50, coolDown: 1200, coolDownOffset: 1000)
+                        new Shoot(3, 6, 60, index: 0, angleOffset: 50, coolDown: 1200, coolDownOffset: 1000),
+                        new TimedTransition(20000, "Death")
                     ),
                     new State("Death",
                         new AddCond(ConditionEffectIndex.Invulnerable),
@@ -120,8 +121,8 @@ namespace LoESoft.GameServer.logic
             new State(
                 new HpLessTransition(0.3, "Death"),
                 new State(
-                    new Circle(0.5, 5, 1, "shtrs Twilight Archmage"),
-                    new Charge(0.1, 6, coolDown: 10000),
+                    new Circle(5, 5, 1, "shtrs Twilight Archmage"),
+                    new Charge(1, 6, coolDown: 10000),
                 new Shoot(13, 10, 8, index: 0, coolDown: 1000, angleOffset: 1)
                 ),
             new State("Death",
@@ -683,13 +684,13 @@ namespace LoESoft.GameServer.logic
                         new PlayerWithinTransition(5, "fire")
                             ),
                     new State("fire",
-                        new Chase(0.5, range: 1),
+                        new Chase(5, range: 1),
                         new Shoot(10, 5, 10, index: 0, coolDown: 1500),
                         new TimedTransition(15000, "Spawn")
                         ),
                     new State("Spawn",
-                        new Spawn("shtrs Ice Shield", maxChildren: 1, initialSpawn: 1, coolDown: 750000000),
-                        new TimedTransition(25, "fire")
+                        new Spawn("shtrs Ice Shield", maxChildren: 1, initialSpawn: 1, coolDown: 30000),
+                        new TimedTransition(2500, "fire")
                         )
                     )
             )
@@ -700,7 +701,7 @@ namespace LoESoft.GameServer.logic
                     new PlayerWithinTransition(7, "Follow")
                     ),
                 new State("Follow",
-                    new Chase(1, range: 1),
+                    new Chase(10, range: 1),
                     new TimedTransition(5000, "Throw")
                     ),
                 new State("Throw",
@@ -753,7 +754,7 @@ namespace LoESoft.GameServer.logic
                         new PlayerWithinTransition(5, "fire")
                             ),
                     new State("fire",
-                        new Chase(0.5, range: 1),
+                        new Chase(5, range: 1),
                         new Shoot(10, 5, 10, index: 0, coolDown: 1500),
                         new TimedTransition(10000, "nothing")
                             ),
@@ -769,7 +770,7 @@ namespace LoESoft.GameServer.logic
                             ),
                     new State("fire",
                         new RemCond(ConditionEffectIndex.Invulnerable),
-                        new Chase(0.5, range: 1),
+                        new Chase(5, range: 1),
                         new Shoot(10, 2, 10, index: 1, coolDown: 200),
                         new TimedTransition(10000, "invulnerable")
                             ),
@@ -965,17 +966,17 @@ namespace LoESoft.GameServer.logic
             .Init("shtrs Royal Guardian L",
                 new State(
                     new State("1st",
-                        new Chase(1, 8, 5),
+                        new Chase(10, 8, 5),
                         new Shoot(15, 20, index: 0),
                         new TimedTransition(1000, "2nd")
                         ),
                     new State("2nd",
-                        new Chase(1, 8, 5),
+                        new Chase(10, 8, 5),
                         new Shoot(10, index: 1),
                         new TimedTransition(1000, "3rd")
                         ),
                     new State("3rd",
-                        new Chase(1, 8, 5),
+                        new Chase(10, 8, 5),
                         new Shoot(10, index: 1),
                         new TimedTransition(1000, "1st")
                         )
@@ -985,18 +986,18 @@ namespace LoESoft.GameServer.logic
                 new State(
                     new Heal(5, 1000, "idkanymore", coolDown: 10000),
                     new State("orbit",
-                        new Circle(1.0, 2, 5, "shtrs The Forgotten King"),
+                        new Circle(10, 2, 5, "shtrs The Forgotten King"),
                         new TimedTransition(8000, "dafuq")
                         ),
                     new State("dafuq",
-                        new Circle(1.0, 2, 5, "shtrs The Forgotten King")
+                        new Circle(10, 2, 5, "shtrs The Forgotten King")
                         )
                     )
             )
             .Init("shtrs Yellow Crystal",
                 new State(
                     new State("orbit",
-                        new Circle(1.0, 2, 5, "shtrs The Forgotten King"),
+                        new Circle(10, 2, 5, "shtrs The Forgotten King"),
                         new TimedTransition(25, "shoot")
                         ),
                     new State("shoot",
@@ -1004,7 +1005,7 @@ namespace LoESoft.GameServer.logic
                         new TimedTransition(1, "dafuq")
                         ),
                     new State("dafuq",
-                        new Circle(1.0, 2, 5, "shtrs The Forgotten King"),
+                        new Circle(10, 2, 5, "shtrs The Forgotten King"),
                         new Shoot(5, 4, 4, index: 0)
                         )
                     )
@@ -1012,11 +1013,11 @@ namespace LoESoft.GameServer.logic
             .Init("shtrs Red Crystal",
                 new State(
                     new State("orbit",
-                        new Circle(1.0, 2, 5, "shtrs The Forgotten King"),
+                        new Circle(10, 2, 5, "shtrs The Forgotten King"),
                         new TimedTransition(8000, "dafuq")
                         ),
                     new State("dafuq",
-                        new Circle(1.0, 2, 5, "shtrs The Forgotten King"),
+                        new Circle(10, 2, 5, "shtrs The Forgotten King"),
                         new TimedTransition(15000, "ThrowPortal")
                         ),
                     new State("ThrowPortal",
@@ -1028,11 +1029,11 @@ namespace LoESoft.GameServer.logic
             .Init("shtrs Blue Crystal",
                 new State(
                     new State("orbit",
-                        new Circle(1.0, 2, 5, "shtrs The Forgotten King"),
+                        new Circle(10, 2, 5, "shtrs The Forgotten King"),
                         new TimedTransition(8000, "dafuq")
                         ),
                     new State("dafuq",
-                        new Circle(1.0, 2, 5, "shtrs The Forgotten King"),
+                        new Circle(10, 2, 5, "shtrs The Forgotten King"),
                         new TimedTransition(15000, "ThrowPortal")
                         ),
                     new State("ThrowPortal",

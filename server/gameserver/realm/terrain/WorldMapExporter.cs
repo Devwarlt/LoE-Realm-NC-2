@@ -28,14 +28,14 @@ namespace LoESoft.GameServer.realm.terrain
                 for (int x = 0; x < w; x++)
                 {
                     TerrainTile tile = tiles[x, y];
-                    short i = (short) dict.IndexOf(tile);
+                    short i = (short)dict.IndexOf(tile);
                     if (i == -1)
                     {
-                        i = (short) dict.Count;
+                        i = (short)dict.Count;
                         dict.Add(tile);
                     }
-                    dat[idx] = (byte) (i & 0xff);
-                    dat[idx + 1] = (byte) (i >> 8);
+                    dat[idx] = (byte)(i & 0xff);
+                    dat[idx + 1] = (byte)(i >> 8);
                     dat[idx + 2] = tile.Elevation;
                     idx += 3;
                 }
@@ -43,14 +43,14 @@ namespace LoESoft.GameServer.realm.terrain
             MemoryStream ms = new MemoryStream();
             using (BinaryWriter wtr = new BinaryWriter(ms))
             {
-                wtr.Write((ushort) dict.Count);
+                wtr.Write((ushort)dict.Count);
                 foreach (TerrainTile i in dict)
                 {
                     wtr.Write(i.TileId);
                     wtr.Write(i.TileObj ?? "");
                     wtr.Write(i.Name ?? "");
-                    wtr.Write((byte) i.Terrain);
-                    wtr.Write((byte) i.Region);
+                    wtr.Write((byte)i.Terrain);
+                    wtr.Write((byte)i.Region);
                     //wtr.Write((byte)i.Elevation);
                 }
                 wtr.Write(w);

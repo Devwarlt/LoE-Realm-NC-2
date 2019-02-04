@@ -481,7 +481,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
         var qp:QueuePong = (this.messages.require(QUEUE_PONG) as QueuePong);
         qp.serial_ = _arg1.serial_;
         qp.time_ = getTimer();
-        serverConnection.queueMessage(qp);
+        //serverConnection.queueMessage(qp);
     }
 
     private function onHatchPet(_arg1:HatchPetMessage):void {
@@ -643,7 +643,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
         }
     }
 
-    override public function playerShoot(projectile:Projectile, attackAmount:int, isDazed:Boolean, isBeserk:Boolean, minAttackFrequency:Number, maxAttackFrequency:Number, weaponRateOfFire:Number):void {
+    override public function playerShoot(projectile:Projectile, attackAmount:int, isDazed:Boolean, isBeserk:Boolean, minAttackFrequency:Number, maxAttackFrequency:Number, weaponRateOfFire:Number, isAbility:Boolean):void {
         var playerShoot:PlayerShoot = (this.messages.require(PLAYERSHOOT) as PlayerShoot);
         playerShoot.bulletId_ = projectile.bulletId_;
         playerShoot.containerType_ = projectile.objectType_;
@@ -656,6 +656,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
         playerShoot.minAttackFrequency_ = minAttackFrequency;
         playerShoot.maxAttackFrequency_ = maxAttackFrequency;
         playerShoot.weaponRateOfFire_ = weaponRateOfFire;
+        playerShoot.isAbility_ = isAbility;
 
         serverConnection.queueMessage(playerShoot);
     }
@@ -703,7 +704,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
         aoeAck.position_.x_ = X;
         aoeAck.position_.y_ = Y;
 
-        serverConnection.queueMessage(aoeAck);
+        //serverConnection.queueMessage(aoeAck);
     }
 
     override public function groundDamage(time:int, X:Number, Y:Number):void {
@@ -719,7 +720,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
         var shootAck:ShootAck = (this.messages.require(SHOOTACK) as ShootAck);
         shootAck.time_ = time;
 
-        serverConnection.queueMessage(shootAck);
+        //serverConnection.queueMessage(shootAck);
     }
 
     override public function playerText(text:String):void {
@@ -830,7 +831,6 @@ public class GameServerConnectionConcrete extends GameServerConnection {
             this.addTextLine.dispatch(ChatMessage.make("", "You cannot use items while trading."));
 
             SoundEffectLibrary.play("error");
-
             return;
         }
 
@@ -1601,7 +1601,10 @@ public class GameServerConnectionConcrete extends GameServerConnection {
                     _arg1.hp_ = _local8;
                     break;
                 case StatData.SIZE_STAT:
-                    _arg1.setSize(_local8);
+                    if (_arg1 is Player)
+                        _arg1.setNewSize(_local8);
+                    else
+                        _arg1.setSize(_local8);
                     break;
                 case StatData.MAX_MP_STAT:
                     _local4.maxMP_ = _local8;
@@ -1610,13 +1613,31 @@ public class GameServerConnectionConcrete extends GameServerConnection {
                     _local4.mp_ = _local8;
                     break;
                 case StatData.NEXT_LEVEL_EXP_STAT:
-                    _local4.nextLevelExp_ = _local8;
+                    _local4.nextLevelExp_ = Number(_local7.strStatValue_);
+                    break;
+                case StatData.NEXT_ATTACK_EXP_STAT:
+                    _local4.nextAttackExp_ = Number(_local7.strStatValue_);
+                    break;
+                case StatData.NEXT_DEFENSE_EXP_STAT:
+                    _local4.nextDefenseExp_ = Number(_local7.strStatValue_);
                     break;
                 case StatData.EXP_STAT:
-                    _local4.exp_ = _local8;
+                    _local4.exp_ = Number(_local7.strStatValue_);
+                    break;
+                case StatData.ATTACK_EXP_STAT:
+                    _local4.attackExp_ = Number(_local7.strStatValue_);
+                    break;
+                case StatData.DEFENSE_EXP_STAT:
+                    _local4.defenseExp_ = Number(_local7.strStatValue_);
                     break;
                 case StatData.LEVEL_STAT:
                     _arg1.level_ = _local8;
+                    break;
+                case StatData.ATTACK_LEVEL_STAT:
+                    _arg1.attackLevel_ = _local8;
+                    break;
+                case StatData.DEFENSE_LEVEL_STAT:
+                    _arg1.defenseLevel_ = _local8;
                     break;
                 case StatData.ATTACK_STAT:
                     _local4.attack_ = _local8.toString();
@@ -1688,7 +1709,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
                     _local4.accountId_ = _local7.strStatValue_;
                     break;
                 case StatData.FAME_STAT:
-                    _local4.fame_ = _local8;
+                    _local4.fame_ = Number(_local7.strStatValue_);
                     break;
                 case StatData.FORTUNE_TOKEN_STAT:
                     _local4.setTokens(_local8);
@@ -1749,10 +1770,10 @@ public class GameServerConnectionConcrete extends GameServerConnection {
                     _arg1.nameBitmapData_ = null;
                     break;
                 case StatData.CURR_FAME_STAT:
-                    _local4.currFame_ = _local8;
+                    _local4.currFame_ = Number(_local7.strStatValue_);
                     break;
                 case StatData.NEXT_CLASS_QUEST_FAME_STAT:
-                    _local4.nextClassQuestFame_ = _local8;
+                    _local4.nextClassQuestFame_ = Number(_local7.strStatValue_);
                     break;
                 case StatData.GLOW_COLOR_STAT:
                     _local4.setGlow(_local8);
@@ -1867,7 +1888,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
 
     private function processObjectStatus(_arg1:ObjectStatusData, _arg2:int, _arg3:int):void {
         var _local8:int;
-        var _local9:int;
+        var _local9:Number;
         var _local10:int;
         var _local11:CharacterClass;
         var _local12:XML;
@@ -2087,7 +2108,7 @@ public class GameServerConnectionConcrete extends GameServerConnection {
         }
         var _local3:Boolean = (this.player.distTo(_arg1.pos_) < _arg1.radius_);
         if (_local3) {
-            _local4 = GameObject.damageWithDefense(_arg1.damage_, Parameters.parse(this.player.defense_), false, this.player.condition_);
+            _local4 = GameObject.damageWithDefense(_arg1.damage_, this.player.defenseLevel_ + Parameters.parse(this.player.defenseBoost_), false, this.player.condition_);
             _local5 = null;
             if (_arg1.effect_ != 0) {
                 _local5 = new Vector.<uint>();

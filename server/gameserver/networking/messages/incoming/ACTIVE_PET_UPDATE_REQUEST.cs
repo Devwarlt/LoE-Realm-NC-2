@@ -22,13 +22,13 @@ namespace LoESoft.GameServer.networking.incoming
         protected override void Read(NReader rdr)
         {
             CommandId = rdr.ReadByte();
-            PetId = (uint) rdr.ReadInt32();
+            PetId = (uint)rdr.ReadInt32();
         }
 
         protected override void Write(NWriter wtr)
         {
-            wtr.Write((byte) CommandId);
-            wtr.Write((int) PetId);
+            wtr.Write((byte)CommandId);
+            wtr.Write((int)PetId);
         }
     }
 }

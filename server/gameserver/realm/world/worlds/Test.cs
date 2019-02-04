@@ -14,7 +14,7 @@ namespace LoESoft.GameServer.realm.world
 
         public Test()
         {
-            Id = (int) WorldID.TEST_ID;
+            Id = (int)WorldID.TEST_ID;
             Name = "Test";
             Background = 0;
             Dungeon = true;
@@ -32,7 +32,7 @@ namespace LoESoft.GameServer.realm.world
 
             foreach (KeyValuePair<int, Player> i in Players)
             {
-                if (i.Value.Client.Account.AccountType != (int) LoESoft.Core.config.AccountType.DEVELOPER || !i.Value.Client.Account.Admin)
+                if (i.Value.Client.Account.AccountType != (int)LoESoft.Core.config.AccountType.DEVELOPER || !i.Value.Client.Account.Admin)
                 {
                     i.Value.SendError(string.Format("[Staff Member: {0}] You cannot access Test world with account type {1}.", i.Value.Client.Account.Admin, nameof(i.Value.Client.Account.AccountType)));
                     GameServer.Manager.TryDisconnect(i.Value.Client, DisconnectReason.ACCESS_DENIED_DUE_RESTART);

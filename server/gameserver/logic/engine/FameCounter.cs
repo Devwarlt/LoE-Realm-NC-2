@@ -63,9 +63,6 @@ namespace LoESoft.GameServer.logic
 
                 if (enemy.ObjectDesc.Oryx)
                     Stats.OryxKills++;
-
-                //if (enemy.ObjectDesc.TaskID != -1)
-                //    Player.TaskManager.ProcessTask(enemy.ObjectDesc.TaskID);
             }
 
             // process task below
@@ -136,17 +133,12 @@ namespace LoESoft.GameServer.logic
         public void Tick(RealmTime time)
         {
             elapsed += time.ElapsedMsDelta;
+
             if (elapsed > 1000 * 60)
             {
                 elapsed -= 1000 * 60;
                 Stats.MinutesActive++;
             }
-        }
-
-        public void RemoveProjectile(Projectile projectile)
-        {
-            if (projs.Contains(projectile))
-                projs.Remove(projectile);
         }
     }
 }

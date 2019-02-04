@@ -15,11 +15,11 @@ namespace LoESoft.GameServer.realm
          *  16 - 23 Collision Map Type
          *
          */
+        public ICollidable<T> Parent;
         public int Data;
 
-        public CollisionNode<T> Next;
-        public ICollidable<T> Parent;
         public CollisionNode<T> Previous;
+        public CollisionNode<T> Next;
 
         public void InsertAfter(CollisionNode<T> node)
         {
@@ -65,14 +65,13 @@ namespace LoESoft.GameServer.realm
     //TODO: thread-safe?
     public class CollisionMap<T> where T : ICollidable<T>
     {
-        public const int CHUNK_SIZE = 16;
-        private const int ACTIVE_RADIUS = 3;
-        private readonly int cH;
-        private readonly int cW;
-        private readonly CollisionNode<T>[,] chunks;
-        private readonly int h;
         private readonly byte type;
-        private readonly int w;
+        private CollisionNode<T>[,] chunks;
+        private int w;
+        private int h;
+        private readonly int cW;
+        private readonly int cH;
+        public const int CHUNK_SIZE = 16;
 
         public CollisionMap(byte type, int w, int h)
         {
@@ -91,9 +90,12 @@ namespace LoESoft.GameServer.realm
 
         public void Insert(T obj)
         {
-            int x = (int) (obj.X / CHUNK_SIZE);
-            int y = (int) (obj.Y / CHUNK_SIZE);
-            obj.CollisionNode = new CollisionNode<T>
+            if (obj.CollisionNode != null)
+                throw new InvalidOperationException("Object already added into collision map.");
+
+            var x = (int)(obj.X / CHUNK_SIZE);
+            var y = (int)(obj.Y / CHUNK_SIZE);
+            obj.CollisionNode = new CollisionNode<T>()
             {
                 Data = GetData(x, y),
                 Parent = obj
@@ -113,14 +115,16 @@ namespace LoESoft.GameServer.realm
                 Insert(obj);
                 return;
             }
+            if (obj.Parent != this)
+                throw new InvalidOperationException("Cannot move object accoss different map.");
 
-            int x = (int) (newX / CHUNK_SIZE);
-            int y = (int) (newY / CHUNK_SIZE);
-            int newDat = GetData(x, y);
+            var x = (int)(newX / CHUNK_SIZE);
+            var y = (int)(newY / CHUNK_SIZE);
+            var newDat = GetData(x, y);
             if (obj.CollisionNode.Data != newDat)
             {
-                int oldX = (int) (obj.X / CHUNK_SIZE);
-                int oldY = (int) (obj.Y / CHUNK_SIZE);
+                var oldX = (int)(obj.X / CHUNK_SIZE);
+                var oldY = (int)(obj.Y / CHUNK_SIZE);
                 if (chunks[oldX, oldY] == obj.CollisionNode)
                     chunks[oldX, oldY] = obj.CollisionNode.Remove();
                 else
@@ -138,9 +142,11 @@ namespace LoESoft.GameServer.realm
         {
             if (obj.CollisionNode == null)
                 return;
+            if (obj.Parent != this)
+                throw new InvalidOperationException("Cannot remove object accoss different map.");
 
-            int x = (int) (obj.X / CHUNK_SIZE);
-            int y = (int) (obj.Y / CHUNK_SIZE);
+            var x = (int)(obj.X / CHUNK_SIZE);
+            var y = (int)(obj.Y / CHUNK_SIZE);
             if (chunks[x, y] == obj.CollisionNode)
                 chunks[x, y] = obj.CollisionNode.Remove();
             else
@@ -154,17 +160,17 @@ namespace LoESoft.GameServer.realm
 
         public IEnumerable<T> HitTest(double _x, double _y, double radius)
         {
-            int xl = Math.Max(0, (int) (_x - radius) / CHUNK_SIZE);
-            int xh = Math.Min(cW - 1, (int) (_x + radius) / CHUNK_SIZE);
-            int yl = Math.Max(0, (int) (_y - radius) / CHUNK_SIZE);
-            int yh = Math.Min(cH - 1, (int) (_y + radius) / CHUNK_SIZE);
-            for (int y = yl; y <= yh; y++)
-                for (int x = xl; x <= xh; x++)
+            int xl = Math.Max(0, (int)(_x - radius) / CHUNK_SIZE);
+            int xh = Math.Min(cW - 1, (int)(_x + radius) / CHUNK_SIZE);
+            int yl = Math.Max(0, (int)(_y - radius) / CHUNK_SIZE);
+            int yh = Math.Min(cH - 1, (int)(_y + radius) / CHUNK_SIZE);
+            for (var y = yl; y <= yh; y++)
+                for (var x = xl; x <= xh; x++)
                 {
-                    CollisionNode<T> node = chunks[x, y];
+                    var node = chunks[x, y];
                     while (node != null)
                     {
-                        yield return (T) node.Parent;
+                        yield return (T)node.Parent;
                         node = node.Next;
                     }
                 }
@@ -172,17 +178,18 @@ namespace LoESoft.GameServer.realm
 
         public IEnumerable<T> HitTest(double _x, double _y)
         {
-            if (_x < 0 || _x >= w || _y <= 0 || _y >= h)
-                yield break;
-            int x = (int) _x / CHUNK_SIZE;
-            int y = (int) _y / CHUNK_SIZE;
-            CollisionNode<T> node = chunks[x, y];
+            if (_x < 0 || _x >= w || _y <= 0 || _y >= h) yield break;
+            int x = (int)_x / CHUNK_SIZE;
+            int y = (int)_y / CHUNK_SIZE;
+            var node = chunks[x, y];
             while (node != null)
             {
-                yield return (T) node.Parent;
+                yield return (T)node.Parent;
                 node = node.Next;
             }
         }
+
+        private const int ACTIVE_RADIUS = 3;
 
         public IEnumerable<T> GetActiveChunks(CollisionMap<T> from)
         {
@@ -199,10 +206,10 @@ namespace LoESoft.GameServer.realm
                             {
                                 if (x + j < 0 || x + j >= cW || y + i < 0 || y + i >= cH)
                                     continue;
-                                CollisionNode<T> node = chunks[x + j, y + i];
+                                var node = chunks[x + j, y + i];
                                 while (node != null)
                                 {
-                                    ret.Add((T) node.Parent);
+                                    ret.Add((T)node.Parent);
                                     node = node.Next;
                                 }
                             }

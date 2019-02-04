@@ -42,7 +42,7 @@ namespace LoESoft.GameServer.networking.handlers
                 return;
             }
 
-            GuildCreateStatus gstatus = Manager.Database.CreateGuild(name, out DbGuild guild);
+            var gstatus = GameServer.Manager.Database.CreateGuild(name, out DbGuild guild);
 
             if (gstatus != GuildCreateStatus.OK)
             {
@@ -50,7 +50,7 @@ namespace LoESoft.GameServer.networking.handlers
                 return;
             }
 
-            AddGuildMemberStatus mstatus = Manager.Database.AddGuildMember(guild, acc, true);
+            var mstatus = GameServer.Manager.Database.AddGuildMember(guild, acc, true);
 
             if (mstatus != AddGuildMemberStatus.OK)
             {
@@ -58,7 +58,7 @@ namespace LoESoft.GameServer.networking.handlers
                 return;
             }
 
-            Manager.Database.UpdateFame(acc, -1000);
+            GameServer.Manager.Database.UpdateFame(acc, -1000);
             client.Player.CurrentFame = acc.Fame;
             client.Player.Guild = guild.Name;
             client.Player.GuildRank = 40;

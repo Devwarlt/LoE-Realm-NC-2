@@ -28,7 +28,7 @@ namespace LoESoft.GameServer.realm
 
         public float GetAttackDamage(int min, int max)
         {
-            return Random.Obf6((uint) min, (uint) max) * DamageModifier();
+            return Random.Obf6((uint)min, (uint)max) * DamageModifier();
         }
 
         public readonly static float MinAttackFrequency = 0.0015f;
@@ -51,7 +51,8 @@ namespace LoESoft.GameServer.realm
         {
             if (player.HasConditionEffect(ConditionEffectIndex.Weak))
                 return 0.5f;
-            var ret = (0.5f + GetStats(2) / 75F * (2 - 0.5f));
+
+            var ret = (0.5f + (player.AttackLevel + player.Boost[2]) / 75f * (2 - 0.5f));
 
             if (player.HasConditionEffect(ConditionEffectIndex.Damaging))
                 ret *= 1.5f;
@@ -63,12 +64,12 @@ namespace LoESoft.GameServer.realm
         {
             if (host.HasConditionEffect(ConditionEffectIndex.Armored))
                 def *= 2;
+
             if (host.HasConditionEffect(ConditionEffectIndex.ArmorBroken))
                 def = 0;
 
-            float limit = dmg * 0.15f;
+            float ret, limit = dmg * 0.15f;
 
-            float ret;
             if (dmg - def < limit)
                 ret = limit;
             else
@@ -82,16 +83,18 @@ namespace LoESoft.GameServer.realm
 
         public float GetDefenseDamage(int dmg, bool noDef)
         {
-            int def = GetStats(3);
+            var def = player.DefenseLevel + player.Boost[3];
+
             if (player.HasConditionEffect(ConditionEffectIndex.Armored))
                 def *= 2;
-            if (player.HasConditionEffect(ConditionEffectIndex.ArmorBroken) ||
-                noDef)
+
+            if (player.HasConditionEffect(ConditionEffectIndex.ArmorBroken) || noDef)
                 def = 0;
 
             float limit = dmg * 0.15f;
 
             float ret;
+
             if (dmg - def < limit)
                 ret = limit;
             else
@@ -100,6 +103,7 @@ namespace LoESoft.GameServer.realm
             if (player.HasConditionEffect(ConditionEffectIndex.Invulnerable) ||
                 player.HasConditionEffect(ConditionEffectIndex.Invincible))
                 ret = 0;
+
             return ret;
         }
 
@@ -139,6 +143,7 @@ namespace LoESoft.GameServer.realm
         public float GetDex()
         {
             int dex = GetStats(7);
+
             if (player.HasConditionEffect(ConditionEffectIndex.Dazed))
                 dex = 0;
 
@@ -254,7 +259,7 @@ namespace LoESoft.GameServer.realm
 
             public static uint Obf1()
             {
-                return (uint) Math.Round(new Random().NextDouble() * (uint.MaxValue - 1) + 1);
+                return (uint)Math.Round(new Random().NextDouble() * (uint.MaxValue - 1) + 1);
             }
 
             public uint Obf2()
@@ -271,7 +276,7 @@ namespace LoESoft.GameServer.realm
             {
                 float _loc3_ = Obf3() / 2147483647;
                 float _loc4_ = Obf3() / 2147483647;
-                float _loc5_ = (float) Math.Sqrt(-2 * (float) Math.Log(_loc3_)) * (float) Math.Cos(2 * _loc4_ * Math.PI);
+                float _loc5_ = (float)Math.Sqrt(-2 * (float)Math.Log(_loc3_)) * (float)Math.Cos(2 * _loc4_ * Math.PI);
                 return param1 + _loc5_ * param2;
             }
 

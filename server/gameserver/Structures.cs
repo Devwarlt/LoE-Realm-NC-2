@@ -121,10 +121,10 @@ namespace LoESoft.GameServer
 
         public ARGB(uint argb)
         {
-            A = (byte) ((argb & 0xff000000) >> 24);
-            R = (byte) ((argb & 0x00ff0000) >> 16);
-            G = (byte) ((argb & 0x0000ff00) >> 8);
-            B = (byte) ((argb & 0x000000ff) >> 0);
+            A = (byte)((argb & 0xff000000) >> 24);
+            R = (byte)((argb & 0x00ff0000) >> 16);
+            G = (byte)((argb & 0x0000ff00) >> 8);
+            B = (byte)((argb & 0x000000ff) >> 0);
         }
 
         public static ARGB Read(NReader rdr)
@@ -160,7 +160,7 @@ namespace LoESoft.GameServer
             {
                 ObjectId = rdr.ReadInt32(),
                 SlotId = rdr.ReadByte(),
-                ObjectType = (ushort) rdr.ReadInt16()
+                ObjectType = (ushort)rdr.ReadInt16()
             };
             return ret;
         }
@@ -247,7 +247,7 @@ namespace LoESoft.GameServer
         {
             ObjectDef ret = new ObjectDef
             {
-                ObjectType = (ushort) rdr.ReadInt16(),
+                ObjectType = (ushort)rdr.ReadInt16(),
                 Stats = ObjectStatusData.Read(rdr)
             };
             return ret;
@@ -290,18 +290,53 @@ namespace LoESoft.GameServer
             try
             {
                 wtr.Write(Id);
+
                 Position.Write(wtr);
-                wtr.Write((ushort) Stats.Length);
-                foreach (KeyValuePair<StatsType, object> i in Stats)
+
+                wtr.Write((ushort)Stats.Length);
+
+                foreach (var i in Stats)
                 {
                     wtr.Write(i.Key);
+
                     if (i.Key.IsUTF() && i.Value != null)
                         wtr.WriteUTF(i.Value.ToString());
+                    else if (i.Key.GetType() == typeof(double))
+                        wtr.Write((double)i.Value);
                     else
-                        wtr.Write((int) i.Value);
+                        wtr.Write((int)i.Value);
                 }
             }
             catch (Exception) { }
+        }
+    }
+
+    public struct MarketOffer
+    {
+        public int Price { get; set; }
+        public ObjectSlot Slot { get; set; }
+
+        public static MarketOffer Read(NReader rdr)
+        {
+            return new MarketOffer
+            {
+                Price = rdr.ReadInt32(),
+                Slot = ObjectSlot.Read(rdr)
+            };
+        }
+
+        public void Write(NWriter wtr)
+        {
+            wtr.Write(Price);
+            Slot.Write(wtr);
+        }
+    }
+
+    public struct PlayerShopItem
+    {
+        public void Write(NWriter wtr)
+        {
+            throw new NotImplementedException(); //TODO
         }
     }
 }

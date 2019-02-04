@@ -95,6 +95,13 @@ namespace LoESoft.GameServer
         KEY_INFO_RESPONSE = 19,
         SWITCH_MUSIC = 150,
         CLAIM_LOGIN_REWARD_MSG = 151,
-        LOGIN_REWARD_MSG = 152
+        LOGIN_REWARD_MSG = 152,
+        MARKET_RESULT = 153,
+        SET_FOCUS = 154,
+        SERVER_FULL = 155,
+        QUEUE_PING = 156,
+        QUEUE_PONG = 157,
+        MARKET_COMMAND = 158,
+        QUEST_ROOM_MSG = 159,
     }
 }

@@ -1,7 +1,9 @@
 ﻿#region
 
 using LoESoft.GameServer.networking.incoming;
+using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
+using System.Linq;
 
 #endregion
 
@@ -18,17 +20,11 @@ namespace LoESoft.GameServer.networking.handlers
             if (player == null)
                 return;
 
-            var entity = player.Owner.GetEntity(message.ObjectId);
+            var prj = player.Owner.Projectiles.Keys.FirstOrDefault(projectile =>
+            projectile.ProjectileOwner.Id == message.ObjectId && projectile.ProjectileId == message.BulletId);
 
-            if (entity == null)
+            if (prj == null || prj == default(Projectile))
                 return;
-
-            var prj = entity.Owner.GetProjectileFromId(message.ObjectId, message.BulletId);
-
-            if (prj == null)
-                return;
-
-            prj.Owner.RemoveProjectileFromId(message.ObjectId, message.BulletId);
 
             if (prj.ProjDesc.Effects.Length != 0)
                 foreach (var effect in prj.ProjDesc.Effects)
@@ -37,7 +33,8 @@ namespace LoESoft.GameServer.networking.handlers
                     else
                         player.ApplyConditionEffect(effect);
 
-            player.ForceHit(prj.Damage, entity, prj.ProjDesc.ArmorPiercing);
+            player.CalculateDefense();
+            player.ForceHit(prj);
         }
     }
 }

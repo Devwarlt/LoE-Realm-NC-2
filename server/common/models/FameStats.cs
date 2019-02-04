@@ -194,42 +194,42 @@ namespace LoESoft.Core
             return ret.ToArray();
         }
 
-        private static Tuple<string, string, Func<FameStats, DbChar, int, bool>, Func<double, double>>[] bonusDat = new[] {
+        private static Tuple<string, string, Func<FameStats, DbChar, double, bool>, Func<double, double>>[] bonusDat = new[] {
             Tuple.Create("Ancestor", "First death of any of your characters",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 character.CharId < 2),
                 new Func<double, double>(f => f * 0.1 + 20)
             ),
 
             Tuple.Create("Pacifist", "Never shot a bullet which hit an enemy",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 fStats.ShotsThatDamage == 0),
                 new Func<double, double>(f => f * 0.25)
             ),
             //Legacy Builder???
             Tuple.Create("Thirsty", "Never drank a potion from inventory",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 fStats.PotionsDrunk == 0),
                 new Func<double, double>(f => f * 0.25)
             ),
             Tuple.Create("Mundane", "Never used special ability (requires level 20)",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 character.Level == 20 && fStats.SpecialAbilityUses == 0),
                 new Func<double, double>(f => f * 0.25)
             ),
             Tuple.Create("Boots on the Ground", "Never teleported",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 fStats.Teleports == 0),
                 new Func<double, double>(f => f * 0.25)
             ),
 
             Tuple.Create("Tunnel Rat", "Completed every dungeon type",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 fStats.PirateCavesCompleted > 0 &&
                 fStats.UndeadLairsCompleted > 0 &&
@@ -245,79 +245,79 @@ namespace LoESoft.Core
             ),
 
             Tuple.Create("Enemy of the Gods", "More than 10% of kills are gods (requires level 20)",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 character.Level == 20 && (double)fStats.GodKills / (fStats.GodKills + fStats.MonsterKills) > 0.1),
                 new Func<double, double>(f => f * 0.1)
             ),
             Tuple.Create("Slayer of the Gods", "More than 50% of kills are gods (requires level 20)",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 character.Level == 20 && (double)fStats.GodKills / (fStats.GodKills + fStats.MonsterKills) > 0.5),
                 new Func<double, double>(f => f * 0.1)
             ),
 
             Tuple.Create("Oryx Slayer", "Dealt Killing blow to Oryx",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 fStats.OryxKills > 0),
                 new Func<double, double>(f => f * 0.1)
             ),
 
             Tuple.Create("Accurate", "Accuracy of better than 25% (requires level 20)",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 character.Level == 20 && (double)fStats.ShotsThatDamage / fStats.Shots > 0.25),
                 new Func<double, double>(f => f * 0.1)
             ),
             Tuple.Create("Sharpshooter", "Accuracy of better than 50% (requires level 20)",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 character.Level == 20 && (double)fStats.ShotsThatDamage / fStats.Shots > 0.5),
                 new Func<double, double>(f => f * 0.1)
             ),
             Tuple.Create("Sniper", "Accuracy of better than 75% (requires level 20)",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 character.Level == 20 && (double)fStats.ShotsThatDamage / fStats.Shots > 0.75),
                 new Func<double, double>(f => f * 0.1)
             ),
 
             Tuple.Create("Explorer", "More than 1 million tiles uncovered",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 fStats.TilesUncovered > 1000000),
                 new Func<double, double>(f => f * 0.05)
             ),
             Tuple.Create("Cartographer", "More than 4 million tiles uncovered",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 fStats.TilesUncovered > 4000000),
                 new Func<double, double>(f => f * 0.05)
             ),
 
             Tuple.Create("Team Player", "More than 100 party member level ups",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 fStats.LevelUpAssists > 100),
                 new Func<double, double>(f => f * 0.1)
             ),
             Tuple.Create("Leader of Men", "More than 1000 party member level ups",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 fStats.LevelUpAssists > 1000),
                 new Func<double, double>(f => f * 0.1)
             ),
 
             Tuple.Create("Doer of Deeds", "More than 1000 quests completed",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 fStats.QuestsCompleted > 1000),
                 new Func<double, double>(f => f * 0.05)
             ),
 
             Tuple.Create("Friend of the Cubes", "Never killed a cube (requires level 20)",
-                new Func<FameStats, DbChar, int, bool>(
+                new Func<FameStats, DbChar, double, bool>(
                     (fStats, character, baseFame) =>
                 character.Level == 20 && fStats.CubeKills == 0),
                 new Func<double, double>(f => f * 0.05)
@@ -331,7 +331,7 @@ namespace LoESoft.Core
                     yield return Tuple.Create(i.Item1, i.Item2, i.Item4(character.Fame));
 
             //Well Equiped
-            var bonus = character.Items.Take(4).Where(x => x != -1).Sum(x => data.Items[(ushort) x].FameBonus) / 100.0;
+            var bonus = character.Items.Take(4).Where(x => x != -1).Sum(x => data.Items[(ushort)x].FameBonus) / 100.0;
             if (bonus > 0)
                 yield return Tuple.Create("Well Equipped", "Bonus for equipment", character.Fame * bonus);
 
@@ -340,7 +340,7 @@ namespace LoESoft.Core
                 yield return Tuple.Create("First Born", "Best fame of any of your previous incarnations", character.Fame * 0.1);
         }
 
-        public int CalculateTotalFame(EmbeddedData data, DbClassStats stats, DbChar chr, int baseFame, out bool firstBorn)
+        public double CalculateTotalFame(EmbeddedData data, DbClassStats stats, DbChar chr, double baseFame, out bool firstBorn)
         {
             double bonus = 0;
 
@@ -370,11 +370,11 @@ namespace LoESoft.Core
                 bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
 
             //Enemy of the Gods
-            if ((double) GodKills / (GodKills + MonsterKills) > 0.1)
+            if ((double)GodKills / (GodKills + MonsterKills) > 0.1)
                 bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
 
             //Slayer of the Gods
-            if ((double) GodKills / (GodKills + MonsterKills) > 0.5)
+            if ((double)GodKills / (GodKills + MonsterKills) > 0.5)
                 bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
 
             //Oryx Slayer
@@ -382,15 +382,15 @@ namespace LoESoft.Core
                 bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
 
             //Accurate
-            if ((double) ShotsThatDamage / Shots > 0.25)
+            if ((double)ShotsThatDamage / Shots > 0.25)
                 bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
 
             //Sharpshooter
-            if ((double) ShotsThatDamage / Shots > 0.5)
+            if ((double)ShotsThatDamage / Shots > 0.5)
                 bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
 
             //Sniper
-            if ((double) ShotsThatDamage / Shots > 0.75)
+            if ((double)ShotsThatDamage / Shots > 0.75)
                 bonus = Math.Floor(bonus) + (baseFame + Math.Floor(bonus)) * 0.1;
 
             //Explorer
@@ -425,7 +425,7 @@ namespace LoESoft.Core
                 if (chr.Items[i] == -1)
                     continue;
 
-                var b = data.Items[(ushort) chr.Items[i]].FameBonus;
+                var b = data.Items[(ushort)chr.Items[i]].FameBonus;
 
                 if (b > 0)
                     eq += (baseFame + Math.Floor(bonus)) * b / 100;
@@ -441,7 +441,7 @@ namespace LoESoft.Core
             else
                 firstBorn = false;
 
-            return (int) (baseFame + Math.Floor(bonus));
+            return baseFame + Math.Floor(bonus);
         }
     }
 }

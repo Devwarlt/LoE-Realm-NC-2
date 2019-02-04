@@ -29,7 +29,7 @@ namespace LoESoft.GameServer.logic.behaviors
             int effectDuration = -1
             )
         {
-            this.radius = (float) radius;
+            this.radius = (float)radius;
             this.damage = damage;
             this.range = range;
             this.direction = direction * Math.PI / 180;
@@ -45,7 +45,7 @@ namespace LoESoft.GameServer.logic.behaviors
 
         protected override void TickCore(Entity host, RealmTime time, ref object state)
         {
-            int cool = (int) state;
+            int cool = (int)state;
 
             if (cool <= 0)
             {
@@ -61,8 +61,8 @@ namespace LoESoft.GameServer.logic.behaviors
                     if (direction != null)
                         target = new Position
                         {
-                            X = host.X + (float) (range * Math.Cos(direction.Value)),
-                            Y = host.Y + (float) (range * Math.Sin(direction.Value)),
+                            X = host.X + (float)(range * Math.Cos(direction.Value)),
+                            Y = host.Y + (float)(range * Math.Sin(direction.Value)),
                         };
                     else
                         target = new Position
@@ -85,10 +85,10 @@ namespace LoESoft.GameServer.logic.behaviors
                         {
                             Position = target,
                             Radius = radius,
-                            Damage = (ushort) damage,
+                            Damage = (ushort)damage,
                             EffectDuration = 0,
                             Effects = 0,
-                            OriginType = (short) host.ObjectType,
+                            OriginType = (short)host.ObjectType,
                             Color = new ARGB(0x9B30FF)
                         }, null);
 

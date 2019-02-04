@@ -8,6 +8,7 @@ import flash.events.ProgressEvent;
 import flash.events.SecurityErrorEvent;
 import flash.events.TimerEvent;
 import flash.net.Socket;
+import flash.system.Security;
 import flash.utils.ByteArray;
 import flash.utils.Timer;
 
@@ -63,12 +64,14 @@ public class SocketServer {
     public function connect(address:String, port:int):void {
         this.server = address;
         this.port = port;
-        this.addListeners();
         this.messageLen = -1;
+        this.addListeners();
         this.socket.connect(address, port);
     }
 
     private function addListeners():void {
+        Security.loadPolicyFile("xmlsocket://" + Parameters.ENVIRONMENT_DNS + ":" + Parameters.POLICY);
+
         this.socket.addEventListener(Event.CONNECT, this.onConnect);
         this.socket.addEventListener(Event.CLOSE, this.onClose);
         this.socket.addEventListener(ProgressEvent.SOCKET_DATA, this.onSocketData);
@@ -96,8 +99,6 @@ public class SocketServer {
     public function queueMessage(msg:Message):void {
         this.tail.next = msg;
         this.tail = msg;
-
-        (this.socket.connected && this.sendPendingMessages());
     }
 
     public function sendMessage(msg:Message):void {
@@ -108,32 +109,6 @@ public class SocketServer {
     }
 
     private var _disconnected:Boolean = false;
-
-    private function sendInstantMessage(msg:Message):void {
-        if (!this.socket.connected && !this._disconnected) {
-            this._disconnected = true;
-            this.error.dispatch("You have been disconnected from server. Reconnecting...");
-            this.connect(this.server, this.port);
-            return;
-        }
-
-        this.data.position = 0;
-        this.data.length = 0;
-
-        msg.writeToOutput(this.data);
-
-        this.data.position = 0;
-
-        if (this.outgoingCipher != null) {
-            this.outgoingCipher.encrypt(this.data);
-            this.data.position = 0;
-        }
-
-        this.socket.writeInt(this.data.bytesAvailable + 5);
-        this.socket.writeByte(msg.id);
-        this.socket.writeBytes(this.data);
-        this.socket.flush();
-    }
 
     private function sendPendingMessages():void {
         var temp:Message = this.head.next;
@@ -152,10 +127,12 @@ public class SocketServer {
             this.data.length = 0;
             msg.writeToOutput(this.data);
             this.data.position = 0;
+
             if (this.outgoingCipher != null) {
                 this.outgoingCipher.encrypt(this.data);
                 this.data.position = 0;
             }
+
             this.socket.writeInt(this.data.bytesAvailable + 5);
             this.socket.writeByte(msg.id);
             this.socket.writeBytes(this.data);
@@ -164,9 +141,10 @@ public class SocketServer {
             temp.consume();
             i++;
         }
-        if (i > 0) {
+
+        if (i > 0)
             this.socket.flush();
-        }
+
         this.unsentPlaceholder.next = null;
         this.unsentPlaceholder.prev = null;
         this.head = (this.tail = this.unsentPlaceholder);
@@ -200,12 +178,8 @@ public class SocketServer {
         var errorMessage:String;
 
         while (true) {
-            if (this.socket == null || (!this.socket.connected && !this._disconnected)) {
-                this._disconnected = true;
-                this.error.dispatch("You have been disconnected from server. Reconnecting...");
-                this.connect(this.server, this.port);
+            if (this.socket == null || !this.socket.connected)
                 break;
-            }
 
             if (this.messageLen == -1) {
                 if (this.socket.bytesAvailable < 4)

@@ -1,9 +1,9 @@
 ﻿#region
 
-using LoESoft.GameServer.networking.incoming;
-using LoESoft.GameServer.networking.outgoing;
 using LoESoft.AppEngine.dailyLogin;
 using LoESoft.Core;
+using LoESoft.GameServer.networking.incoming;
+using LoESoft.GameServer.networking.outgoing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +28,7 @@ namespace LoESoft.GameServer.networking.handlers
             #endregion
 
             if (MonthCalendarUtils.DISABLE_CALENDAR || DateTime.UtcNow >= MonthCalendarUtils.EndDate || CalendarDb.IsNull ||
-                CalendarDb.ClaimedDays.ToCommaSepString().Contains(message.ClaimKey + 1) 
+                CalendarDb.ClaimedDays.ToCommaSepString().Contains(message.ClaimKey + 1)
                 || CalendarDb.UnlockableDays < ClaimKey || Calendar.Count < ClaimKey)
                 return;
 
@@ -41,11 +41,11 @@ namespace LoESoft.GameServer.networking.handlers
 
             if (Calendar[ClaimKey].Gold > 0)
                 client.Account.Credits += Calendar[ClaimKey].Gold;
-            else if(Calendar[ClaimKey].Item != -1 && Calendar[ClaimKey].Quantity > 0)
+            else if (Calendar[ClaimKey].Item != -1 && Calendar[ClaimKey].Quantity > 0)
             {
                 List<int> items = client.Account.Gifts.ToList();
 
-                for(int i = 0; i < Calendar[ClaimKey].Quantity; i++)
+                for (int i = 0; i < Calendar[ClaimKey].Quantity; i++)
                     items.Add(Calendar[ClaimKey].Item);
 
                 client.Account.Gifts = items.ToArray();

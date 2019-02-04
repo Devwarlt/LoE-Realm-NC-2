@@ -24,7 +24,7 @@ namespace LoESoft.GameServer.networking.outgoing
         protected override void Write(NWriter wtr)
         {
             wtr.Write(OwnerId);
-            wtr.Write((byte) SoundId);
+            wtr.Write((byte)SoundId);
         }
     }
 }

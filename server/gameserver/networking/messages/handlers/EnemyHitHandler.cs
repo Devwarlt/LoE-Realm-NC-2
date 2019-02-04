@@ -2,7 +2,9 @@
 
 using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.realm;
+using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
+using System.Linq;
 
 #endregion
 
@@ -12,7 +14,7 @@ namespace LoESoft.GameServer.networking.handlers
     {
         public override MessageID ID => MessageID.ENEMYHIT;
 
-        protected override void HandleMessage(Client client, ENEMYHIT message) => Manager.Logic.AddPendingAction(t => Handle(client.Player, t, message));
+        protected override void HandleMessage(Client client, ENEMYHIT message) => Handle(client.Player, GameServer.Manager.Logic.GameTime, message);
 
         private void Handle(Player player, RealmTime time, ENEMYHIT message)
         {
@@ -24,13 +26,11 @@ namespace LoESoft.GameServer.networking.handlers
             if (entity == null)
                 return;
 
-            var prj = player.Owner.GetProjectileFromId(player.Id, message.BulletId);
+            var prj = player.Owner.Projectiles.Keys.FirstOrDefault(projectile =>
+            projectile.ProjectileOwner.Id == player.Id && projectile.ProjectileId == message.BulletId);
 
-            if (prj == null)
+            if (prj == null || prj == default(Projectile))
                 return;
-
-            if (!prj.ProjDesc.MultiHit)
-                prj.Owner.RemoveProjectileFromId(player.Id, message.BulletId);
 
             if (prj.ProjDesc.Effects.Length != 0)
                 foreach (var effect in prj.ProjDesc.Effects)
@@ -38,6 +38,9 @@ namespace LoESoft.GameServer.networking.handlers
                         continue;
                     else
                         entity.ApplyConditionEffect(effect);
+
+            if (!prj.IsAbility)
+                player.CalculateAttack();
 
             prj.ForceHit(entity, time, message.Killed);
         }

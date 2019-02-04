@@ -20,7 +20,7 @@ namespace LoESoft.GameServer.networking.handlers
     {
         public override MessageID ID => MessageID.USEPORTAL;
 
-        protected override void HandleMessage(Client client, USEPORTAL message) => Manager.Logic.AddPendingAction(t => Handle(client, client.Player, message), PendingPriority.Networking);
+        protected override void HandleMessage(Client client, USEPORTAL message) => Handle(client, client.Player, message);
 
         private readonly List<string> Blacklist = new List<string>
         {
@@ -127,7 +127,7 @@ namespace LoESoft.GameServer.networking.handlers
                                 {
                                     try
                                     {
-                                        world = Manager.AddWorld((World)Activator.CreateInstance(worldType,
+                                        world = GameServer.Manager.AddWorld((World)Activator.CreateInstance(worldType,
                                         System.Reflection.BindingFlags.CreateInstance, null, null,
                                         CultureInfo.InvariantCulture, null));
                                     }
@@ -155,13 +155,20 @@ namespace LoESoft.GameServer.networking.handlers
                     if (GameServer.Manager.LastWorld.ContainsKey(player.AccountId))
                         GameServer.Manager.LastWorld.TryRemove(player.AccountId, out World dummy);
 
+                    if (player.Owner is GameWorld)
+                        if ((player.Owner as GameWorld).IsRealmClosed)
+                        {
+                            player.SendError("Realm is closed.");
+                            return;
+                        }
+
                     if (player.Owner is Nexus || player.Owner is GameWorld)
                         GameServer.Manager.LastWorld.TryAdd(player.AccountId, player.Owner);
 
                     client?.Reconnect(new RECONNECT
                     {
                         Host = "",
-                        Port = Settings.GAMESERVER.PORT,
+                        Port = Settings.GAMESERVER.GAME_PORT,
                         GameId = world.Id,
                         Name = world.Name,
                         Key = world.PortalKey,

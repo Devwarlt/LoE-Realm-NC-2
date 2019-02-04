@@ -26,14 +26,6 @@
             _priorityToLogin = _accountType >= AccountType.VIP;
         }
 
-        public int Experience(int level, int experience)
-        {
-            if (_accountType == AccountType.VIP)
-                return level < 20 ? (int)(experience * 1.5) : (int)(experience * 1.05);
-
-            return experience;
-        }
-
         public bool AccessToDrastaCitadel() => _accessToDrastaCitadel;
 
         public bool ByPassKeysRequirements() => _byPassKeysRequirements;

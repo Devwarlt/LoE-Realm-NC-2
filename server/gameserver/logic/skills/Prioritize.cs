@@ -30,7 +30,7 @@ namespace LoESoft.GameServer.logic.behaviors
             if (state == null)
                 index = -1;
             else
-                index = (int) state;
+                index = (int)state;
 
             if (index < 0) //select
             {

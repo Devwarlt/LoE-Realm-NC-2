@@ -28,7 +28,7 @@ namespace LoESoft.GameServer.logic.behaviors
 
         protected override void TickCore(Entity host, RealmTime time, ref object state)
         {
-            int period = (int) state;
+            int period = (int)state;
 
             behavior.Tick(host, time);
             Status = CycleStatus.InProgress;

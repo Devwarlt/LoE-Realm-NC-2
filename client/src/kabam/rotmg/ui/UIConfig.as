@@ -47,7 +47,6 @@ import kabam.rotmg.game.view.NameChangerPanelMediator;
 import kabam.rotmg.game.view.TextPanel;
 import kabam.rotmg.game.view.TextPanelMediator;
 import kabam.rotmg.game.view.components.StatsTabHotKeyInputSignal;
-import kabam.rotmg.game.view.components.StatsUndockedSignal;
 import kabam.rotmg.news.services.GetInGameNewsTask;
 import kabam.rotmg.startup.control.StartupSequence;
 import kabam.rotmg.ui.commands.ChooseNameCommand;
@@ -137,8 +136,6 @@ public class UIConfig implements IConfig {
         this.injector.map(PotionInventoryModel).asSingleton();
         this.injector.map(UpdatePotionInventorySignal).asSingleton();
         this.injector.map(UpdateBackpackTabSignal).asSingleton();
-        this.injector.map(StatsUndockedSignal).asSingleton();
-        this.injector.map(StatsDockedSignal).asSingleton();
         this.injector.map(StatsTabHotKeyInputSignal).asSingleton();
         this.injector.map(IconButtonFactory).asSingleton();
         this.injector.map(ImageFactory).asSingleton();

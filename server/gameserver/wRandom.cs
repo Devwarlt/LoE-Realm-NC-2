@@ -10,7 +10,7 @@ namespace LoESoft.GameServer
     {
         private uint seed;
 
-        public wRandom() : this((uint) Environment.TickCount)
+        public wRandom() : this((uint)Environment.TickCount)
         {
         }
 
@@ -27,9 +27,9 @@ namespace LoESoft.GameServer
         private uint Gen()
         {
             uint lb = 16807 * (seed & 0xFFFF);
-            uint hb = 16807 * (uint) ((int) seed >> 16);
+            uint hb = 16807 * (uint)((int)seed >> 16);
             lb = lb + ((hb & 32767) << 16);
-            lb = lb + (uint) ((int) hb >> 15);
+            lb = lb + (uint)((int)hb >> 15);
             if (lb > 2147483647)
             {
                 lb = lb - 2147483647;
@@ -45,7 +45,7 @@ namespace LoESoft.GameServer
 
         public int Next(int min, int max)
         {
-            return (int) (min == max ? min : (min + (Sample() % (max - min))));
+            return (int)(min == max ? min : (min + (Sample() % (max - min))));
         }
 
         private uint Sample()

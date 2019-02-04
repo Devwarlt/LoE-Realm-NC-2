@@ -17,7 +17,7 @@ namespace LoESoft.GameServer.logic.behaviors.Drakes
             if (state == null)
                 s = new FollowState();
             else
-                s = (FollowState) state;
+                s = (FollowState)state;
 
             Status = CycleStatus.NotStarted;
 

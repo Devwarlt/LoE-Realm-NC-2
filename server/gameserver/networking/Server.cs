@@ -1,11 +1,10 @@
 ﻿#region
 
 using LoESoft.Core.config;
-using LoESoft.GameServer.realm;
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using static LoESoft.GameServer.networking.Client;
 
 #endregion
@@ -14,53 +13,63 @@ namespace LoESoft.GameServer.networking
 {
     internal class Server
     {
-        public Server(RealmManager manager)
-        {
-            Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+        public Server()
+            => Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             {
                 NoDelay = true,
                 UseOnlyOverlappedIO = true
             };
-            Manager = manager;
-        }
 
         private Socket Socket { get; set; }
-
-        public RealmManager Manager { get; private set; }
+        private readonly object lockPort = new object();
 
         public void Start()
         {
-            Socket.Bind(new IPEndPoint(IPAddress.Any, Settings.GAMESERVER.PORT));
-            Socket.Listen(0xFF);
-            Beginaccept(Socket);
+            bool connected = false;
+
+            do
+            {
+                lock (lockPort)
+                {
+                    try
+                    {
+                        Socket.Bind(new IPEndPoint(IPAddress.Any, Settings.GAMESERVER.GAME_PORT));
+                        Socket.Listen(0xFF);
+
+                        connected = true;
+                    }
+                    catch { }
+                }
+
+                Thread.Sleep(100);
+            } while (!connected);
+
+            BeginAccept(Socket);
         }
 
-        private void Beginaccept(Socket skt)
-        {
-            skt.BeginAccept(OnConnectionRecieved, skt);
-        }
+        private void BeginAccept(Socket skt) => skt.BeginAccept(OnConnectionReceived, skt);
 
-        private void OnConnectionRecieved(IAsyncResult result)
+        private void OnConnectionReceived(IAsyncResult result)
         {
             try
             {
-                var socket = (Socket)result.AsyncState;
-                var clientSocket = socket.EndAccept(result);
+                var serverSocket = (Socket)result.AsyncState;
+                var clientSocket = serverSocket.EndAccept(result);
 
                 if (clientSocket != null)
-                    new Client(Manager, clientSocket);
+                    new Client(clientSocket);
 
-                Beginaccept(socket);
+                BeginAccept(serverSocket);
             }
             catch { }
         }
 
         public void Stop()
         {
-            foreach (ClientData cData in Manager.ClientManager.Values.ToArray())
+            foreach (var client in GameServer.Manager.GetManager.Clients.Values)
             {
-                cData.Client.Save();
-                Manager.TryDisconnect(cData.Client, DisconnectReason.STOPING_SERVER);
+                client.Save();
+                GameServer.Manager.TryDisconnect(client, DisconnectReason.STOPING_SERVER);
             }
 
             Socket.Close();

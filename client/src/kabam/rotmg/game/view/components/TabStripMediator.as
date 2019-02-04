@@ -40,10 +40,6 @@ public class TabStripMediator extends Mediator {
     [Inject]
     public var iconButtonFactory:IconButtonFactory;
     [Inject]
-    public var statsUndocked:StatsUndockedSignal;
-    [Inject]
-    public var statsDocked:StatsDockedSignal;
-    [Inject]
     public var statsTabHotKeyInput:StatsTabHotKeyInputSignal;
     [Inject]
     public var petModel:PetsModel;
@@ -57,17 +53,9 @@ public class TabStripMediator extends Mediator {
         this.view.iconButtonFactory = this.iconButtonFactory;
         this.view.tabSelected.add(this.onTabSelected);
         this.updateHUD.addOnce(this.addTabs);
-        this.statsDocked.add(this.onStatsDocked);
         this.statsTabHotKeyInput.add(this.onTabHotkey);
         this.notifyActivePetUpdated.add(this.onNotifyActivePetUpdated);
         this.view.initFriendList(this.imageFactory, this.iconButtonFactory, this.onFriendsBtnClicked);
-    }
-
-    private function onStatsDocked():void {
-        this.doShowStats = true;
-        this.clearTabs();
-        this.addTabs(this.hudModel.gameSprite.map.player_);
-        this.view.setSelectedTab(1);
     }
 
     private function onTabHotkey():void {

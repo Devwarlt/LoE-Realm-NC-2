@@ -71,7 +71,7 @@ namespace LoESoft.GameServer.realm.mapsetpiece
             new SetPiece("Oasis", new Oasis(), 0, 3, new WmapTerrain[2] { WmapTerrain.LowSand, WmapTerrain.MidSand }),
             new SetPiece("Pyre", new Pyre(), 0, 3, new WmapTerrain[2] { WmapTerrain.MidSand, WmapTerrain.HighSand }),
             new SetPiece("Lava Fissure", new LavaFissure(), 2, 6, new WmapTerrain[1] { WmapTerrain.Mountains }),
-            new SetPiece("Dream Island Horde", new DreamIsle(), 3, 7, new WmapTerrain[2] { WmapTerrain.HighForest, WmapTerrain.HighPlains })
+            new SetPiece("Crystal", new Crystal(), 1, 1, new WmapTerrain[1] { WmapTerrain.Mountains })
         };
 
         public static void ApplySetPieces(World world)
@@ -88,7 +88,7 @@ namespace LoESoft.GameServer.realm.mapsetpiece
                 int count = rand.Next(setpiece.Min, setpiece.Max);
 
                 if (setpiece.IsWeeklyEvent)
-                    if (setpiece.DayOfWeek != DateTime.Now.DayOfWeek)
+                    if (setpiece.DayOfWeek != DateTime.UtcNow.DayOfWeek)
                         continue;
 
                 for (int i = 0; i < count; i++)

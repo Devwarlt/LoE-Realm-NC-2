@@ -110,19 +110,19 @@ namespace LoESoft.GameServer.logic.loot
                             if (chance <= prob)
                             {
                                 if (dat.Item1.LootTierBoost)
-                                    playerLoot.Add(IncreaseTier(GameServer.Manager, i.Item, consideration));
+                                    playerLoot.Add(IncreaseTier(i.Item, consideration));
                                 else
                                     playerLoot.Add(i.Item);
 
                                 if (i.WhiteBag)
-                                    GameServer.Manager.ClientManager.Values.Select(client =>
+                                    GameServer.Manager.GetManager.Clients.Values.Select(client =>
                                     {
-                                        client.Client.SendMessage(new TEXT()
+                                        client.SendMessage(new TEXT()
                                         {
                                             BubbleTime = 0,
                                             Stars = -1,
                                             Name = "@ANNOUNCEMENT",
-                                            Text = $" {dat.Item1.Name} dropped a white bag item '{i.Item.DisplayId}' with {chance * 100}% chance!",
+                                            Text = $" {dat.Item1.Name} dropped a white bag item '{i.Item.DisplayId}' with {Math.Round(chance * 100, 2)}% chance!",
                                             NameColor = 0x123456,
                                             TextColor = 0x123456
                                         });
@@ -139,12 +139,12 @@ namespace LoESoft.GameServer.logic.loot
             catch (IndexOutOfRangeException) { return; }
         }
 
-        private Item IncreaseTier(RealmManager manager, Item item, List<LootDef> consideration)
+        private Item IncreaseTier(Item item, List<LootDef> consideration)
         {
             if (item.SlotType == 10)
                 return item;
 
-            var tier = manager.GameData.Items
+            var tier = GameServer.Manager.GameData.Items
                  .Where(i => item.SlotType == i.Value.SlotType)
                  .Where(i => i.Value.Tier >= item.Tier + 3)
                  .Where(i => consideration.Select(_ => _.Item).Contains(i.Value))
@@ -250,7 +250,7 @@ namespace LoESoft.GameServer.logic.loot
                     enemy.Y + (float)((rand.NextDouble() * 2 - 1) * 0.5));
                 container.Size = 80;
 
-                enemy.Owner.EnterWorld(container);
+                enemy.Owner?.EnterWorld(container);
             }
             else
                 foreach (var owner in owners)
@@ -266,7 +266,7 @@ namespace LoESoft.GameServer.logic.loot
                         enemy.Y + (float)((rand.NextDouble() * 2 - 1) * 0.5));
                     container.Size = 80;
 
-                    enemy.Owner.EnterWorld(container);
+                    enemy.Owner?.EnterWorld(container);
                 }
         }
     }

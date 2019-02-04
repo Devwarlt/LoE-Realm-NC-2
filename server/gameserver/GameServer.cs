@@ -34,11 +34,8 @@ namespace LoESoft.GameServer
         private static readonly ManualResetEvent Shutdown = new ManualResetEvent(false);
 
         public static int GameUsage { get; private set; }
-
         public static bool AutoRestart { get; private set; }
-
         public static ChatManager Chat { get; set; }
-
         public static RealmManager Manager;
 
         public static DateTime WhiteListTurnOff { get; private set; }
@@ -74,16 +71,10 @@ namespace LoESoft.GameServer
                 Manager.Initialize();
                 Manager.Run();
 
-                Log._("Message", Message.Messages.Count);
-
-                var server = new Server(Manager);
                 var policy = new PolicyServer();
+                var server = new Server();
 
                 Console.CancelKeyPress += (sender, e) => e.Cancel = true;
-
-                Settings.DISPLAY_SUPPORTED_VERSIONS();
-
-                Log.Info("Initializing GameServer...");
 
                 policy.Start();
                 server.Start();
@@ -97,8 +88,6 @@ namespace LoESoft.GameServer
 
                 Console.Title = Settings.GAMESERVER.TITLE;
 
-                Log.Info("Initializing GameServer... OK!");
-
                 Console.CancelKeyPress += delegate
                 {
                     Shutdown?.Set();
@@ -109,8 +98,8 @@ namespace LoESoft.GameServer
 
                 Log.Info("Terminating...");
 
-                server?.Stop();
                 policy?.Stop();
+                server?.Stop();
                 Manager?.Stop();
                 Manager?.Database.Dispose();
                 Shutdown?.Dispose();
@@ -131,9 +120,11 @@ namespace LoESoft.GameServer
         public async static void ForceShutdown(Exception ex = null)
         {
             if (ex != null)
+            {
                 log.Error(ex);
 
-            await Task.Delay(1000);
+                await Task.Delay(2 * 1000);
+            }
 
             Process.Start(Settings.GAMESERVER.FILE);
 
@@ -148,9 +139,9 @@ namespace LoESoft.GameServer
 
             try
             {
-                Manager.ClientManager.Values.Where(j => j.Client != null).Select(k =>
+                Manager.GetManager.Clients.Values.Where(j => j != null).Select(k =>
                 {
-                    k.Client.Player?.SendInfo(message);
+                    k.Player?.SendInfo(message);
                     return k;
                 }).ToList();
             }
@@ -162,9 +153,9 @@ namespace LoESoft.GameServer
             {
                 AccessDenied = true;
 
-                Manager.ClientManager.Values.Where(j => j.Client != null).Select(k =>
+                Manager.GetManager.Clients.Values.Where(j => j != null).Select(k =>
                 {
-                    Manager.TryDisconnect(k.Client, DisconnectReason.RESTART);
+                    Manager.TryDisconnect(k, DisconnectReason.RESTART);
                     return k;
                 }).ToList();
             }
@@ -194,8 +185,8 @@ namespace LoESoft.GameServer
 
                     try
                     {
-                        foreach (var cData in Manager.ClientManager.Values)
-                            cData.Client.Player.SendInfo(message);
+                        foreach (var client in Manager.GetManager.Clients.Values)
+                            client.Player?.SendInfo(message);
                     }
                     catch (Exception ex) { ForceShutdown(ex); }
 
@@ -210,9 +201,9 @@ namespace LoESoft.GameServer
 
                 try
                 {
-                    Manager.ClientManager.Values.Where(j => j.Client != null).Select(k =>
+                    Manager.GetManager.Clients.Values.Where(j => j != null).Select(k =>
                     {
-                        k.Client.Player?.SendInfo(message);
+                        k.Player?.SendInfo(message);
                         return k;
                     }).ToList();
                 }
@@ -224,15 +215,15 @@ namespace LoESoft.GameServer
                 {
                     AccessDenied = true;
 
-                    Manager.ClientManager.Values.Where(j => j.Client != null).Select(k =>
+                    Manager.GetManager.Clients.Values.Where(j => j != null).Select(k =>
                     {
-                        Manager.TryDisconnect(k.Client, DisconnectReason.RESTART);
+                        Manager.TryDisconnect(k, DisconnectReason.RESTART);
                         return k;
                     }).ToList();
                 }
                 catch (Exception ex) { ForceShutdown(ex); }
 
-                Thread.Sleep(60 * 1000);
+                Thread.Sleep(1 * 1000);
 
                 Process.Start(Settings.GAMESERVER.FILE);
 
@@ -244,7 +235,7 @@ namespace LoESoft.GameServer
         public static void Stop(Task task = null)
         {
             if (task != null)
-                Log.Error(task.Exception.ToString());
+                log.Error(task.Exception.InnerException);
 
             Shutdown.Set();
         }

@@ -12,22 +12,16 @@ namespace LoESoft.GameServer.logic
 {
     public class NPCs
     {
-        // Declare NPCs here bellow
-        protected NPC Gazer { get; set; }
-
         // Do not change it!
-        public static readonly Dictionary<string, NPC> Database = new Dictionary<string, NPC>();
-
-        public void Initialize(RealmManager manager)
+        public static readonly Dictionary<string, NPC> Database = new Dictionary<string, NPC>
         {
-            // Initialize NPCs bellow
-            Gazer = new Gazer();
+            { "NPC Gazer", new Gazer() }
+        };
 
-            // Add NPCs into database
-            Database.Add("NPC Gazer", Gazer);
-
+        public NPCs()
+        {
             // Process all NPCs creating new instance for each one
-            foreach (KeyValuePair<string, NPC> i in Database)
+            foreach (var i in Database)
                 i.Value.Config(Entity.Resolve(i.Key), null, false);
         }
     }

@@ -65,7 +65,7 @@ namespace LoESoft.GameServer.networking
 
                 if (InvalidBytesTransferred == MaxInvalidBytesTransferred)
                 {
-                    Manager.TryDisconnect(client, DisconnectReason.INVALID_MESSAGE_LENGTH);
+                    GameServer.Manager.TryDisconnect(client, DisconnectReason.INVALID_MESSAGE_LENGTH);
                     return;
                 }
             }
@@ -78,35 +78,19 @@ namespace LoESoft.GameServer.networking
                 && e.Buffer[3] == 0xb2
                 && e.Buffer[4] == 0x95)
             {
-                var c = Encoding.ASCII.GetBytes($"{Manager.MaxClients}:{GameServer.Manager.ClientManager.Count}");
+                var c = Encoding.ASCII.GetBytes($"{GameServer.Manager.MaxClients}:{GameServer.Manager.GetManager.Clients.Count}");
                 socket.Send(c);
-                return;
-            }
-
-            if (e.Buffer[0] == 0xaf
-                && e.Buffer[1] == 0x7b
-                && e.Buffer[2] == 0xf3
-                && e.Buffer[3] == 0xb3
-                && e.Buffer[4] == 0x96)
-            {
-                var c = Encoding.ASCII.GetBytes("Success");
-                socket.Send(c);
-                GameServer.ForceShutdown();
-                return;
-            }
-
-            if (e.Buffer[0] == 0x3c
-                && e.Buffer[1] == 0x70
-                && e.Buffer[2] == 0x6f
-                && e.Buffer[3] == 0x6c
-                && e.Buffer[4] == 0x69)
-            {
-                ProcessPolicyFile();
                 return;
             }
 
             int len = (e.UserToken as IncomingToken).Length =
                 IPAddress.NetworkToHostOrder(BitConverter.ToInt32(e.Buffer, 0)) - 5;
+
+            if (len < 0)
+            {
+                e.Dispose();
+                return;
+            }
 
             try
             {
@@ -125,11 +109,7 @@ namespace LoESoft.GameServer.networking
         {
             // Burst of bytes are not ready yet, then keep them in a loop until dispatch properly
             if (e.BytesTransferred < (e.UserToken as IncomingToken).Length)
-            {
-                // temporarily
-                Manager.TryDisconnect(client, DisconnectReason.BYTES_NOT_READY);
                 return;
-            }
 
             var msg = (e.UserToken as IncomingToken).Message;
             var cont = client.IsReady();
@@ -140,14 +120,14 @@ namespace LoESoft.GameServer.networking
 
                 if (cont)
                 {
-                    if (Manager.Terminating)
+                    if (GameServer.Manager.Terminating)
                     {
-                        Manager.TryDisconnect(client, DisconnectReason.STOPPING_REALM_MANAGER);
+                        GameServer.Manager.TryDisconnect(client, DisconnectReason.STOPPING_REALM_MANAGER);
                         return;
                     }
 
                     if (client.State == ProtocolState.Disconnected)
-                        Manager.TryDisconnect(client, DisconnectReason.NETWORK_TICKER_DISCONNECT);
+                        GameServer.Manager.TryDisconnect(client, DisconnectReason.NETWORK_TICKER_DISCONNECT);
                     else
                         try
                         {

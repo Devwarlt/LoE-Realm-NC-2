@@ -14,8 +14,21 @@ namespace LoESoft.GameServer.logic
             .Init("shtrs Defense System",
                 new State(
                     //new DropPortalOnDeath("The Shatters", percent: 65, dropDelaySec: 2, XAdjustment: 0, YAdjustment: 2, PortalDespawnTimeSec: 70),
-                    new ChangeGroundOnDeath(new[] { "Pure Evil" }, new[] { "shtrs Disaster Floor", "shtrs Shattered Floor" },
-                    30),
+                    new ChangeGroundOnDeath(new[] { "Pure Evil" }, new[] { "shtrs Disaster Floor", "shtrs Shattered Floor" }, 30),
+                    new State("pre-check pillars",
+                        new TimedTransition(1000, "check pillars")
+                        ),
+                    new State("check pillars",
+                        new EntitiesNotExistsTransition(30, "throw pillars", "shtrs Pillar 1", "shtrs Pillar 2", "shtrs Pillar 3", "shtrs Pillar 4"),
+                        new TimedTransition(3000, "stars")
+                        ),
+                    new State("throw pillars",
+                        new TossObject("shtrs Pillar 1", 5, 45, int.MaxValue - 1, 0, false, true),
+                        new TossObject("shtrs Pillar 1", 5, 135, int.MaxValue - 1, 0, false, true),
+                        new TossObject("shtrs Pillar 1", 5, 225, int.MaxValue - 1, 0, false, true),
+                        new TossObject("shtrs Pillar 1", 5, 315, int.MaxValue - 1, 0, false, true),
+                        new TimedTransition(3000, "stars")
+                        ),
                     new State("stars",
                         new Taunt("BURN!!"),
                         new HpLessTransition(.8, "Throwing niggos"),
@@ -1529,30 +1542,27 @@ namespace LoESoft.GameServer.logic
                         )
                     ),
                 new Drops(
-                    new BlueBag(Potions.POTION_OF_MANA),
-                    new BlueBag(Potions.POTION_OF_LIFE),
-                    new CyanBag(ItemType.Armor, 13),
-                    new CyanBag(ItemType.Weapon, 12),
-                    new CyanBag(ItemType.Ability, 6),
-                    new OnlyOne(
-                        new PurpleBag(ItemType.Weapon, 9),
-                        new PurpleBag(ItemType.Armor, 9)
-                        ),
-                    new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4 }),
+                    new MostDamagers(3, new BlueBag(Potions.POTION_OF_LIFE, true)),
+                    new MostDamagers(5, new BlueBag(Potions.POTION_OF_MANA, true)),
+                    new PurpleBag(ItemType.Weapon, 9),
                     new OnlyOne(
                         new CyanBag(ItemType.Weapon, 10),
                         new CyanBag(ItemType.Weapon, 11),
+                        new CyanBag(ItemType.Weapon, 12)
+                        ),
+                    new OnlyOne(
+                        new CyanBag(ItemType.Ability, 5),
+                        new CyanBag(ItemType.Ability, 6)
+                        ),
+                    new PurpleBag(ItemType.Armor, 9),
+                    new OnlyOne(
                         new CyanBag(ItemType.Armor, 10),
                         new CyanBag(ItemType.Armor, 11),
                         new CyanBag(ItemType.Armor, 12),
-                        new CyanBag(ItemType.Ability, 5)
+                        new CyanBag(ItemType.Armor, 13)
                         ),
-                    new OnlyOne(
-                        new CyanBag(ItemType.Weapon, 12),
-                        new CyanBag(ItemType.Armor, 13),
-                        new CyanBag(ItemType.Ability, 6),
-                        new CyanBag(ItemType.Ring, 6)
-                        ),
+                    new CyanBag(ItemType.Ring, 6),
+                    new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4, EggType.TIER_5, EggType.TIER_6 }),
                     new OnlyOne(
                         new BlueBag(Potions.POTION_OF_ATTACK, true),
                         new BlueBag(Potions.POTION_OF_DEFENSE, true),
@@ -1567,8 +1577,17 @@ namespace LoESoft.GameServer.logic
                         new CyanBag("The Robe of Twilight"),
                         new CyanBag("The Forgotten Ring")
                         ),
-                    new WhiteBag(new string[] { "Tablet of the King's Avatar", "Bracer of the Guardian", "The Twilight Gemstone", "The Forgotten Crown", "Ice Crown" })
-                    )
+                    new WhiteBag(new string[]
+                    {
+                        "Tablet of the King's Avatar",
+                        "Bracer of the Guardian",
+                        "The Twilight Gemstone",
+                        "The Forgotten Crown",
+                        "Ice Crown",
+                        "Shattered War-axe",
+                        "Shattered Armor"
+                    })
+                )
             )
 
             .Init("shtrs shadowmans",
@@ -1607,15 +1626,7 @@ namespace LoESoft.GameServer.logic
                     new State("PROTECT",
                         new Taunt("PROTECT THE AVATAR!"),
                         new AddCond(ConditionEffectIndex.Invulnerable),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 1000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 4000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 7000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 10000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 13000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 16000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 19000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 22000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 25000),
+                        new Shoot(20, shoots: 10, index: 0, angleOffset: 36, coolDownOffset: 1000, coolDown: 1000),
                         new Shoot(10, 1, 20, index: 1, angleOffset: 0 / 1, coolDownOffset: 1000, coolDown: 3000),
                         new TimedTransition(25000, "preparing")
                         ),
@@ -1627,15 +1638,7 @@ namespace LoESoft.GameServer.logic
                         ),
                     new State("PROTECT2",
                         new AddCond(ConditionEffectIndex.Invulnerable),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 1000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 4000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 7000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 10000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 13000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 16000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 19000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 22000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 25000),
+                        new Shoot(20, shoots: 10, index: 0, angleOffset: 36, coolDownOffset: 1000, coolDown: 1000),
                         new Shoot(10, 1, 20, index: 1, angleOffset: 0 / 1, coolDown: 3000, coolDownOffset: 1000),
                         new TimedTransition(25000, "preparing")
                     )
@@ -1649,40 +1652,24 @@ namespace LoESoft.GameServer.logic
                     new State("PROTECT",
                         new Taunt("PROTECT THE AVATAR!"),
                         new AddCond(ConditionEffectIndex.Invulnerable),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 11000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 14000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 17000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 20000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 23000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 26000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 29000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 32000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 35000),
-                        new Shoot(10, 1, 20, angleOffset: 0 / 1, index: 1, coolDown: 3000, coolDownOffset: 11000),
-                        new TimedTransition(35000, "preparing")
+                        new Shoot(20, shoots: 10, index: 0, angleOffset: 36, coolDownOffset: 1000, coolDown: 1000),
+                        new Shoot(10, 1, 20, index: 1, angleOffset: 0 / 1, coolDownOffset: 1000, coolDown: 3000),
+                        new TimedTransition(25000, "preparing")
                         ),
                     new State("preparing",
                         new RemCond(ConditionEffectIndex.Invulnerable),
                         new AddCond(ConditionEffectIndex.Armored),
                         new Flashing(0x0D00FF, 0.4, 10),
-                        new TimedTransition(10000, "PROTECT2")
+                        new TimedTransition(15000, "PROTECT2")
                         ),
                     new State("PROTECT2",
                         new AddCond(ConditionEffectIndex.Invulnerable),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 1000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 4000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 7000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 10000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 13000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 16000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 19000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 22000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 25000),
-                        new Shoot(10, 1, 20, angleOffset: 0 / 1, index: 1, coolDown: 3000, coolDownOffset: 1000),
+                        new Shoot(20, shoots: 10, index: 0, angleOffset: 36, coolDownOffset: 1000, coolDown: 1000),
+                        new Shoot(10, 1, 20, index: 1, angleOffset: 0 / 1, coolDown: 3000, coolDownOffset: 1000),
                         new TimedTransition(25000, "preparing")
                     )
                     )
-                    )
+            )
             .Init("shtrs Pillar 3",
                 new State(
                     new State("idle",
@@ -1691,17 +1678,9 @@ namespace LoESoft.GameServer.logic
                     new State("PROTECT",
                         new Taunt("PROTECT THE AVATAR!"),
                         new AddCond(ConditionEffectIndex.Invulnerable),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 6000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 9000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 12000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 15000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 18000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 21000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 24000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 27000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 30000),
-                        new Shoot(10, 1, 20, angleOffset: 0 / 1, index: 1, coolDown: 3000, coolDownOffset: 6000),
-                        new TimedTransition(30000, "preparing")
+                        new Shoot(20, shoots: 10, index: 0, angleOffset: 36, coolDownOffset: 1000, coolDown: 1000),
+                        new Shoot(10, 1, 20, index: 1, angleOffset: 0 / 1, coolDownOffset: 1000, coolDown: 3000),
+                        new TimedTransition(25000, "preparing")
                         ),
                     new State("preparing",
                         new RemCond(ConditionEffectIndex.Invulnerable),
@@ -1710,20 +1689,13 @@ namespace LoESoft.GameServer.logic
                         new TimedTransition(15000, "PROTECT2")
                         ),
                     new State("PROTECT2",
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 1000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 4000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 7000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 10000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 13000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 16000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 19000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 22000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 25000),
-                        new Shoot(10, 1, 20, angleOffset: 0 / 1, index: 1, coolDown: 3000, coolDownOffset: 1000),
+                        new AddCond(ConditionEffectIndex.Invulnerable),
+                        new Shoot(20, shoots: 10, index: 0, angleOffset: 36, coolDownOffset: 1000, coolDown: 1000),
+                        new Shoot(10, 1, 20, index: 1, angleOffset: 0 / 1, coolDown: 3000, coolDownOffset: 1000),
                         new TimedTransition(25000, "preparing")
                     )
                     )
-                    )
+            )
             .Init("shtrs Pillar 4",
                 new State(
                     new State("idle",
@@ -1732,17 +1704,9 @@ namespace LoESoft.GameServer.logic
                     new State("PROTECT",
                         new Taunt("PROTECT THE AVATAR!"),
                         new AddCond(ConditionEffectIndex.Invulnerable),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 16000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 19000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 22000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 25000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 28000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 31000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 34000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 37000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 40000),
-                        new Shoot(10, 1, 20, angleOffset: 0 / 1, index: 1, coolDown: 3000, coolDownOffset: 16000),
-                        new TimedTransition(40000, "preparing")
+                        new Shoot(20, shoots: 10, index: 0, angleOffset: 36, coolDownOffset: 1000, coolDown: 1000),
+                        new Shoot(10, 1, 20, index: 1, angleOffset: 0 / 1, coolDownOffset: 1000, coolDown: 3000),
+                        new TimedTransition(25000, "preparing")
                         ),
                     new State("preparing",
                         new RemCond(ConditionEffectIndex.Invulnerable),
@@ -1752,18 +1716,10 @@ namespace LoESoft.GameServer.logic
                         ),
                     new State("PROTECT2",
                         new AddCond(ConditionEffectIndex.Invulnerable),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 1000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 4000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 7000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 10000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 13000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 16000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 19000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2 * 2, coolDownOffset: 22000),
-                        new Shoot(20, shoots: 10, index: 0, angleOffset: fixedAngle_RingAttack2, coolDownOffset: 25000),
-                        new Shoot(10, 1, 20, angleOffset: 0 / 1, index: 1, coolDown: 3000, coolDownOffset: 11000),
+                        new Shoot(20, shoots: 10, index: 0, angleOffset: 36, coolDownOffset: 1000, coolDown: 1000),
+                        new Shoot(10, 1, 20, index: 1, angleOffset: 0 / 1, coolDown: 3000, coolDownOffset: 1000),
                         new TimedTransition(25000, "preparing")
-        )
+                    )
                     )
             );
     }

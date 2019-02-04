@@ -6,7 +6,9 @@ import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
+import flash.events.TimerEvent;
 import flash.filters.DropShadowFilter;
+import flash.utils.Timer;
 
 import kabam.rotmg.assets.EmbeddedAssets.EmbeddedAssets_progressBarLarge_shapeEmbed_;
 import kabam.rotmg.text.view.TextFieldDisplayConcrete;
@@ -25,8 +27,8 @@ public class StatusBar extends Sprite {
     public var backColor_:uint;
     public var pulseBackColor:uint;
     public var textColor_:uint;
-    public var val_:int = -1;
-    public var max_:int = -1;
+    public var val_:Number = -1;
+    public var max_:Number = -1;
     public var boost_:int = -1;
     public var maxMax_:int = -1;
     public var level_:int = 0;
@@ -45,8 +47,10 @@ public class StatusBar extends Sprite {
     private var repetitions:int;
     private var direction:int = -1;
     private var speed:Number = 0.1;
+    private var enablePercentage:Boolean;
 
-    public function StatusBar(width:int, height:int, foregroundColor:uint, backgroundColor:uint, textKey:String = null, drawShape:Boolean = true) {
+    public function StatusBar(width:int, height:int, foregroundColor:uint, backgroundColor:uint, textKey:String = null, drawShape:Boolean = true, valueSize:int = 14, percentage:Boolean = false) {
+        this.enablePercentage = percentage;
         this.colorSprite = new Sprite();
         super();
         addChild(this.colorSprite);
@@ -56,7 +60,7 @@ public class StatusBar extends Sprite {
         this.defaultBackgroundColor = (this.backColor_ = backgroundColor);
         this.textColor_ = 0xFFFFFF;
         if (((!((textKey == null))) && (!((textKey.length == 0))))) {
-            this.labelText_ = new TextFieldDisplayConcrete().setSize(14).setColor(this.textColor_);
+            this.labelText_ = new TextFieldDisplayConcrete().setSize(12).setColor(this.textColor_);
             this.labelText_.setBold(true);
             this.labelTextStringBuilder_ = new LineBuilder().setParams(textKey);
             this.labelText_.setStringBuilder(this.labelTextStringBuilder_);
@@ -65,26 +69,26 @@ public class StatusBar extends Sprite {
             this.labelText_.x = 2;
             addChild(this.labelText_);
         }
-        this.valueText_ = new TextFieldDisplayConcrete().setSize(14).setColor(0xFFFFFF);
+        this.valueText_ = new TextFieldDisplayConcrete().setSize(valueSize).setColor(0xFFFFFF);
         this.valueText_.setBold(true);
         this.valueText_.filters = [new DropShadowFilter(0, 0, 0)];
         this.centerVertically(this.valueText_);
         this.valueTextStringBuilder_ = new StaticStringBuilder();
-        this.boostText_ = new TextFieldDisplayConcrete().setSize(14).setColor(this.textColor_);
+        this.boostText_ = new TextFieldDisplayConcrete().setSize(12).setColor(this.textColor_);
         this.boostText_.setBold(true);
         this.boostText_.alpha = 0.6;
         this.centerVertically(this.boostText_);
         this.boostText_.filters = [new DropShadowFilter(0, 0, 0)];
         this.multiplierIcon = new Sprite();
-        this.multiplierIcon.x = (this.w_ - 25);
+        this.multiplierIcon.x = (this.w_ - 60);
         this.multiplierIcon.y = -3;
         this.multiplierIcon.graphics.beginFill(0xFF00FF, 0);
         this.multiplierIcon.graphics.drawRect(0, 0, 20, 20);
         this.multiplierIcon.addEventListener(MouseEvent.MOUSE_OVER, this.onMultiplierOver);
         this.multiplierIcon.addEventListener(MouseEvent.MOUSE_OUT, this.onMultiplierOut);
-        this.multiplierText = new TextFieldDisplayConcrete().setSize(14).setColor(9493531);
+        this.multiplierText = new TextFieldDisplayConcrete().setSize(12).setColor(0xFFFF00);
         this.multiplierText.setBold(true);
-        this.multiplierText.setStringBuilder(new StaticStringBuilder("x2"));
+        this.multiplierText.setStringBuilder(new StaticStringBuilder("+50% EXP"));
         this.multiplierText.filters = [new DropShadowFilter(0, 0, 0)];
         this.multiplierIcon.addChild(this.multiplierText);
         if (!Parameters.data_.toggleBarText) {
@@ -117,7 +121,7 @@ public class StatusBar extends Sprite {
         dispatchEvent(new Event("MULTIPLIER_OUT"));
     }
 
-    public function draw(value:int, max:int, boost:int, maxMax:int = -1, level:int = 0):void {
+    public function draw(value:Number, max:Number, boost:int, maxMax:int = -1, level:int = 0):void {
         if (max > 0) {
             value = Math.min(max, Math.max(0, value));
         }
@@ -162,13 +166,8 @@ public class StatusBar extends Sprite {
         graphics.clear();
         this.colorSprite.graphics.clear();
         var _local1:uint = 0xFFFFFF;
-        if ((((this.maxMax_ > 0)) && (((this.max_ - this.boost_) == this.maxMax_)))) {
-            _local1 = 0xFCDF00;
-        }
-        else {
-            if (this.boost_ > 0) {
-                _local1 = 6206769;
-            }
+        if (this.boost_ > 0) {
+            _local1 = 6206769;
         }
         if (this.textColor_ != _local1) {
             this.setTextColor(_local1);
@@ -203,18 +202,12 @@ public class StatusBar extends Sprite {
     public function drawWithMouseOver():void {
         var _local2:int;
         var _local1:String = "";
-        if (Parameters.data_.toggleToMaxText) {
-            _local2 = (this.maxMax_ - (this.max_ - this.boost_));
-            if ((((this.level_ >= 20)) && ((_local2 > 0)))) {
-                _local1 = (_local1 + ("|" + Math.ceil((_local2 / 5)).toString()));
-            }
-        }
-        if (this.max_ > 0) {
-            this.valueText_.setStringBuilder(this.valueTextStringBuilder_.setString((((this.val_ + "/") + this.max_) + _local1)));
-        }
-        else {
+
+        if (this.enablePercentage)
+            this.valueText_.setStringBuilder(this.valueTextStringBuilder_.setString(Parameters.formatValue((this.val_ / this.max_) * 100, 2) + "%"));
+        else
             this.valueText_.setStringBuilder(this.valueTextStringBuilder_.setString(("" + this.val_)));
-        }
+
         if (!contains(this.valueText_)) {
             this.valueText_.mouseEnabled = false;
             this.valueText_.mouseChildren = false;
@@ -242,7 +235,7 @@ public class StatusBar extends Sprite {
         this.multiplierIcon.mouseEnabled = false;
         this.multiplierIcon.mouseChildren = false;
         addChild(this.multiplierIcon);
-        this.startPulse(3, 9493531, 0xFFFFFF);
+        this.startPulse(3, this.color_, 0xFFFFFF);
     }
 
     public function hideMultiplierText():void {
@@ -259,7 +252,6 @@ public class StatusBar extends Sprite {
         this.internalDraw();
         addEventListener(Event.ENTER_FRAME, this.onPulse);
     }
-
     private function onPulse(_arg1:Event):void {
         if ((((this.colorSprite.alpha > 1)) || ((this.colorSprite.alpha < 0)))) {
             this.direction = (this.direction * -1);

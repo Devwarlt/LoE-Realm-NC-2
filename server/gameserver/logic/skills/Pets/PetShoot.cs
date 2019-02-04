@@ -4,7 +4,6 @@ using LoESoft.GameServer.networking;
 using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm;
 using LoESoft.GameServer.realm.entity;
-using LoESoft.GameServer.realm.entity.player;
 using System;
 using System.Collections.Generic;
 
@@ -51,9 +50,9 @@ namespace LoESoft.GameServer.logic.skills.Pets
 
         protected override void TickCore(Entity host, RealmTime time, ref object state)
         {
-            Player player = host.GetPlayerOwner();
-            Entity pet = player.Pet;
-            bool hatchling = player.HatchlingPet;
+            var player = host.GetPlayerOwner();
+            var pet = player.Pet;
+            var hatchling = player.HatchlingPet;
 
             if (hatchling)
                 return;
@@ -64,10 +63,11 @@ namespace LoESoft.GameServer.logic.skills.Pets
                 return;
             }
 
-            if (host.Owner.SafePlace)
+            if (host.Owner.SafePlace || !player.EnablePetAttack)
                 return;
 
-            int cool = (int?) state ?? -1;
+            var cool = (int?)state ?? -1;
+
             Status = CycleStatus.NotStarted;
 
             if (cool <= 0)
@@ -75,18 +75,15 @@ namespace LoESoft.GameServer.logic.skills.Pets
                 if (player.HasConditionEffect(ConditionEffectIndex.Sick) || player.HasConditionEffect(ConditionEffectIndex.PetDisable))
                     return;
 
-                int stars = player.Stars;
+                var stars = player.Stars;
 
-                Entity target = pet.GetNearestEntity(12, false, enemy => enemy is Enemy && pet.Dist(enemy) <= 12) as Enemy;
-
-                if (target != null && target.ObjectDesc.Enemy)
+                if (pet.GetNearestEntity(12, false, enemy => enemy is Enemy && pet.Dist(enemy) <= 12) is Enemy target && target.ObjectDesc.Enemy)
                 {
-                    ProjectileDesc desc = pet.ObjectDesc.Projectiles[projectileIndex];
-
-                    double a = fixedAngle ?? (target == null ? defaultAngle.Value : Math.Atan2(target.Y - pet.Y, target.X - pet.X));
+                    var desc = pet.ObjectDesc.Projectiles[projectileIndex];
+                    var a = fixedAngle ?? (target == null ? defaultAngle.Value : Math.Atan2(target.Y - pet.Y, target.X - pet.X));
                     a += angleOffset;
 
-                    int variance;
+                    var variance = 0;
 
                     if (stars == 70)
                         variance = 7000;
@@ -95,20 +92,18 @@ namespace LoESoft.GameServer.logic.skills.Pets
 
                     cool = special ? cool = coolDown.Next(Random) : (7750 - variance); // max 750ms cooldown if not special
 
-                    Random rnd = new Random();
-
-                    int min = 0;
-                    int max = 100;
-                    int success = stars + 30;
-                    int rng = rnd.Next(min, max);
+                    var rnd = new Random();
+                    var min = 0;
+                    var max = 100;
+                    var success = stars + 30;
+                    var rng = rnd.Next(min, max);
 
                     if (rng > success)
                     {
-                        List<Message> _outgoing = new List<Message>();
-
-                        SHOWEFFECT _effect = new SHOWEFFECT();
-                        Position _position = new Position();
-                        NOTIFICATION _notification = new NOTIFICATION();
+                        var _outgoing = new List<Message>();
+                        var _effect = new SHOWEFFECT();
+                        var _position = new Position();
+                        var _notification = new NOTIFICATION();
 
                         _position.X = .25f;
                         _position.Y = 2 / _position.X;
@@ -132,21 +127,17 @@ namespace LoESoft.GameServer.logic.skills.Pets
                         return;
                     }
 
-                    int dmg = rnd.Next(desc.MinDamage, desc.MaxDamage);
+                    var dmg = rnd.Next(desc.MinDamage, desc.MaxDamage);
+                    var startAngle = a - shootAngle * (count - 1) / 2;
+                    var prjPos = new Position() { X = pet.X, Y = pet.Y };
+                    var prj = player.CreateProjectile(desc, pet.ObjectType, dmg, time.TotalElapsedMs, prjPos, (float)startAngle);
 
-                    double startAngle = a - shootAngle * (count - 1) / 2;
-
-                    Position prjPos = new Position() { X = pet.X, Y = pet.Y };
-
-                    Projectile prj = player.CreateProjectile(desc, pet.ObjectType, dmg, time.TotalElapsedMs, prjPos, (float) startAngle);
-
-                    player.Owner.AddProjectileFromId(player.Id, prj.ProjectileId, prj);
+                    player.Owner.Projectiles.TryAdd(prj, null);
 
                     player.Owner.EnterWorld(prj);
 
-                    List<Message> _outgoingMessages = new List<Message>();
-
-                    ENEMYSHOOT _shoot = new ENEMYSHOOT
+                    var _outgoingMessages = new List<Message>();
+                    var _shoot = new ENEMYSHOOT
                     {
                         BulletId = 0,
                         OwnerId = pet.Id,
@@ -154,18 +145,17 @@ namespace LoESoft.GameServer.logic.skills.Pets
                         Angle = prj.Angle,
                         Damage = 0,
                         BulletType = 0,
-                        AngleInc = (float) shootAngle,
+                        AngleInc = (float)shootAngle,
                         NumShots = 0
                     };
-
-                    SERVERPLAYERSHOOT _shoot2 = new SERVERPLAYERSHOOT
+                    var _shoot2 = new SERVERPLAYERSHOOT
                     {
                         BulletId = prj.ProjectileId,
                         OwnerId = player.Id,
                         ContainerType = pet.ObjectType,
                         StartingPos = prj.BeginPos,
                         Angle = prj.Angle,
-                        Damage = (short) prj.Damage
+                        Damage = (short)prj.Damage
                     };
 
                     _outgoingMessages.Add(_shoot); // visual, display no animation only activate pet set alt index

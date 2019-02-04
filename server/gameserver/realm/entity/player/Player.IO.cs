@@ -58,15 +58,26 @@ namespace LoESoft.GameServer.realm.entity.player
                 try
                 { File.WriteAllText(Path.Combine(GameServer.TaskCachePath, $"tc-char.{AccountId}.{Client.Character.CharId}.json"), JsonConvert.SerializeObject(taskCache)); }
                 catch { }
+            else
+            {
+                try
+                {
+                    var path = Path.Combine(GameServer.TaskCachePath, $"tc-char.{AccountId}.{Client.Character.CharId}.json");
+
+                    if (File.Exists(path))
+                        File.Delete(path);
+                }
+                catch { }
+            }
         }
 
         public List<MonsterCache> ImportMonsterCaches()
         {
             var monsterCaches = new List<MonsterCache>();
 
-            try
+            /*try
             { monsterCaches = JsonConvert.DeserializeObject<List<MonsterCache>>(File.ReadAllText(Path.Combine(GameServer.MonsterCachePath, $"mc-char.{AccountId}.{Client.Character.CharId}.json"))); }
-            catch { }
+            catch { }*/
 
             return monsterCaches;
         }

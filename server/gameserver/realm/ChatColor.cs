@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using LoESoft.Core.config;
+using LoESoft.GameServer.realm.entity.player;
+using System.Collections.Generic;
 
 namespace LoESoft.GameServer.realm
 {
@@ -12,46 +13,43 @@ namespace LoESoft.GameServer.realm
     /// </summary>
     public class ChatColor
     {
-        private int _accountType { get; set; }
-        private int _stars { get; set; }
+        private Player _player { get; set; }
 
-        public ChatColor(int stars, int accountType)
+        public ChatColor(Player player) => _player = player;
+
+        public (int stars, int name, int text) GetColor()
         {
-            _stars = stars;
-            _accountType = accountType;
+            if (_player.AccountType >= (int)AccountType.MOD)
+            {
+                if (specialColors.TryGetValue(_player.AccountType, out (int, int) color))
+                    return (_player.Stars, color.Item1, color.Item2);
+            }
+
+            if (_player.AccountType == (int)AccountType.VIP)
+            {
+                foreach (var i in regularColors)
+                    if (_player.Stars.Within(i.Key.Item1, i.Key.Item2))
+                        return (_player.Stars, i.Value.Item1, i.Value.Item2);
+            }
+
+            return (_player.Stars, 0x123456, 0x123456);
         }
 
-        public int GetColor()
+        private readonly Dictionary<(int, int), (int, int)> regularColors = new Dictionary<(int, int), (int, int)>
         {
-            if (_accountType > 2)
-            {
-                int color = -1;
-                if (specialColors.TryGetValue(_accountType, out color))
-                    return color;
-            }
-            else
-            {
-                foreach (KeyValuePair<IEnumerable<int>, int> i in regularColors)
-                    if (i.Key.Contains(_stars))
-                        return i.Value;
-            }
-            return 0x123456;
-        }
-
-        private readonly Dictionary<IEnumerable<int>, int> regularColors = new Dictionary<IEnumerable<int>, int>
-        {
-            { Enumerable.Range(0, 13), 0x8997DD },
-            { Enumerable.Range(14, 27), 0x304CDA },
-            { Enumerable.Range(28, 41), 0xC0262C },
-            { Enumerable.Range(42, 55), 0xF6921D },
-            { Enumerable.Range(56, 69), 0xFFFF00 },
-            { Enumerable.Range(70, 70), 0xFFFFFF }
+            { (0, 13), (0x8997dd, 0xe7eaf8) },
+            { (14, 27), (0x304cda, 0xd5dbf7) },
+            { (28, 41), (0xc0262c, 0xf2d3d4) },
+            { (42, 55), (0xf6921d , 0xfde9d1) },
+            { (56, 69), (0xffff00, 0xffffcc) },
+            { (70, 70), (0xcccccc, 0xffffff) }
         };
 
-        private readonly Dictionary<int, int> specialColors = new Dictionary<int, int>
+        private readonly Dictionary<int, (int, int)> specialColors = new Dictionary<int, (int, int)>
         {
-            { 3, 0x6CFFB1 },
-            { 4, 0xE52B50 }
+            { (int)AccountType.MOD, (0xdc1f1f, 0xf8d2d2) },
+            { (int)AccountType.DEVELOPER, (0x8e28eb, 0xe8d4fb) },
+            { (int)AccountType.ADMIN, (0x9acd32, 0xeaf5d6) }
         };
     }
 }

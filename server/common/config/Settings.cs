@@ -11,18 +11,20 @@ namespace LoESoft.Core.config
             Production
         }
 
-        public static readonly double EVENT_RATE = 2;
-        public static readonly string EVENT_MESSAGE = $"The server is hosting an event with +{(EVENT_RATE - 1) * 100}% XP, loot drop rate and Shop discounts. Enjoy!";
+        public static readonly double EVENT_RATE = 6;
+        public static readonly DateTime EVENT_OVER = new DateTime(2019, 2, 4, 23, 59, 59);
+
+        public static readonly string EVENT_MESSAGE = $"[Server Time: {DateTime.Now.ToString("MM/dd/yyyy hh:mm tt")}] The server is hosting an event with " +
+            $"+{(GetEventRate() - (GetEventRate() != 1 ? 1 : 0)) * 100}% EXP, stats EXP and loot drop rate. Enjoy it until " +
+            $"{EVENT_OVER.ToString("MM/dd/yyyy hh:mm tt")} UTC!";
+
         public static readonly ServerMode SERVER_MODE = ServerMode.Production;
         public static readonly bool ENABLE_RESTART_SYSTEM = SERVER_MODE == ServerMode.Production;
+        public static readonly int RESTART_DELAY_MINUTES = 45;
         public static readonly int RESTART_APPENGINE_DELAY_MINUTES = 30;
-        public static readonly int RESTART_DELAY_MINUTES = 90;
         public static readonly DateTimeKind DateTimeKind = DateTimeKind.Utc;
 
-        public static readonly List<string> ALLOWED_LOCAL_DNS = new List<string>
-        {
-            "::1", "localhost", "127.0.0.1", "loe-nc.servegame.com"
-        };
+        public static double GetEventRate() => DateTime.UtcNow > EVENT_OVER ? 1 : EVENT_RATE;
 
         public static class STARTUP
         {
@@ -50,7 +52,22 @@ namespace LoESoft.Core.config
             new GameVersion(Version: "3.0.1", Allowed: false),
             new GameVersion(Version: "3.1", Allowed: false),
             new GameVersion(Version: "3.2", Allowed: false),
-            new GameVersion(Version: "3.2.1", Allowed: true)
+            new GameVersion(Version: "3.2.1", Allowed: false),
+            new GameVersion(Version: "3.2.2", Allowed: false),
+            new GameVersion(Version: "3.2.3", Allowed: false),
+            new GameVersion(Version: "3.2.4", Allowed: false),
+            new GameVersion(Version: "3.2.5", Allowed: false),
+            new GameVersion(Version: "3.2.6", Allowed: false),
+            new GameVersion(Version: "3.2.7", Allowed: false),
+            new GameVersion(Version: "3.2.8", Allowed: false),
+            new GameVersion(Version: "3.2.8.1", Allowed: false),
+            new GameVersion(Version: "3.2.8.2", Allowed: false),
+            new GameVersion(Version: "3.2.8.3", Allowed: false),
+            new GameVersion(Version: "3.2.9", Allowed: false),
+            new GameVersion(Version: "3.2.9.1", Allowed: false),
+            new GameVersion(Version: "3.2.10", Allowed: false),
+            new GameVersion(Version: "3.2.11", Allowed: false),
+            new GameVersion(Version: "3.2.12", Allowed: true)
         };
     }
 }

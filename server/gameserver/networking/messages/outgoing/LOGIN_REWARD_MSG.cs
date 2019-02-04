@@ -6,7 +6,7 @@ using LoESoft.Core;
 
 namespace LoESoft.GameServer.networking.outgoing
 {
-    class LOGIN_REWARD_MSG : OutgoingMessage
+    internal class LOGIN_REWARD_MSG : OutgoingMessage
     {
         public int ItemId { get; set; }
         public int Quantity { get; set; }

@@ -121,27 +121,12 @@ namespace LoESoft.GameServer.realm.entity.merchant
                 list = region9list;
             else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_10)
                 list = region10list;
-            /*else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_12)
-                list = accessorylist;
-            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_13)
-                list = largeclothlist;
-            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_14)
-                list = smallclothlist;
-            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_15)
-                list = clothinglist;
-            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_16)
-                list = accessorylist;
-            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_17)
-                list = largeclothlist;
-            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_18)
-                list = smallclothlist;
-            else if (Owner.Map[(int)X, (int)Y].Region == TileRegion.Store_19)
-                list = clothinglist*/
             ;
 
             if (AddedTypes == null)
                 AddedTypes = new List<KeyValuePair<string, int>>();
             list.Shuffle();
+
             foreach (var t1 in list.Where(t1 => !AddedTypes.Contains(new KeyValuePair<string, int>(Owner.Name, t1))))
             {
                 AddedTypes.Add(new KeyValuePair<string, int>(Owner.Name, t1));
@@ -155,11 +140,7 @@ namespace LoESoft.GameServer.realm.entity.merchant
                     UpdateCount++;
                 }));
 
-                var s = Random.Next(0, 100);
-
-                Tuple<int, CurrencyType> price;
-
-                if (prices.TryGetValue(MType, out price))
+                if (prices.TryGetValue(MType, out Tuple<int, CurrencyType> price))
                 {
                     Price = price.Item1;
                     Currency = price.Item2;
@@ -351,29 +332,29 @@ namespace LoESoft.GameServer.realm.entity.merchant
             //        region1list.Add(item.Value.ObjectType);
             //        region2list.Add(item.Value.ObjectType);
             //    }
-            region1list.Add(0x236E); // glife
-            region1list.Add(0x236F); // gmana
-            region1list.Add(0x2368); // gatt
-            region1list.Add(0x2369); // gdef
-            region1list.Add(0x236A); // gspd
-            region1list.Add(0x236D); // gdex
-            region1list.Add(0x236B); // gvit
-            region1list.Add(0x236C); // gwis
-            region2list.Add(0xae9); // life
-            region2list.Add(0xaea); // mana
-            region2list.Add(0xa1f); // att
-            region2list.Add(0xa20); // def
-            region2list.Add(0xa21); // spd
-            region2list.Add(0xa4c); // dex
-            region2list.Add(0xa34); // vit
-            region2list.Add(0xa35); // wis
+            //region1list.Add(0x236E); // glife
+            //region1list.Add(0x236F); // gmana
+            //region1list.Add(0x2368); // gatt
+            //region1list.Add(0x2369); // gdef
+            //region1list.Add(0x236A); // gspd
+            //region1list.Add(0x236D); // gdex
+            //region1list.Add(0x236B); // gvit
+            //region1list.Add(0x236C); // gwis
+            //region2list.Add(0xae9); // life
+            //region2list.Add(0xaea); // mana
+            //region2list.Add(0xa1f); // att
+            //region2list.Add(0xa20); // def
+            //region2list.Add(0xa21); // spd
+            //region2list.Add(0xa4c); // dex
+            //region2list.Add(0xa34); // vit
+            //region2list.Add(0xa35); // wis
 
             // region 3
             foreach (var item in data.Items)
                 if (item.Value.SlotType == 10 && item.Value.ObjectId.Contains("(SB)") && item.Value.ObjectId.Contains("Skin") && item.Value.Class == "Equipment" && item.Value.Soulbound && item.Value.Consumable)
                 {
                     region3list.Add(item.Value.ObjectType);
-                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(1000, CurrencyType.Fame));
+                    prices.Add(item.Value.ObjectType, new Tuple<int, CurrencyType>(7500, CurrencyType.Fame));
                 }
 
             // region 4

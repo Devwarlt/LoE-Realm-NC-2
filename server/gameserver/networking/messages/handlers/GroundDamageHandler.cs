@@ -1,8 +1,6 @@
 ﻿#region
 
 using LoESoft.GameServer.networking.incoming;
-using LoESoft.GameServer.realm;
-using LoESoft.GameServer.realm.terrain;
 using System;
 
 #endregion
@@ -15,36 +13,36 @@ namespace LoESoft.GameServer.networking.handlers
 
         protected override void HandleMessage(Client client, GROUNDDAMAGE message)
         {
-            Manager.Logic.AddPendingAction(t =>
+            if (client.Player.HasConditionEffect(ConditionEffectIndex.Paused) ||
+                client.Player.HasConditionEffect(ConditionEffectIndex.Invincible) ||
+                client.Player.HasConditionEffect(ConditionEffectIndex.Invulnerable))
+                return;
+
+            try
             {
-                if (client.Player.HasConditionEffect(ConditionEffectIndex.Paused) ||
-                    client.Player.HasConditionEffect(ConditionEffectIndex.Invincible) ||
-                    client.Player.HasConditionEffect(ConditionEffectIndex.Invulnerable))
+                if (client.Player.Owner == null)
                     return;
 
-                try
-                {
-                    if (client.Player.Owner == null)
-                        return;
-                    WmapTile tile = client.Player.Owner.Map[(int) message.Position.X, (int) message.Position.Y];
-                    ObjectDesc objDesc = tile.ObjType == 0 ? null : Manager.GameData.ObjectDescs[tile.ObjType];
-                    TileDesc tileDesc = Manager.GameData.Tiles[tile.TileId];
-                    if (tileDesc.Damaging && (objDesc == null || !objDesc.ProtectFromGroundDamage))
-                    {
-                        int dmg = (int) client.Player.StatsManager.Random.Obf6((uint) tileDesc.MinDamage, (uint) tileDesc.MaxDamage);
-                        dmg = (int) client.Player.StatsManager.GetDefenseDamage(dmg, true);
+                var tile = client.Player.Owner.Map[(int)message.Position.X, (int)message.Position.Y];
+                var objDesc = tile.ObjType == 0 ? null : GameServer.Manager.GameData.ObjectDescs[tile.ObjType];
+                var tileDesc = GameServer.Manager.GameData.Tiles[tile.TileId];
 
-                        client.Player.HP -= dmg;
-                        client.Player.UpdateCount++;
-                        if (client.Player.HP <= 0)
-                            client.Player.Death(tileDesc.ObjectId);
-                    }
-                }
-                catch (Exception ex)
+                if (tileDesc.Damaging && (objDesc == null || !objDesc.ProtectFromGroundDamage))
                 {
-                    log4net.Error(ex);
+                    int dmg = (int)client.Player.StatsManager.Random.Obf6((uint)tileDesc.MinDamage, (uint)tileDesc.MaxDamage);
+                    dmg = (int)client.Player.StatsManager.GetDefenseDamage(dmg, true);
+
+                    client.Player.HP -= dmg;
+                    client.Player.UpdateCount++;
+
+                    if (client.Player.HP <= 0)
+                        client.Player.Death(tileDesc.ObjectId);
                 }
-            }, PendingPriority.Networking);
+            }
+            catch (Exception ex)
+            {
+                log4net.Error(ex);
+            }
         }
     }
 }

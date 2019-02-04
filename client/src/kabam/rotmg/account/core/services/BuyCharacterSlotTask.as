@@ -32,11 +32,12 @@ public class BuyCharacterSlotTask extends BaseTask {
 
     private function updatePlayerData():void {
         this.model.setMaxCharacters((this.model.getMaxCharacters() + 1));
+
         if (this.model.getCharSlotCurrency() == 0) {
             this.model.changeCredits(-this.price);
         }
         else {
-            this.model.changeCredits(-this.price);
+            this.model.changeFame(-this.price);
         }
     }
 

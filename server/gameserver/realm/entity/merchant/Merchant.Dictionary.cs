@@ -117,9 +117,14 @@ namespace LoESoft.GameServer.realm.entity.merchant
             #region "Region 4"
 
             { 0x32a, new Tuple<int, CurrencyType>(5000, CurrencyType.Fame) }, // Char Slot Unlocker
-            //{ 0x32b, new Tuple<int, CurrencyType>(2500, CurrencyType.Fame) }, // Vault Chest Unlocker
+            { 0x32b, new Tuple<int, CurrencyType>(2500, CurrencyType.Fame) }, // Vault Chest Unlocker
             { 0xc6c, new Tuple<int, CurrencyType>(500, CurrencyType.Fame) }, // Backpack
             { 0x575a, new Tuple<int, CurrencyType>(1000, CurrencyType.Fame) }, // Public Arena Key
+            { 0xc42, new Tuple<int, CurrencyType>(500, CurrencyType.Fame) }, // XP Booster
+            { 0xc6b, new Tuple<int, CurrencyType>(150, CurrencyType.Fame) }, // XP Booster 20 min
+            { 0xc6a, new Tuple<int, CurrencyType>(300, CurrencyType.Fame) }, // XP Booster 1h
+            { 0xc68, new Tuple<int, CurrencyType>(500, CurrencyType.Fame) }, // Loot Tier Potion
+            { 0xc69, new Tuple<int, CurrencyType>(500, CurrencyType.Fame) }, // Loot Drop Potion
 
             //{ 3273, new Tuple<int, CurrencyType>(20, CurrencyType.Fame) }, // Soft Drink
             //{ 3275, new Tuple<int, CurrencyType>(50, CurrencyType.Fame) }, // Fries

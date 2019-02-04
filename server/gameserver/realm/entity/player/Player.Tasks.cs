@@ -34,7 +34,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             GameServer.Manager.Database.UpdateFame(player.Client.Account, 25);
 
                             player.Experience += 1000;
-                            player.CurrentFame = player.Client.Account.Fame += 25;
+                            player.FakeExperience += 1000;
                             player.UpdateCount++;
 
                             var notifications = new List<string>()
@@ -70,8 +70,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             GameServer.Manager.Database.UpdateCredit(player.Client.Account, 5);
 
                             player.Experience += 10000;
-                            player.CurrentFame = player.Client.Account.Fame += 100;
-                            player.Credits = player.Client.Account.Credits += 5;
+                            player.FakeExperience += 10000;
                             player.UpdateCount++;
 
                             var notifications = new List<string>()
@@ -107,8 +106,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             GameServer.Manager.Database.UpdateCredit(player.Client.Account, 10);
 
                             player.Experience += 25000;
-                            player.CurrentFame = player.Client.Account.Fame += 225;
-                            player.Credits = player.Client.Account.Credits += 10;
+                            player.FakeExperience += 25000;
                             player.UpdateCount++;
 
                             var notifications = new List<string>()
@@ -143,8 +141,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             GameServer.Manager.Database.UpdateCredit(player.Client.Account, 15);
 
                             player.Experience += 37500;
-                            player.CurrentFame = player.Client.Account.Fame += 350;
-                            player.Credits = player.Client.Account.Credits += 15;
+                            player.FakeExperience += 37500;
                             player.UpdateCount++;
 
                             var notifications = new List<string>()
@@ -179,8 +176,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             GameServer.Manager.Database.UpdateCredit(player.Client.Account, 20);
 
                             player.Experience += 50000;
-                            player.CurrentFame = player.Client.Account.Fame += 500;
-                            player.Credits = player.Client.Account.Credits += 20;
+                            player.FakeExperience += 50000;
                             player.UpdateCount++;
 
                             var notifications = new List<string>()
@@ -222,15 +218,15 @@ namespace LoESoft.GameServer.realm.entity.player
                         },
                         Bonus = (player) =>
                         {
-                            GameServer.Manager.Database.UpdateFame(player.Client.Account, 10000);
+                            GameServer.Manager.Database.UpdateFame(player.Client.Account, 50000);
 
-                            player.Experience += 1000000;
-                            player.CurrentFame = player.Client.Account.Fame += 10000;
+                            player.Experience += 10000000;
+                            player.FakeExperience += 10000000;
                             player.UpdateCount++;
 
                             var notifications = new List<string>()
                             {
-                                "1,000,000 EXP", "10,000 Fame", "(Vault) 20 x Succubus Horn", "(Vault) 1 x Forgotten Sentinel Set",
+                                "10,000,000 EXP", "50,000 Fame", "(Vault) 20 x Succubus Horn", "(Vault) 1 x Forgotten Sentinel Set",
                                 "(Vault) 8 x Muzzlereaper Minion Egg (SB)", "(Vault) 1 x Ensign of Fortune (Blue)"
                             };
 
@@ -262,6 +258,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             GameServer.Manager.Database.UpdateFame(player.Client.Account, 100);
 
                             player.Experience += 1000;
+                            player.FakeExperience += 1000;
                             player.CurrentFame = player.Client.Account.Fame += 100;
                             player.UpdateCount++;
 
@@ -299,7 +296,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             GameServer.Manager.Database.UpdateFame(player.Client.Account, 300);
 
                             player.Experience += 5000;
-                            player.CurrentFame = player.Client.Account.Fame += 300;
+                            player.FakeExperience += 5000;
                             player.UpdateCount++;
 
                             var notifications = new List<string>()
@@ -331,7 +328,7 @@ namespace LoESoft.GameServer.realm.entity.player
                             GameServer.Manager.Database.UpdateFame(player.Client.Account, 500);
 
                             player.Experience += 10000;
-                            player.CurrentFame = player.Client.Account.Fame += 500;
+                            player.FakeExperience += 10000;
                             player.UpdateCount++;
 
                             var notifications = new List<string>()

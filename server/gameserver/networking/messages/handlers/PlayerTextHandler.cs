@@ -12,26 +12,26 @@ namespace LoESoft.GameServer.networking.handlers
 
         protected override void HandleMessage(Client client, PLAYERTEXT message)
         {
-            Manager.Logic.AddPendingAction(t =>
-            {
-                if (client.Player.Owner == null)
-                    return;
+            if (client.Player == null)
+                return;
 
-                if (message.Text[0] == '/')
-                    GameServer.Manager.Commands.Execute(client.Player, t, message.Text);
-                else
+            if (client.Player.Owner == null)
+                return;
+
+            if (message.Text[0] == '/')
+                GameServer.Manager.Commands.Execute(client.Player, GameServer.Manager.Logic.GameTime, message.Text);
+            else
+            {
+                if (!client.Player.NameChosen)
                 {
-                    if (!client.Player.NameChosen)
-                    {
-                        client.Player.SendInfo("{\"key\":\"server.must_be_named\"}");
-                        return;
-                    }
-                    if (!string.IsNullOrWhiteSpace(message.Text))
-                        GameServer.Manager.Chat.Say(client.Player, message.Text);
-                    else
-                        client.Player.SendInfo("{\"key\":\"server.invalid_chars\"}");
+                    client.Player.SendInfo("{\"key\":\"server.must_be_named\"}");
+                    return;
                 }
-            });
+                if (!string.IsNullOrWhiteSpace(message.Text))
+                    GameServer.Manager.Chat.Say(client.Player, message.Text);
+                else
+                    client.Player.SendInfo("{\"key\":\"server.invalid_chars\"}");
+            }
         }
     }
 }

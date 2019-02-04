@@ -23,8 +23,8 @@ namespace LoESoft.GameServer.networking.incoming
 
         protected override void Write(NWriter wtr)
         {
-            wtr.Write((ushort) ClassType);
-            wtr.Write((ushort) SkinType);
+            wtr.Write((ushort)ClassType);
+            wtr.Write((ushort)SkinType);
         }
     }
 }

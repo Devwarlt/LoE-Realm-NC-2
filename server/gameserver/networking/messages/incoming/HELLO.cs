@@ -56,7 +56,7 @@ namespace LoESoft.GameServer.networking.incoming
             wtr.WriteUTF(RSA.Instance.Encrypt(Password));
             wtr.WriteUTF(Secret);
             wtr.Write(KeyTime);
-            wtr.Write((ushort) Key.Length);
+            wtr.Write((ushort)Key.Length);
             wtr.Write(Key);
             wtr.Write(MapInfo.Length);
             wtr.Write(MapInfo);

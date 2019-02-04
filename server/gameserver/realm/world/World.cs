@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -37,328 +38,355 @@ namespace LoESoft.GameServer.realm
         DREAM_ISLAND = -15
     }
 
-	public abstract class World : IDisposable
-	{
-		protected World()
-		{
-			Players = new ConcurrentDictionary<int, Player>();
-			Enemies = new ConcurrentDictionary<int, Enemy>();
-			Entities = new ConcurrentDictionary<int, Entity>();
-			Quests = new ConcurrentDictionary<int, Enemy>();
-			Projectiles = new ConcurrentDictionary<KeyValuePair<int, byte>, Projectile>();
-			GameObjects = new ConcurrentDictionary<int, GameObject>();
-			Timers = new List<WorldTimer>();
-			ClientXml = ExtraXml = Empty<string>.Array;
-			SafePlace = false;
-			AllowTeleport = true;
-			ShowDisplays = true;
-			MaxPlayers = -1;
-			SetMusic("main");
-			Timers.Add(new WorldTimer(120 * 1000, (w, t) =>
-			{
-				canBeClosed = true;
+    public abstract class World : IDisposable
+    {
+        protected World()
+        {
+            Players = new ConcurrentDictionary<int, Player>();
+            Enemies = new ConcurrentDictionary<int, Enemy>();
+            Entities = new ConcurrentDictionary<int, Entity>();
+            Quests = new ConcurrentDictionary<int, Enemy>();
+            GameObjects = new ConcurrentDictionary<int, GameObject>();
+            Timers = new List<WorldTimer>();
+            ClientXml = ExtraXml = Empty<string>.Array;
+            SafePlace = false;
+            AllowTeleport = true;
+            ShowDisplays = true;
+            MaxPlayersCount = -1;
+            SetMusic("main");
+            Timers.Add(new WorldTimer(120 * 1000, (w, t) =>
+            {
+                canBeClosed = true;
 
-				if (NeedsPortalKey)
-					PortalKeyExpired = true;
-			}));
-		}
+                if (NeedsPortalKey)
+                    PortalKeyExpired = true;
+            }));
+        }
 
-		public void AddReconnectToPlayer(string id, Tuple<float, float> position) => ReconnectRequests.TryAdd(id, position);
+        public void AddReconnectToPlayer(string id, (float, float) position) => ReconnectRequests.TryAdd(id, position);
 
-		public Tuple<float, float> RemovePositionFromReconnect(string id)
-		{
-			if (ReconnectRequests.ContainsKey(id))
-			{
-				ReconnectRequests.TryRemove(id, out Tuple<float, float> position);
-				return position;
-			}
+        public (float, float) RemovePositionFromReconnect(string id)
+        {
+            if (ReconnectRequests.ContainsKey(id))
+            {
+                ReconnectRequests.TryRemove(id, out (float, float) position);
+                return position;
+            }
 
-			return null;
-		}
+            return default;
+        }
 
-		private ConcurrentDictionary<string, Tuple<float, float>> ReconnectRequests { get; set; } = new ConcurrentDictionary<string, Tuple<float, float>>();
+        private ConcurrentDictionary<string, (float, float)> ReconnectRequests { get; set; }
+            = new ConcurrentDictionary<string, (float, float)>();
 
-		public RealmManager Manager
-		{
-			get { return manager; }
-			internal set
-			{
-				manager = value;
-				if (manager == null)
-					return;
-				Seed = manager.Random.NextUInt32();
-				PortalKey = Utils.RandomBytes(NeedsPortalKey ? 16 : 0);
-				Init();
-			}
-		}
+        private RealmManager _manager;
 
-		public virtual void Tick(RealmTime time)
-		{
-			if (IsLimbo)
-				return;
+        public RealmManager Manager
+        {
+            get => _manager;
+            internal set
+            {
+                _manager = value;
 
-			if (Timers.Count != 0)
-				for (var i = 0; i < Timers.Count; i++)
-					try
-					{
-						if (Timers[i] == null)
-							continue;
+                if (_manager != null)
+                    BeginInit();
+            }
+        }
 
-						if (!Timers[i].Tick(this, time))
-							continue;
+        private void BeginInit()
+        {
+            Seed = _manager.Random.NextUInt32();
+            PortalKey = Utils.RandomBytes(NeedsPortalKey ? 16 : 0);
 
-						Timers.RemoveAt(i);
+            var worldtick = new Task(() => WorldTick());
+            worldtick.Start();
 
-						i--;
-					}
-					catch { }
+            Init();
+        }
 
-			if (Players.Count != 0)
-				Players.Values.Select(player => { player.Tick(time); return player; }).ToList();
+        private async void WorldTick()
+        {
+            await Task.Delay(1000 / Settings.GAMESERVER.TICKETS_PER_SECOND); // 200 ms (5 TPS)
 
-			if (EnemiesCollision != null)
-			{
-				var collisions = EnemiesCollision.GetActiveChunks(PlayersCollision).ToList();
+            _manager.TickerReady.WaitOne(); // await main thread load, before world ticker task init
 
-				if (collisions.Count != 0)
-					collisions.Select(enemy =>
-					{
-						enemy.Tick(time);
-						return enemy;
-					}).ToList();
+            try { Tick(_manager.Logic.GameTime); }
+            catch { }
 
-				if (GameObjects.Count != 0)
-					GameObjects.Where(x => x.Value is Decoy).Select(objects =>
-					{
-						objects.Value.Tick(time);
-						return objects;
-					}).ToList();
-			}
-			else
-			{
-				if (Enemies.Count != 0)
-					Enemies.Values.Where(enemy => enemy != null).Select(enemy =>
-					{
-						enemy.Tick(time);
-						return enemy;
-					}).ToList();
+            if (!Deleted)
+                WorldTick();
+        }
 
-				if (GameObjects.Count != 0)
-					GameObjects.Values.Where(objects => objects != null).Select(objects =>
-					{
-						objects.Tick(time);
-						return objects;
-					}).ToList();
-			}
+        public virtual void Tick(RealmTime time)
+        {
+            if (IsLimbo || Deleted)
+                return;
 
-			if (Projectiles.Count != 0)
-				Projectiles.Values.Where(projectile => projectile != null).Select(projectile =>
-				{
-					projectile.Tick(time);
-					return projectile;
-				}).ToList();
+            if (Timers?.Count != 0)
+                for (var i = 0; i < Timers?.Count; i++)
+                    try
+                    {
+                        if (Timers[i] == null)
+                            continue;
 
-			if (Players.Count != 0 || !canBeClosed || !IsDungeon())
-				return;
+                        if (!Timers[i].Tick(this, time))
+                            continue;
 
-			if (this is Vault vault)
-				GameServer.Manager.RemoveVault(vault.AccountId);
+                        Timers?.RemoveAt(i);
 
-			GameServer.Manager.RemoveWorld(this);
-		}
+                        i--;
+                    }
+                    catch { }
 
-		private int entityInc;
-		private RealmManager manager;
-		private bool canBeClosed;
-		public string ExtraVar = "Default";
-		public bool IsLimbo { get; protected set; }
-		public int Id { get; internal set; }
-		public int Difficulty { get; protected set; }
-		public string Name { get; protected set; }
-		public string ClientWorldName { get; protected set; }
-		public byte[] PortalKey { get; private set; }
-		public bool PortalKeyExpired { get; private set; }
-		public uint Seed { get; private set; }
-		public virtual bool NeedsPortalKey => false;
-		public ConcurrentDictionary<int, Entity> Entities { get; private set; }
-		public ConcurrentDictionary<int, Player> Players { get; private set; }
-		public ConcurrentDictionary<int, Enemy> Enemies { get; private set; }
-		public ConcurrentDictionary<KeyValuePair<int, byte>, Projectile> Projectiles { get; set; }
-		public ConcurrentDictionary<int, GameObject> GameObjects { get; private set; }
-		public List<WorldTimer> Timers { get; }
-		public int Background { get; protected set; }
-		public CollisionMap<Entity> EnemiesCollision { get; private set; }
-		public CollisionMap<Entity> PlayersCollision { get; private set; }
-		public byte[,] Obstacles { get; private set; }
-		public bool SafePlace { get; protected set; }
-		public bool AllowTeleport { get; protected set; }
-		public bool ShowDisplays { get; protected set; }
-		public string[] ClientXml { get; protected set; }
-		public string[] ExtraXml { get; protected set; }
-		public bool Dungeon { get; protected set; }
-		public bool Cave { get; protected set; }
-		public bool Shaking { get; protected set; }
-		public int MaxPlayers { get; protected set; }
-		public Wmap Map { get; private set; }
-		public ConcurrentDictionary<int, Enemy> Quests { get; }
+            if (Players.Count != 0)
+                foreach (var player in Players.Values.Where(player => player != null))
+                    player.Tick(time);
 
-		public virtual World GetInstance(Client psr) => null;
+            if (EnemiesCollision != null)
+            {
+                var collisions = EnemiesCollision.GetActiveChunks(PlayersCollision).ToList();
 
-		public Projectile GetProjectileFromId(int hostId, byte bulletId) => Projectiles[new KeyValuePair<int, byte>(hostId, bulletId)];
+                if (collisions.Count != 0)
+                    foreach (var collision in collisions.Where(collision => collision != null))
+                        collision.Tick(time);
 
-		public void AddProjectileFromId(int hostId, byte bulletId, Projectile proj) => Projectiles[new KeyValuePair<int, byte>(hostId, bulletId)] = proj;
+                if (GameObjects.Count != 0)
+                    foreach (var gameobject in GameObjects.Values.Where(x => x is Decoy && x != null))
+                        gameobject.Tick(time);
+            }
+            else
+            {
+                if (Enemies.Count != 0)
+                    foreach (var enemy in Enemies.Values.Where(enemy => enemy != null))
+                        enemy.Tick(time);
 
-		public void RemoveProjectileFromId(int hostId, byte bulletId) => Projectiles[new KeyValuePair<int, byte>(hostId, bulletId)] = null;
+                if (GameObjects.Count != 0)
+                    foreach (var gameobject in GameObjects.Values.Where(objects => objects != null))
+                        gameobject.Tick(time);
+            }
 
-		public bool IsPassable(int x, int y)
-		{
-			if (!Map.Contains(x, y))
-				return false;
-			WmapTile tile = Map[x, y];
-			if (tile.TileDesc.NoWalk)
-				return false;
-			if (GameServer.Manager.GameData.ObjectDescs.TryGetValue(tile.ObjType, out ObjectDesc desc))
-			{
-				if (!desc.Static)
-					return false;
-				if (desc.OccupySquare || desc.EnemyOccupySquare || desc.FullOccupy)
-					return false;
-			}
-			return true;
-		}
+            if (Projectiles.Count != 0)
+                foreach (var projectile in Projectiles.Keys.Where(projectile => projectile != null))
+                    projectile.Tick(time);
 
-		public int GetNextEntityId() => Interlocked.Increment(ref entityInc);
-		public string SBName { get; set; }
-		public string GetDisplayName()
-		{
-			if (!string.IsNullOrEmpty(SBName))
-			{
-				return SBName[0] == '{' ? Name : SBName;
-			}
-			return Name;
-		}
-		public bool Delete()
-		{
-			lock (this)
-			{
-				if (Players.Count > 0)
-					return false;
-				Id = 0;
-			}
-			Map = null;
-			Players = null;
-			Enemies = null;
-			Entities = null;
-			Projectiles = null;
-			GameObjects = null;
-			return true;
-		}
+            if (Players.Count != 0 || !canBeClosed || !IsDungeon())
+                return;
 
-		protected abstract void Init();
+            if (this is Vault vault)
+                _manager.RemoveVault(vault.AccountId);
 
-		public string[] Music { get; set; }
-		public string[] DefaultMusic { get; set; }
+            _manager.RemoveWorld(this);
+        }
 
-		public void SwitchMusic(params string[] music)
-		{
-			if (music.Length == 0)
-				Music = DefaultMusic;
-			else
-				Music = music;
-			BroadcastMessage(new SWITCH_MUSIC
-			{
-				Music = Music[new wRandom().Next(0, Music.Length)]
-			}, null);
-		}
+        private int entityInc;
+        private bool canBeClosed;
+        public string ExtraVar = "Default";
+        public bool IsLimbo { get; protected set; }
+        public int Id { get; internal set; }
+        public int Difficulty { get; protected set; }
+        public string Name { get; protected set; }
+        public string ClientWorldName { get; protected set; }
+        public byte[] PortalKey { get; private set; }
+        public bool PortalKeyExpired { get; private set; }
+        public uint Seed { get; private set; }
+        public virtual bool NeedsPortalKey => false;
+        public ConcurrentDictionary<int, Entity> Entities { get; private set; }
+        public ConcurrentDictionary<int, Player> Players { get; private set; }
+        public ConcurrentDictionary<int, Enemy> Enemies { get; private set; }
+        public ConcurrentDictionary<int, GameObject> GameObjects { get; private set; }
+        public List<WorldTimer> Timers { get; private set; }
+        public int Background { get; protected set; }
+        public CollisionMap<Entity> EnemiesCollision { get; private set; }
+        public CollisionMap<Entity> PlayersCollision { get; private set; }
+        public byte[,] Obstacles { get; private set; }
+        public bool SafePlace { get; protected set; }
+        public bool AllowTeleport { get; protected set; }
+        public bool ShowDisplays { get; protected set; }
+        public string[] ClientXml { get; protected set; }
+        public string[] ExtraXml { get; protected set; }
+        public bool Dungeon { get; protected set; }
+        public bool Cave { get; protected set; }
+        public bool Shaking { get; protected set; }
+        public int PlayersCount { get; private set; }
+        public int MaxPlayersCount { get; protected set; }
+        public Wmap Map { get; private set; }
+        public ConcurrentDictionary<int, Enemy> Quests { get; private set; }
+        public ConcurrentDictionary<Projectile, object> Projectiles { get; set; } = new ConcurrentDictionary<Projectile, object>();
 
-		public void SetMusic(params string[] music)
-		{
-			Music = music;
-			DefaultMusic = music;
-		}
+        public virtual World GetInstance(Client psr) => null;
 
-		public string GetMusic(wRandom rand = null)
-		{
-			if (Music.Length == 0)
-				return "null";
-			if (rand == null)
-				rand = new wRandom();
-			return Music[rand.Next(0, Music.Length)];
-		}
+        public bool IsPassable(int x, int y)
+        {
+            if (!Map.Contains(x, y))
+                return false;
 
-		private void FromWorldMap(Stream dat)
-		{
-			var map = new Wmap(GameServer.Manager.GameData);
-			Map = map;
-			entityInc = 0;
-			entityInc += Map.Load(dat, 0);
+            var tile = Map[x, y];
 
-			int w = Map.Width, h = Map.Height;
-			Obstacles = new byte[w, h];
-			for (var y = 0; y < h; y++)
-				for (var x = 0; x < w; x++)
-				{
-					try
-					{
-						var tile = Map[x, y];
-						if (GameServer.Manager.GameData.Tiles[tile.TileId].NoWalk)
-							Obstacles[x, y] = 3;
-						if (GameServer.Manager.GameData.ObjectDescs.TryGetValue(tile.ObjType, out ObjectDesc desc))
-						{
-							if (desc.Class == "Wall" ||
-								desc.Class == "ConnectedWall" ||
-								desc.Class == "CaveWall")
-								Obstacles[x, y] = 2;
-							else if (desc.OccupySquare || desc.EnemyOccupySquare)
-								Obstacles[x, y] = 1;
-						}
-					}
-					catch (Exception e)
-					{
-						Log.Error(e.ToString());
-					}
-				}
-			EnemiesCollision = new CollisionMap<Entity>(0, w, h);
-			PlayersCollision = new CollisionMap<Entity>(1, w, h);
+            if (tile.TileDesc.NoWalk)
+                return false;
 
-			Projectiles.Clear();
-			GameObjects.Clear();
-			Enemies.Clear();
-			Players.Clear();
-			Entities.Clear();
-			foreach (var i in Map.InstantiateEntities(GameServer.Manager))
-			{
-				if (i.ObjectDesc != null &&
-					(i.ObjectDesc.OccupySquare || i.ObjectDesc.EnemyOccupySquare))
-					Obstacles[(int)(i.X - 0.5), (int)(i.Y - 0.5)] = 2;
-				EnterWorld(i);
-			}
-		}
+            if (_manager.GameData.ObjectDescs.TryGetValue(tile.ObjType, out ObjectDesc desc))
+            {
+                if (!desc.Static)
+                    return false;
 
-	//	public void EnterAdmin(Client client)
-	//	{
-	//		if (client.Account.Name == "Filisha")
-	//		{
-	//			foreach (var i in Players.Values)
-	//			{
-	//				if (i != null)
-	//					i.SendError($"{client.Account.Name} the Frog has logged in!");
-	//			}
-	//		}
-	//	}
+                if (desc.OccupySquare || desc.EnemyOccupySquare || desc.FullOccupy)
+                    return false;
+            }
+
+            return true;
+        }
+
+        public int GetNextEntityId() => Interlocked.Increment(ref entityInc);
+
+        public string SBName { get; set; }
+
+        public string GetDisplayName()
+        {
+            if (!string.IsNullOrEmpty(SBName))
+            {
+                return SBName[0] == '{' ? Name : SBName;
+            }
+            return Name;
+        }
+
+        private readonly object _deleteLock = new object();
+
+        public bool Deleted { get; set; }
+
+        public bool Delete()
+        {
+            using (TimedLock.Lock(_deleteLock))
+            {
+                if (Players.Count > 0)
+                    return false;
+
+                Deleted = true;
+                Manager.RemoveWorld(this);
+                Id = 0;
+
+                Map.Dispose();
+                Players.Clear();
+                Enemies.Clear();
+                Quests.Clear();
+                Projectiles.Clear();
+                GameObjects.Clear();
+                Timers.Clear();
+
+                EnemiesCollision = null;
+                PlayersCollision = null;
+                Map = null;
+                Players = null;
+                Enemies = null;
+                Quests = null;
+                Projectiles = null;
+                GameObjects = null;
+                Timers = null;
+
+                GC.Collect();
+
+                return true;
+            }
+        }
+
+        protected abstract void Init();
+
+        public string[] Music { get; set; }
+        public string[] DefaultMusic { get; set; }
+
+        public void SwitchMusic(params string[] music)
+        {
+            if (music.Length == 0)
+                Music = DefaultMusic;
+            else
+                Music = music;
+
+            BroadcastMessage(new SWITCH_MUSIC
+            {
+                Music = Music[new wRandom().Next(0, Music.Length)]
+            }, null);
+        }
+
+        public void SetMusic(params string[] music)
+        {
+            Music = music;
+            DefaultMusic = music;
+        }
+
+        public string GetMusic(wRandom rand = null)
+        {
+            if (Music.Length == 0)
+                return "null";
+
+            if (rand == null)
+                rand = new wRandom();
+
+            return Music[rand.Next(0, Music.Length)];
+        }
+
+        private void FromWorldMap(Stream dat)
+        {
+            var map = new Wmap(_manager.GameData);
+            Map = map;
+            entityInc = 0;
+            entityInc += Map.Load(dat, 0);
+
+            int w = Map.Width, h = Map.Height;
+            Obstacles = new byte[w, h];
+            for (var y = 0; y < h; y++)
+                for (var x = 0; x < w; x++)
+                {
+                    try
+                    {
+                        var tile = Map[x, y];
+                        if (_manager.GameData.Tiles[tile.TileId].NoWalk)
+                            Obstacles[x, y] = 3;
+                        if (_manager.GameData.ObjectDescs.TryGetValue(tile.ObjType, out ObjectDesc desc))
+                        {
+                            if (desc.Class == "Wall" ||
+                                desc.Class == "ConnectedWall" ||
+                                desc.Class == "CaveWall")
+                                Obstacles[x, y] = 2;
+                            else if (desc.OccupySquare || desc.EnemyOccupySquare)
+                                Obstacles[x, y] = 1;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e.ToString());
+                    }
+                }
+            EnemiesCollision = new CollisionMap<Entity>(0, w, h);
+            PlayersCollision = new CollisionMap<Entity>(1, w, h);
+
+            Projectiles.Clear();
+            GameObjects.Clear();
+            Enemies.Clear();
+            Players.Clear();
+            Entities.Clear();
+
+            foreach (var i in Map.InstantiateEntities())
+            {
+                if (i.ObjectDesc != null &&
+                    (i.ObjectDesc.OccupySquare || i.ObjectDesc.EnemyOccupySquare))
+                    Obstacles[(int)(i.X - 0.5), (int)(i.Y - 0.5)] = 2;
+
+                EnterWorld(i);
+            }
+        }
+
         public virtual int EnterWorld(Entity entity)
         {
-			if (entity is Player player)
-			{
-				if (Settings.EVENT_RATE > 1 && !player.Client.EventNotification)
-				{
-					player.SendInfo(Settings.EVENT_MESSAGE);
-					player.Client.EventNotification = true;
-				}
+            if (entity is Player player)
+            {
+                if (Settings.GetEventRate() != 1 && !player.Client.EventNotification)
+                {
+                    player.SendInfo(Settings.EVENT_MESSAGE);
+                    player.Client.EventNotification = true;
+                }
 
-				TryAdd(player);
-			}
-
+                TryAdd(player);
+            }
             else
             {
                 if (entity is Enemy enemy)
@@ -430,6 +458,9 @@ namespace LoESoft.GameServer.realm
 
             player.Init(this);
 
+            if (MaxPlayersCount != -1)
+                PlayersCount++;
+
             PlayersCollision.Insert(player);
         }
 
@@ -437,6 +468,9 @@ namespace LoESoft.GameServer.realm
         {
             if (!Players.TryRemove(player.Id, out Player dummy) || !Entities.TryRemove(player.Id, out Entity entity))
                 return;
+
+            if (MaxPlayersCount != -1)
+                PlayersCount--;
 
             PlayersCollision.Remove(player);
         }
@@ -480,10 +514,11 @@ namespace LoESoft.GameServer.realm
         private void TryAdd(Projectile projectile)
         {
             projectile.Init(this);
-            AddProjectileFromId(projectile.ProjectileOwner.Id, projectile.ProjectileId, projectile);
+
+            Projectiles.TryAdd(projectile, null);
         }
 
-        private void TryRemove(Projectile projectile) => RemoveProjectileFromId(projectile.ProjectileOwner.Id, projectile.ProjectileId);
+        private void TryRemove(Projectile projectile) => Projectiles.TryRemove(projectile, out object val);
 
         private void TryAdd(GameObject gameObject)
         {
@@ -555,8 +590,8 @@ namespace LoESoft.GameServer.realm
         }
 
         public bool IsFull =>
-            MaxPlayers != -1
-            && Players.Keys.Count >= MaxPlayers;
+            MaxPlayersCount != -1
+            && Players.Keys.Count >= MaxPlayersCount;
 
         public bool IsDungeon() =>
             !(this is IDungeon);
@@ -579,7 +614,7 @@ namespace LoESoft.GameServer.realm
                     break;
 
                 case MapType.Json:
-                    FromWorldMap(new MemoryStream(Json2Wmap.Convert(GameServer.Manager.GameData, new StreamReader(stream).ReadToEnd())));
+                    FromWorldMap(new MemoryStream(Json2Wmap.Convert(_manager.GameData, new StreamReader(stream).ReadToEnd())));
                     break;
 
                 default:
@@ -589,7 +624,7 @@ namespace LoESoft.GameServer.realm
 
         protected void LoadMap(string json)
         {
-            FromWorldMap(new MemoryStream(Json2Wmap.Convert(GameServer.Manager.GameData, json)));
+            FromWorldMap(new MemoryStream(Json2Wmap.Convert(_manager.GameData, json)));
         }
 
         public void ChatReceived(string text)

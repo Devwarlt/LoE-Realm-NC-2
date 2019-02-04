@@ -81,10 +81,10 @@ namespace LoESoft.GameServer.realm.entity.player
 
         private IEnumerable<ObjectDef> GetNewStatics(int xBase, int yBase)
         {
-            var world = GameServer.Manager.GetWorld(Owner.Id);
             var ret = new List<ObjectDef>();
             try
             {
+                var world = GameServer.Manager.GetWorld(Owner.Id);
                 blocksight = world.Dungeon ? Sight.RayCast(this, SIGHTRADIUS) : Sight.GetSightCircle(SIGHTRADIUS);
                 blocksight.Where(_ =>
                 {

@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -34,7 +33,7 @@ namespace LoESoft.Core
             var port = Settings.REDIS_DATABASE.PORT;
             var password = Settings.REDIS_DATABASE.PASSWORD;
 
-            var conString = Settings.REDIS_DATABASE.HOST + ":" + Settings.REDIS_DATABASE.PORT + ",syncTimeout=" + Settings.RESTART_DELAY_MINUTES * 60 * 1000;
+            var conString = Settings.REDIS_DATABASE.HOST + ":" + Settings.REDIS_DATABASE.PORT + ",syncTimeout=" + Settings.RESTART_DELAY_MINUTES * 60 * 1000 * 2;
 
             if (password != null && !password.Equals(""))
                 conString += ",password=" + password;
@@ -86,7 +85,7 @@ namespace LoESoft.Core
                 GuildFame = -1,
                 VaultCount = 1,
                 MaxCharSlot = Settings.STARTUP.MAX_CHAR_SLOTS,
-                RegTime = DateTime.Now,
+                RegTime = DateTime.UtcNow,
                 Guest = true,
                 Fame = Settings.STARTUP.FAME,
                 TotalFame = Settings.STARTUP.TOTAL_FAME,
@@ -281,7 +280,7 @@ namespace LoESoft.Core
                 GuildFame = 0,
                 VaultCount = 1,
                 MaxCharSlot = Settings.STARTUP.MAX_CHAR_SLOTS,
-                RegTime = DateTime.Now,
+                RegTime = DateTime.UtcNow,
                 Guest = isGuest,
                 Fame = Settings.STARTUP.FAME,
                 TotalFame = Settings.STARTUP.TOTAL_FAME,
@@ -399,47 +398,28 @@ namespace LoESoft.Core
         public void UpdateCredit(DbAccount acc, int amount)
         {
             var trans = _db.CreateTransaction();
+            trans.HashIncrementAsync(acc.Key, "credits", amount);
+            trans.ExecuteAsync();
 
-            if (amount > 0)
-                trans.HashIncrementAsync(acc.Key, "credits", amount)
-                    .ContinueWith(t =>
-                    {
-                        if (!t.IsCanceled)
-                            acc.Credits = (int)t.Result;
-                    });
-            else
-                trans.HashIncrementAsync(acc.Key, "credits", amount)
-                    .ContinueWith(t =>
-                    {
-                        if (!t.IsCanceled)
-                            acc.Credits = (int)t.Result;
-                    });
-
-            trans.Execute();
+            acc.Credits += amount;
 
             Update(acc);
         }
 
-        public void UpdateFame(DbAccount acc, int amount)
+        public void UpdateFame(DbAccount acc, double amount, bool fromDeath = false)
         {
             var trans = _db.CreateTransaction();
+            trans.HashIncrementAsync(acc.Key, "fame", amount);
 
-            if (amount > 0)
-                trans.HashIncrementAsync(acc.Key, "totalFame", amount)
-                    .ContinueWith(t =>
-                    {
-                        if (!t.IsCanceled)
-                            acc.Credits = (int)t.Result;
-                    });
-            else
-                trans.HashIncrementAsync(acc.Key, "fame", amount)
-                    .ContinueWith(t =>
-                    {
-                        if (!t.IsCanceled)
-                            acc.Credits = (int)t.Result;
-                    });
+            if (fromDeath)
+                trans.HashIncrementAsync(acc.Key, "totalFame", amount);
 
-            trans.Execute();
+            trans.ExecuteAsync();
+
+            acc.Fame += amount;
+
+            if (fromDeath)
+                acc.TotalFame += amount;
 
             Update(acc);
         }
@@ -447,23 +427,10 @@ namespace LoESoft.Core
         public void UpdateTokens(DbAccount acc, int amount)
         {
             var trans = _db.CreateTransaction();
+            trans.HashIncrementAsync(acc.Key, "fortuneTokens", amount);
+            trans.ExecuteAsync();
 
-            if (amount > 0)
-                trans.HashIncrementAsync(acc.Key, "fortuneTokens", amount)
-                    .ContinueWith(t =>
-                    {
-                        if (!t.IsCanceled)
-                            acc.Credits = (int)t.Result;
-                    });
-            else
-                trans.HashIncrementAsync(acc.Key, "fortuneTokens", amount)
-                    .ContinueWith(t =>
-                    {
-                        if (!t.IsCanceled)
-                            acc.Credits = (int)t.Result;
-                    });
-
-            trans.Execute();
+            acc.FortuneTokens += amount;
 
             Update(acc);
         }
@@ -471,30 +438,17 @@ namespace LoESoft.Core
         public void UpdateEmpiresCoin(DbAccount acc, int amount)
         {
             var trans = _db.CreateTransaction();
+            trans.HashIncrementAsync(acc.Key, "empiresCoin", amount);
+            trans.ExecuteAsync();
 
-            if (amount > 0)
-                trans.HashIncrementAsync(acc.Key, "empiresCoin", amount)
-                    .ContinueWith(t =>
-                    {
-                        if (!t.IsCanceled)
-                            acc.Credits = (int)t.Result;
-                    });
-            else
-                trans.HashIncrementAsync(acc.Key, "empiresCoin", amount)
-                    .ContinueWith(t =>
-                    {
-                        if (!t.IsCanceled)
-                            acc.Credits = (int)t.Result;
-                    });
-
-            trans.Execute();
+            acc.EmpiresCoin += amount;
 
             Update(acc);
         }
 
         public void UpdateAccountLifetime(DbAccount acc, AccountType accType, int amount)
         {
-            acc.AccountLifetime = DateTime.Now;
+            acc.AccountLifetime = DateTime.UtcNow;
             acc.AccountLifetime = acc.AccountLifetime.AddDays(amount);
             acc.AccountType = (int)accType;
             Update(acc);
@@ -575,6 +529,14 @@ namespace LoESoft.Core
                 ObjectType = type,
                 Level = 1,
                 Experience = 0,
+                FakeExperience = 0,
+                IsFakeEnabled = true,
+                Bless1 = false,
+                Bless2 = false,
+                Bless3 = false,
+                Bless4 = false,
+                Bless5 = false,
+                EnablePetAttack = true,
                 Fame = 0,
                 HasBackpack = false,
                 Items = @class.Element("Equipment").Value.Replace("0xa22", "-1").CommaToArray<int>(),
@@ -596,8 +558,8 @@ namespace LoESoft.Core
                 Pet = 0,
                 FameStats = new byte[0],
                 TaskStats = string.Empty,
-                CreateTime = DateTime.Now,
-                LastSeen = DateTime.Now
+                CreateTime = DateTime.UtcNow,
+                LastSeen = DateTime.UtcNow
             };
             character.FlushAsync();
             _db.SetAdd("alive." + acc.AccountId, BitConverter.GetBytes(newId));
@@ -625,7 +587,7 @@ namespace LoESoft.Core
             return ret;
         }
 
-        public Task<bool> SaveCharacter(DbAccount acc, DbChar character, bool lockAcc)
+        public bool SaveCharacter(DbAccount acc, DbChar character, bool lockAcc)
         {
             var trans = _db.CreateTransaction();
 
@@ -638,7 +600,7 @@ namespace LoESoft.Core
             stats.Update(character);
             stats.FlushAsync(trans);
 
-            return trans.ExecuteAsync();
+            return trans.Execute();
         }
 
         public void DeleteCharacter(DbAccount acc, int charId)
@@ -663,7 +625,7 @@ namespace LoESoft.Core
                 TotalFame = finalFame,
                 Killer = killer,
                 FirstBorn = firstBorn,
-                DeathTime = DateTime.Now
+                DeathTime = DateTime.UtcNow
             };
             death.FlushAsync();
 
@@ -671,7 +633,7 @@ namespace LoESoft.Core
             _db.SetRemoveAsync("alive." + acc.AccountId, idBuff, CommandFlags.FireAndForget);
             _db.ListLeftPushAsync("dead." + acc.AccountId, idBuff, When.Always, CommandFlags.FireAndForget);
 
-            UpdateFame(acc, finalFame);
+            UpdateFame(acc, finalFame, true);
 
             if (acc.AccountType <= (int)AccountType.VIP)
                 DbLegend.Insert(_db, int.Parse(acc.AccountId), character.CharId, finalFame);

@@ -497,7 +497,7 @@ public class MysteryBoxRollModal extends Sprite {
             _local2 = (int(this.mbi.priceAmount) * this.quantity_);
         }
         var _local3:Boolean = true;
-        var _local4:int;
+        var _local4:Number;
         var _local5:int;
         var _local6:Player = StaticInjectorContext.getInjector().getInstance(GameModel).player;
         if (_local6 != null) {

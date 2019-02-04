@@ -21,20 +21,20 @@ namespace LoESoft.GameServer.logic.behaviors
     public class NPCEngine : Behavior
     {
         // NPC read-only variables (declaration)
-        protected List<string> _playerWelcomeMessages { get; set; }
+        private List<string> _playerWelcomeMessages { get; set; }
 
-        protected List<string> _playerLeaveMessages { get; set; }
-        protected List<string> _NPCLeaveMessages { get; set; }
-        protected bool _randomNPCLeaveMessages { get; set; }
-        protected double _range { get; set; }
-        protected int _NPCStars { get; set; }
+        private List<string> _playerLeaveMessages { get; set; }
+        private List<string> _NPCLeaveMessages { get; set; }
+        private bool _randomNPCLeaveMessages { get; set; }
+        private double _range { get; set; }
+        private int _NPCStars { get; set; }
 
-        protected NPC _NPC { get; set; }
+        private NPC _NPC { get; set; }
 
         // Engine read-only variables
-        protected DateTime _now => DateTime.Now; // get current time (real-time)
+        private DateTime _now => DateTime.Now; // get current time (real-time)
 
-        protected int _delay = 1000; // in milliseconds
+        private int _delay = 1000; // in milliseconds
 
         public NPCEngine(
             List<string> playerWelcomeMessages = null,
@@ -45,9 +45,9 @@ namespace LoESoft.GameServer.logic.behaviors
             int NPCStars = 0
             )
         {
-            _playerWelcomeMessages = playerWelcomeMessages != null ? playerWelcomeMessages : new List<string> { "hi", "hello", "hey", "good morning", "good afternoon", "good evening" };
-            _playerLeaveMessages = playerLeaveMessages != null ? playerLeaveMessages : new List<string> { "bye", "see ya", "goodbye", "see you", "see you soon", "goodnight" };
-            _NPCLeaveMessages = NPCLeaveMessages != null ? NPCLeaveMessages : new List<string> { "Farewell, {PLAYER}!", "Good bye, then...", "Cheers!", "See you soon, {PLAYER}!" };
+            _playerWelcomeMessages = playerWelcomeMessages ?? new List<string> { "hi", "hello", "hey", "good morning", "good afternoon", "good evening" };
+            _playerLeaveMessages = playerLeaveMessages ?? new List<string> { "bye", "see ya", "goodbye", "see you", "see you soon", "goodnight" };
+            _NPCLeaveMessages = NPCLeaveMessages ?? new List<string> { "Farewell, {PLAYER}!", "Good bye, then...", "Cheers!", "See you soon, {PLAYER}!" };
             _randomNPCLeaveMessages = randomNPCLeaveMessages;
             _range = range;
             _NPCStars = NPCStars;
@@ -76,20 +76,24 @@ namespace LoESoft.GameServer.logic.behaviors
         {
             if (_NPC == null)
                 return;
-            List<Entity> entities = npc.GetNearestEntities(_range * 2, null).ToList();
+
+            var entities = npc.GetNearestEntities(_range * 2, null).ToList();
             Parallel.ForEach(entities, entity =>
             {
                 Player player;
+
                 if (entity is Player)
                     player = entity as Player;
                 else
                     return;
+
                 if (_NPC.ReturnPlayersCache().Contains(player.Name) && !entities.Contains(player))
                 {
                     _NPC.RemovePlayer(player); // Removing player into NPC's players cache.
                     ChatManager.ChatDataCache.Remove(player.Name); // Removing player from chat data cache.
                     return;
                 }
+
                 try
                 {
                     if (npc.Dist(player) > _range && _NPC.ReturnPlayersCache().Contains(player.Name))
@@ -99,10 +103,12 @@ namespace LoESoft.GameServer.logic.behaviors
                         ChatManager.ChatDataCache.Remove(player.Name); // Removing player from chat data cache.
                         return;
                     }
+
                     if (ChatManager.ChatDataCache.ContainsKey(player.Name))
                     {
                         //Chat data cache contains player
-                        Tuple<DateTime, string> messageInfo = ChatManager.ChatDataCache[player.Name];
+                        var messageInfo = ChatManager.ChatDataCache[player.Name];
+
                         if (_NPC.ReturnPlayersCache().Contains(player.Name))
                         {
                             // NPC's players cache contains player.
@@ -114,6 +120,7 @@ namespace LoESoft.GameServer.logic.behaviors
                                     ChatManager.ChatDataCache.Remove(player.Name); // Removing player from chat data cache.
                                     return;
                                 }
+
                                 if (_playerLeaveMessages.Contains(messageInfo.Item2.ToLower()) && messageInfo.Item1 >= _now.AddMilliseconds(-_delay) && messageInfo.Item1 <= _now.AddMilliseconds(_delay))
                                 {
                                     _NPC.RemovePlayer(player); // Removing player into NPC's players cache.

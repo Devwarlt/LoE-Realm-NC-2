@@ -521,20 +521,21 @@ namespace LoESoft.GameServer.realm
         {
             if (this is Projectile || Owner == null)
                 return;
+
             if (playerOwner != null)
-            {
                 if (this.Dist(playerOwner) > 20)
                     Move(playerOwner.X, playerOwner.Y);
-            }
+
             if (CurrentState != null && Owner != null)
-            {
                 if (!HasConditionEffect(ConditionEffectIndex.Stasis))
                     TickState(time);
-            }
+
             if (posHistory != null)
                 posHistory[posIdx++] = new Position { X = X, Y = Y };
+
             if (effects == null)
                 return;
+
             ProcessConditionEffects(time);
         }
 
@@ -651,18 +652,25 @@ namespace LoESoft.GameServer.realm
                 ProjectileId = ProjectileId++,
                 Container = (short)container,
                 Damage = dmg,
-                BeginTime = GameServer.Manager.Logic.CurrentTime.TotalElapsedMs,
+                BeginTime = GameServer.Manager.Logic.GameTime.TotalElapsedMs,
                 BeginPos = pos,
                 Angle = angle,
                 X = pos.X,
-                Y = pos.Y
+                Y = pos.Y,
+                EntityId = Id,
+                ObjectId = ObjectDesc.ObjectId,
+                DisplayId = ObjectDesc.DisplayId
             };
 
-            if (Owner.Projectiles.TryGetValue(new KeyValuePair<int, byte>(Id, _projectile.ProjectileId), out Projectile _projectileSample))
-                if (_projectileSample != null)
-                    Owner.RemoveProjectileFromId(Id, _projectileSample.ProjectileId);
+            var projectile = Owner.Projectiles.Keys.FirstOrDefault(proj
+                => proj.ProjectileOwner.Id == Id &&
+                proj.ProjectileId == _projectile.ProjectileId);
 
-            Owner.AddProjectileFromId(Id, _projectile.ProjectileId, _projectile);
+            if (projectile != null || projectile != default(Projectile))
+                if (!projectile.ProjDesc.MultiHit)
+                    Owner.Projectiles.TryRemove(projectile, out object val);
+
+            Owner.Projectiles.TryAdd(_projectile, null);
 
             return _projectile;
         }

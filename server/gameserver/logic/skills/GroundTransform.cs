@@ -36,8 +36,8 @@ namespace LoESoft.GameServer.logic.behaviors
         protected override void OnStateEntry(Entity host, RealmTime time, ref object state)
         {
             var map = host.Owner.Map;
-            var hx = (int) host.X;
-            var hy = (int) host.Y;
+            var hx = (int)host.X;
+            var hy = (int)host.Y;
 
             var tileType = GameServer.Manager.GameData.IdToTileType[_tileId];
 
@@ -45,8 +45,8 @@ namespace LoESoft.GameServer.logic.behaviors
 
             if (_relativeX != null && _relativeY != null)
             {
-                var x = hx + (int) _relativeX;
-                var y = hy + (int) _relativeY;
+                var x = hx + (int)_relativeX;
+                var y = hy + (int)_relativeY;
 
                 if (!map.Contains(new IntPoint(x, y)))
                     return;

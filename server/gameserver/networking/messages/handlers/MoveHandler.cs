@@ -12,9 +12,9 @@ namespace LoESoft.GameServer.networking.handlers
     {
         public override MessageID ID => MessageID.MOVE;
 
-        protected override void HandleMessage(Client client, MOVE message) => Manager.Logic.AddPendingAction(t => Handle(client.Player, t, message), PendingPriority.Networking);
+        protected override void HandleMessage(Client client, MOVE message) => Handle(client.Player, message);
 
-        private void Handle(Player player, RealmTime time, MOVE message)
+        private void Handle(Player player, MOVE message)
         {
             if (player?.Owner == null || player.HasConditionEffect(ConditionEffectIndex.Paralyzed) || message.Position.X == -1 || message.Position.Y == -1)
                 return;
@@ -32,7 +32,7 @@ namespace LoESoft.GameServer.networking.handlers
 
         private static void CheckLabConditions(Entity player, MOVE packet)
         {
-            var tile = player.Owner.Map[(int) packet.Position.X, (int) packet.Position.Y];
+            var tile = player.Owner.Map[(int)packet.Position.X, (int)packet.Position.Y];
 
             switch (tile.TileId)
             {

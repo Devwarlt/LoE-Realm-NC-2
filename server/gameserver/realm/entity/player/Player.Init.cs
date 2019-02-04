@@ -2,7 +2,6 @@
 
 using LoESoft.Core.config;
 using LoESoft.Core.database;
-using LoESoft.Core.models;
 using LoESoft.GameServer.logic;
 using LoESoft.GameServer.logic.skills.Pets;
 using LoESoft.GameServer.networking;
@@ -12,7 +11,6 @@ using LoESoft.GameServer.realm.terrain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Xml.Linq;
 using static LoESoft.GameServer.networking.Client;
 
@@ -58,8 +56,31 @@ namespace LoESoft.GameServer.realm.entity.player
                 MpPotionPrice = 5;
                 Level = client.Character.Level == 0 ? 1 : client.Character.Level;
                 Experience = client.Character.Experience;
-                ExperienceGoal = GetExpGoal(Level);
+                ExperienceGoal = GetExperience(Level + 1, ExpType.Level);
+                FakeExperience = client.Character.FakeExperience;
+                IsFakeEnabled = client.Character.IsFakeEnabled;
+                AttackLevel = client.Character.AttackLevel;
+
+                if (AttackLevel < 10)
+                    AttackLevel += 10;
+
+                AttackExperience = client.Character.AttackExperience;
+                AttackGoalExperience = GetExperience(AttackLevel + 1 - 10, ExpType.Stat);
+                DefenseLevel = client.Character.DefenseLevel;
+
+                if (DefenseLevel < 10)
+                    DefenseLevel += 10;
+
+                DefenseExperience = client.Character.DefenseExperience;
+                DefenseGoalExperience = GetExperience(DefenseLevel + 1 - 10, ExpType.Stat);
+                Bless1 = client.Character.Bless1;
+                Bless2 = client.Character.Bless2;
+                Bless3 = client.Character.Bless3;
+                Bless4 = client.Character.Bless4;
+                Bless5 = client.Character.Bless5;
+                EnablePetAttack = client.Character.EnablePetAttack;
                 Stars = AccountType >= (int)Core.config.AccountType.DEVELOPER ? 70 : GetStars();
+                ChatColors = new ChatColor(this);
                 Texture1 = client.Character.Tex1;
                 Texture2 = client.Character.Tex2;
                 Credits = client.Account.Credits;
@@ -86,7 +107,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 lootDropBoostFreeTimer = LootDropBoost;
                 LootTierBoostTimeLeft = client.Character.LootTierTimer;
                 lootTierBoostFreeTimer = LootTierBoost;
-                FameGoal = (AccountType >= (int)Core.config.AccountType.MOD) ? 0 : GetFameGoal(FameCounter.ClassStats[ObjectType].BestFame);
+                FameGoal = (AccountType >= (int)Core.config.AccountType.MOD) ? 0d : GetFameGoal(FameCounter.ClassStats[ObjectType].BestFame);
                 Glowing = AccountType == (int)Core.config.AccountType.VIP;
                 var guild = GameServer.Manager.Database.GetGuild(client.Account.GuildId);
                 if (guild != null)
@@ -158,7 +179,18 @@ namespace LoESoft.GameServer.realm.entity.player
                             Utils.FromCommaSepString32(
                                 xElement.Value);
                 }
+
+                var (hp, mp) = GetStats[GetClassType[ObjectType]];
+
                 Stats = (int[])client.Character.Stats.Clone();
+                Stats[0] = Level * hp + 100; // hp
+                Stats[1] = Level * mp + 100; // mp
+                Stats[2] = 0; // old attack
+                Stats[3] = 0; // old defense
+                Stats[4] = Level / 2; // spd
+                Stats[5] = 10; // default hp
+                Stats[6] = 10; // default wis
+                Stats[7] = 25; // default dex
 
                 for (var i = 0; i < SlotTypes.Length; i++)
                     if (SlotTypes[i] == 0)
@@ -191,119 +223,206 @@ namespace LoESoft.GameServer.realm.entity.player
         private void AnnounceDeath(string killer)
         {
             var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
-            var rip = Name + " died to " + killer + "( " + playerDesc.ObjectId + ", " + Fame + " Fame )";
+            var notification = $"{Name} died at level {Level} to {killer} as {playerDesc.ObjectId.ToLower()} with {Fame} fame base.";
+
             if (Fame >= 2000 && !Client.Account.Admin)
-            {
-                foreach (var w in GameServer.Manager.Worlds.Values)
-                    foreach (var p in w.Players.Values)
-                        p.SendDeathAnnounce(rip);
-                return;
-            }
+                foreach (var client in GameServer.Manager.GetManager.Clients.Values)
+                    client.Player?.GazerDM(notification);
             else
-            {
                 foreach (var i in Owner.Players.Values)
-                {
-                    i.SendDeathAnnounce(rip);
-                }
-            }
+                    i.GazerDM(notification);
         }
 
-        public void Death(string killer, ObjectDesc desc = null, Entity entity = null)
+        public void Death(string killer, ObjectDesc desc = null, Entity entity = null, string displayid = null, string objectid = null)
         {
             if (dying)
                 return;
+
             dying = true;
-            switch (Owner.Name)
-            {
-                case "Arena":
-                    {
-                        Client.SendMessage(new ARENA_DEATH
-                        {
-                            RestartPrice = 100
-                        });
-                        HP = (int)ObjectDesc.MaxHP;
-                        ApplyConditionEffect(new ConditionEffect
-                        {
-                            Effect = ConditionEffectIndex.Paused,
-                            DurationMS = -1
-                        });
-                        return;
-                    }
-            }
-            if (Client.State == ProtocolState.Disconnected || resurrecting)
-                return;
-            if (CheckResurrection())
-                return;
 
-            if (Client.Character.Dead)
+            if (Owner.Name == "Arena")
             {
-                GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHARACTER_IS_DEAD);
+                Client.SendMessage(new ARENA_DEATH
+                {
+                    RestartPrice = 100
+                });
+
+                HP = (int)ObjectDesc.MaxHP;
+
+                ApplyConditionEffect(new ConditionEffect
+                {
+                    Effect = ConditionEffectIndex.Paused,
+                    DurationMS = -1
+                });
                 return;
             }
-            GenerateGravestone();
-            if ((entity is Player))
-            {
-                AnnounceDeath((entity as Player).Name + " the " + entity.ObjectDesc.ObjectId);
-            }
-            else
-            {
-                AnnounceDeath(killer);
-            }
-            if (desc != null)
-                if (desc.DisplayId != null)
-                    killer = desc.DisplayId;
-                else
-                    killer = desc.ObjectId;
-            switch (killer)
-            {
-                case "":
-                case "Unknown":
-                    break;
 
-                default:
-                    Owner.BroadcastMessage(new TEXT
-                    {
-                        BubbleTime = 0,
-                        Stars = -1,
-                        Name = "",
-                        Text = "{\"key\":\"server.death\",\"tokens\":{\"player\":\"" + Name + "\",\"level\":\"" + Level + "\",\"enemy\":\"" + killer + "\"}}",
-                        NameColor = 0x123456,
-                        TextColor = 0x123456
-                    }, null);
-                    break;
-            }
+            if (Client.State == ProtocolState.Disconnected)
+                return;
 
-            try
+            var blessings = CountBlessings();
+
+            if (blessings == 5 || Level <= 30)
             {
-                Client.Character.Dead = true;
+                Bless1 = false;
+                Bless2 = false;
+                Bless3 = false;
+                Bless4 = false;
+                Bless5 = false;
 
                 SaveToCharacter();
 
-                GameServer.Manager.Database.SaveCharacter(Client.Account, Client.Character, true);
-                GameServer.Manager.Database.Death(GameServer.Manager.GameData, Client.Account, Client.Character, FameCounter.Stats, killer);
+                var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
+                var notification = $"({playerDesc.ObjectId} - Lvl: {Level}) {Name} escaped from death!";
 
-                if (Owner.Id != -6)
-                {
-                    DEATH _death = new DEATH
-                    {
-                        AccountId = AccountId,
-                        CharId = Client.Character.CharId,
-                        Killer = killer,
-                        zombieId = -1,
-                        zombieType = -1
-                    };
-
-                    Client.SendMessage(_death);
-
-                    Owner.Timers.Add(new WorldTimer(1000, (w, t) => GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHARACTER_IS_DEAD)));
-
-                    Owner.LeaveWorld(this);
-                }
+                if (Fame >= 2000)
+                    foreach (var client in GameServer.Manager.GetManager.Clients.Values.Where(c => c.Player != this))
+                        client.Player?.GazerDM(notification);
                 else
-                    GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHARACTER_IS_DEAD_ERROR);
+                    foreach (var i in Owner.Players.Values.Where(p => p != this))
+                        i.GazerDM(notification);
+
+                GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHARACTER_IS_DEAD);
+                return;
             }
-            catch (Exception) { }
+
+            GenerateGravestone();
+
+            if (desc != null)
+                killer = desc.DisplayId ?? desc.ObjectId;
+            else
+                killer = displayid ?? objectid;
+
+            AnnounceDeath(killer);
+
+            var rng = new Random();
+            var lvl = Level;
+            var exp = Experience;
+            var attlvl = AttackLevel - 10;
+            var attexp = AttackExperience;
+            var deflvl = DefenseLevel - 10;
+            var defexp = DefenseExperience;
+            var fame = Fame;
+            var fexp = FakeExperience;
+            var exploss = Math.Floor(exp * .2);
+            var attexploss = Math.Floor(attexp * .2);
+            var defexploss = Math.Floor(defexp * .2);
+            var newexp = exp - exploss;
+            var newattexp = attexp - attexploss;
+            var newdefexp = defexp - defexploss;
+            var newlvl = GetLevel(newexp, ExpType.Level);
+            var newattlvl = GetLevel(newattexp, ExpType.Stat) + 10;
+            var newdeflvl = GetLevel(newdefexp, ExpType.Stat) + 10;
+            var items = Inventory;
+            var (hp, mp) = GetStats[GetClassType[ObjectType]];
+
+            if (newlvl < 1)
+            {
+                newlvl = 1;
+                newexp = GetLevel(1, ExpType.Level);
+            }
+
+            if (newattlvl < 10)
+            {
+                newattlvl = 10;
+                newattexp = GetLevel(1, ExpType.Stat);
+            }
+
+            if (newdeflvl < 10)
+            {
+                newdeflvl = 10;
+                newdefexp = GetLevel(1, ExpType.Stat);
+            }
+
+            if (lvl > newlvl)
+                newlvl = Level;
+            else
+                newlvl = lvl;
+
+            if (attlvl > newattlvl)
+                newattlvl = AttackLevel;
+            else
+                newattlvl = attlvl;
+
+            if (deflvl > newdeflvl)
+                newdeflvl = DefenseLevel;
+            else
+                newdeflvl = deflvl;
+
+            if (rng.Next(0, 100) <= 100 - 20 * blessings)
+                Client.Character.Pet = 0;
+
+            if (rng.Next(0, 100) <= 100 - 20 * blessings)
+            {
+                var max = rng.Next(1, 3);
+
+                for (var i = rng.Next(0, items.Length - 1); i < items.Length; i++)
+                {
+                    items[i] = null;
+
+                    max--;
+
+                    if (max == 0)
+                        break;
+                }
+            }
+
+            Stats[0] = newlvl * hp + 100; // hp
+            Stats[1] = newlvl * mp + 100; // mp
+            Stats[2] = 0; // old attack
+            Stats[3] = 0; // old defense
+            Stats[4] = newlvl / 2; // spd
+            Stats[5] = 10; // default hp
+            Stats[6] = 10; // default wis
+            Stats[7] = 25; // default dex
+            Fame = 0;
+            Level = newlvl;
+            Experience = newexp;
+            FakeExperience = 0;
+            IsFakeEnabled = true;
+            AttackLevel = newattlvl;
+            AttackExperience = newattexp;
+            DefenseLevel = newdeflvl;
+            DefenseExperience = newdefexp;
+            Inventory = items;
+            Bless1 = false;
+            Bless2 = false;
+            Bless3 = false;
+            Bless4 = false;
+            Bless5 = false;
+
+            GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHARACTER_IS_DEAD);
+            return;
         }
+
+        public int GetStatBase(int index, ObjectDesc desc)
+        {
+            switch (index)
+            {
+                case 2: return desc.ATTBase;
+                case 3: return desc.DEFBase;
+                case 4: return desc.SPDBase;
+                case 5: return desc.VITBase;
+                case 6: return desc.WISBase;
+                case 7: return desc.DEXBase;
+                default: return 0;
+            }
+        }
+
+        public int CountBlessings()
+        {
+            var blessings = 0;
+
+            if (Bless1) blessings++;
+            if (Bless2) blessings++;
+            if (Bless3) blessings++;
+            if (Bless4) blessings++;
+            if (Bless5) blessings++;
+
+            return blessings;
+        }
+
+        public int GetBlessingPrice() => Level * 50;
 
         public override void Init(World owner)
         {
@@ -323,7 +442,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
             var newposition = owner.RemovePositionFromReconnect(AccountId);
 
-            if (newposition != null)
+            if (newposition.Item1 != 0 && newposition.Item2 != 0)
                 Move((int)newposition.Item1 + 0.5f, (int)newposition.Item2 + 0.5f);
             else
                 Move(x + 0.5f, y + 0.5f);
@@ -363,23 +482,11 @@ namespace LoESoft.GameServer.realm.entity.player
 
             if (Settings.SERVER_MODE == Settings.ServerMode.Local)
                 if ((AccountType)AccountType == Core.config.AccountType.ADMIN)
-                {
-                    var invincible = new ConditionEffect
-                    {
-                        Effect = ConditionEffectIndex.Invincible,
-                        DurationMS = -1
-                    };
-
-                    ApplyConditionEffect(invincible);
-
-                    var invulnerable = new ConditionEffect
+                    ApplyConditionEffect((ConditionEffect)new ConditionEffect
                     {
                         Effect = ConditionEffectIndex.Invulnerable,
                         DurationMS = -1
-                    };
-
-                    ApplyConditionEffect(invulnerable);
-                }
+                    });
 
             ApplyConditionEffect(AccountPerks.SetAccountTypeIcon());
 
@@ -389,6 +496,18 @@ namespace LoESoft.GameServer.realm.entity.player
 
             if (ActualTask != null)
                 Task = GameTask.Tasks[ActualTask];
+
+            if (Client.Account.Credits < 0)
+            {
+                SendInfo("[Patch: negative currency] Gold set to 0.");
+                GameServer.Manager.Database.UpdateCredit(Client.Account, Math.Abs(Client.Account.Credits));
+            }
+
+            if (Client.Account.Fame < 0)
+            {
+                SendInfo("[Patch: negative currency] Fame set to 0.");
+                GameServer.Manager.Database.UpdateFame(Client.Account, Math.Abs(Client.Account.Fame));
+            }
         }
 
         public void Teleport(RealmTime time, TELEPORT packet)
@@ -490,14 +609,16 @@ namespace LoESoft.GameServer.realm.entity.player
                 if (enemy.Quest)
                     score += 250;
 
-                if (enemy.ObjectId == "Maurth the Succubus Princess")
-                    score += 100000;
+                if (Realm.AllRealmEvents.Contains(enemy.ObjectId))
+                    score += 1000000;
+                else
+                {
+                    score += enemy.MaxHitPoints;
+                    score += enemy.Defense * enemy.Level;
+                }
 
                 if (enemy.ObjectId == "Undertaker the Great Juggernaut")
-                    score += 500000;
-
-                score += enemy.MaxHitPoints;
-                score += enemy.Defense * enemy.Level;
+                    score += 5000000;
             }
             catch { }
 
@@ -509,12 +630,11 @@ namespace LoESoft.GameServer.realm.entity.player
             if (time.TickCount % 5 != 0)
                 return;
 
-            int newQuestId = -1;
-            int questId = Quest == null ? -1 : Quest.Id;
+            var newQuestId = -1;
+            var questId = Quest == null ? -1 : Quest.Id;
+            var candidates = new HashSet<Enemy>();
 
-            HashSet<Enemy> candidates = new HashSet<Enemy>();
-
-            foreach (Enemy i in Owner.Quests.Values
+            foreach (var i in Owner.Quests.Values
                 .OrderBy(j => MathsUtils.DistSqr(j.X, j.Y, X, Y))
                 .Where(k => k.ObjectDesc != null && k.ObjectDesc.Quest))
             {
@@ -532,7 +652,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
             if (candidates.Count != 0)
             {
-                Enemy newQuest = candidates.OrderByDescending(i => QuestPriority(i.ObjectDesc)).Take(3).ToList()[0];
+                var newQuest = candidates.OrderByDescending(i => QuestPriority(i.ObjectDesc)).Take(3).ToList()[0];
 
                 newQuestId = newQuest.Id;
                 Quest = newQuest;
@@ -547,29 +667,58 @@ namespace LoESoft.GameServer.realm.entity.player
             });
         }
 
-        private void CalculateFame()
+        public void CalculateAttack()
         {
-            double newFame = 0.0;
+            AttackExperience += Settings.GetEventRate() * 5;
 
-            newFame += Math.Max(0, Math.Min(20000, Experience)) * 0.001;
-            newFame += Math.Max(0, Math.Min(45200, Experience) - 20000) * 0.002;
-            newFame += Math.Max(0, Math.Min(80000, Experience) - 45200) * 0.003;
-            newFame += Math.Max(0, Math.Min(101200, Experience) - 80000) * 0.002;
-            newFame += Math.Max(0, Experience - 101200) * 0.0005;
-            newFame += Math.Min(Math.Floor((double)FameCounter.Stats.MinutesActive / 6), 30);
+            if (AttackExperience >= AttackGoalExperience)
+            {
+                AttackLevel++;
+                AttackGoalExperience = GetExperience(AttackLevel + 1 - 10, ExpType.Stat);
+                SendHelp($"You advanced from attack level {AttackLevel - 1} to level {AttackLevel}.");
+                UpdateCount++;
+            }
+        }
 
+        public void CalculateDefense()
+        {
+            DefenseExperience += Settings.GetEventRate() * 5;
+
+            if (DefenseExperience >= DefenseGoalExperience)
+            {
+                DefenseLevel++;
+                DefenseGoalExperience = GetExperience(DefenseLevel + 1 - 10, ExpType.Stat);
+                SendHelp($"You advanced from defense level {DefenseLevel - 1} to level {DefenseLevel}.");
+                UpdateCount++;
+            }
+        }
+
+        public void CalculateFame(bool notifyFame = true)
+        {
+            var newFame = 0d;
+            newFame += Math.Max(0, Math.Min(20000, FakeExperience)) * 0.001;
+            newFame += Math.Max(0, Math.Min(45200, FakeExperience) - 20000) * 0.002;
+            newFame += Math.Max(0, Math.Min(80000, FakeExperience) - 45200) * 0.003;
+            newFame += Math.Max(0, Math.Min(101200, FakeExperience) - 80000) * 0.002;
+            newFame += Math.Max(0, FakeExperience - 101200) * 0.0005;
             newFame = Math.Floor(newFame);
 
             if (newFame == Fame)
                 return;
 
-            Fame = (int)newFame;
-            int newGoal;
+            if (notifyFame)
+                Owner.BroadcastMessage(new NOTIFICATION
+                {
+                    ObjectId = Id,
+                    Color = new ARGB(0xFF8C00),
+                    Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"+" + (newFame - Fame) + " Fame!\"}}",
+                }, null);
+
+            Fame = newFame;
+
             var stats = FameCounter.ClassStats[ObjectType];
-            if (stats.BestFame > Fame)
-                newGoal = GetFameGoal(stats.BestFame);
-            else
-                newGoal = GetFameGoal(Fame);
+            var newGoal = GetFameGoal(stats.BestFame > Fame ? stats.BestFame : Fame);
+
             if (newGoal > FameGoal && AccountType < (int)Core.config.AccountType.MOD)
             {
                 Owner.BroadcastMessage(new NOTIFICATION
@@ -580,53 +729,92 @@ namespace LoESoft.GameServer.realm.entity.player
                 }, null);
                 Stars = GetStars();
             }
+
             FameGoal = (AccountType >= (int)Core.config.AccountType.MOD) ? 0 : newGoal;
             UpdateCount++;
         }
 
-        private bool CheckLevelUp()
+        private enum ClassType
         {
-            if (Experience - GetLevelExp(Level) >= ExperienceGoal && Level < 20)
+            Mage,
+            Melee,
+            Range
+        }
+
+        private Dictionary<ushort, ClassType> GetClassType = new Dictionary<ushort, ClassType>()
+        {
+            { 0x0300, ClassType.Range }, // rogue
+            { 0x0307, ClassType.Range }, // archer
+            { 0x030e, ClassType.Mage }, // wizard
+            { 0x0310, ClassType.Mage }, // priest
+            { 0x031d, ClassType.Melee }, // warrior
+            { 0x031e, ClassType.Melee }, // knight
+            { 0x031f, ClassType.Melee }, // paladin
+            { 0x0320, ClassType.Range }, // assassin
+            { 0x0321, ClassType.Mage }, // necromancer
+            { 0x0322, ClassType.Range }, // huntress
+            { 0x0323, ClassType.Mage }, // mystic
+            { 0x0324, ClassType.Range }, // trickster
+            { 0x0325, ClassType.Mage }, // sorcerer
+            { 0x0326, ClassType.Melee } // ninja
+        };
+
+        private Dictionary<ClassType, (int, int)> GetStats = new Dictionary<ClassType, (int, int)>()
+        {
+            { ClassType.Mage, (5, 30) },
+            { ClassType.Melee, (15, 5) },
+            { ClassType.Range, (10, 10) }
+        };
+
+        public bool CheckLevelUp(bool notifyFame = true)
+        {
+            if (!IsFakeEnabled)
+            {
+                IsFakeEnabled = true;
+                FakeExperience = Experience;
+            }
+
+            if (Experience >= ExperienceGoal)
             {
                 Level++;
-                ExperienceGoal = GetExpGoal(Level);
-                foreach (var i in GameServer.Manager.GameData.ObjectTypeToElement[ObjectType].Elements("LevelIncrease"))
-                {
-                    var rand = new Random();
-                    var min = int.Parse(i.Attribute("min").Value);
-                    var max = int.Parse(i.Attribute("max").Value) + 1;
-                    var xElement = GameServer.Manager.GameData.ObjectTypeToElement[ObjectType].Element(i.Value);
-                    if (xElement == null)
-                        continue;
-                    var limit =
-                        int.Parse(
-                            xElement.Attribute("max").Value);
-                    var idx = StatsManager.StatsNameToIndex(i.Value);
-                    Stats[idx] += rand.Next(min, max);
-                    if (Stats[idx] > limit)
-                        Stats[idx] = limit;
-                }
+
+                ExperienceGoal = GetExperience(Level + 1, ExpType.Level);
+
+                var (hp, mp) = GetStats[GetClassType[ObjectType]];
+
+                Stats[0] = Level * hp + 100; // hp
+                Stats[1] = Level * mp + 100; // mp
+                Stats[2] = 0; // old attack
+                Stats[3] = 0; // old defense
+                Stats[4] = Level / 2; // spd
+                Stats[5] = 10; // default hp
+                Stats[6] = 10; // default wis
+                Stats[7] = 25; // default dex
+
                 HP = Stats[0] + Boost[0];
                 MP = Stats[1] + Boost[1];
 
                 UpdateCount++;
 
                 var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
-                if (Level == 20)
+
+                SendHelp($"You advanced from level {Level - 1} to level {Level}.");
+
+                if (Level % 50 == 0 || Level == 30)
                 {
-                    foreach (var i in Owner.Players.Values)
-                        i.SendInfo(Name + " achieved level 20" + " as a " + playerDesc.ObjectId);
-                    XpBoosted = false;
-                    XpBoostTimeLeft = 0;
+                    foreach (var client in GameServer.Manager.GetManager.Clients.Values)
+                        client.Player?.GazerDM($"Player {Name} achived level {Level} as {playerDesc.ObjectId}.");
                 }
+
                 Quest = null;
                 return true;
             }
-            CalculateFame();
+
+            CalculateFame(notifyFame);
             return false;
         }
 
-        public bool EnemyKilled(Enemy enemy, int exp, bool killer)
+        public bool CalculateExp(Enemy enemy, int exp)
         {
             if (enemy == Quest)
                 Owner.BroadcastMessage(new NOTIFICATION
@@ -635,49 +823,22 @@ namespace LoESoft.GameServer.realm.entity.player
                     Color = new ARGB(0xFF00FF00),
                     Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"Quest Complete!\"}}",
                 }, null);
-            if (exp > 0 && Experience != int.MaxValue)
+
+            if (exp > 0)
             {
-                double newexp = Experience;
+                var getexpboost = GetExpBoost(exp, AccountType);
 
-                if (XpBoosted)
-                    newexp += (int)(exp * 2 * Settings.EVENT_RATE);
-                else
-                    newexp += (int)(exp * Settings.EVENT_RATE);
-
-                if (newexp >= int.MaxValue)
-                {
-                    Experience = int.MaxValue;
-                    SendInfo("You achieved the maximum experience!");
-                }
-                else
-                    Experience = (int)newexp;
-
+                Experience += getexpboost;
+                FakeExperience += getexpboost;
                 UpdateCount++;
-
-                foreach (var i in Owner.PlayersCollision.HitTest(X, Y, 16).Where(i => i != this).OfType<Player>())
-                {
-                    try
-                    {
-                        double tempexp = i.Experience;
-                        tempexp += (int)((i.XpBoosted ? exp * 2 : exp) * Settings.EVENT_RATE);
-
-                        if (tempexp >= int.MaxValue)
-                        {
-                            i.Experience = int.MaxValue;
-                            i.SendInfo("You achieved the maximum experience!");
-                        }
-                        else
-                            i.Experience = (int)tempexp;
-
-                        i.UpdateCount++;
-                        i.CheckLevelUp();
-                    }
-                    catch (Exception) { }
-                }
             }
-            FameCounter.Killed(enemy, killer);
+
             return CheckLevelUp();
         }
+
+        private int GetExpBoost(int exp, int accountType)
+            => (int)Math.Ceiling((accountType == (int)Core.config.AccountType.VIP ? 1.5 : 1)
+                    * exp * Settings.GetEventRate());
 
         internal Projectile PlayerShootProjectile(
             byte id,

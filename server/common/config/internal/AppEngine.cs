@@ -13,13 +13,13 @@ namespace LoESoft.Core.config
         {
             public static readonly string TITLE = "[LoESoft] (New Chicago) LoE Realm - AppEngine";
             public static readonly string FILE = ProcessFile("appengine");
-            public static readonly int PRODUCTION_PORT = 5555;
+            public static readonly int PRODUCTION_PORT = 7000;
 
-            public static readonly List<Tuple<string, string, double>> SERVERS = new List<Tuple<string, string, double>> {
-                Tuple.Create("Chicago", "loe-nc.servegame.com", 0d)
+            public static readonly List<(string name, string dns)> SERVERS = new List<(string, string)> {
+                ("Chicago", "loe-nc.portmap.io")
             };
 
-            public static readonly int AMOUNT = SERVERS.Count;
+            public static readonly string SAFE_DOMAIN = "https://devwarlt.github.io/";
 
             public class ServerItem
             {
@@ -31,9 +31,7 @@ namespace LoESoft.Core.config
                 public bool AdminOnly { get; set; }
 
                 public XElement ToXml()
-                {
-                    return
-                        new XElement("Server",
+                    => new XElement("Server",
                         new XElement("Name", Name),
                         new XElement("DNS", DNS),
                         new XElement("Lat", Lat),
@@ -41,37 +39,86 @@ namespace LoESoft.Core.config
                         new XElement("Usage", Usage),
                         new XElement("AdminOnly", AdminOnly)
                         );
-                }
             }
 
-            public static string CheckDDNS(string ddns, int srv)
+            public static List<ServerItem> GetServerItem(TcpClient client)
             {
-                switch (ddns)
-                {
-                    case "<crossdomain>":
-                        return NETWORKING.INTERNAL.PRODUCTION_DDNS[srv];
-
-                    default:
-                        return ddns;
-                }
-            }
-
-            public static List<ServerItem> GetServerItem()
-            {
+                var isProduction = SERVER_MODE == ServerMode.Production;
                 var gameserver = new List<ServerItem>();
 
-                for (int i = 0; i < AMOUNT; i++)
-                    gameserver.Add(new ServerItem()
+                if (isProduction)
+                    for (var i = 0; i < SERVERS.Count; i++)
+                        gameserver.Add(new ServerItem()
+                        {
+                            Name = SERVERS[i].name,
+                            DNS = SERVERS[i].dns,
+                            Lat = 0,
+                            Long = 0,
+                            Usage = 0,//GetUsage(SERVERS[i].dns, client),
+                            AdminOnly = false
+                        });
+                else
+                    return new List<ServerItem>
                     {
-                        Name = SERVERS[i].Item1,
-                        DNS = SERVER_MODE == ServerMode.Production ? CheckDDNS(SERVERS[i].Item2, i) : "localhost",
-                        Lat = 0,
-                        Long = 0,
-                        Usage = SERVERS[i].Item3,//SERVER_MODE != ServerMode.Local ? GetUsage(CheckDDNS(SERVERS[i].Item2, i), GAMESERVER.PORT) : SERVERS[i].Item3,
-                        AdminOnly = false
-                    });
+                        new ServerItem()
+                        {
+                            Name = "Local",
+                            DNS = "localhost",
+                            Lat = 0,
+                            Long = 0,
+                            Usage = 0,
+                            AdminOnly = false
+                        }
+                    };
 
                 return gameserver;
+            }
+
+            private static double GetUsage(string dns, TcpClient client)
+            {
+                var attempts = 5;
+
+                string usage = null;
+
+                do
+                {
+                    client.Connect(dns, PRODUCTION_PORT);
+
+                    if (client.Connected)
+                    {
+                        var stream = client.GetStream();
+                        var buffer = Encoding.UTF8.GetBytes("get -s -u");
+
+                        stream.WriteAsync(buffer, 0, buffer.Length);
+
+                        buffer = new byte[4096];
+
+                        var data = stream.ReadAsync(buffer, 0, buffer.Length);
+                        data.RunSynchronously();
+
+                        usage = Encoding.UTF8.GetString(buffer, 0, data.Result);
+                    }
+
+                    attempts--;
+                } while (usage != null || attempts > 0);
+
+                if (usage == null)
+                    return -1;
+                else
+                {
+                    try
+                    {
+                        client.Close();
+                        client.Dispose();
+                    }
+                    catch { }
+
+                    var info = usage.Split(':');
+                    var online = double.Parse(info[0]);
+                    var max = double.Parse(info[1]);
+
+                    return online / max;
+                }
             }
 
             //Usage

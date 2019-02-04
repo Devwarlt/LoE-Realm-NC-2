@@ -17,7 +17,7 @@ namespace LoESoft.GameServer.logic.behaviors.Drakes
 
         protected override void TickCore(Entity host, RealmTime time, ref object state)
         {
-            int cool = (int) state;
+            int cool = (int)state;
             if (cool <= 0)
             {
                 var entities = host.GetNearestEntities(6);

@@ -15,6 +15,7 @@ namespace LoESoft.GameServer.logic
 
             .Init("Arena Headless Horseman",
                 new State(
+                    new DropPortalOnDeath("Haunted Cemetery Portal", .4, 1),
                     new Spawn("Arena Horseman Anchor", 1, 1),
                     new State("EverythingIsCool",
                         new HpLessTransition(0.1, "End"),
@@ -41,8 +42,7 @@ namespace LoESoft.GameServer.logic
                         new Flashing(0xF0E68C, 1, 1000),
                         new Shoot(15, 3, shootAngle: 25, index: 0, coolDown: 1000),
                         new Shoot(15, index: 1, coolDown: 1000)
-                        ),
-                    new TransformOnDeath("Haunted Cemetery Portal", probability: .4)
+                        )
                     )
             )
 
@@ -116,7 +116,7 @@ namespace LoESoft.GameServer.logic
 
             .Init("Crystal Prisoner",
                 new State(
-                    new TransformOnDeath("Deadwater Docks", probability: 1),
+                    new DropPortalOnDeath("Deadwater Docks", 1, 1),
                     new Spawn("Crystal Prisoner Steed", maxChildren: 3, initialSpawn: 0, coolDown: 200),
                     new State("pause",
                         new AddCond(ConditionEffectIndex.Invulnerable), // ok
@@ -263,13 +263,28 @@ namespace LoESoft.GameServer.logic
                         new TimedTransition(3000, "Daisy_attack")
                         )
                     ),
-                new Threshold(0.015,
-                    new TierLoot(2, ItemType.Potion, 0.07)
+                new Drops(
+                    new BlueBag(
+                        new string[]
+                        {
+                            Potions.POTION_OF_ATTACK,
+                            Potions.POTION_OF_DEFENSE,
+                            Potions.POTION_OF_SPEED,
+                            Potions.POTION_OF_DEXTERITY,
+                            Potions.POTION_OF_VITALITY,
+                            Potions.POTION_OF_WISDOM
+                        },
+                        new bool[] {
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true
+                        })
                     ),
-                new Threshold(0.03,
-                    new ItemLoot("Crystal Wand", 0.05),
-                    new ItemLoot("Crystal Sword", 0.06)
-                    )
+                new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4, EggType.TIER_5, EggType.TIER_6 }),
+                new WhiteBag(new string[] { "Crystal Wand", "Crystal Sword" })
             )
 
             .Init("Crystal Prisoner Clone",

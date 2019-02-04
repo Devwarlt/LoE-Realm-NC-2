@@ -51,23 +51,29 @@ namespace LoESoft.GameServer.logic
                 new Drops(
                     new OnlyOne(
                         new PurpleBag(ItemType.Weapon, 8),
-                        new PurpleBag(ItemType.Weapon, 9),
-                        new PurpleBag(ItemType.Ability, 4),
+                        new PurpleBag(ItemType.Weapon, 9)
+                        ),
+                    new OnlyOne(
+                        new CyanBag(ItemType.Weapon, 10),
+                        new CyanBag(ItemType.Weapon, 11)
+                        ),
+                    new PurpleBag(ItemType.Ability, 4),
+                    new CyanBag(ItemType.Ability, 5),
+                    new OnlyOne(
                         new PurpleBag(ItemType.Armor, 8),
-                        new PurpleBag(ItemType.Armor, 9),
+                        new PurpleBag(ItemType.Armor, 9)
+                        ),
+                    new OnlyOne(
+                        new CyanBag(ItemType.Armor, 10),
+                        new CyanBag(ItemType.Armor, 11),
+                        new CyanBag(ItemType.Armor, 12)
+                        ),
+                    new OnlyOne(
                         new PurpleBag(ItemType.Ring, 3),
                         new PurpleBag(ItemType.Ring, 4)
                         ),
+                    new CyanBag(ItemType.Ring, 5),
                     new EggBasket(new EggType[] { EggType.TIER_0, EggType.TIER_1, EggType.TIER_2, EggType.TIER_3, EggType.TIER_4, EggType.TIER_5 }),
-                    new OnlyOne(
-                        new CyanBag(ItemType.Weapon, 10),
-                        new CyanBag(ItemType.Weapon, 11),
-                        new CyanBag(ItemType.Armor, 10),
-                        new CyanBag(ItemType.Armor, 11),
-                        new CyanBag(ItemType.Armor, 12),
-                        new CyanBag(ItemType.Ability, 5),
-                        new CyanBag(ItemType.Ring, 5)
-                        ),
                     new OnlyOne(
                         new BlueBag(Potions.POTION_OF_ATTACK, true),
                         new BlueBag(Potions.POTION_OF_SPEED, true),
@@ -78,7 +84,7 @@ namespace LoESoft.GameServer.logic
                         new BlueBag(Potions.POTION_OF_DEFENSE),
                         new BlueBag(Potions.POTION_OF_DEXTERITY)
                         ),
-                    new WhiteBag("The Succubus Bloodstone")
+                    new WhiteBag(new string[] { "The Succubus Bloodstone", "Crossbow of the Frozen North", "Galatic Axe", "Phantom Light-X" })
                     )
             )
         ;

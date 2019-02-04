@@ -51,7 +51,7 @@ namespace LoESoft.GameServer.logic.behaviors
             if (state == null)
                 return;
 
-            int cool = (int) state;
+            int cool = (int)state;
 
             ProcessType(_special, cool, host, time);
 
@@ -63,7 +63,7 @@ namespace LoESoft.GameServer.logic.behaviors
             if (host.HasConditionEffect(ConditionEffectIndex.Stunned))
                 return;
 
-            var piece = (MapSetPiece) Activator.CreateInstance(Type.GetType($"server.realm.mapsetpiece.{(_special == SpecialSetPiece.ON_SELF ? "" : "special.")}" + _setpiece, true, true));
+            var piece = (MapSetPiece)Activator.CreateInstance(Type.GetType($"server.realm.mapsetpiece.{(_special == SpecialSetPiece.ON_SELF ? "" : "special.")}" + _setpiece, true, true));
 
             switch (type)
             {
@@ -89,7 +89,7 @@ namespace LoESoft.GameServer.logic.behaviors
                                     PosA = target
                                 }, null);
 
-                                piece.RenderSetPiece(host.Owner, new IntPoint((int) target.X, (int) target.Y));
+                                piece.RenderSetPiece(host.Owner, new IntPoint((int)target.X, (int)target.Y));
                             }
 
                             cool = _coolDown.Next(Random);
@@ -101,7 +101,7 @@ namespace LoESoft.GameServer.logic.behaviors
 
                 default:
                     {
-                        piece.RenderSetPiece(host.Owner, new IntPoint((int) host.X, (int) host.Y));
+                        piece.RenderSetPiece(host.Owner, new IntPoint((int)host.X, (int)host.Y));
                     }
                     break;
             }

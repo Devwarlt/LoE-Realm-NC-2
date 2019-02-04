@@ -27,7 +27,7 @@ namespace LoESoft.GameServer.realm.entity
             this.radius = radius;
             this.dmg = dmg;
             effect = eff;
-            duration = (int) (effDuration * 1000);
+            duration = (int)(effDuration * 1000);
         }
 
         public override void Tick(RealmTime time)
@@ -41,7 +41,9 @@ namespace LoESoft.GameServer.realm.entity
                     TargetId = Id,
                     PosA = new Position { X = radius / 2 }
                 }, null);
+
                 p++;
+
                 if (p == LIFETIME * 2)
                 {
                     Explode(time);
@@ -51,7 +53,12 @@ namespace LoESoft.GameServer.realm.entity
             t += time.ElapsedMsDelta;
 
             bool monsterNearby = false;
-            this.Aoe(radius / 2, false, enemy => monsterNearby = true);
+            this.Aoe(radius / 2, false, enemy =>
+            {
+                if (!enemy.IsPet)
+                    monsterNearby = true;
+            });
+
             if (monsterNearby)
                 Explode(time);
 
@@ -67,8 +74,12 @@ namespace LoESoft.GameServer.realm.entity
                 TargetId = Id,
                 PosA = new Position { X = radius }
             }, null);
+
             this.Aoe(radius, false, enemy =>
             {
+                if (enemy.IsPet)
+                    return;
+
                 (enemy as Enemy).Damage(player, time, dmg, false, new ConditionEffect
                 {
                     Effect = effect,

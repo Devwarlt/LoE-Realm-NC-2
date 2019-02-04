@@ -28,7 +28,7 @@ namespace LoESoft.AppEngine.gamestore
 
         private int Credits(DbAccount acc) => acc.Credits;
 
-        private int Fame(DbAccount acc) => acc.Fame;
+        private double Fame(DbAccount acc) => acc.Fame;
 
         private int GuildFame(DbAccount acc) => acc.GuildFame;
 
@@ -134,7 +134,7 @@ namespace LoESoft.AppEngine.gamestore
                     return;
             }
 
-            List<int> items = acc.Gifts.ToList();
+            var items = acc.Gifts.ToList();
 
             foreach (int item in objectType)
                 items.Add(item);

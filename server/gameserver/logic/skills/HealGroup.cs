@@ -16,7 +16,7 @@ namespace LoESoft.GameServer.logic.behaviors
 
         public HealGroup(double range, string group, Cooldown coolDown = new Cooldown(), int? healAmount = null)
         {
-            this.range = (float) range;
+            this.range = (float)range;
             this.group = group;
             this.coolDown = coolDown.Normalize();
             amount = healAmount;
@@ -29,7 +29,7 @@ namespace LoESoft.GameServer.logic.behaviors
 
         protected override void TickCore(Entity host, RealmTime time, ref object state)
         {
-            int cool = (int) state;
+            int cool = (int)state;
 
             if (cool <= 0)
             {
@@ -38,10 +38,10 @@ namespace LoESoft.GameServer.logic.behaviors
 
                 foreach (var entity in host.GetNearestEntitiesByGroup(range, group).OfType<Enemy>())
                 {
-                    int newHp = (int) entity.ObjectDesc.MaxHP;
+                    int newHp = (int)entity.ObjectDesc.MaxHP;
                     if (amount != null)
                     {
-                        var newHealth = (int) amount + entity.HP;
+                        var newHealth = (int)amount + entity.HP;
                         if (newHp > newHealth)
                             newHp = newHealth;
                     }

@@ -17,7 +17,7 @@ namespace LoESoft.GameServer.logic.behaviors
             int range = 5
             )
         {
-            this.speed = (float) speed / 10;
+            this.speed = (float)speed / 10;
             this.range = range;
         }
 
@@ -33,7 +33,7 @@ namespace LoESoft.GameServer.logic.behaviors
             if (host.HasConditionEffect(ConditionEffectIndex.Paralyzed))
                 return;
 
-            Vector2 vect = (Vector2) state;
+            Vector2 vect = (Vector2)state;
             var l = (vect - new Vector2(host.X, host.Y)).Length;
             if (l > range)
             {

@@ -118,7 +118,7 @@ namespace LoESoft.GameServer.realm.entity
 
         protected override void ExportStats(IDictionary<StatsType, object> stats)
         {
-            stats[StatsType.CONNECT_STAT] = (int) ConnectionComputer.Compute((_x, _y) => false).Bits;
+            stats[StatsType.CONNECT_STAT] = (int)ConnectionComputer.Compute((_x, _y) => false).Bits;
             base.ExportStats(stats);
         }
 

@@ -14,7 +14,7 @@ namespace LoESoft.GameServer.networking
                 if (typeof(IMessage).IsAssignableFrom(i) &&
                     !i.IsAbstract && !i.IsInterface)
                 {
-                    IMessage pkt = (IMessage) Activator.CreateInstance(i);
+                    IMessage pkt = (IMessage)Activator.CreateInstance(i);
                     Handlers.Add(pkt.ID, pkt);
                 }
             }

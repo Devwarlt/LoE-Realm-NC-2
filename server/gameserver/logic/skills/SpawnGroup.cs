@@ -26,7 +26,7 @@ namespace LoESoft.GameServer.logic.behaviors
                 .Where(x => x.Group == group)
                 .Select(x => x.ObjectType).ToArray();
             this.maxChildren = maxChildren;
-            this.initialSpawn = (int) (maxChildren * initialSpawn);
+            this.initialSpawn = (int)(maxChildren * initialSpawn);
             this.coolDown = coolDown.Normalize(0);
         }
 
@@ -42,8 +42,8 @@ namespace LoESoft.GameServer.logic.behaviors
                 Entity entity = Entity.Resolve(children[Random.Next(children.Length)]);
 
                 entity.Move(
-                    host.X + (float) (Random.NextDouble() * 0.5),
-                    host.Y + (float) (Random.NextDouble() * 0.5));
+                    host.X + (float)(Random.NextDouble() * 0.5),
+                    host.Y + (float)(Random.NextDouble() * 0.5));
                 (entity as Enemy).Terrain = (host as Enemy).Terrain;
                 host.Owner.EnterWorld(entity);
             }
@@ -51,7 +51,7 @@ namespace LoESoft.GameServer.logic.behaviors
 
         protected override void TickCore(Entity host, RealmTime time, ref object state)
         {
-            SpawnState spawn = (SpawnState) state;
+            SpawnState spawn = (SpawnState)state;
 
             if (spawn.RemainingTime <= 0 && spawn.CurrentNumber < maxChildren)
             {

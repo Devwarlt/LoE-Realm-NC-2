@@ -125,27 +125,43 @@ namespace LoESoft.GameServer.realm
         public readonly static StatsType PET_ATTACK_CHANCE = 108;
         public readonly static StatsType PET_ATTACK_DAMAGE_MIN = 109;
         public readonly static StatsType PET_ATTACK_DAMAGE_MAX = 110;
+        public readonly static StatsType ATTACK_LEVEL_STAT = 111;
+        public readonly static StatsType ATTACK_EXP_STAT = 112;
+        public readonly static StatsType NEXT_ATTACK_EXP_STAT = 113;
+        public readonly static StatsType DEFENSE_LEVEL_STAT = 114;
+        public readonly static StatsType DEFENSE_EXP_STAT = 115;
+        public readonly static StatsType NEXT_DEFENSE_EXP_STAT = 116;
 
         private byte _type;
 
-        private StatsType(byte type)
-        {
-            _type = type;
-        }
+        private StatsType(byte type) => _type = type;
 
         internal static List<StatsType> UTF = new List<StatsType>
         {
-            NAME_STAT, ACCOUNT_ID_STAT, OWNER_ACCOUNT_ID_STAT, GUILD_NAME_STAT, PET_NAME_STAT
+            NAME_STAT,
+            ACCOUNT_ID_STAT,
+            OWNER_ACCOUNT_ID_STAT,
+            GUILD_NAME_STAT,
+            PET_NAME_STAT,
+            EXP_STAT,
+            FAME_STAT,
+            CURR_FAME_STAT,
+            NEXT_LEVEL_EXP_STAT,
+            NEXT_CLASS_QUEST_FAME_STAT,
+            ATTACK_EXP_STAT,
+            NEXT_ATTACK_EXP_STAT,
+            DEFENSE_EXP_STAT,
+            NEXT_DEFENSE_EXP_STAT
         };
 
-        public bool IsUTF() => UTF.Contains(this) ? true : false;
+        public bool IsUTF() => UTF.Contains(this);
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
         public static implicit operator StatsType(int type)
         {
             if (type > byte.MaxValue)
                 throw new Exception("Not a valid StatData number.");
-            return new StatsType((byte) type);
+            return new StatsType((byte)type);
         }
 
         public static implicit operator StatsType(byte type) => new StatsType(type);
@@ -155,7 +171,7 @@ namespace LoESoft.GameServer.realm
         {
             if (id > byte.MaxValue)
                 throw new Exception("Not a valid StatData number.");
-            return type._type == (byte) id;
+            return type._type == (byte)id;
         }
 
         public static bool operator ==(StatsType type, byte id) => type._type == id;
@@ -165,7 +181,7 @@ namespace LoESoft.GameServer.realm
         {
             if (id > byte.MaxValue)
                 throw new Exception("Not a valid StatData number.");
-            return type._type != (byte) id;
+            return type._type != (byte)id;
         }
 
         public static bool operator !=(StatsType type, byte id) => type._type != id;
@@ -184,7 +200,7 @@ namespace LoESoft.GameServer.realm
         {
             if (!(obj is StatsType))
                 return false;
-            return this == (StatsType) obj;
+            return this == (StatsType)obj;
         }
 
         public override string ToString() => _type.ToString();

@@ -151,7 +151,7 @@ namespace LoESoft.AppEngine
     {
         public ushort ObjectType { get; private set; }
         public int BestLevel { get; private set; }
-        public int BestFame { get; private set; }
+        public double BestFame { get; private set; }
 
         public static ClassStatsEntry FromDb(ushort objType, DbClassStatsEntry entry)
         {
@@ -176,9 +176,9 @@ namespace LoESoft.AppEngine
 
     internal class Stats
     {
-        public int BestCharFame { get; private set; }
-        public int TotalFame { get; private set; }
-        public int Fame { get; private set; }
+        public double BestCharFame { get; private set; }
+        public double TotalFame { get; private set; }
+        public double Fame { get; private set; }
 
         private Dictionary<ushort, ClassStatsEntry> entries;
 
@@ -257,6 +257,7 @@ namespace LoESoft.AppEngine
 
         public int Credits { get; private set; }
         public int NextCharSlotPrice { get; private set; }
+        public int CharSlotCurrency { get; private set; }
         public uint BeginnerPackageTimeLeft { get; private set; }
 
         public int[] Gifts { get; private set; }
@@ -283,7 +284,8 @@ namespace LoESoft.AppEngine
                 MapEditor = acc.AccountType == (int)Core.config.AccountType.DEVELOPER,
                 VerifiedEmail = acc.Verified,
                 Credits = acc.Credits,
-                NextCharSlotPrice = 100, // need adjusts
+                NextCharSlotPrice = 250,
+                CharSlotCurrency = 0, // 0 gold, 1 fame
                 BeginnerPackageTimeLeft = 604800,
                 Gifts = acc.Gifts,
                 PetYardType = acc.PetYardType,
@@ -310,6 +312,7 @@ namespace LoESoft.AppEngine
                 new XElement("Credits", Credits),
                 new XElement("FortuneToken", FortuneTokens),
                 new XElement("NextCharSlotPrice", NextCharSlotPrice),
+                new XElement("CharSlotCurrency", CharSlotCurrency),
                 new XElement("BeginnerPackageTimeLeft", BeginnerPackageTimeLeft),
                 new XElement("Originating", "None"),
                 new XElement("cleanPasswordStatus", 1),
@@ -450,8 +453,8 @@ namespace LoESoft.AppEngine
         public int CharacterId { get; private set; }
         public ushort ObjectType { get; private set; }
         public int Level { get; private set; }
-        public int Exp { get; private set; }
-        public int CurrentFame { get; private set; }
+        public double Exp { get; private set; }
+        public double CurrentFame { get; private set; }
         public int[] Equipment { get; private set; }
         public int MaxHitPoints { get; private set; }
         public int HitPoints { get; private set; }
@@ -476,6 +479,7 @@ namespace LoESoft.AppEngine
         public int LDTimer { get; private set; }
         public int LTTimer { get; private set; }
         public bool HasBackpack { get; private set; }
+        public int Size { get; private set; }
 
         public static Character FromDb(DbChar character, bool dead)
         {
@@ -509,7 +513,8 @@ namespace LoESoft.AppEngine
                 XpTimer = character.XPBoostTimer,
                 LDTimer = character.LootDropTimer,
                 LTTimer = character.LootTierTimer,
-                HasBackpack = character.HasBackpack
+                HasBackpack = character.HasBackpack,
+                Size = character.Size
             };
         }
 
@@ -679,7 +684,7 @@ namespace LoESoft.AppEngine
         public Character Character { get; private set; }
         public FameStats Stats { get; private set; }
         public IEnumerable<Tuple<string, string, double>> Bonuses { get; private set; }
-        public int TotalFame { get; private set; }
+        public double TotalFame { get; private set; }
 
         public bool FirstBorn { get; private set; }
         public DateTime DeathTime { get; private set; }
@@ -770,7 +775,7 @@ namespace LoESoft.AppEngine
         public int Tex2 { get; private set; }
         public int Skin { get; private set; }
         public int[] Equipment { get; private set; }
-        public int TotalFame { get; private set; }
+        public double TotalFame { get; private set; }
 
         public static FameListEntry FromDb(DbChar character)
         {

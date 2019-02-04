@@ -19,12 +19,12 @@
             else
                 Size = ObjectDesc.MinSize;
 
-            HP = (int) ObjectDesc.MaxHP;
+            HP = (int)ObjectDesc.MaxHP;
         }
 
         public new wRandom Random { get; private set; }
 
         public int HP { get; set; }
-		public int MaxHP { get; set; }
-	}
+        public int MaxHP { get; set; }
+    }
 }

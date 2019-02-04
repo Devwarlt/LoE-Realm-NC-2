@@ -2,6 +2,7 @@
 
 using LoESoft.Core;
 using LoESoft.Core.config;
+using LoESoft.Core.models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,9 +17,7 @@ namespace LoESoft.AppEngine.@char
         {
             try
             {
-                DbAccount acc;
-
-                var status = Database.Verify(Query["guid"], Query["password"], out acc);
+                var status = Database.Verify(Query["guid"], Query["password"], out DbAccount acc);
 
                 if (status == LoginStatus.OK || status == LoginStatus.AccountNotExists)
                 {
@@ -27,7 +26,7 @@ namespace LoESoft.AppEngine.@char
 
                     if (acc.Banned)
                     {
-                        using (StreamWriter wtr = new StreamWriter(Context.Response.OutputStream))
+                        using (var wtr = new StreamWriter(Context.Response.OutputStream))
                             wtr.WriteLine("<Error>Account under maintenance</Error>");
 
                         Context.Response.Close();
@@ -46,7 +45,7 @@ namespace LoESoft.AppEngine.@char
                 else
                     WriteErrorLine(status.GetInfo());
             }
-            catch (Exception) { }
+            catch (Exception e) { Log.Error(e.ToString()); }
         }
 
         private Lazy<List<Settings.APPENGINE.ServerItem>> SvrList { get; set; }
@@ -58,7 +57,14 @@ namespace LoESoft.AppEngine.@char
 
         private List<Settings.APPENGINE.ServerItem> GetServerList()
         {
-            var ret = Settings.APPENGINE.GetServerItem();
+            /*var tcpclient = new TcpClient();
+            tcpclient.Client.NoDelay = true;
+            tcpclient.Client.UseOnlyOverlappedIO = true;
+            tcpclient.Client.Ttl = 112;
+            tcpclient.Client.SendTimeout = 1000;
+            tcpclient.Client.ReceiveTimeout = 1000;*/
+
+            var ret = Settings.APPENGINE.GetServerItem(null);
             return ret;
         }
     }

@@ -11,6 +11,7 @@ import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.net.SharedObject;
 import flash.system.Capabilities;
+import flash.system.Security;
 import flash.text.TextField;
 import flash.text.TextFormat;
 
@@ -39,6 +40,7 @@ import kabam.rotmg.fame.FameConfig;
 import kabam.rotmg.fortune.FortuneConfig;
 import kabam.rotmg.friends.FriendConfig;
 import kabam.rotmg.game.GameConfig;
+import kabam.rotmg.gamedata.GameDataConfig;
 import kabam.rotmg.language.LanguageConfig;
 import kabam.rotmg.legends.LegendsConfig;
 import kabam.rotmg.maploading.MapLoadingConfig;
@@ -109,6 +111,7 @@ public class WebMain extends Sprite {
     private function setup():void {
         this.setEnvironment();
         this.hackParameters();
+        Security.allowDomain("*");
         this.createContext();
         new AssetLoader().load();
         stage.scaleMode = StageScaleMode.EXACT_FIT;
@@ -136,6 +139,7 @@ public class WebMain extends Sprite {
                 .configure(DialogsConfig)
                 .configure(EnvironmentConfig)
                 .configure(ApplicationConfig)
+                .configure(GameDataConfig)
                 .configure(LanguageConfig)
                 .configure(TextConfig)
                 .configure(AppEngineConfig)

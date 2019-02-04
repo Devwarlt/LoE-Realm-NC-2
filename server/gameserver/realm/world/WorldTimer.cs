@@ -35,7 +35,7 @@ namespace LoESoft.GameServer.realm
 
         public int RemainingInSeconds()
         {
-            return (int) TimeSpan.FromMilliseconds(remain).TotalSeconds;
+            return (int)TimeSpan.FromMilliseconds(remain).TotalSeconds;
         }
 
         public bool Tick(World world, RealmTime time)

@@ -1,0 +1,128 @@
+{
+  "height": 64,
+  "dict": [
+    { "ground": "Black Water" },
+    { "ground": "Black Water Light" },
+    { "ground": "Jungle Temple Floor" },
+    {
+      "objs": [ { "id": "Jungle Plant Unbreakable" } ],
+      "ground": "Jungle Temple Floor"
+    },
+    {
+      "objs": [ { "id": "Jungle Temple Walls" } ],
+      "ground": "Jungle Temple Floor 2"
+    },
+    {
+      "objs": [ { "id": "Arena Statue" } ],
+      "ground": "Jungle Temple Floor 2"
+    },
+    { "ground": "Jungle Temple Floor 2" },
+    {
+      "objs": [ { "id": "Jungle Flower Bright" } ],
+      "ground": "Jungle Temple Floor 2"
+    },
+    {
+      "objs": [ { "id": "Jungle Plant" } ],
+      "ground": "Jungle Temple Floor 2"
+    },
+    {
+      "objs": [ { "id": "Jungle Ground Flowers" } ],
+      "ground": "Jungle Temple Floor 2"
+    },
+    {
+      "objs": [ { "id": "Jungle Rock" } ],
+      "ground": "Jungle Temple Floor"
+    },
+    {
+      "objs": [ { "id": "Jungle Brazier" } ],
+      "ground": "Jungle Temple Floor"
+    },
+    {
+      "regions": [ { "id": "Spawn" } ],
+      "ground": "Undergrowth"
+    },
+    {
+      "objs": [ { "id": "Jungle Flower Bright" } ],
+      "ground": "Jungle Temple Floor"
+    },
+    {
+      "objs": [ { "id": "Jungle Temple Column" } ],
+      "ground": "Jungle Temple Floor"
+    },
+    {
+      "objs": [ { "id": "Jungle Temple Bricks" } ],
+      "ground": "Jungle Temple Floor"
+    },
+    { "ground": "Undergrowth" },
+    {
+      "objs": [ { "id": "Spider Dirt Wall" } ],
+      "ground": "Jungle Temple Floor"
+    },
+    {
+      "objs": [ { "id": "Jungle Tree Stump" } ],
+      "ground": "Jungle Temple Floor"
+    },
+    {
+      "objs": [ { "id": "Jungle Ground Flowers" } ],
+      "ground": "Jungle Temple Floor"
+    },
+    {
+      "objs": [ { "id": "Jungle Tree Big" } ],
+      "ground": "Jungle Temple Floor"
+    },
+    {
+      "objs": [ { "id": "Earthy Bush Small" } ],
+      "ground": "Jungle Temple Floor"
+    },
+    {
+      "objs": [ { "id": "Earthy Bush Large" } ],
+      "ground": "Jungle Temple Floor"
+    },
+    {
+      "objs": [ { "id": "Jungle Grass" } ],
+      "ground": "Jungle Temple Floor"
+    },
+    {
+      "objs": [ { "id": "Jungle Plant" } ],
+      "ground": "Jungle Temple Floor"
+    },
+    {
+      "objs": [ { "id": "Jungle Spear" } ],
+      "ground": "Undergrowth"
+    },
+    {
+      "objs": [ { "id": "Arena Rug 1" } ],
+      "ground": "Undergrowth"
+    },
+    {
+      "objs": [ { "id": "Arena Rug 4" } ],
+      "ground": "Undergrowth"
+    },
+    {
+      "objs": [ { "id": "Arena Rug 5" } ],
+      "ground": "Undergrowth"
+    },
+    {
+      "objs": [ { "id": "Arena Rug 3" } ],
+      "ground": "Undergrowth"
+    },
+    {
+      "objs": [ { "id": "Arena Rug 2" } ],
+      "ground": "Undergrowth"
+    },
+    {
+      "objs": [ { "id": "Arena Rug 7" } ],
+      "ground": "Undergrowth"
+    },
+    {
+      "objs": [ { "id": "Arena Rug 6" } ],
+      "ground": "Undergrowth"
+    },
+    {
+      "objs": [ { "id": "Arena Rug 8" } ],
+      "ground": "Undergrowth"
+    }
+  ],
+  "width": 64,
+  "data": "eNrtmWlzmzAQhqmEEwUbk3CpaZO0/f9/skRcOlbSK8CTfDA7w9hCqwdde4gsu1/f4PrxBXLn23zmFR54NtcYhS43y3x87m2Vg2+AvZOfzz1s9B2QceMRfg7IKXuw5ATpxfhM8e22H50SRIRTkk+jivGf4HZRifWfafzPX4W6n6fyszaHc4uXQebfbNGxNcpJI4+sP5N/zSol16l8/V9MxOdJxlEJaTBVI41fZS+D1Fqva1VSLf3X+avGXLtRd10jnd+qkk7d+0wO/+fWhIffqppsqDu21u7g10sr+hj4+l+qJ5RU04zlk0VA+OdlFpk1otfhGcWfNTpNozM0UvhzCz3ZI3r+QzLyeZTPLT5z+hTmN4fy3dZkhN85MyYT+HzhU/PfQ/Pvrtl1/nl0/XNj/btroA7uf7N+P41GpfU/df+bvWmj9qddxqAxNETi/v+52/6xnfYvbM0pfsxj5FD8lYPezPU/e/3fuDtOpO9+ImIAs/9xOUF8f+RhC80PxScYH5PXhf8K68TWn85/jsqv7Hf2lr0DNVH+alsvQKsf2j0sF43PD+P/0e5H85Hx/6vG/1/i+KP8W62/7XwB7b+QVpzPPfYH3f8iYn94kM+t+KO0rGkZiX/cjKU04h+cXxzqfxiYf3Ej/hj9r3T8bxn0v36PnQP2jxP5R7NENaH4o1w0pBY5jhrFJn5NxP/h+KsmIsY6Kf4Y+UJFk70W0XZONCnI+FMScbCef7DE/IMl5x8Nmbekx5969N9Yka3NF8QbN4Ymwudk/6XzFnvyr3j8seYfkszBwvlH7+SfUmkIIP/R+dRqlsnrn1nrP85393/v2c02v9AsxqjRO+cPeP63/fyl1sbLtJgp+e9t7H9K/unLJsLnb586pkZp+D90/4f9OV4qnPPHNP6RgvJve/7MoO8PW8/eES30+8eWU3+TTWvj31/Svzggcv/+9d349+uLrv/sEEnp"
+}

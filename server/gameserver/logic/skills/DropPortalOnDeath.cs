@@ -2,6 +2,7 @@
 
 using LoESoft.GameServer.realm;
 using LoESoft.GameServer.realm.entity;
+using LoESoft.GameServer.realm.world;
 using System;
 
 #endregion
@@ -21,7 +22,7 @@ namespace LoESoft.GameServer.logic.behaviors
         public DropPortalOnDeath(
             string portalName,
             double percent,
-            int dropDelaySec = 30,
+            int dropDelaySec = 0,
             float XAdjustment = 0,
             float YAdjustment = 0,
             int PortalDespawnTimeSec = 30
@@ -59,16 +60,17 @@ namespace LoESoft.GameServer.logic.behaviors
             {
                 try
                 {
-                    if (e.Host.Owner.Name == "Arena")
+                    if (e.Host.Owner is IArena)
                         return;
 
                     if (new Random().NextDouble() <= percent)
                     {
-                        Portal entity = portalID == 0
+                        var entity = portalID == 0
                             ? Entity.Resolve(stringObjType) as Portal
                             : Entity.Resolve(portalID) as Portal;
-                        Entity en = e.Host;
-                        World w = GameServer.Manager.GetWorld(e.Host.Owner.Id);
+                        var en = e.Host;
+                        var w = GameServer.Manager.GetWorld(e.Host.Owner.Id);
+
                         entity.Move(en.X + xAdjustment, en.Y + yAdjustment);
                         w.Timers.Add(new WorldTimer(dropDelay * 1000, (world, t) => { w.EnterWorld(entity); }));
                         w.Timers.Add(new WorldTimer(despawnTime * 1000, (world, t) =>

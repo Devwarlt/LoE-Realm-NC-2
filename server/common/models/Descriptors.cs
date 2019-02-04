@@ -83,30 +83,30 @@ public enum ConditionEffects : ulong
     NinjaSpeedy = 1 << 28,
     Unstable = 1 << 29,
     Darkness = 1 << 30,
-    SlowedImmune = (ulong) 1 << 31,
-    DazedImmune = (ulong) 1 << 32,
-    ParalyzeImmune = (ulong) 1 << 33,
-    Petrify = (ulong) 1 << 34,
-    PetrifyImmune = (ulong) 1 << 35,
-    PetDisable = (ulong) 1 << 36,
-    Curse = (ulong) 1 << 37,
-    CurseImmune = (ulong) 1 << 38,
-    HPBoost = (ulong) 1 << 39,
-    MPBoost = (ulong) 1 << 40,
-    AttBoost = (ulong) 1 << 41,
-    DefBoost = (ulong) 1 << 42,
-    SpdBoost = (ulong) 1 << 43,
-    DexBoost = (ulong) 1 << 44,
-    VitBoost = (ulong) 1 << 45,
-    WisBoost = (ulong) 1 << 46,
-    Hidden = (ulong) 1 << 47,
-    Muted = (ulong) 1 << 48,
-    FreeAccount = (ulong) 1 << 49,
-    NPCType = (ulong) 1 << 50,
-    VipAccount = (ulong) 1 << 51,
-    TutorAccount = (ulong) 1 << 52,
-    LegendsofLoEAccount = (ulong) 1 << 53,
-    LoESoftAccount = (ulong) 1 << 54
+    SlowedImmune = (ulong)1 << 31,
+    DazedImmune = (ulong)1 << 32,
+    ParalyzeImmune = (ulong)1 << 33,
+    Petrify = (ulong)1 << 34,
+    PetrifyImmune = (ulong)1 << 35,
+    PetDisable = (ulong)1 << 36,
+    Curse = (ulong)1 << 37,
+    CurseImmune = (ulong)1 << 38,
+    HPBoost = (ulong)1 << 39,
+    MPBoost = (ulong)1 << 40,
+    AttBoost = (ulong)1 << 41,
+    DefBoost = (ulong)1 << 42,
+    SpdBoost = (ulong)1 << 43,
+    DexBoost = (ulong)1 << 44,
+    VitBoost = (ulong)1 << 45,
+    WisBoost = (ulong)1 << 46,
+    Hidden = (ulong)1 << 47,
+    Muted = (ulong)1 << 48,
+    FreeAccount = (ulong)1 << 49,
+    NPCType = (ulong)1 << 50,
+    VipAccount = (ulong)1 << 51,
+    TutorAccount = (ulong)1 << 52,
+    LegendsofLoEAccount = (ulong)1 << 53,
+    LoESoftAccount = (ulong)1 << 54
 }
 
 public enum ConditionEffectIndex
@@ -273,8 +273,8 @@ public class XMLBehaviorType
 
     public XMLBehaviorType(XElement elem)
     {
-        BehaviorsType = (XMLBehaviorsType) Enum.Parse(typeof(XMLBehaviorsType), elem.Value);
-        CultureInfo ci = (CultureInfo) CultureInfo.CurrentCulture.Clone();
+        BehaviorsType = (XMLBehaviorsType)Enum.Parse(typeof(XMLBehaviorsType), elem.Value);
+        CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
         ci.NumberFormat.CurrencyDecimalSeparator = ".";
         switch (BehaviorsType)
         {
@@ -408,8 +408,8 @@ public class XMLTransitionType
 
     public XMLTransitionType(XElement elem)
     {
-        TransitionsType = (XMLTransitionsType) Enum.Parse(typeof(XMLTransitionsType), elem.Value);
-        CultureInfo ci = (CultureInfo) CultureInfo.CurrentCulture.Clone();
+        TransitionsType = (XMLTransitionsType)Enum.Parse(typeof(XMLTransitionsType), elem.Value);
+        CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
         ci.NumberFormat.CurrencyDecimalSeparator = ".";
         switch (TransitionsType)
         {
@@ -441,8 +441,8 @@ public class XMLLootType
 
     public XMLLootType(XElement elem)
     {
-        LootsType = (XMLLootsType) Enum.Parse(typeof(XMLLootsType), elem.Value);
-        CultureInfo ci = (CultureInfo) CultureInfo.CurrentCulture.Clone();
+        LootsType = (XMLLootsType)Enum.Parse(typeof(XMLLootsType), elem.Value);
+        CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
         ci.NumberFormat.CurrencyDecimalSeparator = ".";
         switch (LootsType)
         {
@@ -473,10 +473,10 @@ public class PetStruct
         if (elem.Element("Family").Value == "? ? ? ?")
             PetFamily = Family.Unknown;
         else
-            PetFamily = (Family) Enum.Parse(typeof(Family), elem.Element("Family").Value);
-        PetRarity = (Rarity) Enum.Parse(typeof(Rarity), elem.Element("Rarity").Value);
+            PetFamily = (Family)Enum.Parse(typeof(Family), elem.Element("Family").Value);
+        PetRarity = (Rarity)Enum.Parse(typeof(Rarity), elem.Element("Rarity").Value);
         if (elem.Element("FirstAbility") != null)
-            FirstAbility = (Ability) Enum.Parse(typeof(Ability), elem.Element("FirstAbility").Value.Replace(" ", string.Empty));
+            FirstAbility = (Ability)Enum.Parse(typeof(Ability), elem.Element("FirstAbility").Value.Replace(" ", string.Empty));
         DefaultSkin = elem.Element("DefaultSkin").Value;
         Size = int.Parse(elem.Element("Size").Value);
         DisplayId = (n = elem.Element("DisplayId")) == null ? ObjectId : n.Value;
@@ -515,11 +515,11 @@ public class ConditionEffect
 
     public ConditionEffect(XElement elem)
     {
-        CultureInfo ci = (CultureInfo) CultureInfo.CurrentCulture.Clone();
+        CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
         ci.NumberFormat.CurrencyDecimalSeparator = ".";
-        Effect = (ConditionEffectIndex) Enum.Parse(typeof(ConditionEffectIndex), elem.Value.Replace(" ", ""));
+        Effect = (ConditionEffectIndex)Enum.Parse(typeof(ConditionEffectIndex), elem.Value.Replace(" ", ""));
         if (elem.Attribute("duration") != null)
-            DurationMS = (int) (float.Parse(elem.Attribute("duration").Value, NumberStyles.Any, ci) * 1000);
+            DurationMS = (int)(float.Parse(elem.Attribute("duration").Value, NumberStyles.Any, ci) * 1000);
         if (elem.Attribute("range") != null)
             Range = float.Parse(elem.Attribute("range").Value, NumberStyles.Any, ci);
         if (elem.Attribute("target") != null)
@@ -536,7 +536,7 @@ public class ProjectileDesc
 {
     public ProjectileDesc(XElement elem)
     {
-        CultureInfo ci = (CultureInfo) CultureInfo.CurrentCulture.Clone();
+        CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
         ci.NumberFormat.CurrencyDecimalSeparator = ".";
         XElement n;
         if (elem.Attribute("id") != null)
@@ -647,9 +647,9 @@ public class ActivateEffect
 {
     public ActivateEffect(XElement elem)
     {
-        CultureInfo ci = (CultureInfo) CultureInfo.CurrentCulture.Clone();
+        CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
         ci.NumberFormat.CurrencyDecimalSeparator = ".";
-        Effect = (ActivateEffects) Enum.Parse(typeof(ActivateEffects), elem.Value);
+        Effect = (ActivateEffects)Enum.Parse(typeof(ActivateEffects), elem.Value);
         if (elem.Attribute("stat") != null)
             Stats = Utils.FromString(elem.Attribute("stat").Value);
 
@@ -661,18 +661,18 @@ public class ActivateEffect
         if (elem.Attribute("duration") != null)
         {
             DurationSec = float.Parse(elem.Attribute("duration").Value, NumberStyles.Any, ci);
-            DurationMS = (int) (DurationSec * 1000);
+            DurationMS = (int)(DurationSec * 1000);
         }
         if (elem.Attribute("skinId") != null)
             PetSkindId = Utils.FromString(elem.Attribute("skinId").Value);
         if (elem.Attribute("duration2") != null)
-            DurationMS2 = (int) (float.Parse(elem.Attribute("duration2").Value, NumberStyles.Any, ci) * 1000);
+            DurationMS2 = (int)(float.Parse(elem.Attribute("duration2").Value, NumberStyles.Any, ci) * 1000);
         if (elem.Attribute("effect") != null)
             ConditionEffect =
-                (ConditionEffectIndex) Enum.Parse(typeof(ConditionEffectIndex), elem.Attribute("effect").Value);
+                (ConditionEffectIndex)Enum.Parse(typeof(ConditionEffectIndex), elem.Attribute("effect").Value);
         if (elem.Attribute("condEffect") != null)
             ConditionEffect =
-                (ConditionEffectIndex) Enum.Parse(typeof(ConditionEffectIndex), elem.Attribute("condEffect").Value);
+                (ConditionEffectIndex)Enum.Parse(typeof(ConditionEffectIndex), elem.Attribute("condEffect").Value);
         if (elem.Attribute("condDuration") != null)
             EffectDuration = float.Parse(elem.Attribute("condDuration").Value, NumberStyles.Any, ci);
 
@@ -716,7 +716,7 @@ public class ActivateEffect
         if (elem.Attribute("center") != null)
             Center = elem.Attribute("center").Value;
         if (elem.Attribute("petType") != null)
-            PetType = (ushort) Utils.FromString(elem.Attribute("petType").Value);
+            PetType = (ushort)Utils.FromString(elem.Attribute("petType").Value);
         if (elem.Attribute("chance") != null)
             Chance = int.Parse(elem.Attribute("chance").Value);
 
@@ -792,7 +792,7 @@ public class Item : IFeedable
     {
         try
         {
-            CultureInfo ci = (CultureInfo) CultureInfo.CurrentCulture.Clone();
+            CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
             ci.NumberFormat.CurrencyDecimalSeparator = ".";
             XElement n;
             ObjectType = type;
@@ -817,7 +817,7 @@ public class Item : IFeedable
             BagType = (n = elem.Element("BagType")) != null ? Utils.FromString(n.Value) : 0;
             MpCost = (n = elem.Element("MpCost")) != null ? Utils.FromString(n.Value) : 0;
             Quantity = (n = elem.Element("Quantity")) != null ? Utils.FromString(n.Value) : 0;
-            FeedPower = (n = elem.Element("feedPower")) != null ? (ushort) Utils.FromString(n.Value) : (ushort) 0;
+            FeedPower = (n = elem.Element("feedPower")) != null ? (ushort)Utils.FromString(n.Value) : (ushort)0;
             FameBonus = (n = elem.Element("FameBonus")) != null ? Utils.FromString(n.Value) : 0;
             NumProjectiles = (n = elem.Element("NumProjectiles")) != null ? Utils.FromString(n.Value) : 1;
             ArcGap = (n = elem.Element("ArcGap")) != null ? Utils.FromString(n.Value) : 11.25f;
@@ -843,11 +843,11 @@ public class Item : IFeedable
             Class = elem.Element("Class").Value;
             Family = (n = elem.Element("PetFamily")) != null
                 ? n.Value == "? ? ? ?"
-                    ? (Family) Enum.Parse(typeof(Family), "Unknown", true)
-                    : (Family) Enum.Parse(typeof(Family), n.Value, true)
+                    ? (Family)Enum.Parse(typeof(Family), "Unknown", true)
+                    : (Family)Enum.Parse(typeof(Family), n.Value, true)
                 : null as Family?;
             Rarity = (n = elem.Element("Rarity")) != null
-                ? (Rarity) Enum.Parse(typeof(Rarity), n.Value, true)
+                ? (Rarity)Enum.Parse(typeof(Rarity), n.Value, true)
                 : null as Rarity?;
 
             StatsBoost =
@@ -938,7 +938,7 @@ public class ObjectDesc
 {
     public ObjectDesc(ushort type, XElement elem)
     {
-        CultureInfo ci = (CultureInfo) CultureInfo.CurrentCulture.Clone();
+        CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
         ci.NumberFormat.CurrencyDecimalSeparator = ".";
         XElement n;
         ObjectType = type;
@@ -1004,26 +1004,51 @@ public class ObjectDesc
         {
             MaxHitPoints = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
             MaxHP = Utils.FromString(n.Value);
+            HPBase = Utils.FromString(n.Value);
         }
         if ((n = elem.Element("MaxMagicPoints")) != null)
+        {
             MaxMagicPoints = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
+            MPBase = Utils.FromString(n.Value);
+        }
 
         if ((n = elem.Element("Attack")) != null)
+        {
             MaxAttack = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
-        if ((n = elem.Element("Dexterity")) != null)
-            MaxDexterity = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
-        if ((n = elem.Element("Speed")) != null)
-            MaxSpeed = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
-        if ((n = elem.Element("HpRegen")) != null)
-            MaxHpRegen = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
-        if ((n = elem.Element("MpRegen")) != null)
-            MaxMpRegen = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
+            ATTBase = Utils.FromString(n.Value);
+        }
 
         if ((n = elem.Element("Defense")) != null)
         {
             Defense = Utils.FromString(n.Value);
             MaxDefense = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
+            DEFBase = Utils.FromString(n.Value);
         }
+
+        if ((n = elem.Element("Dexterity")) != null)
+        {
+            MaxDexterity = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
+            DEXBase = Utils.FromString(n.Value);
+        }
+
+        if ((n = elem.Element("Speed")) != null)
+        {
+            MaxSpeed = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
+            SPDBase = Utils.FromString(n.Value);
+        }
+
+        if ((n = elem.Element("HpRegen")) != null)
+        {
+            MaxHpRegen = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
+            VITBase = Utils.FromString(n.Value);
+        }
+
+        if ((n = elem.Element("MpRegen")) != null)
+        {
+            MaxMpRegen = n.Attribute("max") != null ? Utils.FromString(n.Attribute("max").Value) : -1;
+            WISBase = Utils.FromString(n.Value);
+        }
+
         if ((n = elem.Element("Terrain")) != null)
             Terrain = n.Value;
         if ((n = elem.Element("SpawnProbability")) != null)
@@ -1150,6 +1175,15 @@ public class ObjectDesc
     public int MPTier { get; private set; }
 
     public int TaskID { get; private set; }
+
+    public int HPBase { get; private set; }
+    public int MPBase { get; private set; }
+    public int ATTBase { get; private set; }
+    public int DEFBase { get; private set; }
+    public int SPDBase { get; private set; }
+    public int DEXBase { get; private set; }
+    public int VITBase { get; private set; }
+    public int WISBase { get; private set; }
 }
 
 public class TagList : List<Tag>
@@ -1189,7 +1223,7 @@ public class TileDesc
 {
     public TileDesc(ushort type, XElement elem)
     {
-        CultureInfo ci = (CultureInfo) CultureInfo.CurrentCulture.Clone();
+        CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
         ci.NumberFormat.CurrencyDecimalSeparator = ".";
         XElement n;
         ObjectType = type;
@@ -1234,10 +1268,10 @@ public class DungeonDesc
 {
     public DungeonDesc(XElement elem)
     {
-        CultureInfo ci = (CultureInfo) CultureInfo.CurrentCulture.Clone();
+        CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
         ci.NumberFormat.CurrencyDecimalSeparator = ".";
         Name = elem.Attribute("name").Value;
-        PortalId = (ushort) Utils.FromString(elem.Attribute("type").Value);
+        PortalId = (ushort)Utils.FromString(elem.Attribute("type").Value);
         Background = Utils.FromString(elem.Element("Background").Value);
         AllowTeleport = elem.Element("AllowTeleport") != null;
         Json = elem.Element("Json").Value;
@@ -1266,9 +1300,9 @@ public class SetTypeSkin
         ObjectType = type;
         ObjectId = elem.Attribute("id").Value;
 
-        SkinType = elem.Elements("ActivateOnEquipAll").Where(i => i.Attribute("skinType") != null).Select(i => (ushort) Utils.FromString(i.Attribute("skinType").Value)).FirstOrDefault();
+        SkinType = elem.Elements("ActivateOnEquipAll").Where(i => i.Attribute("skinType") != null).Select(i => (ushort)Utils.FromString(i.Attribute("skinType").Value)).FirstOrDefault();
         Size = elem.Elements("ActivateOnEquipAll").Where(i => i.Attribute("size") != null).Select(i => int.Parse(i.Attribute("size").Value)).FirstOrDefault();
-        Color = elem.Elements("ActivateOnEquipAll").Where(i => i.Attribute("color") != null).Select(i => (uint) Utils.FromString(i.Attribute("color").Value)).FirstOrDefault();
+        Color = elem.Elements("ActivateOnEquipAll").Where(i => i.Attribute("color") != null).Select(i => (uint)Utils.FromString(i.Attribute("color").Value)).FirstOrDefault();
         BulletType = elem.Elements("ActivateOnEquipAll").Where(i => i.Attribute("bulletType") != null).Select(i => i.Attribute("bulletType").Value).FirstOrDefault();
 
         StatsBoost = elem.Elements("ActivateOnEquipAll").Where(i => i.Attribute("stat") != null && i.Attribute("amount") != null)

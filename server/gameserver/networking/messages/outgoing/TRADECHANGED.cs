@@ -23,7 +23,7 @@ namespace LoESoft.GameServer.networking.outgoing
 
         protected override void Write(NWriter wtr)
         {
-            wtr.Write((ushort) Offers.Length);
+            wtr.Write((ushort)Offers.Length);
             foreach (bool i in Offers)
                 wtr.Write(i);
         }

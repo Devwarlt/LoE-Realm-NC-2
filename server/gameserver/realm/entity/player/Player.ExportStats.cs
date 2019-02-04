@@ -15,9 +15,17 @@ namespace LoESoft.GameServer.realm.entity.player
             stats[StatsType.ACCOUNT_ID_STAT] = AccountId;
             stats[StatsType.NAME_STAT] = Name;
 
-            stats[StatsType.EXP_STAT] = Experience - GetLevelExp(Level);
-            stats[StatsType.NEXT_LEVEL_EXP_STAT] = ExperienceGoal;
+            stats[StatsType.EXP_STAT] = Experience - GetExperience(Level, ExpType.Level);
+            stats[StatsType.NEXT_LEVEL_EXP_STAT] = ExperienceGoal - GetExperience(Level, ExpType.Level);
             stats[StatsType.LEVEL_STAT] = Level;
+
+            stats[StatsType.ATTACK_EXP_STAT] = AttackExperience - GetExperience(AttackLevel - 10, ExpType.Stat);
+            stats[StatsType.NEXT_ATTACK_EXP_STAT] = AttackGoalExperience - GetExperience(AttackLevel - 10, ExpType.Stat);
+            stats[StatsType.ATTACK_LEVEL_STAT] = AttackLevel;
+
+            stats[StatsType.DEFENSE_EXP_STAT] = DefenseExperience - GetExperience(DefenseLevel - 10, ExpType.Stat);
+            stats[StatsType.NEXT_DEFENSE_EXP_STAT] = DefenseGoalExperience - GetExperience(DefenseLevel - 10, ExpType.Stat);
+            stats[StatsType.DEFENSE_LEVEL_STAT] = DefenseLevel;
 
             stats[StatsType.FAME_STAT] = CurrentFame;
             stats[StatsType.CURR_FAME_STAT] = Fame;
@@ -35,6 +43,9 @@ namespace LoESoft.GameServer.realm.entity.player
 
             if (Glowing)
                 stats[StatsType.GLOW_COLOR_STAT] = 1;
+
+            if (AccountType >= (int)Core.config.AccountType.VIP)
+                stats[StatsType.GLOW_COLOR_STAT] = new Random().Next(0x000000, 0xffffff);
 
             stats[StatsType.HP_STAT] = HP;
             stats[StatsType.MP_STAT] = MP;
@@ -76,7 +87,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 stats[StatsType.DEXTERITY_BOOST_STAT] = Boost[7];
             }
 
-            stats[StatsType.SIZE_STAT] = Resize16x16Skins.IsSkin16x16Type(PlayerSkin) ? 70 : setTypeSkin?.Size ?? Size;
+            stats[StatsType.SIZE_STAT] = (int)((Resize16x16Skins.IsSkin16x16Type(PlayerSkin) ? 70 : setTypeSkin?.Size ?? Size) * ((Client?.Character?.Size ?? 100) / 100.0f));
 
             stats[StatsType.HASBACKPACK_STAT] = HasBackpack.GetHashCode();
 
@@ -97,14 +108,15 @@ namespace LoESoft.GameServer.realm.entity.player
                 stats[StatsType.BREATH_STAT] = OxygenBar;
 
             stats[StatsType.XP_BOOSTED_STAT] = XpBoosted ? 1 : 0;
-            stats[StatsType.XP_TIMER_STAT] = (int) XpBoostTimeLeft;
-            stats[StatsType.LD_TIMER_STAT] = (int) LootDropBoostTimeLeft;
-            stats[StatsType.LT_TIMER_STAT] = (int) LootTierBoostTimeLeft;
+            stats[StatsType.XP_TIMER_STAT] = (int)XpBoostTimeLeft;
+            stats[StatsType.LD_TIMER_STAT] = (int)LootDropBoostTimeLeft;
+            stats[StatsType.LT_TIMER_STAT] = (int)LootTierBoostTimeLeft;
 
             stats[StatsType.ACCOUNT_TYPE] = AccountType;
             stats[StatsType.ADMIN] = Admin;
 
             stats[StatsType.PET_OBJECT_ID] = PetID;
+
             if (PetID != 0)
             {
                 try
@@ -126,7 +138,7 @@ namespace LoESoft.GameServer.realm.entity.player
                         stats[StatsType.PET_ATTACK_DAMAGE_MAX] = PetAttack[3];
                     }
                 }
-                catch (ArgumentOutOfRangeException) { } // just don't return errors, hold this exception without export any value
+                catch { } // just don't return errors, hold this exception without export any value
             }
         }
     }

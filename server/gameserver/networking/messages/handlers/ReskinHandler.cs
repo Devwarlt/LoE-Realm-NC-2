@@ -15,15 +15,12 @@ namespace LoESoft.GameServer.networking.handlers
             if (client.Player.Owner == null)
                 return;
 
-            Manager.Logic.AddPendingAction(t =>
-            {
-                if (message.SkinId == 0)
-                    client.Player.PlayerSkin = 0;
-                else
-                    client.Player.PlayerSkin = message.SkinId;
-                client.Player.UpdateCount++;
-                client.Player.SaveToCharacter();
-            });
+            if (message.SkinId == 0)
+                client.Player.PlayerSkin = 0;
+            else
+                client.Player.PlayerSkin = message.SkinId;
+            client.Player.UpdateCount++;
+            client.Player.SaveToCharacter();
         }
     }
 }

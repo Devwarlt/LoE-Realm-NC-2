@@ -16,7 +16,7 @@ namespace LoESoft.GameServer.logic.behaviors
             int distance = 5
             )
         {
-            this.speed = (float) speed / 10;
+            this.speed = (float)speed / 10;
             this.distance = distance;
         }
 
@@ -26,7 +26,7 @@ namespace LoESoft.GameServer.logic.behaviors
             if (state == null)
                 distance = this.distance;
             else
-                distance = (float) state;
+                distance = (float)state;
 
             Status = CycleStatus.NotStarted;
 

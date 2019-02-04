@@ -6,6 +6,7 @@ using LoESoft.GameServer.networking;
 using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.world;
+using MathNet.Numerics.RootFinding;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -215,9 +216,20 @@ namespace LoESoft.GameServer.realm.entity.player
             ExportMonsterCaches(MonsterCaches);
 
             var chr = Client.Character;
-            //chr.LootCaches = LootCaches.ToArray();
-            chr.Experience = Experience;
             chr.Level = Level;
+            chr.Experience = Experience;
+            chr.FakeExperience = FakeExperience;
+            chr.IsFakeEnabled = IsFakeEnabled;
+            chr.AttackLevel = AttackLevel;
+            chr.AttackExperience = AttackExperience;
+            chr.DefenseLevel = DefenseLevel;
+            chr.DefenseExperience = DefenseExperience;
+            chr.Bless1 = Bless1;
+            chr.Bless2 = Bless2;
+            chr.Bless3 = Bless3;
+            chr.Bless4 = Bless4;
+            chr.Bless5 = Bless5;
+            chr.EnablePetAttack = EnablePetAttack;
             chr.Tex1 = Texture1;
             chr.Tex2 = Texture2;
             chr.Fame = Fame;
@@ -226,6 +238,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
             if (PetID != 0)
                 chr.Pet = PetID;
+
             try
             {
                 switch (Inventory.Length)
@@ -254,7 +267,7 @@ namespace LoESoft.GameServer.realm.entity.player
             chr.LootDropTimer = (int)LootDropBoostTimeLeft;
             chr.LootTierTimer = (int)LootTierBoostTimeLeft;
             chr.FameStats = FameCounter.Stats.Write();
-            chr.LastSeen = DateTime.Now;
+            chr.LastSeen = DateTime.UtcNow;
         }
 
         private bool CheckResurrection()
@@ -280,7 +293,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 Client.Reconnect(new RECONNECT
                 {
                     Host = "",
-                    Port = Settings.GAMESERVER.PORT,
+                    Port = Settings.GAMESERVER.GAME_PORT,
                     GameId = (int)WorldID.NEXUS_ID,
                     Name = "Nexus",
                     Key = Empty<byte>.Array,
@@ -416,17 +429,14 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             if (_pingTime == -1)
             {
-                _pingTime = time.TotalElapsedMs - PingPeriod;
+                _pingTime = 0;
                 _pongTime = time.TotalElapsedMs;
             }
 
             var pong = time.TotalElapsedMs - _pongTime;
 
-            if (pong > DcThreshold * Settings.GAMESERVER.TICKETS_PER_SECOND)
+            if (pong > DcThreshold)
             {
-                if (!HasConditionEffect(ConditionEffectIndex.Invincible))
-                    ApplyConditionEffect(ConditionEffectIndex.Invincible);
-
                 if (DcThresholdCounter <= 10)
                     DcThresholdCounter++;
                 else
@@ -436,16 +446,22 @@ namespace LoESoft.GameServer.realm.entity.player
 
                     if (!_once)
                     {
+                        if (!Client.Socket.Connected || Client.State == ProtocolState.Disconnected)
+                        {
+                            GameServer.Manager.TryDisconnect(Client, DisconnectReason.CONNECTION_LOST);
+                            return false;
+                        }
+
                         _once = true;
 
                         SendHelp("You dropped your connection with the server! Reconnecting...");
 
-                        Owner.AddReconnectToPlayer(AccountId, Tuple.Create(X, Y));
+                        Owner.AddReconnectToPlayer(AccountId, (X, Y));
 
                         Client.Reconnect(new RECONNECT()
                         {
                             Host = "",
-                            Port = Settings.GAMESERVER.PORT,
+                            Port = Settings.GAMESERVER.GAME_PORT,
                             GameId = Owner.Id,
                             Name = Owner.Name,
                             Key = Owner.PortalKey,
@@ -456,18 +472,11 @@ namespace LoESoft.GameServer.realm.entity.player
                 }
             }
             else
-            {
-                if (HasConditionEffect(ConditionEffects.Invincible))
-                {
-                    ApplyConditionEffect(ConditionEffectIndex.Invincible, 0);
-
-                    DcThresholdCounter = 0;
-                }
-            }
+                DcThresholdCounter = 0;
 
             var ping = time.TotalElapsedMs - _pingTime;
 
-            if (ping < PingPeriod * Settings.GAMESERVER.TICKETS_PER_SECOND)
+            if (ping < PingPeriod)
                 return true;
 
             _pingTime = time.TotalElapsedMs;
@@ -502,29 +511,44 @@ namespace LoESoft.GameServer.realm.entity.player
 
         public void AwaitGotoAck(long serverTime) => _gotoAckTimeout.Enqueue(serverTime + DcThreshold);
 
-        private static int GetExpGoal(int level) => 50 + (level - 1) * 100;
+        private enum ExpType
+        {
+            Level,
+            Stat
+        }
 
-        private static int GetLevelExp(int level) => level == 1 ? 0 : 50 * (level - 1) + (level - 2) * (level - 1) * 50;
+        private static double GetExperience(int lvl, ExpType type)
+            => lvl == 1 ? 0 : (75 * lvl * lvl * lvl - 125 * lvl * lvl + 900 * lvl) / (type == ExpType.Level ? 2 : 20);
 
-        private static int GetFameGoal(int fame)
+        private static int GetLevel(double exp, ExpType type)
+            => exp == 0 ? 1 : (int)Math.Ceiling(Cubic.RealRoots((type == ExpType.Level ? -2 : -20)
+                * exp / 75, 900 / 75, -125 / 75).Item1);
+
+        private static double GetFameGoal(double fame)
         {
             if (fame >= 2000)
                 return 0;
+
             if (fame >= 800)
                 return 2000;
+
             if (fame >= 400)
                 return 800;
+
             if (fame >= 150)
                 return 400;
+
             return fame >= 20 ? 150 : 0;
         }
 
         public int GetStars()
         {
             var ret = 0;
+
             foreach (var i in FameCounter.ClassStats.AllKeys)
             {
                 var entry = FameCounter.ClassStats[ushort.Parse(i)];
+
                 if (entry.BestFame >= 2000)
                     ret += 5;
                 else if (entry.BestFame >= 800)
@@ -536,10 +560,18 @@ namespace LoESoft.GameServer.realm.entity.player
                 else if (entry.BestFame >= 20)
                     ret += 1;
             }
+
             return ret;
         }
 
-        private static float Dist(Entity a, Entity b)
+        public float Dist(Entity target)
+        {
+            var dx = X - target.X;
+            var dy = Y - target.Y;
+            return (float)Math.Sqrt(dx * dx + dy * dy);
+        }
+
+        public float Dist(Entity a, Entity b)
         {
             var dx = a.X - b.X;
             var dy = a.Y - b.Y;
@@ -561,13 +593,7 @@ namespace LoESoft.GameServer.realm.entity.player
 
         public void BroadcastSync(Message packet) => BroadcastSync(packet, _ => true);
 
-        public void BroadcastSync(Message packet, Predicate<Player> cond)
-        {
-            if (worldBroadcast)
-                Owner.BroadcastMessageSync(packet, cond);
-            else
-                pendingPackets.Enqueue(Tuple.Create(packet, cond));
-        }
+        public void BroadcastSync(Message packet, Predicate<Player> cond) => Owner.BroadcastMessageSync(packet, cond);
 
         private void BroadcastSync(IEnumerable<Message> packets)
         {
@@ -579,17 +605,6 @@ namespace LoESoft.GameServer.realm.entity.player
         {
             foreach (var i in packets)
                 BroadcastSync(i, cond);
-        }
-
-        public void Flush()
-        {
-            if (Owner != null)
-            {
-                foreach (var i in Owner.Players.Values)
-                    foreach (var j in pendingPackets.Where(j => j.Item2(i)))
-                        i.Client.SendMessage(j.Item1);
-            }
-            pendingPackets.Clear();
         }
 
         public void ChangeTrade(RealmTime time, CHANGETRADE pkt) => HandleTrade?.TradeChanged(this, pkt.Offers);

@@ -20,7 +20,7 @@ namespace LoESoft.GameServer.logic.behaviors
             )
         {
             this.color = color;
-            this.flashPeriod = (float) flashPeriod;
+            this.flashPeriod = (float)flashPeriod;
             this.flashRepeats = flashRepeats;
         }
 

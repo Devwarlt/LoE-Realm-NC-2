@@ -67,45 +67,51 @@ namespace LoESoft.Core
 
         protected T GetValue<T>(RedisValue key, T def = default(T))
         {
-            KeyValuePair<byte[], bool> val;
-            if (!_entries.TryGetValue(key, out val) || val.Key == null)
+            if (!_entries.TryGetValue(key, out KeyValuePair<byte[], bool> val) || val.Key == null)
                 return def;
 
-            if (typeof(T) == typeof(int))
-                return (T)(object)int.Parse(Encoding.UTF8.GetString(val.Key));
-
-            if (typeof(T) == typeof(uint))
-                return (T)(object)uint.Parse(Encoding.UTF8.GetString(val.Key));
-
-            if (typeof(T) == typeof(ushort))
-                return (T)(object)ushort.Parse(Encoding.UTF8.GetString(val.Key));
-
-            if (typeof(T) == typeof(bool))
-                return (T)(object)(val.Key[0] != 0);
-
-            if (typeof(T) == typeof(DateTime))
-                return (T)(object)DateTime.FromBinary(BitConverter.ToInt64(val.Key, 0));
-
-            if (typeof(T) == typeof(byte[]))
-                return (T)(object)val.Key;
-
-            if (typeof(T) == typeof(ushort[]))
+            try
             {
-                var ret = new ushort[val.Key.Length / 2];
-                Buffer.BlockCopy(val.Key, 0, ret, 0, val.Key.Length);
-                return (T)(object)ret;
-            }
+                if (typeof(T) == typeof(double))
+                    return (T)(object)double.Parse(Encoding.UTF8.GetString(val.Key));
 
-            if (typeof(T) == typeof(int[]) ||
-                typeof(T) == typeof(uint[]))
-            {
-                var ret = new int[val.Key.Length / 4];
-                Buffer.BlockCopy(val.Key, 0, ret, 0, val.Key.Length);
-                return (T)(object)ret;
-            }
+                if (typeof(T) == typeof(int))
+                    return (T)(object)int.Parse(Encoding.UTF8.GetString(val.Key));
 
-            if (typeof(T) == typeof(string))
-                return (T)(object)Encoding.UTF8.GetString(val.Key);
+                if (typeof(T) == typeof(uint))
+                    return (T)(object)uint.Parse(Encoding.UTF8.GetString(val.Key));
+
+                if (typeof(T) == typeof(ushort))
+                    return (T)(object)ushort.Parse(Encoding.UTF8.GetString(val.Key));
+
+                if (typeof(T) == typeof(bool))
+                    return (T)(object)(val.Key[0] != 0);
+
+                if (typeof(T) == typeof(DateTime))
+                    return (T)(object)DateTime.FromBinary(BitConverter.ToInt64(val.Key, 0));
+
+                if (typeof(T) == typeof(byte[]))
+                    return (T)(object)val.Key;
+
+                if (typeof(T) == typeof(ushort[]))
+                {
+                    var ret = new ushort[val.Key.Length / 2];
+                    Buffer.BlockCopy(val.Key, 0, ret, 0, val.Key.Length);
+                    return (T)(object)ret;
+                }
+
+                if (typeof(T) == typeof(int[]) ||
+                    typeof(T) == typeof(uint[]))
+                {
+                    var ret = new int[val.Key.Length / 4];
+                    Buffer.BlockCopy(val.Key, 0, ret, 0, val.Key.Length);
+                    return (T)(object)ret;
+                }
+
+                if (typeof(T) == typeof(string))
+                    return (T)(object)Encoding.UTF8.GetString(val.Key);
+            }
+            catch { return def; }
 
             throw new NotSupportedException();
         }
@@ -113,8 +119,10 @@ namespace LoESoft.Core
         protected void SetValue<T>(RedisValue key, T val)
         {
             byte[] buff;
+
             if (typeof(T) == typeof(int) || typeof(T) == typeof(uint) ||
-                typeof(T) == typeof(ushort) || typeof(T) == typeof(string))
+                typeof(T) == typeof(ushort) || typeof(T) == typeof(string) ||
+                typeof(T) == typeof(double))
                 buff = Encoding.UTF8.GetBytes(val.ToString());
             else if (typeof(T) == typeof(bool))
                 buff = new byte[] { (byte)((bool)(object)val ? 1 : 0) };
@@ -355,13 +363,13 @@ namespace LoESoft.Core
             set { SetValue("credits", value); }
         }
 
-        public int Fame
+        public double Fame
         {
             get { return GetValue("fame", Settings.STARTUP.FAME); }
             set { SetValue("fame", value); }
         }
 
-        public int TotalFame
+        public double TotalFame
         {
             get { return GetValue("totalFame", Settings.STARTUP.TOTAL_FAME); }
             set { SetValue("totalFame", value); }
@@ -479,7 +487,7 @@ namespace LoESoft.Core
     public struct DbClassStatsEntry
     {
         public int BestLevel { get; set; }
-        public int BestFame { get; set; }
+        public double BestFame { get; set; }
     }
 
     public class DbClassAvailability : RedisObject
@@ -583,12 +591,6 @@ namespace LoESoft.Core
             Init(acc.Database, "char." + acc.AccountId + "." + charId);
         }
 
-        //public LootCache[] LootCaches
-        //{
-        //    get { return JsonConvert.DeserializeObject<LootCache[]>(GetValue<string>("lootCache")); }
-        //    set { SetValue("lootCache", JsonConvert.SerializeObject(value)); }
-        //}
-
         public ushort ObjectType
         {
             get { return GetValue<ushort>("charType", 782); }
@@ -601,13 +603,85 @@ namespace LoESoft.Core
             set { SetValue("level", value); }
         }
 
-        public int Experience
+        public double Experience
         {
             get { return GetValue("exp", 0); }
             set { SetValue("exp", value); }
         }
 
-        public int Fame
+        public double FakeExperience
+        {
+            get { return GetValue("fakeExp", 0); }
+            set { SetValue("fakeExp", value); }
+        }
+
+        public int AttackLevel
+        {
+            get { return GetValue("attLevel", 1); }
+            set { SetValue("attLevel", value); }
+        }
+
+        public double AttackExperience
+        {
+            get { return GetValue("attExp", 0); }
+            set { SetValue("attExp", value); }
+        }
+
+        public int DefenseLevel
+        {
+            get { return GetValue("defLevel", 1); }
+            set { SetValue("defLevel", value); }
+        }
+
+        public double DefenseExperience
+        {
+            get { return GetValue("defExp", 0); }
+            set { SetValue("defExp", value); }
+        }
+
+        public bool IsFakeEnabled
+        {
+            get { return GetValue("fake", false); }
+            set { SetValue("fake", value); }
+        }
+
+        public bool Bless1
+        {
+            get { return GetValue("bless1", false); }
+            set { SetValue("bless1", value); }
+        }
+
+        public bool Bless2
+        {
+            get { return GetValue("bless2", false); }
+            set { SetValue("bless2", value); }
+        }
+
+        public bool Bless3
+        {
+            get { return GetValue("bless3", false); }
+            set { SetValue("bless3", value); }
+        }
+
+        public bool Bless4
+        {
+            get { return GetValue("bless4", false); }
+            set { SetValue("bless4", value); }
+        }
+
+        public bool Bless5
+        {
+            get { return GetValue("bless5", false); }
+            set { SetValue("bless5", value); }
+        }
+
+        public bool EnablePetAttack
+        {
+            get { return GetValue("enablePetAttack", true); }
+            set { SetValue("enablePetAttack", value); }
+        }
+
+        public double Fame
         {
             get { return GetValue("fame", 0); }
             set { SetValue("fame", value); }
@@ -681,13 +755,13 @@ namespace LoESoft.Core
 
         public DateTime CreateTime
         {
-            get { return GetValue("createTime", DateTime.Now); }
+            get { return GetValue("createTime", DateTime.UtcNow); }
             set { SetValue("createTime", value); }
         }
 
         public DateTime LastSeen
         {
-            get { return GetValue("lastSeen", DateTime.Now); }
+            get { return GetValue("lastSeen", DateTime.UtcNow); }
             set { SetValue("lastSeen", value); }
         }
 
@@ -738,6 +812,12 @@ namespace LoESoft.Core
             get { return GetValue("xpBoosted", false); }
             set { SetValue("xpBoosted", value); }
         }
+
+        public int Size
+        {
+            get { return GetValue("size", 80); }
+            set { SetValue("size", value); }
+        }
     }
 
     public class DbDeath : RedisObject
@@ -764,9 +844,9 @@ namespace LoESoft.Core
             set { SetValue("level", value); }
         }
 
-        public int TotalFame
+        public double TotalFame
         {
-            get { return GetValue<int>("totalFame"); }
+            get { return GetValue<double>("totalFame"); }
             set { SetValue("totalFame", value); }
         }
 
@@ -927,7 +1007,7 @@ namespace LoESoft.Core
                 .ToArray();
         }
 
-        public static void Insert(IDatabase db, int accId, int chrId, int totalFame)
+        public static void Insert(IDatabase db, int accId, int chrId, double totalFame)
         {
             var buff = new byte[8];
             Buffer.BlockCopy(BitConverter.GetBytes(accId), 0, buff, 0, 4);

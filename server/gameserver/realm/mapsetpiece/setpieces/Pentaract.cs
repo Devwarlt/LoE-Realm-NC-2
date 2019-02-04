@@ -31,9 +31,9 @@ namespace LoESoft.GameServer.realm.mapsetpiece
 
             for (int i = 0; i < 5; i++)
             {
-                double angle = (360 / 5 * i) * (float) Math.PI / 180;
-                int x_ = (int) (Math.Cos(angle) * 15 + 20 - 3);
-                int y_ = (int) (Math.Sin(angle) * 15 + 20 - 3);
+                double angle = (360 / 5 * i) * (float)Math.PI / 180;
+                int x_ = (int)(Math.Cos(angle) * 15 + 20 - 3);
+                int y_ = (int)(Math.Sin(angle) * 15 + 20 - 3);
 
                 for (int x = 0; x < 7; x++)
                     for (int y = 0; y < 7; y++)

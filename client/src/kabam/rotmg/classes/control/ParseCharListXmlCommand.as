@@ -15,7 +15,6 @@ public class ParseCharListXmlCommand {
     [Inject]
     public var logger:ILogger;
 
-
     public function execute():void {
         this.parseMaxLevelsAchieved();
         this.parseItemCosts();

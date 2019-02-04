@@ -15,6 +15,7 @@ namespace LoESoft.GameServer.realm.entity.player
 {
     partial class Player
     {
+        public ChatColor ChatColors { get; set; }
         public int MaxHackEntries { get; set; }
         public AccountTypePerks AccountPerks { get; set; }
         public int PetID { get; set; }
@@ -58,13 +59,27 @@ namespace LoESoft.GameServer.realm.entity.player
         public Client Client { get; }
         public int Credits { get; set; }
         public int Tokens { get; set; }
-        public int CurrentFame { get; set; }
-        public int Experience { get; set; }
-        public int ExperienceGoal { get; set; }
-        public int Fame { get; set; }
+        public double CurrentFame { get; set; }
+        public double Experience { get; set; }
+        public double ExperienceGoal { get; set; }
+        public double FakeExperience { get; set; }
+        public bool IsFakeEnabled { get; private set; }
+        public bool Bless1 { get; set; }
+        public bool Bless2 { get; set; }
+        public bool Bless3 { get; set; }
+        public bool Bless4 { get; set; }
+        public bool Bless5 { get; set; }
+        public int AttackLevel { get; set; }
+        public double AttackExperience { get; set; }
+        public double AttackGoalExperience { get; set; }
+        public int DefenseLevel { get; set; }
+        public double DefenseExperience { get; set; }
+        public double DefenseGoalExperience { get; set; }
+        public bool EnablePetAttack { get; set; }
+        public double Fame { get; set; }
         public FameCounter FameCounter { get; }
         public TaskManager TaskManager { get; }
-        public int FameGoal { get; set; }
+        public double FameGoal { get; set; }
         public bool Glowing { get; set; }
         public bool HasBackpack { get; set; }
         public int HealthPotions { get; set; }
@@ -93,7 +108,7 @@ namespace LoESoft.GameServer.realm.entity.player
         public int OxygenBar { get; set; }
         public int PlayerSkin { get; set; }
         public int Stars { get; set; }
-        public int[] Stats { get; }
+        public int[] Stats { get; set; }
         public StatsManager StatsManager { get; }
         public int Texture1 { get; set; }
         public int Texture2 { get; set; }
@@ -111,8 +126,6 @@ namespace LoESoft.GameServer.realm.entity.player
         private int[] setTypeBoosts;
         private int updateLastSeen;
         public Enemy Quest { get; private set; }
-        private bool worldBroadcast = true;
-        private readonly Queue<Tuple<Message, Predicate<Player>>> pendingPackets = new Queue<Tuple<Message, Predicate<Player>>>();
         public TradeManager HandleTrade { get; private set; }
         public int UpdatesSend { get; private set; }
         public int UpdatesReceived { get; set; }

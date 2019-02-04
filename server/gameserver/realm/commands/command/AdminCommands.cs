@@ -8,7 +8,6 @@ using LoESoft.GameServer.realm.world;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using static LoESoft.GameServer.networking.Client;
 
@@ -24,6 +23,12 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
+            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
+            {
+                player.SendInfo("You cannot use this feature along Production mode.");
+                return false;
+            }
+
             Entity prtal = Entity.Resolve("Undead Lair Portal");
             prtal.Move(player.X, player.Y);
             player.Owner.EnterWorld(prtal);
@@ -39,127 +44,21 @@ namespace LoESoft.GameServer.realm.commands
                     Console.Out.WriteLine("F.");
                 }
             }));
-            foreach (var cData in GameServer.Manager.ClientManager.Values)
-                cData.Client?.SendMessage(new TEXT
+            foreach (var client in GameServer.Manager.GetManager.Clients.Values)
+                client?.SendMessage(new TEXT
                 {
                     BubbleTime = 0,
                     Stars = -1,
                     Name = "",
                     Text = "Arena Opened"
                 });
-            foreach (var cData in GameServer.Manager.ClientManager.Values)
-                cData.Client?.SendMessage(new NOTIFICATION
+            foreach (var client in GameServer.Manager.GetManager.Clients.Values)
+                client?.SendMessage(new NOTIFICATION
                 {
                     Color = new ARGB(0xff00ff00),
                     ObjectId = player.Id,
                     Text = "Arena Opened"
                 });
-            return true;
-        }
-    }
-
-    internal class GlobalChat : Command
-    {
-        public GlobalChat() : base("gchat", (int)AccountType.VIP)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (args.Length == 0)
-            {
-                player.SendHelp("Usage: /gchat <saytext>");
-                return false;
-            }
-
-            var saytext = string.Join(" ", args);
-
-            if (player.Stars >= 20 || player.AccountType != (int)AccountType.REGULAR)
-                foreach (var cData in GameServer.Manager.ClientManager.Values)
-                    cData.Client?.SendMessage(new TEXT()
-                    {
-                        BubbleTime = 10,
-                        Stars = player.Stars,
-                        Name = player.Name,
-                        Text = " " + saytext,
-                        NameColor = 0xFFFFFF,
-                        TextColor = 0xFFFFFF
-                    });
-            else
-            {
-                player.SendHelp("You need at least 20 stars to unlock the global chat feature, try again later.");
-                return false;
-            }
-
-            return true;
-        }
-    }
-
-    internal class RealmCommand : Command
-    {
-        public RealmCommand()
-            : base("realm", (int)AccountType.REGULAR)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            var world = player.Client.Manager.Monitor.GetRandomRealm();
-
-            if (player.Owner is IRealm)
-            {
-                player.SendInfo("You already at realm.");
-                return false;
-            }
-
-            if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
-                player.Client.Reconnect(new RECONNECT()
-                {
-                    Host = "",
-                    Port = Settings.GAMESERVER.PORT,
-                    GameId = world.Id,
-                    Name = world.Name,
-                    Key = world.PortalKey,
-                });
-            else
-            {
-                player.SendHelp("You need at least 10 stars to unlock the realm instant access feature, try again later.");
-                return false;
-            }
-
-            return true;
-        }
-    }
-
-    internal class VaultCommand : Command
-    {
-        public VaultCommand() : base("vault", (int)AccountType.REGULAR)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (player.Owner is Vault)
-            {
-                player.SendInfo("You are already at vault.");
-                return false;
-            }
-
-            if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
-                player.Client.Reconnect(new RECONNECT()
-                {
-                    Host = "",
-                    Port = Settings.GAMESERVER.PORT,
-                    GameId = GameServer.Manager.PlayerVault(player.Client).Id,
-                    Name = GameServer.Manager.PlayerVault(player.Client).Name,
-                    Key = GameServer.Manager.PlayerVault(player.Client).PortalKey
-                });
-            else
-            {
-                player.SendHelp("You need at least 10 stars to unlock the vault instant access feature, try again later.");
-                return false;
-            }
-
             return true;
         }
     }
@@ -178,9 +77,9 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            foreach (var i in GameServer.Manager.ClientManager.Values)
+            foreach (var i in GameServer.Manager.GetManager.Clients.Values)
             {
-                var target = i.Client.Player;
+                var target = i.Player;
 
                 if (target.Owner is Vault)
                 {
@@ -215,44 +114,6 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
-    internal class GlandCommand : Command
-    {
-        public GlandCommand() : base("glands", (int)AccountType.REGULAR)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (!(player.Owner is IRealm))
-            {
-                player.SendInfo("You can only use this command at realm.");
-                return false;
-            }
-
-            if (player.Stars >= 10 || player.AccountType != (int)AccountType.REGULAR)
-            {
-                player.Move(1000f, 1000f);
-                player.Owner.BroadcastMessage(new GOTO
-                {
-                    ObjectId = player.Id,
-                    Position = new Position
-                    {
-                        X = player.X,
-                        Y = player.Y
-                    }
-                }, null);
-                player.UpdateCount++;
-            }
-            else
-            {
-                player.SendHelp("You need at least 10 stars to unlock the god lands instant access feature, try again later.");
-                return false;
-            }
-
-            return true;
-        }
-    }
-
     internal class Summon : Command
     {
         public Summon()
@@ -268,9 +129,9 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            foreach (var i in GameServer.Manager.ClientManager.Values)
+            foreach (var i in GameServer.Manager.GetManager.Clients.Values)
             {
-                var target = i.Client.Player;
+                var target = i.Player;
 
                 if (target.Name.EqualsIgnoreCase(args[0]))
                 {
@@ -306,7 +167,7 @@ namespace LoESoft.GameServer.realm.commands
                         player.SendInfo($"Player {target.Name} is connecting to {player.Owner.Name}.");
                     }
 
-                    i.Client.SendMessage(msg);
+                    i.SendMessage(msg);
 
                     return true;
                 }
@@ -319,13 +180,13 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class PosCmd : Command
     {
-        public PosCmd() : base("p", (int)AccountType.DEVELOPER)
+        public PosCmd() : base("pos", (int)AccountType.DEVELOPER)
         {
         }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            player.SendInfo("X: " + (int)player.X + " - Y: " + (int)player.Y);
+            player.SendInfo("X: " + player.X + " - Y: " + player.Y);
             return true;
         }
     }
@@ -340,7 +201,7 @@ namespace LoESoft.GameServer.realm.commands
         {
             if (Settings.SERVER_MODE == Settings.ServerMode.Production)
             {
-                player.SendInfo("You cannot use this feature along Production build.");
+                player.SendInfo("You cannot use this feature along Production mode.");
                 return false;
             }
 
@@ -403,7 +264,7 @@ namespace LoESoft.GameServer.realm.commands
         {
             if (Settings.SERVER_MODE == Settings.ServerMode.Production)
             {
-                player.SendInfo("You cannot use this feature along Production build.");
+                player.SendInfo("You cannot use this feature along Production mode.");
                 return false;
             }
 
@@ -474,21 +335,16 @@ namespace LoESoft.GameServer.realm.commands
             }
             try
             {
-                foreach (KeyValuePair<int, Player> i in player.Owner.Players)
-                {
-                    if (i.Value.AccountType >= player.AccountType)
-                    {
-                        player.SendInfo("You cannot kick someone with same account type or greater than yours!");
-                        break;
-                    }
+                var target = player.Owner.Players.Values.FirstOrDefault(p => p?.Name.ToLower() == args[0].ToLower());
 
-                    if (i.Value.Name.ToLower() == args[0].ToLower().Trim())
-                    {
-                        player.SendInfo($"Player {i.Value.Name} has been disconnected!");
-                        GameServer.Manager.TryDisconnect(i.Value.Client, DisconnectReason.PLAYER_KICK);
-                        break;
-                    }
+                if (target == null)
+                {
+                    player.SendInfo("Player not found!");
+                    return false;
                 }
+
+                player.SendInfo($"Player {target.Name} has been disconnected!");
+                GameServer.Manager.TryDisconnect(target.Client, DisconnectReason.PLAYER_KICK);
             }
             catch
             {
@@ -596,50 +452,6 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
-    internal class OnlineCommand : Command
-    {
-        public OnlineCommand() : base("online", (int)AccountType.REGULAR)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            var sb = new StringBuilder("Online at this moment: ");
-            var playersonline = 0;
-
-            foreach (var w in GameServer.Manager.Worlds)
-            {
-                var world = w.Value;
-
-                if (w.Key != 0)
-                {
-                    var copy = world.Players.Values.ToArray();
-
-                    if (copy.Length != 0)
-                    {
-                        for (int i = 0; i < copy.Length; i++)
-                        {
-                            sb.Append(copy[i].Name);
-                            sb.Append(", ");
-                            playersonline++;
-                        }
-                    }
-                }
-            }
-
-            if (player.AccountType >= (int)AccountType.MOD)
-            {
-                string fixedString = sb.ToString().TrimEnd(',', ' ');
-
-                player.SendInfo(fixedString + ".");
-            }
-
-            player.SendInfo($"There {(playersonline > 1 ? "are" : "is")} {playersonline} player{(playersonline > 1 ? "s" : "")} online.");
-
-            return true;
-        }
-    }
-
     internal class Announcement : Command
     {
         public Announcement() : base("announce", (int)AccountType.MOD)
@@ -659,24 +471,51 @@ namespace LoESoft.GameServer.realm.commands
 
             switch ((AccountType)player.AccountType)
             {
-                case AccountType.MOD: rank = "Moderator"; break;
-                case AccountType.DEVELOPER: rank = "Developer"; break;
-                case AccountType.ADMIN: rank = "Administrator"; break;
+                case AccountType.MOD: rank = "Mod"; break;
+                case AccountType.DEVELOPER: rank = "Dev"; break;
+                case AccountType.ADMIN: rank = "Admin"; break;
                 default: break;
             }
 
-            foreach (var cData in GameServer.Manager.ClientManager.Values)
-            {
-                cData.Client.SendMessage(new TEXT
+            foreach (var client in GameServer.Manager.GetManager.Clients.Values)
+                client.SendMessage(new TEXT
                 {
                     BubbleTime = 0,
                     Stars = -1,
                     Name = "@ANNOUNCEMENT",
-                    Text = $" <{rank} {player.Name}> " + saytext,
+                    Text = $" {rank} {player.Name} says: " + saytext,
                     NameColor = 0x123456,
                     TextColor = 0x123456
                 });
+
+            return true;
+        }
+    }
+
+    internal class GetAccountIdCommand : Command
+    {
+        public GetAccountIdCommand() : base("getid", (int)AccountType.MOD)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            if (string.IsNullOrWhiteSpace(args[0]))
+            {
+                player.SendHelp("Usage: /getid <player>");
+                return false;
             }
+
+            var id = GameServer.Manager.Database.ResolveId(args[0]);
+            var acc = GameServer.Manager.Database.GetAccountById(id);
+
+            if (id == null)
+            {
+                player.SendInfo($"Player '{args[0]}' not found!");
+                return false;
+            }
+
+            player.SendInfo($"Account ID of player '{acc.Name ?? args[0]}' is: {id}.");
             return true;
         }
     }
@@ -712,6 +551,8 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
+            player.SendInfo($"Success! You deposited '{amount}' {(currency == "coin" ? "empires coins" : currency)} to '{acc.Name}' account!");
+
             switch (currency)
             {
                 case "fame": GameServer.Manager.Database.UpdateFame(acc, amount); break;
@@ -720,8 +561,6 @@ namespace LoESoft.GameServer.realm.commands
                 case "coin": GameServer.Manager.Database.UpdateEmpiresCoin(acc, amount); break;
                 default: player.SendHelp($"Currency '{currency}' doesn't exist!"); return false;
             }
-
-            player.SendInfo($"Success! You deposited '{amount}' {(currency == "coin" ? "empires coins" : currency)} to '{acc.Name}' account!");
 
             return true;
         }
@@ -738,7 +577,6 @@ namespace LoESoft.GameServer.realm.commands
             foreach (var w in GameServer.Manager.Worlds)
             {
                 var world = w.Value;
-
                 var rank = string.Empty;
 
                 switch ((AccountType)player.AccountType)
@@ -769,38 +607,6 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
-    internal class ListCommands : Command
-    {
-        public ListCommands() : base("commands", (int)AccountType.REGULAR)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            var cmds = new Dictionary<string, Command>();
-            var t = typeof(Command);
-
-            foreach (var i in t.Assembly.GetTypes())
-                if (t.IsAssignableFrom(i) && i != t)
-                {
-                    var instance = (Command)Activator.CreateInstance(i);
-                    cmds.Add(instance.CommandName, instance);
-                }
-
-            var sb = new StringBuilder("");
-            var copy = cmds.Values.ToArray();
-
-            for (var i = 0; i < copy.Length; i++)
-            {
-                if (player.AccountType >= copy[i].PermissionLevel)
-                    sb.Append((i != 0 ? ", " : "") + copy[i].CommandName);
-            }
-
-            player.SendInfo(sb.ToString());
-            return true;
-        }
-    }
-
     internal class BanCommand : Command
     {
         public BanCommand() : base("ban", (int)AccountType.MOD)
@@ -817,13 +623,13 @@ namespace LoESoft.GameServer.realm.commands
                     return false;
                 }
 
-                if (player.Client.Manager.Database.BanAccount(GameServer.Manager.Database, args[0]))
+                if (GameServer.Manager.Database.BanAccount(GameServer.Manager.Database, args[0]))
                 {
                     player.SendInfo("Player has been banned!");
                     return true;
                 }
 
-                player.SendInfo("Cannon find account!");
+                player.SendInfo("Cannot find an account!");
                 return false;
             }
             catch
@@ -850,13 +656,13 @@ namespace LoESoft.GameServer.realm.commands
                     return false;
                 }
 
-                if (player.Client.Manager.Database.UnBanAccount(GameServer.Manager.Database, args[0]))
+                if (GameServer.Manager.Database.UnBanAccount(GameServer.Manager.Database, args[0]))
                 {
                     player.SendInfo("Player has been unbanned!");
                     return true;
                 }
 
-                player.SendInfo("Cannon find account!");
+                player.SendInfo("Cannot find an account!");
                 return false;
             }
             catch
@@ -864,6 +670,37 @@ namespace LoESoft.GameServer.realm.commands
                 player.SendError("Cannot unban!");
                 return false;
             }
+        }
+    }
+
+    internal class SizeCommand : Command
+    {
+        public SizeCommand() : base("size", (int)AccountType.VIP)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            if (args.Length == 0)
+            {
+                player.SendInfo("Usage: /size <value>");
+                return false;
+            }
+
+            var size = int.Parse(args[0]);
+            var minSize = 50;
+            var maxSize = 150;
+
+            if (size >= minSize && size <= maxSize)
+            {
+                player.SendInfo($"Succesfully changed your size ({size})!");
+                player.Client.Character.Size = size;
+                player.Client.Character.FlushAsync();
+                return true;
+            }
+
+            player.SendInfo($"Cannot change your size (min: {minSize}, max: {maxSize}, you wrote: {size})!");
+            return false;
         }
     }
 }

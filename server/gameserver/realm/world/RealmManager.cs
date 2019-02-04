@@ -24,7 +24,6 @@ namespace LoESoft.GameServer.realm
     public class RealmManager
     {
         public static Dictionary<string, int> QuestPortraits = new Dictionary<string, int>();
-        public static List<string> CurrentRealmNames = new List<string>();
 
         public static List<string> Realms = new List<string>
         {
@@ -33,24 +32,37 @@ namespace LoESoft.GameServer.realm
             "Beholder",
         };
 
+        public static ConcurrentDictionary<string, bool> OldschoolPlayers = new ConcurrentDictionary<string, bool>();
+
+        private readonly List<string> OldschoolPlayer = new List<string>()
+        {
+            "Norga", "Bilisha", "Maurth", "Blasphemy", "NPEtoPPEx", "Hallow",
+            "K", "Banana", "IAmlawa", "FrostIof", "Adwubz", "LoliLust",
+            "Fade", "Blunt", "stgg", "MERICA", "Dshoopy", "baconey",
+            "Bituloss", "EthaNGold", "yasuo", "Zen", "GhostMaree",
+            "Sebafra", "Backpackek", "Dev", "Zemagaia", "Six"
+        };
+
         public const int MAX_REALM_PLAYERS = 85;
 
-        public ConcurrentDictionary<string, ClientData> ClientManager { get; private set; }
+        public ClientManager GetManager { get; private set; }
         public ConcurrentDictionary<int, World> Worlds { get; private set; }
         public ConcurrentDictionary<string, World> LastWorld { get; private set; }
         public Random Random { get; }
         public BehaviorDb Behaviors { get; private set; }
         public ChatManager Chat { get; private set; }
-        public ISManager InterServer { get; private set; }
         public CommandManager Commands { get; private set; }
         public EmbeddedData GameData { get; private set; }
+        public NPCs NPCs { get; private set; }
         public string InstanceId { get; private set; }
         public LogicTicker Logic { get; private set; }
         public int MaxClients { get; private set; }
-        public RealmPortalMonitor Monitor { get; private set; }
+        public PortalMonitor Monitor { get; private set; }
         public Database Database { get; private set; }
         public bool Terminating { get; private set; }
         public int TPS { get; private set; }
+
+        public ManualResetEvent TickerReady { get; } = new ManualResetEvent(false);
 
         private ConcurrentDictionary<string, Vault> Vaults { get; set; }
 
@@ -58,9 +70,9 @@ namespace LoESoft.GameServer.realm
 
         public RealmManager(Database db)
         {
+            GetManager = new ClientManager();
             MaxClients = Settings.NETWORKING.MAX_CONNECTIONS;
             TPS = Settings.GAMESERVER.TICKETS_PER_SECOND;
-            ClientManager = new ConcurrentDictionary<string, ClientData>();
             Worlds = new ConcurrentDictionary<int, World>();
             LastWorld = new ConcurrentDictionary<string, World>();
             Vaults = new ConcurrentDictionary<string, Vault>();
@@ -72,8 +84,22 @@ namespace LoESoft.GameServer.realm
 
         public void Initialize()
         {
+            foreach (var oldschool in OldschoolPlayer)
+                OldschoolPlayers.TryAdd(oldschool, false);
+
             GameData = new EmbeddedData();
-            Behaviors = new BehaviorDb(this);
+            Behaviors = new BehaviorDb();
+            Chat = new ChatManager();
+            Commands = new CommandManager();
+            NPCs = new NPCs();
+
+            Log.Info($"\t- {NPCs.Database.Count}\tNPC{(NPCs.Database.Count > 1 ? "s" : "")}.");
+            Log._("Message", Message.Messages.Count);
+
+            Settings.DISPLAY_SUPPORTED_VERSIONS();
+
+            Log.Info("Initializing GameServer...");
+            Log.Info("Initializing GameServer... OK!\n");
 
             Player.HandleQuests(GameData);
             Merchant.HandleMerchant(GameData);
@@ -86,35 +112,32 @@ namespace LoESoft.GameServer.realm
             AddWorld((int)WorldID.DRASTA_CITADEL_ID, new DrastaCitadel());
             AddWorld((int)WorldID.DREAM_ISLAND, new DreamIsland());
 
-            Monitor = new RealmPortalMonitor(this);
+            Monitor = new PortalMonitor(this, Worlds[0]);
+
+            if (Realm.AllRealmEvents.Count == 0)
+                foreach (var realmevent in Realm.RealmEventCache)
+                    Realm.AllRealmEvents.Add(realmevent.Name);
 
             AddWorld(GameWorld.AutoName(1, true));
-
-            InterServer = new ISManager(this);
-            Chat = new ChatManager(this);
-            Commands = new CommandManager(this);
-
-            var npcs = new NPCs();
-            npcs.Initialize(this);
-
-            Log.Info($"\t- {NPCs.Database.Count}\tNPC{(NPCs.Database.Count > 1 ? "s" : "")}.");
         }
 
         public void Run()
         {
-            Logic = new LogicTicker(this);
+            Logic = new LogicTicker();
 
             var logic = new Task(() => Logic.TickLoop(), TaskCreationOptions.LongRunning);
             logic.ContinueWith(GameServer.Restart, TaskContinuationOptions.OnlyOnFaulted);
             logic.Start();
+
+            TickerReady.Set();
         }
 
         public void Stop()
         {
             Terminating = true;
 
-            foreach (var cData in ClientManager.Values)
-                TryDisconnect(cData.Client, DisconnectReason.STOPPING_REALM_MANAGER);
+            foreach (var client in GetManager.Clients.Values)
+                TryDisconnect(client, DisconnectReason.STOPPING_REALM_MANAGER);
 
             GameData.Dispose();
         }
@@ -123,163 +146,87 @@ namespace LoESoft.GameServer.realm
 
         #region "Connection handlers"
 
-        /** Disconnect Handler (LoESoft Games)
-		* Author: DV
-		* Original Idea: Miniguy
-		*/
-
-        public ConnectionProtocol TryConnect(Client client)
-        {
-            if (AccessDenied)
-                return new ConnectionProtocol(false, ErrorIDs.ACCESS_DENIED_DUE_RESTART); // Prevent account in use issue along restart.
-            else
-            {
-                try
-                {
-                    var _cData = new ClientData
-                    {
-                        ID = client.Account.AccountId,
-                        Client = client,
-                        DNS = client.Socket.RemoteEndPoint.ToString().Split(':')[0],
-                        Registered = DateTime.Now
-                    };
-
-                    if (_cData.Client.Account.Banned)
-                        return new ConnectionProtocol(false, ErrorIDs.ACCOUNT_BANNED);
-
-                    if (ClientManager.Count >= MaxClients) // When server is full.
-                        return new ConnectionProtocol(false, ErrorIDs.SERVER_FULL);
-
-                    if (ClientManager.ContainsKey(_cData.ID))
-                    {
-                        if (_cData.Client != null)
-                        {
-                            TryDisconnect(ClientManager[_cData.ID].Client, DisconnectReason.OLD_CLIENT_DISCONNECT); // Old client.
-
-                            return new ConnectionProtocol(ClientManager.TryAdd(_cData.ID, _cData), ErrorIDs.NORMAL_CONNECTION); // Normal connection with reconnect type.
-                        }
-
-                        return new ConnectionProtocol(false, ErrorIDs.LOST_CONNECTION); // User dropped connection while reconnect.
-                    }
-
-                    return new ConnectionProtocol(ClientManager.TryAdd(_cData.ID, _cData), ErrorIDs.NORMAL_CONNECTION); // Normal connection with reconnect type.
-                }
-                catch (Exception e) { Log.Error($"An error occurred.\n{e}"); }
-
-                return new ConnectionProtocol(false, ErrorIDs.LOST_CONNECTION); // User dropped connection while reconnect.
-            }
-        }
+        public ConnectionProtocol TryConnect(Client client) => GetManager.TryConnect(client);
 
         public void TryDisconnect(Client client, DisconnectReason reason = DisconnectReason.UNKNOW_ERROR_INSTANCE)
-        {
-            if (client == null)
-                return;
-
-            DisconnectHandler(client, reason == DisconnectReason.UNKNOW_ERROR_INSTANCE ? DisconnectReason.REALM_MANAGER_DISCONNECT : reason);
-        }
-
-        public void DisconnectHandler(Client client, DisconnectReason reason)
-        {
-            try
-            {
-                if (ClientManager.ContainsKey(client.Account.AccountId))
-                {
-                    ClientManager.TryRemove(client.Account.AccountId, out ClientData _disposableCData);
-
-                    Log.Info($"[({(int)reason}) {reason.ToString()}] Disconnect player '{_disposableCData.Client.Account.Name} (Account ID: {_disposableCData.Client.Account.AccountId})'.");
-
-                    _disposableCData.Client.Save();
-                    _disposableCData.Client.State = ProtocolState.Disconnected;
-                    _disposableCData.Client.Socket.Close();
-                    _disposableCData.Client.Dispose();
-                }
-                else
-                {
-                    Log.Info($"[({(int)reason}) {reason.ToString()}] Disconnect player '{client.Account.Name} (Account ID: {client.Account.AccountId})'.");
-
-                    client.Save();
-                    client.State = ProtocolState.Disconnected;
-                    client.Dispose();
-                }
-            }
-            catch (NullReferenceException) { }
-        }
+            => GetManager.TryDisconnect(client, reason);
 
         #endregion
 
         #region "World Utils"
 
-        public World AddWorld(int id, World world)
+        public void AddWorld(int id, World world)
         {
             if (world.Manager != null)
                 throw new InvalidOperationException("World already added.");
+
             world.Id = id;
             Worlds[id] = world;
+
             OnWorldAdded(world);
-            return world;
         }
 
         public World AddWorld(World world)
         {
             if (world.Manager != null)
                 throw new InvalidOperationException("World already added.");
+
             world.Id = Interlocked.Increment(ref nextWorldId);
             Worlds[world.Id] = world;
+
             OnWorldAdded(world);
+
             return world;
         }
 
-        public bool RemoveWorld(World world)
+        public bool RemoveWorld(World world, bool renewRealm = false)
         {
             if (world.Manager == null)
                 throw new InvalidOperationException("World is not added.");
-            if (Worlds.TryRemove(world.Id, out World dummy))
+
+            if (Worlds.TryRemove(world.Id, out world))
             {
-                try
-                {
-                    OnWorldRemoved(world);
-                    world.Dispose();
-                    GC.Collect();
-                }
-                catch (Exception) { }
+                OnWorldRemoved(world);
                 return true;
             }
-            return false;
-        }
-
-        public void CloseWorld(World world)
-        {
-            Monitor.WorldRemoved(world);
+            else
+                return false;
         }
 
         public World GetWorld(int id)
         {
             if (!Worlds.TryGetValue(id, out World ret))
                 return null;
+
             if (ret.Id == 0)
                 return null;
+
             return ret;
         }
 
-        public bool RemoveVault(string accountId)
-        {
-            return Vaults.TryRemove(accountId, out Vault dummy);
-        }
+        public bool RemoveVault(string accountId) => Vaults.TryRemove(accountId, out Vault dummy);
 
         private void OnWorldAdded(World world)
         {
-            if (world.Manager == null)
-                world.Manager = this;
+            world.Manager = this;
 
-            if (world is GameWorld)
-                Monitor.WorldAdded(world);
+            if (world is IRealm)
+                Monitor.AddRealm(world);
+
+            Log.Warn($"World {world.Id}({world.Name}) added. {Worlds.Count} Worlds existing.");
         }
 
         private void OnWorldRemoved(World world)
         {
-            world.Manager = null;
-            if (world is GameWorld)
-                Monitor.WorldRemoved(world);
+            var isrealm = world is IRealm;
+            var name = world.Name;
+
+            Log.Warn($"World {world.Id}({world.Name}) removed.");
+
+            Monitor.RemoveWorld(world);
+
+            if (isrealm)
+                AddWorld(GameWorld.AutoName(1, true, name));
         }
 
         #endregion

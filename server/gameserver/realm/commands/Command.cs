@@ -65,17 +65,16 @@ namespace LoESoft.GameServer.realm.commands
 
         private readonly Dictionary<string, Command> cmds;
 
-        private RealmManager manager;
-
-        public CommandManager(RealmManager manager)
+        public CommandManager()
         {
-            this.manager = manager;
             cmds = new Dictionary<string, Command>(StringComparer.InvariantCultureIgnoreCase);
-            Type t = typeof(Command);
-            foreach (Type i in t.Assembly.GetTypes())
+
+            var t = typeof(Command);
+
+            foreach (var i in t.Assembly.GetTypes())
                 if (t.IsAssignableFrom(i) && i != t)
                 {
-                    Command instance = (Command) Activator.CreateInstance(i);
+                    var instance = (Command)Activator.CreateInstance(i);
                     cmds.Add(instance.CommandName, instance);
                 }
         }
