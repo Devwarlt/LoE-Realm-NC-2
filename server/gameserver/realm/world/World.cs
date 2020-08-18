@@ -73,7 +73,7 @@ namespace LoESoft.GameServer.realm
                 return position;
             }
 
-            return default;
+            return default((float, float));
         }
 
         private ConcurrentDictionary<string, (float, float)> ReconnectRequests { get; set; }
