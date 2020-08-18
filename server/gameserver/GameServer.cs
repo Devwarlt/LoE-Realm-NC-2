@@ -36,6 +36,7 @@ namespace LoESoft.GameServer
         public static int GameUsage { get; private set; }
         public static bool AutoRestart { get; private set; }
         public static ChatManager Chat { get; set; }
+        public static Random Random { get; set; }
         public static RealmManager Manager;
 
         public static DateTime WhiteListTurnOff { get; private set; }
@@ -63,6 +64,8 @@ namespace LoESoft.GameServer
             {
                 var db = new Database();
                 GameUsage = -1;
+
+                Random = new Random();
 
                 Manager = new RealmManager(db);
 
