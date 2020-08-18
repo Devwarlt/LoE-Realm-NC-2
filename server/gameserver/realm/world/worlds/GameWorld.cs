@@ -123,7 +123,7 @@ namespace LoESoft.GameServer.realm.world
                     {
                         do
                         {
-                            await Task.Delay(30 * 60 * 1000);
+                            await Task.Delay(20 * 60 * 1000);
 
                             foreach (var i in Players.Values)
                             {
@@ -132,14 +132,14 @@ namespace LoESoft.GameServer.realm.world
                             }
 
                             foreach (var i in GameServer.Manager.GetManager.Clients.Values)
-                                i.Player?.GazerDM($"Oryx is preparing to close realm '{Name}' in 15 seconds.");
+                                i.Player?.GazerDM($"Oryx is preparing to close realm '{Name}' in 30 seconds.");
 
-                            await Task.Delay(15 * 1000);
+                            await Task.Delay(30 * 1000);
 
                             IsRealmClosed = true;
 
                             var wc = GameServer.Manager.AddWorld(new WineCellar());
-                            var players = Players.Values.Where(player => player != null);
+                            var players = Players.Values.Where(player => player != null).ToArray();
 
                             foreach (var player in players)
                             {
