@@ -40,7 +40,7 @@ namespace LoESoft.Core
 
             _redis = ConnectionMultiplexer.Connect(conString);
             _server = _redis.GetServer(_redis.GetEndPoints(true)[0]);
-            _db = _redis.GetDatabase(1);
+            _db = _redis.GetDatabase(0);
 
             Sub = _redis.GetSubscriber();
         }

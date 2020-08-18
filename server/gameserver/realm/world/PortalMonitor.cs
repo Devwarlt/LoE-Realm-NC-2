@@ -91,7 +91,7 @@ namespace LoESoft.GameServer.realm
                 if (worlds.Length == 0)
                     return GameServer.Manager.Worlds[(int)WorldID.NEXUS_ID];
 
-                return worlds[GameServer.Random.Next(0, worlds.Length)].WorldInstance;
+                return worlds[Environment.TickCount % worlds.Length].WorldInstance;
             }
         }
 

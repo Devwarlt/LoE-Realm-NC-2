@@ -5,6 +5,7 @@ using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.entity;
 using LoESoft.GameServer.realm.entity.player;
 using LoESoft.GameServer.realm.mapsetpiece;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -58,7 +59,7 @@ namespace LoESoft.GameServer.realm.world
                 RealmManager.OldschoolPlayers[oldName] = false;
 
             var players = RealmManager.OldschoolPlayers.Where(p => !p.Value).ToList();
-            var name = players[GameServer.Random.Next(0, players.Count)].Key;
+            var name = players[Environment.TickCount % players.Count].Key;
 
             RealmManager.OldschoolPlayers[name] = true;
 

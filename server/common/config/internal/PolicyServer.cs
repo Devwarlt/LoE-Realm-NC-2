@@ -4,7 +4,7 @@
     {
         public static class POLICYSERVER
         {
-            public static int PORT = 5557;
+            public static int PORT = 7002;
         }
     }
 }

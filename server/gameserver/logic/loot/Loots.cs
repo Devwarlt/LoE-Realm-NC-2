@@ -32,7 +32,7 @@ namespace LoESoft.GameServer.logic.loot
 
     public class Loot : List<ILootDef>
     {
-        public static readonly Random rand = new Random();
+        private static readonly Random rand = new Random();
 
         public Loot(params ILootDef[] lootDefs) //For independent loots(e.g. chests)
         {
