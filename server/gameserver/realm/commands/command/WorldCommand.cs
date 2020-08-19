@@ -1,5 +1,6 @@
 ﻿#region
 
+using CA.Extensions.Concurrent;
 using LoESoft.Core.config;
 using LoESoft.GameServer.logic;
 using LoESoft.GameServer.networking.incoming;
@@ -257,8 +258,10 @@ namespace LoESoft.GameServer.realm.commands
 
             try
             {
-                foreach (var client in GameServer.Manager.GetManager.Clients.Values)
+                var clients = GameServer.Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null && _.Player != null);
+                for (var i = 0; i < clients.Length; i++)
                 {
+                    var client = clients[i];
                     if (client.Account.NameChosen && client.Account.Name.EqualsIgnoreCase(playername))
                     {
                         player.Client.SendMessage(new TEXT()
@@ -316,8 +319,10 @@ namespace LoESoft.GameServer.realm.commands
             var saytext = string.Join(" ", args);
 
             if (player.Stars >= 14 || player.AccountType != (int)AccountType.REGULAR)
-                foreach (var client in GameServer.Manager.GetManager.Clients.Values)
-                    client.SendMessage(new TEXT()
+            {
+                var clients = GameServer.Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null && _.Player != null);
+                for (var i = 0; i < clients.Length; i++)
+                    clients[i].SendMessage(new TEXT()
                     {
                         BubbleTime = 10,
                         Stars = player.Stars,
@@ -326,6 +331,7 @@ namespace LoESoft.GameServer.realm.commands
                         NameColor = 0xFFFFFF,
                         TextColor = 0xFFFFFF
                     });
+            }
             else
             {
                 player.SendHelp("You need at least 14 stars to unlock the global chat feature, try again later.");
