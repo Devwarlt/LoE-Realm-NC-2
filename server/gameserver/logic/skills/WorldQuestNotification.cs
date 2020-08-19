@@ -1,5 +1,6 @@
 ﻿#region
 
+using CA.Extensions.Concurrent;
 using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm;
 
@@ -22,8 +23,9 @@ namespace LoESoft.GameServer.logic.behaviors
 
             once = true;
 
-            foreach (var client in GameServer.Manager.GetManager.Clients.Values)
-                client.SendMessage(new TEXT
+            var clients = GameServer.Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null && _.Player != null);
+            for (var i = 0; i < clients.Length; i++)
+                clients[i].SendMessage(new TEXT
                 {
                     BubbleTime = 0,
                     Stars = -1,
