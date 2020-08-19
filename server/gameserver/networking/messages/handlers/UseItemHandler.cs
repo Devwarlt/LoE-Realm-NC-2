@@ -3,7 +3,6 @@
 using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.realm;
 using LoESoft.GameServer.realm.entity;
-using LoESoft.GameServer.realm.entity.player;
 using System.Collections.Generic;
 using System.Linq;
 using static LoESoft.GameServer.networking.Client;
@@ -39,7 +38,7 @@ namespace LoESoft.GameServer.networking.handlers
                         {
                             log4net.FatalFormat("Cheat engine detected for player {0},\nItem should be a Health Potion, but its {1}.",
                                 client.Player.Name, item.ObjectId);
-                            foreach (Player player in client.Player.Owner.Players.Values)
+                            foreach (var player in client.Player.Owner.GetPlayers())
                                 if (player.Client.Account.AccountType >= (int)Core.config.AccountType.DEVELOPER)
                                     player.SendInfo(string.Format("Cheat engine detected for player {0},\nItem should be a Health Potion, but its {1}.",
                                         client.Player.Name, item.ObjectId));
@@ -173,7 +172,7 @@ namespace LoESoft.GameServer.networking.handlers
                         {
                             log4net.FatalFormat("Cheat engine detected for player {0},\nItem should be a Magic Potion, but its {1}.",
                                 client.Player.Name, item.ObjectId);
-                            foreach (Player player in client.Player.Owner.Players.Values.Where(player => player.Client.Account.AccountType >= (int)LoESoft.Core.config.AccountType.DEVELOPER))
+                            foreach (var player in client.Player.Owner.GetPlayers().Where(player => player.Client.Account.AccountType >= (int)Core.config.AccountType.DEVELOPER))
                                 player.SendInfo($"Cheat engine detected for player {client.Player.Name},\nItem should be a Magic Potion, but its {item.ObjectId}.");
                             GameServer.Manager.TryDisconnect(client, DisconnectReason.MP_POTION_CHEAT_ENGINE);
                             return;
