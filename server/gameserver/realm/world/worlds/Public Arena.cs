@@ -1,5 +1,6 @@
 ﻿#region
 
+using CA.Extensions.Concurrent;
 using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.entity.player;
 using LoESoft.GameServer.realm.terrain;
@@ -246,19 +247,7 @@ namespace LoESoft.GameServer.realm.world
             { return; }
         }
 
-        private int CheckIfEmpty()
-        {
-            int quantity = Enemies.Count;
-
-            foreach (var enemy in Enemies.Values)
-                if (enemy.IsPet)
-                    quantity--;
-
-            return quantity;
-        }
-
-        private bool IsEmpty() =>
-            CheckIfEmpty() == 0;
+        private bool IsEmpty() => Enemies.ValueWhereAsParallel(_ => !_.IsPet).Length == 0;
 
         public bool OutOfBounds(float x, float y)
             => (y < Map.Height && y > 0 && x < Map.Width && x > 0) ?
