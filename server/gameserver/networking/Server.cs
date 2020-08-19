@@ -1,5 +1,6 @@
 ﻿#region
 
+using CA.Extensions.Concurrent;
 using LoESoft.Core.config;
 using System;
 using System.Net;
@@ -66,8 +67,10 @@ namespace LoESoft.GameServer.networking
 
         public void Stop()
         {
-            foreach (var client in GameServer.Manager.GetManager.Clients.Values)
+            var clients = GameServer.Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null && _.Player != null);
+            for (var i = 0; i < clients.Length; i++)
             {
+                var client = clients[i];
                 client.Save();
                 GameServer.Manager.TryDisconnect(client, DisconnectReason.STOPING_SERVER);
             }
