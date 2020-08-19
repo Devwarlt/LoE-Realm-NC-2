@@ -1,5 +1,6 @@
 ﻿#region
 
+using CA.Extensions.Concurrent;
 using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm;
 using LoESoft.GameServer.realm.entity;
@@ -106,7 +107,6 @@ namespace LoESoft.GameServer.logic.loot
                         {
                             var prob = dat.Item1.LootDropBoost ? i.Probabilty * 1.5 : i.Probabilty;
                             var chance = rand.NextDouble();
-
                             if (chance <= prob)
                             {
                                 if (dat.Item1.LootTierBoost)
@@ -115,20 +115,19 @@ namespace LoESoft.GameServer.logic.loot
                                     playerLoot.Add(i.Item);
 
                                 if (i.WhiteBag)
-                                    GameServer.Manager.GetManager.Clients.Values.Select(client =>
-                                    {
-                                        client.SendMessage(new TEXT()
+                                {
+                                    var clients = GameServer.Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null);
+                                    for (var j = 0; j < clients.Length; j++)
+                                        clients[j].SendMessage(new TEXT()
                                         {
                                             BubbleTime = 0,
                                             Stars = -1,
                                             Name = "@ANNOUNCEMENT",
-                                            Text = $" {dat.Item1.Name} dropped a white bag item '{i.Item.DisplayId}' with {Math.Round(chance * 100, 2)}% chance!",
+                                            Text = $" {dat.Item1.Name} dropped a white bag item '{i.Item.DisplayId}' with {chance:P2} chance!",
                                             NameColor = 0x123456,
                                             TextColor = 0x123456
                                         });
-
-                                        return client;
-                                    }).ToList();
+                                }
                             }
                         }
                     }
