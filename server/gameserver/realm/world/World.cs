@@ -94,29 +94,41 @@ namespace LoESoft.GameServer.realm
             }
         }
 
+        private Thread _tickThread;
+
         private void BeginInit()
         {
             Seed = _manager.Random.NextUInt32();
             PortalKey = Utils.RandomBytes(NeedsPortalKey ? 16 : 0);
 
-            var worldtick = new Task(() => WorldTick());
-            worldtick.Start();
+            var tps = 1000 / Settings.GAMESERVER.TICKETS_PER_SECOND;// 200 ms (5 TPS)
+            _tickThread = new Thread(async () =>
+            {
+                try { while (await WorldTick(tps)) ; }
+                catch (ThreadInterruptedException) { }
+                catch (Exception e) { Log.Error(e.ToString()); }
+            });
+            _tickThread.Start();
 
             Init();
         }
 
-        private async void WorldTick()
+        private async Task<bool> WorldTick(int tps)
         {
-            await Task.Delay(1000 / Settings.GAMESERVER.TICKETS_PER_SECOND); // 200 ms (5 TPS)
+            await Task.Delay(tps);
 
-            _manager.TickerReady.WaitOne(); // await main thread load, before world ticker task init
+            _manager.TickerReady.WaitOne();
 
-            try { Tick(_manager.Logic.GameTime); }
+            try { Tick(GetTime()); }
             catch { }
 
-            if (!Deleted)
-                WorldTick();
+            return !Deleted;
         }
+
+        private void OnRoutineError(string routine, string error)
+            => GameServer.log.Error($"An error occurred on routine '{routine}' at world '{GetDisplayName()}' [id: {Id}]: {error}");
+
+        private RealmTime GetTime() => _manager.Logic.GameTime;
 
         public virtual void Tick(RealmTime time)
         {
@@ -124,7 +136,7 @@ namespace LoESoft.GameServer.realm
                 return;
 
             if (Timers?.Count != 0)
-                for (var i = 0; i < Timers?.Count; i++)
+                for (var i = 0; i < Timers.Count; i++)
                     try
                     {
                         if (Timers[i] == null)
@@ -133,48 +145,62 @@ namespace LoESoft.GameServer.realm
                         if (!Timers[i].Tick(this, time))
                             continue;
 
-                        Timers?.RemoveAt(i);
+                        Timers.RemoveAt(i);
 
                         i--;
                     }
-                    catch { }
+                    catch { continue; }
 
-            if (Players.Count != 0)
-                foreach (var player in Players.Values.Where(player => player != null))
+            var players = GetPlayers();
+            if (players.Count() != 0)
+            {
+                foreach (var player in players)
                     player.Tick(time);
+            }
 
             if (EnemiesCollision != null)
             {
                 var collisions = EnemiesCollision.GetActiveChunks(PlayersCollision).ToList();
-
                 if (collisions.Count != 0)
                     foreach (var collision in collisions.Where(collision => collision != null))
                         collision.Tick(time);
 
                 if (GameObjects.Count != 0)
-                    foreach (var gameobject in GameObjects.Values.Where(x => x is Decoy && x != null))
-                        gameobject.Tick(time);
+                {
+                    var gos = GameObjects.ValueWhereAsParallel(_ => _ != null && _ is Decoy);
+                    for (var i = 0; i < gos.Length; i++)
+                        gos[i].Tick(time);
+                }
             }
             else
             {
                 if (Enemies.Count != 0)
-                    foreach (var enemy in Enemies.Values.Where(enemy => enemy != null))
-                        enemy.Tick(time);
+                {
+                    var enemies = Enemies.ValueWhereAsParallel(_ => _ != null);
+                    for (var i = 0; i < enemies.Length; i++)
+                        enemies[i].Tick(time);
+                }
 
                 if (GameObjects.Count != 0)
-                    foreach (var gameobject in GameObjects.Values.Where(objects => objects != null))
-                        gameobject.Tick(time);
+                {
+                    var gos = GameObjects.ValueWhereAsParallel(_ => _ != null);
+                    for (var i = 0; i < gos.Length; i++)
+                        gos[i].Tick(time);
+                }
             }
 
             if (Projectiles.Count != 0)
-                foreach (var projectile in Projectiles.Keys.Where(projectile => projectile != null))
-                    projectile.Tick(time);
+            {
+                var projectiles = Projectiles.KeyWhereAsParallel(_ => _ != null);
+                for (var i = 0; i < projectiles.Length; i++)
+                    projectiles[i].Tick(time);
+            }
 
             if (Players.Count != 0 || !canBeClosed || !IsDungeon())
                 return;
 
-            if (this is Vault vault)
-                _manager.RemoveVault(vault.AccountId);
+            if (Id == (int)WorldID.VAULT_ID)
+                _manager.RemoveVault((this as Vault).AccountId);
 
             _manager.RemoveWorld(this);
         }
@@ -222,7 +248,6 @@ namespace LoESoft.GameServer.realm
                 return false;
 
             var tile = Map[x, y];
-
             if (tile.TileDesc.NoWalk)
                 return false;
 
@@ -245,9 +270,7 @@ namespace LoESoft.GameServer.realm
         public string GetDisplayName()
         {
             if (!string.IsNullOrEmpty(SBName))
-            {
                 return SBName[0] == '{' ? Name : SBName;
-            }
             return Name;
         }
 
@@ -265,6 +288,9 @@ namespace LoESoft.GameServer.realm
                     return false;
 
                 Deleted = true;
+
+                _tickThread.Interrupt();
+
                 Manager.RemoveWorld(this);
                 Id = 0;
 

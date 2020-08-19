@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoESoft.GameServer", "games
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{8FDA27C5-057C-4BF7-A62E-B2B86138989C}"
 	ProjectSection(SolutionItems) = preProject
-		Core.Algorithms.dll = Core.Algorithms.dll
-		Core.Algorithms.xml = Core.Algorithms.xml
 		RotMG.Common.dll = RotMG.Common.dll
 	EndProjectSection
 EndProject

@@ -108,6 +108,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CA\Extensions\Concurrent\ConcurrentDictionaryExtensions.cs" />
+    <Compile Include="CA\Threading\Tasks\InternalRoutine.cs" />
+    <Compile Include="CA\Threading\Tasks\InternalRoutineEventArgs.cs" />
+    <Compile Include="CA\Threading\Tasks\Procedures\IAttachedTask.cs" />
     <Compile Include="config\internal\AppEngine.cs" />
     <Compile Include="config\internal\PolicyServer.cs" />
     <Compile Include="config\internal\Networking.cs" />
