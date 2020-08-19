@@ -1,5 +1,6 @@
 ﻿#region
 
+using CA.Extensions.Concurrent;
 using LoESoft.Core;
 using LoESoft.Core.config;
 using LoESoft.Core.models;
@@ -11,7 +12,6 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using static LoESoft.GameServer.networking.Client;
@@ -66,9 +66,7 @@ namespace LoESoft.GameServer
                 GameUsage = -1;
 
                 Random = new Random();
-
                 Manager = new RealmManager(db);
-
                 AutoRestart = Settings.NETWORKING.RESTART.ENABLE_RESTART;
 
                 Manager.Initialize();
@@ -90,7 +88,6 @@ namespace LoESoft.GameServer
                 }
 
                 Console.Title = Settings.GAMESERVER.TITLE;
-
                 Console.CancelKeyPress += delegate
                 {
                     Shutdown?.Set();
@@ -110,7 +107,6 @@ namespace LoESoft.GameServer
                 Log.Warn("Terminated GameServer.");
 
                 Thread.Sleep(1000);
-
                 Environment.Exit(0);
             }
             catch (Exception e) { ForceShutdown(e); }
@@ -130,7 +126,6 @@ namespace LoESoft.GameServer
             }
 
             Process.Start(Settings.GAMESERVER.FILE);
-
             Environment.Exit(0);
         }
 
@@ -142,11 +137,9 @@ namespace LoESoft.GameServer
 
             try
             {
-                Manager.GetManager.Clients.Values.Where(j => j != null).Select(k =>
-                {
-                    k.Player?.SendInfo(message);
-                    return k;
-                }).ToList();
+                var clients = Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null);
+                for (var i = 0; i < clients.Length; i++)
+                    clients[i].Player?.SendInfo(message);
             }
             catch (Exception ex) { ForceShutdown(ex); }
 
@@ -156,18 +149,14 @@ namespace LoESoft.GameServer
             {
                 AccessDenied = true;
 
-                Manager.GetManager.Clients.Values.Where(j => j != null).Select(k =>
-                {
-                    Manager.TryDisconnect(k, DisconnectReason.RESTART);
-                    return k;
-                }).ToList();
+                var clients = Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null);
+                for (var i = 0; i < clients.Length; i++)
+                    Manager.TryDisconnect(clients[i], DisconnectReason.RESTART);
             }
             catch (Exception ex) { ForceShutdown(ex); }
 
             Thread.Sleep(1 * 1000);
-
             Process.Start(Settings.GAMESERVER.FILE);
-
             Environment.Exit(0);
         }
 
@@ -188,8 +177,9 @@ namespace LoESoft.GameServer
 
                     try
                     {
-                        foreach (var client in Manager.GetManager.Clients.Values)
-                            client.Player?.SendInfo(message);
+                        var clients = Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null);
+                        for (var j = 0; j < clients.Length; j++)
+                            clients[j].Player?.SendInfo(message);
                     }
                     catch (Exception ex) { ForceShutdown(ex); }
 
@@ -204,11 +194,9 @@ namespace LoESoft.GameServer
 
                 try
                 {
-                    Manager.GetManager.Clients.Values.Where(j => j != null).Select(k =>
-                    {
-                        k.Player?.SendInfo(message);
-                        return k;
-                    }).ToList();
+                    var clients = Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null);
+                    for (var j = 0; j < clients.Length; j++)
+                        clients[j].Player?.SendInfo(message);
                 }
                 catch (Exception ex) { ForceShutdown(ex); }
 
@@ -218,18 +206,14 @@ namespace LoESoft.GameServer
                 {
                     AccessDenied = true;
 
-                    Manager.GetManager.Clients.Values.Where(j => j != null).Select(k =>
-                    {
-                        Manager.TryDisconnect(k, DisconnectReason.RESTART);
-                        return k;
-                    }).ToList();
+                    var clients = Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null);
+                    for (var j = 0; j < clients.Length; j++)
+                        Manager.TryDisconnect(clients[j], DisconnectReason.RESTART);
                 }
                 catch (Exception ex) { ForceShutdown(ex); }
 
                 Thread.Sleep(1 * 1000);
-
                 Process.Start(Settings.GAMESERVER.FILE);
-
                 Environment.Exit(0);
             };
             timer.Start();
