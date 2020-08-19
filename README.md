@@ -15,5 +15,5 @@ Download the properly Adobe Flex SDK to compile game client, link below:
 [howtosetup]: /HowToSetup.md
 [license-badge]: https://img.shields.io/badge/MIT-gray?style=plastic
 [dotnet-language-badge]: https://img.shields.io/badge/7.2-purple?logo=c-sharp&style=plastic
-[dotnet-framework-badge]: https://img.shields.io/badge/.NET-4.7.2-purple?logo=.net&style=plastic
+[dotnet-framework-badge]: https://img.shields.io/badge/4.7.2-purple?logo=.net&style=plastic
 [discord-badge]: https://img.shields.io/discord/592162267664220181?logo=discord&style=plastic
