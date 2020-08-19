@@ -1,5 +1,6 @@
 ﻿#region
 
+using CA.Extensions.Concurrent;
 using LoESoft.Core.config;
 using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.entity;
@@ -125,23 +126,22 @@ namespace LoESoft.GameServer.realm.world
                         {
                             await Task.Delay(20 * 60 * 1000);
 
-                            foreach (var i in Players.Values)
+                            foreach (var player in GetPlayers())
                             {
-                                Overseer.SendMsg(i, "I HAVE CLOSED THIS REALM!", "#Oryx the Mad God");
-                                Overseer.SendMsg(i, "YOU WILL NOT LIVE TO SEE THE LIGHT OF DAY!", "#Oryx the Mad God");
+                                Overseer.SendMsg(player, "I HAVE CLOSED THIS REALM!", "#Oryx the Mad God");
+                                Overseer.SendMsg(player, "YOU WILL NOT LIVE TO SEE THE LIGHT OF DAY!", "#Oryx the Mad God");
                             }
 
-                            foreach (var i in GameServer.Manager.GetManager.Clients.Values)
-                                i.Player?.GazerDM($"Oryx is preparing to close realm '{Name}' in 30 seconds.");
+                            var clients = GameServer.Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null && _.Player != null);
+                            for (var i = 0; i < clients.Length; i++)
+                                clients[i].Player?.GazerDM($"Oryx is preparing to close realm '{Name}' in 30 seconds.");
 
                             await Task.Delay(30 * 1000);
 
                             IsRealmClosed = true;
 
                             var wc = GameServer.Manager.AddWorld(new WineCellar());
-                            var players = Players.Values.Where(player => player != null).ToArray();
-
-                            foreach (var player in players)
+                            foreach (var player in GetPlayers())
                             {
                                 Overseer.SendMsg(player, "MY MINIONS HAVE FAILED ME!", "#Oryx the Mad God");
                                 Overseer.SendMsg(player, "BUT NOW YOU SHALL FEEL MY WRATH!", "#Oryx the Mad God");
@@ -157,7 +157,7 @@ namespace LoESoft.GameServer.realm.world
 
                             await Task.Delay(10 * 1000);
 
-                            foreach (var player in players)
+                            foreach (var player in GetPlayers())
                                 player.Client.SendMessage(new RECONNECT
                                 {
                                     Host = "",
