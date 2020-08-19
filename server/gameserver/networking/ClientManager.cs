@@ -1,4 +1,5 @@
-﻿using LoESoft.Core.models;
+﻿using CA.Extensions.Concurrent;
+using LoESoft.Core.models;
 using LoESoft.GameServer.realm;
 using System;
 using System.Collections.Concurrent;
@@ -21,8 +22,9 @@ namespace LoESoft.GameServer.networking
 
         public IEnumerable<string> GetPlayersName()
         {
-            foreach (var client in Clients.Values)
-                yield return client?.Account.Name;
+            var clients = GameServer.Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null);
+            for (var i = 0; i < clients.Length; i++)
+                yield return clients[i].Account.Name;
         }
 
         public void RemoveClient(Client client, DisconnectReason reason)
