@@ -1,5 +1,6 @@
 ﻿#region
 
+using CA.Extensions.Concurrent;
 using LoESoft.Core.config;
 using LoESoft.GameServer.networking;
 using LoESoft.GameServer.networking.outgoing;
@@ -15,59 +16,10 @@ using static LoESoft.GameServer.networking.Client;
 
 namespace LoESoft.GameServer.realm.commands
 {
-    internal class ArenaCommand : Command
-    {
-        public ArenaCommand() : base("arena", (int)AccountType.DEVELOPER)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
-            {
-                player.SendInfo("You cannot use this feature along Production mode.");
-                return false;
-            }
-
-            Entity prtal = Entity.Resolve("Undead Lair Portal");
-            prtal.Move(player.X, player.Y);
-            player.Owner.EnterWorld(prtal);
-            World w = GameServer.Manager.GetWorld(player.Owner.Id);
-            w.Timers.Add(new WorldTimer(30 * 1000, (world, t) =>
-            {
-                try
-                {
-                    w.LeaveWorld(prtal);
-                }
-                catch
-                {
-                    Console.Out.WriteLine("F.");
-                }
-            }));
-            foreach (var client in GameServer.Manager.GetManager.Clients.Values)
-                client?.SendMessage(new TEXT
-                {
-                    BubbleTime = 0,
-                    Stars = -1,
-                    Name = "",
-                    Text = "Arena Opened"
-                });
-            foreach (var client in GameServer.Manager.GetManager.Clients.Values)
-                client?.SendMessage(new NOTIFICATION
-                {
-                    Color = new ARGB(0xff00ff00),
-                    ObjectId = player.Id,
-                    Text = "Arena Opened"
-                });
-            return true;
-        }
-    }
-
     internal class VisitCommand : Command
     {
-        public VisitCommand() : base("visit", (int)AccountType.MOD)
-        {
-        }
+        public VisitCommand() : base("visit", (int)AccountType.DEVELOPER)
+        { }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
@@ -77,10 +29,10 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            foreach (var i in GameServer.Manager.GetManager.Clients.Values)
+            var clients = GameServer.Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null && _.Player != null);
+            for (var i = 0; i < clients.Length; i++)
             {
-                var target = i.Player;
-
+                var target = clients[i].Player;
                 if (target.Owner is Vault)
                 {
                     player.SendInfo($"Player {target.Name} is at Vault.");
@@ -116,10 +68,8 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class Summon : Command
     {
-        public Summon()
-            : base("summon", (int)AccountType.MOD)
-        {
-        }
+        public Summon() : base("summon", (int)AccountType.DEVELOPER)
+        { }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
@@ -129,10 +79,10 @@ namespace LoESoft.GameServer.realm.commands
                 return false;
             }
 
-            foreach (var i in GameServer.Manager.GetManager.Clients.Values)
+            var clients = GameServer.Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null && _.Player != null);
+            for (var i = 0; i < clients.Length; i++)
             {
-                var target = i.Player;
-
+                var target = clients[i].Player;
                 if (target.Name.EqualsIgnoreCase(args[0]))
                 {
                     Message msg;
@@ -167,8 +117,7 @@ namespace LoESoft.GameServer.realm.commands
                         player.SendInfo($"Player {target.Name} is connecting to {player.Owner.Name}.");
                     }
 
-                    i.SendMessage(msg);
-
+                    clients[i].SendMessage(msg);
                     return true;
                 }
             }
@@ -181,8 +130,7 @@ namespace LoESoft.GameServer.realm.commands
     internal class PosCmd : Command
     {
         public PosCmd() : base("pos", (int)AccountType.DEVELOPER)
-        {
-        }
+        { }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
@@ -194,8 +142,7 @@ namespace LoESoft.GameServer.realm.commands
     internal class SpawnCommand : Command
     {
         public SpawnCommand() : base("spawn", (int)AccountType.DEVELOPER)
-        {
-        }
+        { }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
@@ -250,9 +197,8 @@ namespace LoESoft.GameServer.realm.commands
 
     internal class GiveCommand : Command
     {
-        public GiveCommand() : base("give", (int)AccountType.MOD)
-        {
-        }
+        public GiveCommand() : base("give", (int)AccountType.ADMIN)
+        { }
 
         private List<string> Blacklist = new List<string>
         {
@@ -262,12 +208,6 @@ namespace LoESoft.GameServer.realm.commands
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
-            {
-                player.SendInfo("You cannot use this feature along Production mode.");
-                return false;
-            }
-
             if (args.Length == 0)
             {
                 player.SendHelp("Usage: /give <item name>");
@@ -323,8 +263,7 @@ namespace LoESoft.GameServer.realm.commands
     internal class Kick : Command
     {
         public Kick() : base("kick", (int)AccountType.MOD)
-        {
-        }
+        { }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
@@ -335,8 +274,8 @@ namespace LoESoft.GameServer.realm.commands
             }
             try
             {
-                var target = player.Owner.Players.Values.FirstOrDefault(p => p?.Name.ToLower() == args[0].ToLower());
-
+                var targetName = args[0].ToLower();
+                var target = player.Owner.GetPlayers().FirstOrDefault(_ => _.Name.ToLower().Equals(targetName));
                 if (target == null)
                 {
                     player.SendInfo("Player not found!");
@@ -355,108 +294,10 @@ namespace LoESoft.GameServer.realm.commands
         }
     }
 
-    internal class Max : Command
-    {
-        public Max() : base("max", (int)AccountType.DEVELOPER)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (Settings.SERVER_MODE == Settings.ServerMode.Production)
-            {
-                player.SendInfo("You cannot use this feature along Production mode.");
-                return false;
-            }
-
-            try
-            {
-                var target = args[0];
-
-                if (!string.IsNullOrEmpty(target) && player.AccountType >= (int)AccountType.DEVELOPER)
-                {
-                    if (target == "all" && player.AccountType == (int)AccountType.DEVELOPER)
-                    {
-                        var count = 0;
-
-                        player.Owner.Players.Values.ToList().Where(players => players != null).Where(players =>
-                            !(players.Stats[0] == players.ObjectDesc.MaxHitPoints && players.Stats[1] == players.ObjectDesc.MaxMagicPoints &&
-                            players.Stats[2] == players.ObjectDesc.MaxAttack && players.Stats[3] == players.ObjectDesc.MaxDefense &&
-                            players.Stats[4] == players.ObjectDesc.MaxSpeed && players.Stats[5] == players.ObjectDesc.MaxHpRegen &&
-                            players.Stats[6] == players.ObjectDesc.MaxMpRegen && players.Stats[7] == players.ObjectDesc.MaxDexterity)).Select(players =>
-                        {
-                            players.Stats[0] = players.ObjectDesc.MaxHitPoints;
-                            players.Stats[1] = players.ObjectDesc.MaxMagicPoints;
-                            players.Stats[2] = players.ObjectDesc.MaxAttack;
-                            players.Stats[3] = players.ObjectDesc.MaxDefense;
-                            players.Stats[4] = players.ObjectDesc.MaxSpeed;
-                            players.Stats[5] = players.ObjectDesc.MaxHpRegen;
-                            players.Stats[6] = players.ObjectDesc.MaxMpRegen;
-                            players.Stats[7] = players.ObjectDesc.MaxDexterity;
-                            players.SaveToCharacter();
-                            players.UpdateCount++;
-
-                            if (player.Name != players.Name)
-                                players.SendInfo($"You were maxed to 8/8 by {player.Name}.");
-                            else
-                                players.SendInfo("You maxed yourself!");
-
-                            count++;
-
-                            return players;
-                        }).ToList();
-
-                        player.SendInfo($"You maxed {count} player{(count > 1 ? "s" : "")} from world '{player.Owner.Name}'.");
-                    }
-                    else
-                    {
-                        var otherPlayer = player.Owner.Players.Values.FirstOrDefault(tplayer => tplayer.Name.ToLower() == target.ToLower());
-
-                        if (otherPlayer == null)
-                            player.SendInfo("Player not found.");
-                        else
-                        {
-                            otherPlayer.Stats[0] = otherPlayer.ObjectDesc.MaxHitPoints;
-                            otherPlayer.Stats[1] = otherPlayer.ObjectDesc.MaxMagicPoints;
-                            otherPlayer.Stats[2] = otherPlayer.ObjectDesc.MaxAttack;
-                            otherPlayer.Stats[3] = otherPlayer.ObjectDesc.MaxDefense;
-                            otherPlayer.Stats[4] = otherPlayer.ObjectDesc.MaxSpeed;
-                            otherPlayer.Stats[5] = otherPlayer.ObjectDesc.MaxHpRegen;
-                            otherPlayer.Stats[6] = otherPlayer.ObjectDesc.MaxMpRegen;
-                            otherPlayer.Stats[7] = otherPlayer.ObjectDesc.MaxDexterity;
-                            otherPlayer.SaveToCharacter();
-                            otherPlayer.UpdateCount++;
-
-                            player.SendInfo($"You maxed the player {otherPlayer.Name}!");
-                        }
-                    }
-
-                    return true;
-                }
-
-                player.Stats[0] = player.ObjectDesc.MaxHitPoints;
-                player.Stats[1] = player.ObjectDesc.MaxMagicPoints;
-                player.Stats[2] = player.ObjectDesc.MaxAttack;
-                player.Stats[3] = player.ObjectDesc.MaxDefense;
-                player.Stats[4] = player.ObjectDesc.MaxSpeed;
-                player.Stats[5] = player.ObjectDesc.MaxHpRegen;
-                player.Stats[6] = player.ObjectDesc.MaxMpRegen;
-                player.Stats[7] = player.ObjectDesc.MaxDexterity;
-                player.SaveToCharacter();
-                player.UpdateCount++;
-                player.SendInfo("You maxed yourself!");
-            }
-            catch { player.SendError("An error occurred while maxing stats..."); }
-
-            return true;
-        }
-    }
-
     internal class Announcement : Command
     {
         public Announcement() : base("announce", (int)AccountType.MOD)
-        {
-        }
+        { }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
@@ -477,8 +318,9 @@ namespace LoESoft.GameServer.realm.commands
                 default: break;
             }
 
-            foreach (var client in GameServer.Manager.GetManager.Clients.Values)
-                client.SendMessage(new TEXT
+            var clients = GameServer.Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null && _.Player != null);
+            for (var i = 0; i < clients.Length; i++)
+                clients[i].SendMessage(new TEXT
                 {
                     BubbleTime = 0,
                     Stars = -1,
@@ -495,8 +337,7 @@ namespace LoESoft.GameServer.realm.commands
     internal class GetAccountIdCommand : Command
     {
         public GetAccountIdCommand() : base("getid", (int)AccountType.MOD)
-        {
-        }
+        { }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
@@ -523,12 +364,11 @@ namespace LoESoft.GameServer.realm.commands
     internal class SendCurrencyCommand : Command
     {
         public SendCurrencyCommand() : base("send", (int)AccountType.ADMIN)
-        {
-        }
+        { }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            if (player.AccountId != "1" || player.Name != "Devwarlt")
+            if (player.AccountId != "1" || !player.Name.Equals("Devwarlt"))
             {
                 player.SendHelp("Only Devwarlt can use this feature.");
                 return false;
@@ -569,8 +409,7 @@ namespace LoESoft.GameServer.realm.commands
     internal class RestartCommand : Command
     {
         public RestartCommand() : base("restart", (int)AccountType.MOD)
-        {
-        }
+        { }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
@@ -610,8 +449,7 @@ namespace LoESoft.GameServer.realm.commands
     internal class BanCommand : Command
     {
         public BanCommand() : base("ban", (int)AccountType.MOD)
-        {
-        }
+        { }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
@@ -643,8 +481,7 @@ namespace LoESoft.GameServer.realm.commands
     internal class UnBanCommand : Command
     {
         public UnBanCommand() : base("unban", (int)AccountType.MOD)
-        {
-        }
+        { }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
@@ -676,8 +513,7 @@ namespace LoESoft.GameServer.realm.commands
     internal class SizeCommand : Command
     {
         public SizeCommand() : base("size", (int)AccountType.VIP)
-        {
-        }
+        { }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
