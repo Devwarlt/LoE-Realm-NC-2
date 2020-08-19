@@ -1,5 +1,6 @@
 ﻿#region
 
+using CA.Extensions.Concurrent;
 using LoESoft.GameServer.networking.incoming;
 using LoESoft.GameServer.realm.entity.player;
 using System;
@@ -48,8 +49,7 @@ namespace LoESoft.GameServer.networking.handlers
                 return;
             }
 
-            var targetClient = (from newClient in GameServer.Manager.GetManager.Clients.Values where newClient.Account != null where newClient.AccountId == targetAccId.ToString() select newClient).FirstOrDefault();
-
+            var targetClient = GameServer.Manager.GetManager.Clients.ValueWhereAsParallel(_ => _.Account != null && _.AccountId.Equals(targetAccId.ToString())).FirstOrDefault();
             if (targetClient != null)
             {
                 if (client.Account.GuildRank >= 20 && client.Account.GuildId == targetClient.Account.GuildId && client.Account.GuildRank > targetClient.Account.GuildRank)
