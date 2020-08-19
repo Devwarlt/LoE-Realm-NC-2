@@ -1,5 +1,6 @@
 ﻿#region
 
+using CA.Extensions.Concurrent;
 using LoESoft.Core.config;
 using LoESoft.Core.models;
 using LoESoft.GameServer.networking;
@@ -249,6 +250,8 @@ namespace LoESoft.GameServer.realm
             }
             return Name;
         }
+
+        public IEnumerable<Player> GetPlayers() => Players.ValueWhereAsParallel(_ => _ != null);
 
         private readonly object _deleteLock = new object();
 
