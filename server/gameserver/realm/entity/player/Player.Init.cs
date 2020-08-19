@@ -1,5 +1,6 @@
 ﻿#region
 
+using CA.Extensions.Concurrent;
 using LoESoft.Core.config;
 using LoESoft.Core.database;
 using LoESoft.GameServer.logic;
@@ -226,10 +227,13 @@ namespace LoESoft.GameServer.realm.entity.player
             var notification = $"{Name} died at level {Level} to {killer} as {playerDesc.ObjectId.ToLower()} with {Fame} fame base.";
 
             if (Fame >= 2000 && !Client.Account.Admin)
-                foreach (var client in GameServer.Manager.GetManager.Clients.Values)
-                    client.Player?.GazerDM(notification);
+            {
+                var clients = GameServer.Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null && _.Player != null);
+                for (var i = 0; i < clients.Length; i++)
+                    clients[i].Player.GazerDM(notification);
+            }
             else
-                foreach (var i in Owner.Players.Values)
+                foreach (var i in Owner.GetPlayers())
                     i.GazerDM(notification);
         }
 
@@ -275,12 +279,12 @@ namespace LoESoft.GameServer.realm.entity.player
                 var playerDesc = GameServer.Manager.GameData.ObjectDescs[ObjectType];
                 var notification = $"({playerDesc.ObjectId} - Lvl: {Level}) {Name} escaped from death!";
 
-                if (Fame >= 2000)
-                    foreach (var client in GameServer.Manager.GetManager.Clients.Values.Where(c => c.Player != this))
+                if (Fame >= 2000d)
+                    foreach (var client in GameServer.Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null && _.Player != null && _.Player.Id != Id))
                         client.Player?.GazerDM(notification);
                 else
-                    foreach (var i in Owner.Players.Values.Where(p => p != this))
-                        i.GazerDM(notification);
+                    foreach (var player in Owner.GetPlayers().Where(_ => _.Id != Id))
+                        player.GazerDM(notification);
 
                 GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHARACTER_IS_DEAD);
                 return;
@@ -581,8 +585,9 @@ namespace LoESoft.GameServer.realm.entity.player
                 Color = new ARGB(0xFFFFFFFF)
             }, null);
 
-            foreach (var plr in Owner.Players.Values)
-                plr.AwaitGotoAck(time.TotalElapsedMs);
+            var players = Owner.GetPlayers().ToArray();
+            for (var i = 0; i < players.Length; i++)
+                players[i].AwaitGotoAck(time.TotalElapsedMs);
         }
 
         private int QuestPriority(ObjectDesc enemy)
@@ -632,28 +637,26 @@ namespace LoESoft.GameServer.realm.entity.player
 
             var newQuestId = -1;
             var questId = Quest == null ? -1 : Quest.Id;
-            var candidates = new HashSet<Enemy>();
-
-            foreach (var i in Owner.Quests.Values
-                .OrderBy(j => MathsUtils.DistSqr(j.X, j.Y, X, Y))
-                .Where(k => k.ObjectDesc != null && k.ObjectDesc.Quest))
+            var candidates = new List<Enemy>();
+            var quests = Owner.Quests.ValueWhereAsParallel(_ => _.ObjectDesc != null && _.ObjectDesc.Quest);
+            var orderedQuests = quests.OrderBy(_ => MathsUtils.DistSqr(_.X, _.Y, X, Y));
+            foreach (var quest in orderedQuests)
             {
-                if (!RealmManager.QuestPortraits.TryGetValue(i.ObjectDesc.ObjectId, out int questLevel))
+                if (!RealmManager.QuestPortraits.TryGetValue(quest.ObjectDesc.ObjectId, out int questLevel))
                     continue;
 
                 if (Level < questLevel)
                     continue;
 
-                if (!RealmManager.QuestPortraits.ContainsKey(i.ObjectDesc.ObjectId))
+                if (!RealmManager.QuestPortraits.ContainsKey(quest.ObjectDesc.ObjectId))
                     continue;
 
-                candidates.Add(i);
+                candidates.Add(quest);
             }
 
             if (candidates.Count != 0)
             {
                 var newQuest = candidates.OrderByDescending(i => QuestPriority(i.ObjectDesc)).Take(3).ToList()[0];
-
                 newQuestId = newQuest.Id;
                 Quest = newQuest;
             }
@@ -661,10 +664,7 @@ namespace LoESoft.GameServer.realm.entity.player
             if (newQuestId == questId)
                 return;
 
-            Client.SendMessage(new QUESTOBJID
-            {
-                ObjectId = newQuestId
-            });
+            Client.SendMessage(new QUESTOBJID { ObjectId = newQuestId });
         }
 
         public void CalculateAttack()
@@ -802,8 +802,9 @@ namespace LoESoft.GameServer.realm.entity.player
 
                 if (Level % 50 == 0 || Level == 30)
                 {
-                    foreach (var client in GameServer.Manager.GetManager.Clients.Values)
-                        client.Player?.GazerDM($"Player {Name} achived level {Level} as {playerDesc.ObjectId}.");
+                    var clients = GameServer.Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null && _.Player != null);
+                    for (var i = 0; i < clients.Length; i++)
+                        clients[i].Player.GazerDM($"Player {Name} achived level {Level} as {playerDesc.ObjectId}.");
                 }
 
                 Quest = null;
