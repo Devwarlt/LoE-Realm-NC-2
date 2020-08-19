@@ -1,5 +1,6 @@
 ﻿#region
 
+using CA.Extensions.Concurrent;
 using LoESoft.GameServer.networking.outgoing;
 using LoESoft.GameServer.realm.entity.player;
 using System;
@@ -76,9 +77,9 @@ namespace LoESoft.GameServer.realm
         {
             if (announce)
             {
-                foreach (var client in GameServer.Manager.GetManager.Clients.Values)
-                    if (client != null)
-                        client.Player.SendInfo(text);
+                var clients = GameServer.Manager.GetManager.Clients.ValueWhereAsParallel(_ => _ != null && _.Player != null);
+                for (var i = 0; i < clients.Length; i++)
+                    clients[i].Player.SendInfo(text);
             }
             else
                 player.Client.SendMessage(new TEXT
