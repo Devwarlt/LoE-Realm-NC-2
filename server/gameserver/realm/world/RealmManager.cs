@@ -1,5 +1,6 @@
 #region
 
+using CA.Extensions.Concurrent;
 using LoESoft.Core;
 using LoESoft.Core.config;
 using LoESoft.Core.models;
@@ -136,8 +137,9 @@ namespace LoESoft.GameServer.realm
         {
             Terminating = true;
 
-            foreach (var client in GetManager.Clients.Values)
-                TryDisconnect(client, DisconnectReason.STOPPING_REALM_MANAGER);
+            var clients = GetManager.Clients.ValueWhereAsParallel(_ => _ != null);
+            for (var i = 0; i < clients.Length; i++)
+                TryDisconnect(clients[i], DisconnectReason.STOPPING_REALM_MANAGER);
 
             GameData.Dispose();
         }
