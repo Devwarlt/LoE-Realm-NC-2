@@ -1,4 +1,4 @@
-# LoE Realm NC
+# LoE Realm NC 2
 [![license-badge]][license] ![dotnet-framework-badge] ![dotnet-language-badge] [![discord-badge]][discord]
 
 LoE Realm New Chicago version 2 source code project, if you want to know how to setup click [**here**][howtosetup].
