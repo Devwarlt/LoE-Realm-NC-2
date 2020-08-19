@@ -83,8 +83,9 @@ namespace LoESoft.GameServer.realm.entity.player
                                 Color = new ARGB(0xFFFF00AA)
                             };
 
-                            foreach (var plr in Owner?.Players.Values.Where(p => p?.DistSqr(this) < RadiusSqr))
-                                plr?.Client.SendMessage(batch);
+                            var players = Owner.GetPlayers().Where(_ => _.DistSqr(this) < RadiusSqr).ToArray();
+                            for (var i = 0; i < players.Length; i++)
+                                players[i].Client.SendMessage(batch);
                         }
                         break;
 
@@ -1543,7 +1544,7 @@ namespace LoESoft.GameServer.realm.entity.player
             double arcGap = item.ArcGap * Math.PI / 180;
             double startAngle = Math.Atan2(target.Y - Y, target.X - X) - (item.NumProjectiles - 1) / 2 * arcGap;
             ProjectileDesc prjDesc = item.Projectiles[0]; //Assume only one
-            Message[] messages = new Message[item.NumProjectiles];
+            Message[] batch = new Message[item.NumProjectiles];
 
             for (int i = 0; i < item.NumProjectiles; i++)
             {
@@ -1553,7 +1554,7 @@ namespace LoESoft.GameServer.realm.entity.player
                 Owner?.EnterWorld(proj);
                 FameCounter.Shoot(proj);
 
-                messages[i] = new SERVERPLAYERSHOOT()
+                batch[i] = new SERVERPLAYERSHOOT()
                 {
                     BulletId = proj.ProjectileId,
                     OwnerId = Id,
@@ -1564,8 +1565,9 @@ namespace LoESoft.GameServer.realm.entity.player
                 };
             }
 
-            foreach (var plr in Owner?.Players.Values.Where(p => p?.DistSqr(this) < RadiusSqr))
-                plr?.Client.SendMessage(messages);
+            var players = Owner.GetPlayers().Where(_ => _.DistSqr(this) < RadiusSqr).ToArray();
+            for (var i = 0; i < players.Length; i++)
+                players[i].Client.SendMessage(batch);
         }
 
         private void PoisonEnemy(Enemy enemy, ActivateEffect eff)
@@ -1627,8 +1629,8 @@ namespace LoESoft.GameServer.realm.entity.player
 
         private bool CheatEngineDetect(Item item, USEITEM pkt)
         {
-            foreach (Player player in Owner?.Players.Values)
-                if (player?.Client.Account.AccountType >= (int)Core.config.AccountType.DEVELOPER)
+            foreach (var player in Owner.GetPlayers())
+                if (player.Client.Account.AccountType >= (int)Core.config.AccountType.DEVELOPER)
                     player.SendInfo(string.Format("Cheat engine detected for player {0},\nItem should be {1}, but its {2}.",
                 Name, Inventory[pkt.SlotObject.SlotId].ObjectId, item.ObjectId));
             GameServer.Manager.TryDisconnect(Client, DisconnectReason.CHEAT_ENGINE_DETECTED);
