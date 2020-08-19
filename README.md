@@ -1,22 +1,19 @@
 # LoE Realm NC
-LoE Realm New Chicago version source code project.
+[![license-badge]][license] ![dotnet-framework-badge] ![dotnet-language-badge] [![discord-badge]][discord]
 
-# How to setup this source?
-- https://youtu.be/86m6G74H_jU
-- https://github.com/Devwarlt/LoE-Realm-NC/blob/master/HowToSetup.md
+LoE Realm New Chicago version 2 source code project, if you want to know how to setup click [**here**][howtosetup].
 
-# Discord:
-- [![Join Us!](https://discordapp.com/api/guilds/345060662260531202/embed.png)](https://discord.gg/jHNTjun)
-
-# AppEngine (read-only) Repository for remote data:
+## AppEngine (read-only) Repository for remote data:
 - https://loesoft-games.github.io/
-
-# Requirements:
-
-## Microsoft Visual Studio
-Download the Microsoft Visual Studio IDE to compile game server, link below:
-- https://www.visualstudio.com/downloads/
 
 ## Adobe Flex SDK 4.9.1
 Download the properly Adobe Flex SDK to compile game client, link below:
 - https://drive.google.com/uc?id=0B9pmoNsaxaKxQlh6MloycXZKazQ&export=download
+
+[license]: /LICENSE
+[discord]: https://discord.gg/2gZHFK4
+[howtosetup]: /HowToSetup.md
+[license-badge]: https://img.shields.io/badge/MIT-gray?style=plastic
+[dotnet-language-badge]: https://img.shields.io/badge/7.2-purple?logo=c-sharp&style=plastic
+[dotnet-framework-badge]: https://img.shields.io/badge/.NET-4.7.2-purple?logo=.net&style=plastic
+[discord-badge]: https://img.shields.io/discord/592162267664220181?logo=discord&style=plastic
